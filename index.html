@@ -2,8 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Atenis - Tu Servicio de Streaming Favorito</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Atenis</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     * {
@@ -19,152 +21,414 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      position: relative;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    .login-link {
+    /* Header */
+    .header {
       position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: #ffffff;
-      border: none;
-      color: #000000;
-      padding: 14px 22px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      z-index: 1000;
-      transition: background 0.2s ease;
-      text-decoration: none;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 28px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-
-    .login-link:hover {
-      background: #e5e5e5;
-    }
-
-    .welcome-container {
-      text-align: center;
-      max-width: 560px;
-      padding: 60px 48px;
-      background: #161616;
-      border-radius: 12px;
-      border: 1px solid #2d2d2d;
+      justify-content: space-between;
+      border-bottom: 1px solid #1a1a1a;
     }
 
     .logo {
-      font-size: 56px;
+      font-size: 24px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 16px;
-      letter-spacing: -1px;
+      letter-spacing: -0.5px;
     }
 
-    .subtitle {
+    .header-login {
+      background: transparent;
+      border: 1px solid #3a3a3a;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .header-login:hover {
+      background: #161616;
+      border-color: #555555;
+    }
+
+    /* Hero Section */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 28px 60px;
+      max-width: 680px;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(6, 193, 103, 0.12);
+      border: 1px solid rgba(6, 193, 103, 0.3);
+      color: #06C167;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 28px;
+    }
+
+    .hero-title {
+      font-size: clamp(52px, 10vw, 88px);
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -3px;
+      line-height: 0.95;
+      margin-bottom: 24px;
+    }
+
+    .hero-title span {
+      color: #06C167;
+    }
+
+    .hero-description {
       font-size: 18px;
       color: #ababab;
-      margin-bottom: 40px;
+      line-height: 1.6;
+      margin-bottom: 44px;
       font-weight: 400;
-      line-height: 1.5;
+      max-width: 520px;
     }
 
-    .buttons-container {
+    .hero-actions {
       display: flex;
       gap: 12px;
-      justify-content: center;
       flex-wrap: wrap;
     }
 
-    .main-btn {
-      padding: 16px 32px;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.2s ease, opacity 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-
-    .main-btn.primary {
+    .btn-primary {
       background: #06C167;
       color: #000000;
+      border: none;
+      padding: 16px 32px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.2s ease;
+      white-space: nowrap;
     }
 
-    .main-btn.primary:hover {
+    .btn-primary:hover {
       background: #049451;
     }
 
-    .main-btn.secondary {
-      background: #ffffff;
-      color: #000000;
+    .btn-outline {
+      background: transparent;
+      color: #ffffff;
+      border: 1px solid #3a3a3a;
+      padding: 16px 32px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      white-space: nowrap;
     }
 
-    .main-btn.secondary:hover {
-      background: #e5e5e5;
+    .btn-outline:hover {
+      background: #111111;
+      border-color: #555555;
     }
 
-    @media (max-width: 768px) {
-      .welcome-container {
-        margin: 20px;
-        padding: 40px 24px;
-      }
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      gap: 40px;
+      margin-top: 64px;
+      padding-top: 40px;
+      border-top: 1px solid #1a1a1a;
+      flex-wrap: wrap;
+    }
 
-      .logo {
-        font-size: 40px;
-      }
+    .stat-item {}
 
-      .subtitle {
-        font-size: 16px;
-      }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
 
-      .buttons-container {
+    .stat-label {
+      font-size: 13px;
+      color: #6b6b6b;
+      font-weight: 400;
+    }
+
+    /* Right side - feature list */
+    .page-layout {
+      display: flex;
+      min-height: 100vh;
+      align-items: stretch;
+    }
+
+    .hero-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 28px 60px;
+      max-width: 640px;
+    }
+
+    .right-side {
+      flex: 0 0 420px;
+      background: #080808;
+      border-left: 1px solid #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 40px 60px;
+    }
+
+    .features-list-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6b6b6b;
+      margin-bottom: 28px;
+    }
+
+    .feature-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .feature-row:last-of-type {
+      border-bottom: none;
+    }
+
+    .feature-row-icon {
+      width: 40px;
+      height: 40px;
+      background: #111111;
+      border: 1px solid #2d2d2d;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #06C167;
+      font-size: 16px;
+    }
+
+    .feature-row-text {}
+
+    .feature-row-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .feature-row-desc {
+      font-size: 13px;
+      color: #6b6b6b;
+      line-height: 1.4;
+    }
+
+    .right-cta {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .right-cta-text {
+      font-size: 13px;
+      color: #6b6b6b;
+      margin-bottom: 14px;
+    }
+
+    /* Mobile */
+    @media (max-width: 900px) {
+      .page-layout {
         flex-direction: column;
-        align-items: stretch;
       }
 
-      .main-btn {
+      .right-side {
+        flex: none;
+        border-left: none;
+        border-top: 1px solid #1a1a1a;
+        padding: 48px 28px;
+      }
+
+      .hero-side {
+        max-width: 100%;
+        padding: 100px 24px 48px;
+      }
+
+      .stats-row {
+        gap: 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .btn-primary,
+      .btn-outline {
         justify-content: center;
       }
 
-      .login-link {
-        bottom: 20px;
-        right: 20px;
-        padding: 12px 16px;
-        font-size: 13px;
+      .stats-row {
+        gap: 20px;
+      }
+
+      .stat-value {
+        font-size: 22px;
       }
     }
   </style>
-  <link rel="stylesheet" href="uber-theme.css">
 </head>
 <body>
-  <div class="welcome-container">
-    <h1 class="logo">Atenis</h1>
-    <p class="subtitle">Tu plataforma de streaming favorita</p>
-    
-    <div class="buttons-container">
-      <a href="landing.html" class="main-btn primary">
-        <i class="fas fa-star"></i>
-        Explorar Planes
-      </a>
-      <a href="login.html" class="main-btn secondary">
-        <i class="fas fa-play"></i>
-        Empezar Ahora
-      </a>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">Atenis</div>
+    <a href="login.html" class="header-login">Iniciar sesión</a>
+  </header>
+
+  <!-- Layout -->
+  <div class="page-layout">
+
+    <!-- Hero izquierda -->
+    <div class="hero-side">
+      <div class="hero-eyebrow">
+        <i class="fas fa-circle" style="font-size: 7px;"></i>
+        Streaming sin límites
+      </div>
+
+      <h1 class="hero-title">
+        El cine<br>en tu <span>pantalla.</span>
+      </h1>
+
+      <p class="hero-description">
+        Miles de películas, series y documentales en alta calidad. Estrenos exclusivos y contenido sin anuncios, disponible cuando quieras.
+      </p>
+
+      <div class="hero-actions">
+        <a href="landing.html" class="btn-primary">
+          <i class="fas fa-star"></i>
+          Ver planes
+        </a>
+        <a href="login.html" class="btn-outline">
+          <i class="fas fa-play"></i>
+          Comenzar ahora
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-value">4K</div>
+          <div class="stat-label">Ultra HD</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">+5000</div>
+          <div class="stat-label">Títulos</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">Sin ads</div>
+          <div class="stat-label">Premium</div>
+        </div>
+      </div>
     </div>
+
+    <!-- Panel derecho con features -->
+    <div class="right-side">
+      <div class="features-list-title">¿Por qué Atenis?</div>
+
+      <div class="feature-row">
+        <div class="feature-row-icon">
+          <i class="fas fa-film"></i>
+        </div>
+        <div class="feature-row-text">
+          <div class="feature-row-name">Contenido original</div>
+          <div class="feature-row-desc">Series y películas exclusivas que no encontrarás en ningún otro lugar.</div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-row-icon">
+          <i class="fas fa-download"></i>
+        </div>
+        <div class="feature-row-text">
+          <div class="feature-row-name">Ver offline</div>
+          <div class="feature-row-desc">Descarga tu contenido favorito y disfrútalo sin conexión.</div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-row-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="feature-row-text">
+          <div class="feature-row-name">Perfiles múltiples</div>
+          <div class="feature-row-desc">Personaliza la experiencia para cada miembro de tu familia.</div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-row-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="feature-row-text">
+          <div class="feature-row-name">Control parental</div>
+          <div class="feature-row-desc">Filtros de contenido para mantener a los más pequeños seguros.</div>
+        </div>
+      </div>
+
+      <div class="right-cta">
+        <div class="right-cta-text">¿Ya tienes una cuenta?</div>
+        <a href="login.html" class="btn-primary" style="justify-content: center; width: 100%;">
+          <i class="fas fa-user"></i>
+          Iniciar sesión
+        </a>
+      </div>
+    </div>
+
   </div>
-  
-  <a href="login.html" class="login-link">
-    <i class="fas fa-user"></i>
-    Ya tengo cuenta
-  </a>
+
 </body>
 </html>
