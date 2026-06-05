@@ -11,7 +11,7 @@
   <meta name="screen-orientation" content="portrait">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#000000">
-  <title>Zambik</title>
+  <title>Atenis</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
@@ -1256,7 +1256,7 @@
       display: flex;
       justify-content: space-around;
       padding: 12px 0;
-      z-index: 1000;
+      z-index: 3000;
       -webkit-backdrop-filter: blur(20px);
       padding-bottom: env(safe-area-inset-bottom, 12px);
     }
@@ -2172,111 +2172,86 @@
       display: none !important;
     }
 
-    /* Sección de búsqueda */
+    /* Sección de búsqueda - Pantalla completa estilo Uber */
     .search-section {
       position: fixed;
       inset: 0;
       background: #000000;
       z-index: 2000;
       display: none;
-      overflow-y: auto;
-      padding: 24px;
-      padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+      flex-direction: column;
+      overflow: hidden;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     .search-section::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background: radial-gradient(circle at top left, rgba(6, 193, 103, 0.16), transparent 34%);
+      display: none;
     }
 
     .search-section.active {
-      display: block;
+      display: flex;
     }
 
-    .search-panel {
-      position: relative;
-      width: min(1120px, 100%);
-      min-height: calc(100vh - 48px);
-      margin: 0 auto;
-      padding: 28px;
-      background: #0b0b0b;
-      border: 1px solid #2d2d2d;
-      border-radius: 24px;
+    .search-page-header {
+      flex: 0 0 auto;
+      padding: 56px 20px 0;
+      background: #000000;
+    }
+
+    .search-page-title {
+      font-size: clamp(32px, 6vw, 52px);
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -1.5px;
+      line-height: 1.0;
+      margin-bottom: 4px;
+    }
+
+    .search-page-subtitle {
+      font-size: 15px;
+      color: #6b6b6b;
+      font-weight: 400;
+      margin-bottom: 20px;
     }
 
     .search-topbar {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 20px;
-      padding-bottom: 22px;
-      border-bottom: 1px solid #1f1f1f;
+      display: none;
     }
 
     .search-kicker {
-      color: #06C167;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      margin-bottom: 8px;
-      text-transform: uppercase;
+      display: none;
     }
 
     .search-close-btn {
-      position: static;
-      flex: 0 0 auto;
-      background: #161616;
-      border: 1px solid #2d2d2d;
-      color: #ffffff;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      cursor: pointer;
-      transition: background 0.2s ease, border-color 0.2s ease;
-      z-index: 2100;
-    }
-
-    .search-close-btn:hover {
-      background: #2d2d2d;
-      border-color: #555555;
+      display: none;
     }
 
     .search-results-title {
-      font-size: clamp(28px, 4vw, 44px);
-      font-weight: 800;
-      color: #ffffff;
-      margin-bottom: 8px;
-      letter-spacing: -1px;
-      line-height: 1.05;
+      display: none;
     }
 
     .search-results-count {
-      font-size: 15px;
-      color: #ababab;
-      font-weight: 400;
-      line-height: 1.5;
+      display: none;
     }
 
     .search-input-shell {
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      padding: 22px 0;
-      background: #0b0b0b;
+      flex: 0 0 auto;
+      padding: 16px 20px 12px;
+      background: #000000;
+      border-bottom: 1px solid #1a1a1a;
     }
 
     .search-section-wrapper {
-      max-width: 760px;
-      min-height: 58px;
-      margin: 0 auto;
-      background: #161616;
+      width: 100%;
+      min-height: 52px;
+      margin: 0;
+      background: #111111;
+      border: 1px solid #2d2d2d;
+      border-radius: 10px;
+    }
+
+    .search-section-wrapper:focus-within {
+      border-color: #06C167;
     }
 
     #searchSectionInput {
@@ -2296,7 +2271,10 @@
     }
 
     .search-content-area {
-      min-height: 360px;
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 20px;
+      padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
     }
 
     .search-loading {
@@ -2442,34 +2420,17 @@
     }
 
     @media (max-width: 768px) {
-      .search-section {
-        padding: 12px;
-        padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
-      }
-
-      .search-panel {
-        min-height: calc(100vh - 24px);
-        padding: 18px;
-        border-radius: 18px;
-      }
-
-      .search-topbar {
-        align-items: center;
-        gap: 14px;
-        padding-bottom: 18px;
-      }
-
-      .search-close-btn {
-        width: 40px;
-        height: 40px;
+      .search-page-header {
+        padding: 44px 16px 0;
       }
 
       .search-input-shell {
-        padding: 16px 0;
+        padding: 12px 16px 10px;
       }
 
-      .search-section-wrapper {
-        min-height: 52px;
+      .search-content-area {
+        padding: 16px 16px;
+        padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
       }
 
       #searchSectionInput {
@@ -2478,18 +2439,18 @@
 
       .search-results-grid {
         grid-template-columns: 1fr;
-        gap: 12px;
+        gap: 10px;
       }
 
       .search-result-item {
         display: grid;
-        grid-template-columns: 112px 1fr;
+        grid-template-columns: 100px 1fr;
         align-items: stretch;
       }
 
       .search-result-poster {
         height: 100%;
-        min-height: 132px;
+        min-height: 120px;
         aspect-ratio: auto;
       }
 
@@ -3309,50 +3270,46 @@
     </button>
   </div>
 
-  <!-- Sección de búsqueda -->
+  <!-- Sección de búsqueda - Pantalla completa estilo Uber -->
   <div id="searchSection" class="search-section" aria-hidden="true">
-    <div class="search-panel">
-      <div class="search-topbar">
-        <div>
-          <div class="search-kicker">Zambik</div>
-          <div class="search-results-title" id="searchResultsTitle">Buscar contenido</div>
-          <div class="search-results-count" id="searchResultsCount">Encuentra películas, series y cortos en segundos.</div>
+
+    <!-- Cabecera de página -->
+    <div class="search-page-header">
+      <div class="search-page-title">Buscar</div>
+      <div class="search-page-subtitle">Películas, series y más</div>
+    </div>
+
+    <!-- Barra de búsqueda -->
+    <div class="search-input-shell">
+      <div class="search-wrapper search-section-wrapper">
+        <div class="search-icon">
+          <i class="fas fa-search"></i>
         </div>
-        <button class="search-close-btn" onclick="closeSearchSection()" aria-label="Cerrar búsqueda">
-          <i class="fas fa-times"></i>
+        <input type="text" id="searchSectionInput" placeholder="Título, género o tipo de contenido…" autocomplete="off">
+        <button class="search-btn" id="searchSectionBtn" onclick="performSearchFromSection()" aria-label="Buscar">
+          <i class="fas fa-arrow-right"></i>
         </button>
       </div>
+    </div>
 
-      <!-- Barra de búsqueda dentro de la sección -->
-      <div class="search-input-shell">
-        <div class="search-wrapper search-section-wrapper">
-          <div class="search-icon">
-            <i class="fas fa-search"></i>
-          </div>
-          <input type="text" id="searchSectionInput" placeholder="Buscar series y películas" autocomplete="off">
-          <button class="search-btn" id="searchSectionBtn" onclick="performSearchFromSection()" aria-label="Buscar">
-            <i class="fas fa-arrow-right"></i>
-          </button>
-        </div>
+    <!-- Área de resultados con scroll -->
+    <div class="search-content-area">
+      <div id="searchLoading" class="search-loading hidden">
+        <div class="search-loading-spinner"></div>
+        <div class="search-loading-text">Buscando contenido...</div>
       </div>
 
-      <div class="search-content-area">
-        <div id="searchLoading" class="search-loading hidden">
-          <div class="search-loading-spinner"></div>
-          <div class="search-loading-text">Buscando contenido...</div>
-        </div>
+      <div id="searchResultsGrid" class="search-results-grid">
+        <!-- Los resultados se cargarán aquí -->
+      </div>
 
-        <div id="searchResultsGrid" class="search-results-grid">
-          <!-- Los resultados se cargarán aquí -->
-        </div>
-
-        <div id="searchNoResults" class="search-no-results hidden">
-          <i class="fas fa-search"></i>
-          <h3>No se encontraron resultados</h3>
-          <p>Intenta con otro título, género o tipo de contenido.</p>
-        </div>
+      <div id="searchNoResults" class="search-no-results hidden">
+        <i class="fas fa-search"></i>
+        <h3>Sin resultados</h3>
+        <p>Intenta con otro título, género o tipo de contenido.</p>
       </div>
     </div>
+
   </div>
 
 
@@ -3628,7 +3585,7 @@
         <div class="setting-item">
           <div class="setting-info">
             <div class="setting-name">Cerrar Sesión</div>
-            <div class="setting-description">Salir de tu cuenta de Zambik</div>
+            <div class="setting-description">Salir de tu cuenta de Atenis</div>
           </div>
           <button class="settings-btn secondary" onclick="logoutFirebase()" style="width: auto; padding: 8px 16px; font-size: 14px;">
             <i class="fas fa-sign-out-alt"></i>
@@ -3802,7 +3759,7 @@
       
       welcomeMessage.innerHTML = `
         <i class="fas fa-check-circle" style="margin-right: 8px; color: #06C167;"></i>
-        ¡Bienvenido a Zambik!
+        ¡Bienvenido a Atenis!
       `;
       
       document.body.appendChild(welcomeMessage);
@@ -3909,8 +3866,8 @@
         }
 
         // Guardar datos en localStorage para compatibilidad
-        localStorage.setItem('zambik_user_profile', JSON.stringify(userProfile));
-        localStorage.setItem('zambik_subscription', 'active');
+        localStorage.setItem('atenis_user_profile', JSON.stringify(userProfile));
+        localStorage.setItem('atenis_subscription', 'active');
       }
     }
 
@@ -3929,7 +3886,7 @@
     let isPlayingIntro = false;
     let controlsTimeout = null;
 
-    // URL del intro de Zambik
+    // URL del intro de Atenis
     const introVideoUrl = 'https://dl.dropboxusercontent.com/scl/fi/h5ekhsy1045o93jdnp6ff/video_BAACAgEAAxkBAAIBimg_Hd9a9bpAMm37Sz-eBpNb-0gZAAKnBgAC_aH4RQ4rFHrAoNZHNgQ.mp4?rlkey=hpz7w3qyd67yboabi09svgl64&st=embhl2dy';
 
     // Función para manejar clics de películas especiales
@@ -4241,7 +4198,7 @@
     function addToMyList() {
       if (!currentSeries) return;
 
-      const myList = JSON.parse(localStorage.getItem('zambik_my_list') || '[]');
+      const myList = JSON.parse(localStorage.getItem('atenis_my_list') || '[]');
       const index = myList.findIndex(item => item.id === currentSeries.id);
 
       // Crear notificación estilo Uber
@@ -4266,14 +4223,14 @@
 
       if (index === -1) {
         myList.push({ id: currentSeries.id, addedAt: new Date().toISOString() });
-        localStorage.setItem('zambik_my_list', JSON.stringify(myList));
+        localStorage.setItem('atenis_my_list', JSON.stringify(myList));
         notification.innerHTML = `
           <i class="fas fa-check-circle" style="margin-right: 8px; color: #06C167;"></i>
           Añadido a Mi Lista
         `;
       } else {
         myList.splice(index, 1);
-        localStorage.setItem('zambik_my_list', JSON.stringify(myList));
+        localStorage.setItem('atenis_my_list', JSON.stringify(myList));
         notification.innerHTML = `
           <i class="fas fa-times-circle" style="margin-right: 8px; color: #ababab;"></i>
           Eliminado de Mi Lista
@@ -4401,7 +4358,7 @@
     function changePlan() {
       if (confirm('¿Deseas cambiar tu plan de suscripción? Serás redirigido a la página de suscripciones.')) {
         // Guardar flag para indicar que es un cambio de plan
-        localStorage.setItem('zambik_changing_plan', 'true');
+        localStorage.setItem('atenis_changing_plan', 'true');
         window.location.href = 'subscription.html';
       }
     }
@@ -4466,7 +4423,7 @@
       historyEmpty.classList.add('hidden');
       
       setTimeout(() => {
-        const history = JSON.parse(localStorage.getItem('zambik_history') || '[]');
+        const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
         historyLoading.classList.add('hidden');
         
         if (history.length === 0) {
@@ -4537,7 +4494,7 @@
     // Limpiar historial
     function clearHistory() {
       if (confirm('¿Estás seguro de que quieres eliminar todo el historial?')) {
-        localStorage.removeItem('zambik_history');
+        localStorage.removeItem('atenis_history');
         loadHistoryContent();
         showSettingsMessage('Historial eliminado');
       }
@@ -4545,7 +4502,7 @@
 
     // Guardar en historial cuando se reproduce
     function saveToHistory(seriesId, progress, currentTimeSec, durationSec) {
-      const history = JSON.parse(localStorage.getItem('zambik_history') || '[]');
+      const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
       
       // Buscar si ya existe
       const existingIndex = history.findIndex(item => item.seriesId === seriesId);
@@ -4571,7 +4528,7 @@
         history.shift();
       }
       
-      localStorage.setItem('zambik_history', JSON.stringify(history));
+      localStorage.setItem('atenis_history', JSON.stringify(history));
     }
 
     // ===== CONTINUAR VIENDO =====
@@ -4580,7 +4537,7 @@
       const carousel = document.getElementById('continueCarousel');
       if (!section || !carousel) return;
 
-      const history = JSON.parse(localStorage.getItem('zambik_history') || '[]');
+      const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
 
       // Solo mostrar items entre 3% y 94% de progreso (en curso, no terminados)
       const inProgress = history
@@ -4639,7 +4596,7 @@
       loadPrivacyInfo();
 
       // Cargar configuraciones guardadas
-      const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+      const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
 
       document.getElementById('autoplayToggle').checked = settings.autoplay !== false;
       document.getElementById('videoQuality').value = settings.videoQuality || 'auto';
@@ -4684,7 +4641,7 @@
         dataSaver: document.getElementById('dataSaverToggle').checked
       };
 
-      localStorage.setItem('zambik_settings', JSON.stringify(settings));
+      localStorage.setItem('atenis_settings', JSON.stringify(settings));
       applySettingsInRealTime(settings);
       showSettingsMessage('Configuración guardada correctamente');
     }
@@ -4804,17 +4761,17 @@
     function setupRealtimeSettings() {
       // Autoplay
       document.getElementById('autoplayToggle')?.addEventListener('change', function() {
-        const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         settings.autoplay = this.checked;
-        localStorage.setItem('zambik_settings', JSON.stringify(settings));
+        localStorage.setItem('atenis_settings', JSON.stringify(settings));
         showSettingsMessage(this.checked ? 'Reproducción automática activada' : 'Reproducción automática desactivada');
       });
 
       // Calidad de video - Cambio en tiempo real
       document.getElementById('videoQuality')?.addEventListener('change', function() {
-        const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         settings.videoQuality = this.value;
-        localStorage.setItem('zambik_settings', JSON.stringify(settings));
+        localStorage.setItem('atenis_settings', JSON.stringify(settings));
         
         // Aplicar calidad inmediatamente si hay video reproduciéndose
         if (videoElement && !videoElement.paused && currentSeries) {
@@ -4826,9 +4783,9 @@
 
       // Subtítulos por defecto - Cambio en tiempo real
       document.getElementById('defaultSubtitles')?.addEventListener('change', function() {
-        const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         settings.defaultSubtitles = this.checked;
-        localStorage.setItem('zambik_settings', JSON.stringify(settings));
+        localStorage.setItem('atenis_settings', JSON.stringify(settings));
         
         // Aplicar inmediatamente si hay video
         if (videoElement && videoElement.textTracks) {
@@ -4849,17 +4806,17 @@
 
       // Idioma de interfaz - Cambio en tiempo real
       document.getElementById('interfaceLanguage')?.addEventListener('change', function() {
-        const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         settings.language = this.value;
-        localStorage.setItem('zambik_settings', JSON.stringify(settings));
+        localStorage.setItem('atenis_settings', JSON.stringify(settings));
         handleLanguageChange(this.value);
       });
 
       // Audio preferido - Cambio en tiempo real
       document.getElementById('preferredAudio')?.addEventListener('change', function() {
-        const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         settings.preferredAudio = this.value;
-        localStorage.setItem('zambik_settings', JSON.stringify(settings));
+        localStorage.setItem('atenis_settings', JSON.stringify(settings));
         
         // Aplicar inmediatamente si hay video reproduciéndose
         if (videoElement && !videoElement.paused && currentSeries) {
@@ -4877,42 +4834,42 @@
 
       // Tema
       document.getElementById('themeSelect')?.addEventListener('change', function() {
-        const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         settings.theme = this.value;
-        localStorage.setItem('zambik_settings', JSON.stringify(settings));
+        localStorage.setItem('atenis_settings', JSON.stringify(settings));
         applyTheme(this.value);
         showSettingsMessage(`Tema cambiado a: ${this.value}`);
       });
 
       // Tamaño de texto
       document.getElementById('textSize')?.addEventListener('change', function() {
-        const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         settings.textSize = this.value;
-        localStorage.setItem('zambik_settings', JSON.stringify(settings));
+        localStorage.setItem('atenis_settings', JSON.stringify(settings));
         applyTextSize(this.value);
         showSettingsMessage(`Tamaño de texto: ${this.value}`);
       });
 
       // WiFi only
       document.getElementById('wifiOnlyToggle')?.addEventListener('change', function() {
-        const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         settings.wifiOnly = this.checked;
-        localStorage.setItem('zambik_settings', JSON.stringify(settings));
+        localStorage.setItem('atenis_settings', JSON.stringify(settings));
         showSettingsMessage(this.checked ? 'Solo WiFi activado' : 'Solo WiFi desactivado');
       });
 
       // Ahorro de datos
       document.getElementById('dataSaverToggle')?.addEventListener('change', function() {
-        const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         settings.dataSaver = this.checked;
-        localStorage.setItem('zambik_settings', JSON.stringify(settings));
+        localStorage.setItem('atenis_settings', JSON.stringify(settings));
         showSettingsMessage(this.checked ? 'Ahorro de datos activado' : 'Ahorro de datos desactivado');
       });
     }
 
     // Restablecer ajustes
     function resetSettings() {
-      localStorage.removeItem('zambik_settings');
+      localStorage.removeItem('atenis_settings');
       loadCurrentSettings();
       showSettingsMessage('Configuración restablecida a valores predeterminados');
     }
@@ -4962,7 +4919,7 @@
 
     // Manejar cambio de idioma con Google Translate
     function handleLanguageChange(language) {
-      localStorage.setItem('zambik_language', language);
+      localStorage.setItem('atenis_language', language);
       currentLanguage = language;
       
       // Usar Google Translate para cambiar el idioma
@@ -5109,7 +5066,7 @@
     function showLiveNotification(message) {
       // Notificación del navegador
       if (isNotificationEnabled && 'Notification' in window && Notification.permission === 'granted') {
-        new Notification('Zambik - Programación en Vivo', {
+        new Notification('Atenis - Programación en Vivo', {
           body: message,
           icon: '/favicon.ico',
           badge: '/favicon.ico',
@@ -5255,7 +5212,7 @@
         }, 1000);
         
         // Cargar y aplicar configuraciones guardadas
-        const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         applyTheme(settings.theme || 'default');
         applyTextSize(settings.textSize || 'medium');
         
@@ -5272,7 +5229,7 @@
 
   <script>
     // Sistema de traducción
-    let currentLanguage = localStorage.getItem('zambik_language') || 'es';
+    let currentLanguage = localStorage.getItem('atenis_language') || 'es';
     let translations = {};
     let isTranslating = false;
 
@@ -5884,9 +5841,9 @@
         setTimeout(() => subtitlesBtn.style.transform = 'scale(1)', 200);
         
         // Actualizar configuración
-        const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         settings.defaultSubtitles = false;
-        localStorage.setItem('zambik_settings', JSON.stringify(settings));
+        localStorage.setItem('atenis_settings', JSON.stringify(settings));
         
         showErrorMessage('❌ Subtítulos desactivados');
       } else {
@@ -5896,9 +5853,9 @@
         setTimeout(() => subtitlesBtn.style.transform = 'scale(1)', 200);
         
         // Actualizar configuración
-        const settings = JSON.parse(localStorage.getItem('zambik_settings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         settings.defaultSubtitles = true;
-        localStorage.setItem('zambik_settings', JSON.stringify(settings));
+        localStorage.setItem('atenis_settings', JSON.stringify(settings));
         
         showErrorMessage('✅ Subtítulos activados');
       }
@@ -6350,8 +6307,8 @@
       });
     }
 
-    // Función para reproducir intro de Zambik
-    function playZambikIntro(callback) {
+    // Función para reproducir intro de Atenis
+    function playAtenisIntro(callback) {
       isPlayingIntro = true;
 
       // IMPORTANTE: Limpiar todos los elementos source y src anteriores
@@ -6367,7 +6324,7 @@
       videoElement.removeAttribute('crossorigin');
 
       // Configurar título para el intro
-      videoPlayerTitle.textContent = 'Zambik';
+      videoPlayerTitle.textContent = 'Atenis';
 
       // Ocultar indicador EN VIVO durante el intro
       const liveIndicator = document.getElementById('videoLiveIndicator');
@@ -6566,8 +6523,8 @@
 
       currentVideo = episode;
 
-      // Reproducir intro de Zambik primero, luego el contenido principal
-      playZambikIntro(() => {
+      // Reproducir intro de Atenis primero, luego el contenido principal
+      playAtenisIntro(() => {
         console.log('=== DEBUG playMainContent callback ===');
         console.log('About to play episode:', episode.title);
         console.log('Video URL:', episode.videoUrl);
@@ -6594,8 +6551,8 @@
 
       currentVideo = trailerVideo;
 
-      // Reproducir intro de Zambik primero, luego el trailer
-      playZambikIntro(() => {
+      // Reproducir intro de Atenis primero, luego el trailer
+      playAtenisIntro(() => {
         playTrailerContent(trailerVideo);
       });
     }
