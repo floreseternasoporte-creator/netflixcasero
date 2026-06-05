@@ -1,0 +1,1029 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zambik - Selecciona tu Plan</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    body {
+      background: #000000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      color: #ffffff;
+      min-height: 100vh;
+      position: relative;
+    }
+
+
+
+    /* Header estilo Uber */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 18px 30px;
+      background: #000000;
+      border-bottom: 1px solid #2d2d2d;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #ababab;
+      font-size: 14px;
+    }
+
+    .logout-btn {
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      color: #ffffff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .logout-btn:hover {
+      background: #2d2d2d;
+    }
+
+    /* Contenedor principal */
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 120px 30px 50px 30px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Header de suscripción */
+    .subscription-header {
+      text-align: center;
+      margin-bottom: 70px;
+      animation: fadeInUp 0.8s ease-out;
+      padding: 40px 20px;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .subscription-title {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #ffffff;
+      letter-spacing: -1px;
+    }
+
+    .subscription-subtitle {
+      font-size: 18px;
+      color: #ababab;
+      margin-bottom: 0;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    /* Carrusel 3D de planes */
+    .plans-carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto 60px auto;
+      padding: 80px 20px;
+      perspective: 2000px;
+    }
+
+    .plans-carousel {
+      position: relative;
+      width: 100%;
+      height: 650px;
+      transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      color: #ffffff;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 100;
+      font-size: 18px;
+      transition: background 0.2s ease;
+    }
+
+    .carousel-nav:hover {
+      background: #2d2d2d;
+      transform: translateY(-50%);
+    }
+
+    .carousel-nav.prev { left: 20px; }
+    .carousel-nav.next { right: 20px; }
+
+    .carousel-indicators {
+      position: absolute;
+      bottom: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 15px;
+      z-index: 100;
+    }
+
+    .indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2d2d2d;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .indicator.active {
+      background: #ffffff;
+      transform: scale(1.3);
+    }
+
+    .plan-card {
+      position: absolute;
+      width: 360px;
+      background: #161616;
+      border: 1px solid #2d2d2d;
+      border-radius: 16px;
+      padding: 40px 32px;
+      padding-top: 52px;
+      text-align: center;
+      overflow: visible;
+      transition: all 0.6s ease;
+      backface-visibility: hidden;
+      transform-style: preserve-3d;
+      left: 50%;
+      top: 50%;
+      margin-left: -180px;
+      margin-top: -305px;
+    }
+
+    .plan-card:hover {
+      border-color: #555555;
+    }
+
+    .plan-card.active {
+      z-index: 10;
+      transform: translateZ(0px) scale(1.05);
+      opacity: 1;
+      filter: blur(0px);
+      border-color: #2d2d2d;
+    }
+
+    .plan-card.left {
+      transform: translateX(-400px) translateZ(-300px) rotateY(30deg) scale(0.88);
+      opacity: 0.6;
+      filter: blur(1px);
+      z-index: 5;
+    }
+
+    .plan-card.right {
+      transform: translateX(400px) translateZ(-300px) rotateY(-30deg) scale(0.88);
+      opacity: 0.6;
+      filter: blur(1px);
+      z-index: 5;
+    }
+
+    .plan-card.hidden {
+      transform: translateZ(-800px) scale(0.5);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .plan-card.popular {
+      border-color: #06C167;
+    }
+
+    .plan-card.popular::before {
+      content: 'MÁS POPULAR';
+      position: absolute;
+      top: -1px;
+      left: 0;
+      right: 0;
+      background: #06C167;
+      color: #000000;
+      padding: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .plan-name {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .plan-price {
+      font-size: 56px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: -2px;
+    }
+
+    .plan-period {
+      font-size: 14px;
+      color: #ababab;
+      margin-bottom: 28px;
+      font-weight: 400;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 32px;
+      text-align: left;
+    }
+
+    .plan-features li {
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      color: #e0e0e0;
+      font-weight: 400;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .plan-features li i {
+      color: #06C167;
+      width: 18px;
+      font-size: 14px;
+    }
+
+    .plan-features li i.fa-times {
+      color: #555555;
+    }
+
+    .plan-button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .plan-button.primary {
+      background: #06C167;
+      color: #000000;
+    }
+
+    .plan-button.primary:hover {
+      background: #049451;
+    }
+
+    .plan-button.secondary {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .plan-button.secondary:hover {
+      background: #e5e5e5;
+    }
+
+    .plan-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .plan-button .spinner {
+      display: none;
+      margin-right: 10px;
+    }
+
+    .plan-button.loading .spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    /* Mensaje de éxito */
+    .success-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #161616;
+      color: #ffffff;
+      padding: 32px 40px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      z-index: 3000;
+      text-align: center;
+      border: 1px solid #06C167;
+      display: none;
+    }
+
+    @keyframes successPulse {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+      20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+    }
+
+    /* Responsive - Carrusel horizontal en móviles */
+    @media (max-width: 768px) {
+      .subscription-title {
+        font-size: 36px;
+      }
+
+      .subscription-title::before,
+      .subscription-title::after {
+        font-size: 25px;
+        left: -35px;
+        right: -35px;
+      }
+
+      .subscription-subtitle {
+        font-size: 16px;
+        padding: 0 10px;
+      }
+
+      .plans-carousel-container {
+        padding: 40px 0;
+        perspective: none;
+        overflow: hidden;
+      }
+
+      .plans-carousel {
+        height: auto;
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        padding: 20px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        transform-style: flat;
+      }
+
+      .plans-carousel::-webkit-scrollbar {
+        display: none;
+      }
+
+      .plan-card {
+        position: relative;
+        width: 85vw;
+        max-width: 340px;
+        min-width: 300px;
+        padding: 35px 25px;
+        padding-top: 55px;
+        margin: 0;
+        left: auto;
+        top: auto;
+        flex-shrink: 0;
+        scroll-snap-align: center;
+        transform: none !important;
+        opacity: 1 !important;
+        filter: none !important;
+      }
+
+      .plan-card.active,
+      .plan-card.left,
+      .plan-card.right,
+      .plan-card.hidden {
+        position: relative;
+        transform: none !important;
+        opacity: 1 !important;
+        filter: none !important;
+      }
+
+      .plan-card.popular::before {
+        font-size: 13px;
+        padding: 12px 25px;
+        top: -20px;
+      }
+
+      .plan-name {
+        font-size: 28px;
+      }
+
+      .plan-price {
+        font-size: 52px;
+      }
+
+      .plan-features {
+        margin-bottom: 30px;
+      }
+
+      .plan-features li {
+        font-size: 15px;
+        padding: 10px 0;
+      }
+
+      .plan-button {
+        padding: 16px;
+        font-size: 16px;
+      }
+
+      .carousel-nav {
+        display: none;
+      }
+
+      .carousel-indicators {
+        position: relative;
+        bottom: auto;
+        left: 0;
+        transform: none;
+        margin-top: 30px;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .header {
+        padding: 15px;
+      }
+
+      .logo {
+        font-size: 28px;
+      }
+
+      .user-info {
+        font-size: 13px;
+      }
+
+      .logout-btn {
+        padding: 10px 14px;
+        font-size: 14px;
+      }
+
+      .main-container {
+        padding: 90px 15px 30px 15px;
+      }
+
+      .subscription-header {
+        margin-bottom: 40px;
+      }
+
+      .special-offer-banner {
+        padding: 20px;
+        margin: 20px 10px 30px 10px;
+      }
+
+      .offer-title {
+        font-size: 18px;
+      }
+
+      .offer-text {
+        font-size: 13px;
+      }
+    }
+
+    /* Banner de oferta especial */
+    .special-offer-banner {
+      background: #161616;
+      border: 1px solid #06C167;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 24px auto 40px auto;
+      max-width: 700px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+      position: relative;
+    }
+
+    .special-offer-banner:hover {
+      border-color: #049451;
+    }
+
+    .offer-icon {
+      font-size: 28px;
+      color: #06C167;
+    }
+
+    .offer-content {
+      flex: 1;
+    }
+
+    .offer-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 4px;
+      letter-spacing: 0;
+    }
+
+    .offer-text {
+      font-size: 14px;
+      color: #ababab;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .offer-arrow {
+      font-size: 20px;
+      color: #06C167;
+    }
+
+    @media (max-width: 480px) {
+      .subscription-title {
+        font-size: 28px;
+      }
+
+      .subscription-title::before,
+      .subscription-title::after {
+        font-size: 20px;
+        left: -30px;
+        right: -30px;
+      }
+
+      .subscription-subtitle {
+        font-size: 14px;
+      }
+
+      .plans-carousel {
+        padding: 15px;
+        gap: 15px;
+      }
+
+      .plan-card {
+        width: 82vw;
+        max-width: 300px;
+        min-width: 280px;
+        padding: 30px 20px;
+        padding-top: 50px;
+      }
+
+      .plan-card.popular::before {
+        font-size: 11px;
+        padding: 10px 20px;
+        top: -18px;
+      }
+
+      .plan-name {
+        font-size: 26px;
+      }
+
+      .plan-price {
+        font-size: 48px;
+      }
+
+      .plan-period {
+        font-size: 14px;
+        margin-bottom: 25px;
+      }
+
+      .plan-features {
+        margin-bottom: 25px;
+      }
+
+      .plan-features li {
+        font-size: 14px;
+        padding: 8px 0;
+      }
+
+      .plan-features li i {
+        font-size: 16px;
+      }
+
+      .plan-button {
+        padding: 14px;
+        font-size: 15px;
+      }
+
+      .carousel-indicators {
+        margin-top: 25px;
+        left: 0;
+        transform: none;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .indicator {
+        width: 12px;
+        height: 12px;
+      }
+
+      .special-offer-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+        margin: 15px 10px 25px 10px;
+      }
+
+      .offer-icon {
+        font-size: 36px;
+      }
+
+      .offer-title {
+        font-size: 16px;
+      }
+
+      .offer-text {
+        font-size: 12px;
+      }
+
+      .offer-arrow {
+        transform: rotate(90deg);
+        font-size: 28px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="uber-theme.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">Zambik</div>
+    <div class="user-info">
+      <span id="userName">Cargando...</span>
+      <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Contenedor principal -->
+  <main class="main-container">
+    <!-- Header de suscripción -->
+    <section class="subscription-header">
+      <h1 class="subscription-title">Elige tu Plan</h1>
+      <p class="subscription-subtitle">Selecciona el plan perfecto para ti y comienza a disfrutar del mejor contenido de streaming</p>
+      
+      <!-- Banner de oferta especial -->
+      <div class="special-offer-banner" onclick="window.location.href='trial-offer.html'">
+        <div class="offer-content">
+          <div class="offer-title">OFERTA ESPECIAL</div>
+          <div class="offer-text">Prueba Premium GRATIS por 4 meses - Solo verifica tu tarjeta</div>
+        </div>
+        <div class="offer-arrow">→</div>
+      </div>
+    </section>
+
+    <!-- Carrusel 3D de planes -->
+    <div class="plans-carousel-container">
+      <div class="plans-carousel" id="plansCarousel">
+        <!-- Plan Básico -->
+        <div class="plan-card" data-index="0">
+          <h3 class="plan-name">Básico</h3>
+          <div class="plan-price">$4.99</div>
+          <div class="plan-period">por mes</div>
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i> Acceso a todo el catálogo</li>
+            <li><i class="fas fa-check"></i> Calidad HD (720p)</li>
+            <li><i class="fas fa-check"></i> 1 dispositivo simultáneo</li>
+            <li><i class="fas fa-check"></i> Descarga para ver offline</li>
+            <li><i class="fas fa-times"></i> Sin anuncios</li>
+          </ul>
+          <button class="plan-button secondary" onclick="selectPlan('basic', 'Plan Básico', '$4.99')">
+            <i class="fas fa-spinner spinner"></i>
+            Elegir Plan Básico
+          </button>
+        </div>
+
+        <!-- Plan Premium (Más Popular) -->
+        <div class="plan-card popular" data-index="1">
+          <h3 class="plan-name">Premium</h3>
+          <div class="plan-price">$9.99</div>
+          <div class="plan-period">por mes</div>
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i> Acceso a todo el catálogo</li>
+            <li><i class="fas fa-check"></i> Calidad 4K Ultra HD</li>
+            <li><i class="fas fa-check"></i> 4 dispositivos simultáneos</li>
+            <li><i class="fas fa-check"></i> Descarga ilimitada</li>
+            <li><i class="fas fa-check"></i> Sin anuncios</li>
+            <li><i class="fas fa-check"></i> Contenido exclusivo</li>
+            <li><i class="fas fa-check"></i> Estrenos anticipados</li>
+          </ul>
+          <button class="plan-button primary" onclick="selectPlan('premium', 'Plan Premium', '$9.99')">
+            <i class="fas fa-spinner spinner"></i>
+            Elegir Plan Premium
+          </button>
+        </div>
+
+        <!-- Plan Familiar -->
+        <div class="plan-card" data-index="2">
+          <h3 class="plan-name">Familiar</h3>
+          <div class="plan-price">$14.99</div>
+          <div class="plan-period">por mes</div>
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i> Acceso a todo el catálogo</li>
+            <li><i class="fas fa-check"></i> Calidad 4K Ultra HD</li>
+            <li><i class="fas fa-check"></i> 6 dispositivos simultáneos</li>
+            <li><i class="fas fa-check"></i> Perfiles familiares</li>
+            <li><i class="fas fa-check"></i> Control parental</li>
+            <li><i class="fas fa-check"></i> Sin anuncios</li>
+            <li><i class="fas fa-check"></i> Contenido exclusivo</li>
+            <li><i class="fas fa-check"></i> Soporte prioritario</li>
+          </ul>
+          <button class="plan-button secondary" onclick="selectPlan('family', 'Plan Familiar', '$14.99')">
+            <i class="fas fa-spinner spinner"></i>
+            Elegir Plan Familiar
+          </button>
+        </div>
+      </div>
+
+      <!-- Navegación -->
+      <div class="carousel-nav prev" onclick="prevPlan()">‹</div>
+      <div class="carousel-nav next" onclick="nextPlan()">›</div>
+
+      <!-- Indicadores -->
+      <div class="carousel-indicators">
+        <div class="indicator active" onclick="goToPlan(0)"></div>
+        <div class="indicator" onclick="goToPlan(1)"></div>
+        <div class="indicator" onclick="goToPlan(2)"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mensaje de éxito -->
+  <div id="successMessage" class="success-message">
+    <div style="margin-bottom: 15px;">
+      <i class="fas fa-check-circle" style="font-size: 36px; margin-bottom: 10px;"></i>
+    </div>
+    <div id="successText">Plan seleccionado</div>
+    <div style="font-size: 16px; margin-top: 15px; opacity: 0.9;">Configurando tu perfil...</div>
+  </div>
+
+  <script>
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCFQ_geG0HIv2EZ-bfKc97TJNtf2sdqPzc",
+      authDomain: "clack-koder.firebaseapp.com",
+      databaseURL: "https://clack-koder-default-rtdb.firebaseio.com",
+      projectId: "clack-koder",
+      storageBucket: "clack-koder.firebasestorage.app",
+      messagingSenderId: "478151254938",
+      appId: "1:478151254938:web:e2c00e3a5426bd192b9023",
+      measurementId: "G-P29ME5Z3S1"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    let currentUser = null;
+
+    // Verificar autenticación
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        currentUser = user;
+        document.getElementById('userName').textContent = user.displayName || user.email;
+
+        // Verificar si ya tiene suscripción
+        checkExistingSubscription(user);
+      } else {
+        // No autenticado, redirigir al login
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Verificar suscripción existente
+    async function checkExistingSubscription(user) {
+      try {
+        // Verificar si es un cambio de plan
+        const isChangingPlan = localStorage.getItem('zambik_changing_plan');
+        if (isChangingPlan === 'true') {
+          // Limpiar flag y permitir cambio de plan
+          localStorage.removeItem('zambik_changing_plan');
+          return;
+        }
+
+        const userRef = database.ref('users/' + user.uid);
+        const snapshot = await userRef.once('value');
+        const userData = snapshot.val();
+
+        if (userData && userData.subscription) {
+          // Ya tiene suscripción, verificar perfil
+          if (userData.profile) {
+            window.location.href = 'index.html';
+          } else {
+            window.location.href = 'profile-setup.html';
+          }
+        }
+      } catch (error) {
+        console.error('Error verificando suscripción:', error);
+      }
+    }
+
+    // Seleccionar plan
+    async function selectPlan(planType, planName, planPrice) {
+      if (!currentUser) {
+        alert('Error: Usuario no autenticado');
+        return;
+      }
+
+      // Encontrar el botón clickeado
+      const button = event.target;
+      setButtonLoading(button, true);
+
+      try {
+        // Crear objeto de suscripción
+        const subscription = {
+          plan: planType,
+          name: planName,
+          price: planPrice,
+          startDate: firebase.database.ServerValue.TIMESTAMP,
+          status: 'active',
+          features: getPlanFeatures(planType)
+        };
+
+        // Guardar suscripción en Firebase
+        await database.ref('users/' + currentUser.uid + '/subscription').set(subscription);
+
+        // Mostrar mensaje de éxito
+        showSuccessMessage(planName);
+
+        // Redirigir a configuración de perfil después de 3 segundos
+        setTimeout(() => {
+          window.location.href = 'profile-setup.html';
+        }, 3500);
+
+      } catch (error) {
+        console.error('Error seleccionando plan:', error);
+        alert('Error al seleccionar el plan. Intenta nuevamente.');
+      } finally {
+        setButtonLoading(button, false);
+      }
+    }
+
+    // Obtener características del plan
+    function getPlanFeatures(planType) {
+      const features = {
+        basic: {
+          quality: 'HD (720p)',
+          devices: 1,
+          downloads: true,
+          ads: true,
+          exclusive: false
+        },
+        premium: {
+          quality: '4K Ultra HD',
+          devices: 4,
+          downloads: true,
+          ads: false,
+          exclusive: true
+        },
+        family: {
+          quality: '4K Ultra HD',
+          devices: 6,
+          downloads: true,
+          ads: false,
+          exclusive: true,
+          profiles: true,
+          parentalControl: true
+        }
+      };
+
+      return features[planType] || features.basic;
+    }
+
+    // Mostrar mensaje de éxito
+    function showSuccessMessage(planName) {
+      const successMessage = document.getElementById('successMessage');
+      const successText = document.getElementById('successText');
+
+      successText.textContent = `${planName} seleccionado`;
+      successMessage.style.display = 'block';
+
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+      }, 3500);
+    }
+
+    // Loading en botón
+    function setButtonLoading(button, loading) {
+      if (loading) {
+        button.classList.add('loading');
+        button.disabled = true;
+      } else {
+        button.classList.remove('loading');
+        button.disabled = false;
+      }
+    }
+
+    // Cerrar sesión
+    async function logout() {
+      try {
+        await auth.signOut();
+        window.location.href = 'login.html';
+      } catch (error) {
+        console.error('Error cerrando sesión:', error);
+      }
+    }
+
+    // Actualizar indicadores al deslizar en móvil
+    const carousel = document.getElementById('plansCarousel');
+    const indicators = document.querySelectorAll('.indicator');
+    
+    carousel.addEventListener('scroll', () => {
+      const scrollLeft = carousel.scrollLeft;
+      const cardWidth = carousel.querySelector('.plan-card').offsetWidth + 20;
+      const currentIndex = Math.round(scrollLeft / cardWidth);
+      
+      indicators.forEach((indicator, index) => {
+        if (index === currentIndex) {
+          indicator.classList.add('active');
+        } else {
+          indicator.classList.remove('active');
+        }
+      });
+    });
+
+    // Click en indicadores para ir a plan específico
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => {
+        const cardWidth = carousel.querySelector('.plan-card').offsetWidth + 20;
+        carousel.scrollTo({
+          left: cardWidth * index,
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
