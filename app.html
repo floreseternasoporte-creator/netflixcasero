@@ -1149,21 +1149,25 @@
       color: #ffffff;
       font-size: 20px;
       cursor: pointer;
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
       transition: background 0.15s ease;
+      position: relative;
+      flex-shrink: 0;
     }
 
     .video-control-btn:hover {
-      background: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.10);
     }
 
     .video-control-btn.play-pause {
-      font-size: 22px;
+      font-size: 24px;
+      width: 54px;
+      height: 54px;
     }
 
     .video-time {
@@ -1251,31 +1255,33 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: #000000;
-      border-top: 1px solid #2d2d2d;
+      background: #000000 !important;
+      border-top: 1px solid #1f1f1f;
       display: flex;
       justify-content: space-around;
-      padding: 12px 0;
+      padding: 10px 0;
       z-index: 3000;
-      -webkit-backdrop-filter: blur(20px);
-      padding-bottom: env(safe-area-inset-bottom, 12px);
+      padding-bottom: env(safe-area-inset-bottom, 10px);
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
     }
 
     .bottom-nav button {
       background: transparent;
       border: none;
-      color: #ababab;
+      color: #666666;
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 500;
       cursor: pointer;
-      padding: 8px 16px;
-      border-radius: 8px;
-      transition: color 0.2s ease;
+      padding: 6px 16px;
+      border-radius: 0;
+      transition: color 0.15s ease;
       min-width: 64px;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      letter-spacing: 0.2px;
     }
 
     .bottom-nav button:hover,
@@ -1288,9 +1294,10 @@
     }
 
     .bottom-nav button i {
-      font-size: 22px;
-      margin-bottom: 4px;
-      transition: color 0.2s ease;
+      font-size: 20px;
+      margin-bottom: 3px;
+      transition: color 0.15s ease;
+      display: block;
     }
 
     .bottom-nav button:hover i,
@@ -1298,101 +1305,6 @@
       transform: none;
     }
 
-    /* Sistema de bloqueo de pantalla */
-    .screen-lock-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 6000;
-      display: none;
-      backdrop-filter: blur(15px);
-    }
-
-    .screen-lock-overlay.active {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .lock-icon-container {
-      margin-bottom: 20px;
-      animation: lockPulseAnimation 2s ease-in-out infinite;
-    }
-
-    .lock-icon-container i {
-      font-size: 80px;
-      color: #ffffff;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-    }
-
-    .lock-message {
-      color: #ffffff;
-      font-size: 18px;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 30px;
-      opacity: 0.9;
-    }
-
-    .unlock-button {
-      background: #ffffff;
-      border: none;
-      color: #000000;
-      padding: 14px 32px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s ease;
-      letter-spacing: -0.2px;
-    }
-
-    .unlock-button:hover {
-      background: #e0e0e0;
-    }
-
-    @keyframes lockPulseAnimation {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 0.8;
-      }
-      50% {
-        transform: scale(1.1);
-        opacity: 1;
-      }
-    }
-
-    /* Botón de bloqueo en el reproductor */
-    .screen-lock-btn {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      border: none;
-      color: #ffffff;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      backdrop-filter: blur(12px);
-      z-index: 15;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .screen-lock-btn:hover {
-      background: rgba(29, 155, 240, 0.8);
-      border-color: rgba(29, 155, 240, 0.5);
-      transform: scale(1.1);
-    }
 
 
 
@@ -2194,80 +2106,105 @@
 
     .search-page-header {
       flex: 0 0 auto;
-      padding: 56px 20px 0;
+      padding: 52px 20px 0;
       background: #000000;
     }
 
     .search-page-title {
-      font-size: clamp(32px, 6vw, 52px);
+      font-size: clamp(28px, 6vw, 44px);
       font-weight: 800;
       color: #ffffff;
       letter-spacing: -1.5px;
       line-height: 1.0;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .search-page-subtitle {
-      font-size: 15px;
-      color: #6b6b6b;
+      font-size: 14px;
+      color: #555555;
       font-weight: 400;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
-    .search-topbar {
-      display: none;
-    }
-
-    .search-kicker {
-      display: none;
-    }
-
-    .search-close-btn {
-      display: none;
-    }
-
-    .search-results-title {
-      display: none;
-    }
-
-    .search-results-count {
-      display: none;
-    }
+    .search-topbar { display: none; }
+    .search-kicker { display: none; }
+    .search-close-btn { display: none; }
+    .search-results-title { display: none; }
+    .search-results-count { display: none; }
 
     .search-input-shell {
       flex: 0 0 auto;
-      padding: 16px 20px 12px;
+      padding: 14px 20px 10px;
       background: #000000;
-      border-bottom: 1px solid #1a1a1a;
     }
 
     .search-section-wrapper {
       width: 100%;
-      min-height: 52px;
+      min-height: 50px;
       margin: 0;
-      background: #111111;
-      border: 1px solid #2d2d2d;
-      border-radius: 10px;
+      background: #151515;
+      border: 1px solid #2a2a2a;
+      border-radius: 50px;
+      transition: border-color 0.2s ease, background 0.2s ease;
     }
 
     .search-section-wrapper:focus-within {
       border-color: #06C167;
+      background: #1a1a1a;
     }
 
     #searchSectionInput {
       flex: 1;
       min-width: 0;
-      padding: 15px 0;
+      padding: 14px 0;
       border: none;
       background: transparent;
       color: #ffffff;
-      font-size: 16px;
+      font-size: 15px;
       outline: none;
       font-weight: 400;
     }
 
     #searchSectionInput::placeholder {
-      color: #6b6b6b;
+      color: #555555;
+    }
+
+    /* Chips de categorías */
+    .search-category-chips {
+      flex: 0 0 auto;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 20px 14px;
+      background: #000000;
+      scrollbar-width: none;
+      border-bottom: 1px solid #111111;
+    }
+
+    .search-category-chips::-webkit-scrollbar {
+      display: none;
+    }
+
+    .search-chip {
+      flex-shrink: 0;
+      background: #151515;
+      border: 1px solid #2a2a2a;
+      color: #aaaaaa;
+      padding: 7px 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .search-chip:hover,
+    .search-chip.active {
+      background: #06C167;
+      border-color: #06C167;
+      color: #000000;
+      font-weight: 600;
     }
 
     .search-content-area {
@@ -2275,6 +2212,59 @@
       overflow-y: auto;
       padding: 20px 20px;
       padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Estado vacío de búsqueda — sugerencias */
+    .search-suggestions {
+      padding: 4px 0 0;
+    }
+
+    .search-suggestions-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #444444;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 14px;
+    }
+
+    .search-suggestion-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid #111111;
+      cursor: pointer;
+      transition: opacity 0.15s ease;
+    }
+
+    .search-suggestion-row:hover {
+      opacity: 0.7;
+    }
+
+    .search-suggestion-icon {
+      width: 38px;
+      height: 38px;
+      background: #151515;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666666;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .search-suggestion-text {
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .search-suggestion-arrow {
+      margin-left: auto;
+      color: #333333;
+      font-size: 12px;
     }
 
     .search-loading {
@@ -2308,32 +2298,32 @@
 
     .search-results-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
       padding: 0;
     }
 
     .search-result-item {
-      background: #161616;
-      border-radius: 16px;
+      background: #0e0e0e;
+      border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
-      transition: border-color 0.2s ease, transform 0.2s ease;
-      border: 1px solid #2d2d2d;
-      min-height: 100%;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      border: 1px solid #1f1f1f;
     }
 
     .search-result-item:hover {
-      border-color: #06C167;
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      border-color: #2d2d2d;
     }
 
     .search-result-poster {
       width: 100%;
-      aspect-ratio: 16 / 9;
-      height: auto;
+      aspect-ratio: 2 / 3;
       overflow: hidden;
       background: #111;
+      position: relative;
     }
 
     .search-result-poster img {
@@ -2341,59 +2331,80 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .search-result-item:hover .search-result-poster img {
+      transform: scale(1.04);
     }
 
     .search-result-content {
-      padding: 14px;
+      padding: 10px 12px 12px;
     }
 
     .search-result-title {
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 8px;
-      line-height: 1.25;
+      margin-bottom: 5px;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .search-result-meta {
       display: flex;
-      gap: 6px;
-      margin-bottom: 10px;
-      font-size: 11px;
-      color: #ababab;
+      gap: 5px;
+      font-size: 10px;
+      color: #666666;
       font-weight: 500;
       flex-wrap: wrap;
     }
 
     .search-result-meta span {
-      background: #1f1f1f;
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid #2d2d2d;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      border: none;
+    }
+
+    .search-result-meta span + span::before {
+      content: '·';
+      margin-right: 5px;
     }
 
     .search-result-description {
-      font-size: 13px;
-      color: #ababab;
-      line-height: 1.45;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      display: none;
     }
 
     .search-no-results {
       display: flex;
-      min-height: 320px;
+      min-height: 300px;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: 48px 16px;
-      color: #ababab;
-      background: #111111;
-      border: 1px dashed #2d2d2d;
-      border-radius: 18px;
+      color: #444444;
+    }
+
+    .search-no-results i {
+      font-size: 40px;
+      margin-bottom: 16px;
+      color: #2d2d2d;
+    }
+
+    .search-no-results h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #555555;
+      margin-bottom: 8px;
+    }
+
+    .search-no-results p {
+      font-size: 14px;
+      color: #333333;
     }
 
     .search-no-results.hidden {
@@ -3191,20 +3202,15 @@
   <div id="videoPlayer" class="video-player">
     <div class="video-player-container">
       <div class="video-player-header">
-        <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="video-player-close" onclick="closeVideoPlayer()" style="order:-1;">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div style="flex:1; min-width:0; margin: 0 12px;">
           <div class="video-player-title" id="videoPlayerTitle">Reproduciendo...</div>
-          <div id="videoLiveIndicator" class="video-live-indicator" style="display: none;">
-            <div class="live-dot"></div>
-            <span>EN VIVO</span>
-          </div>
         </div>
-        <div style="display: flex; gap: 10px;">
-          <button class="screen-lock-btn" onclick="lockScreen()" title="Bloquear pantalla">
-            <i class="fas fa-lock"></i>
-          </button>
-          <button class="video-player-close" onclick="closeVideoPlayer()">
-            <i class="fas fa-times"></i>
-          </button>
+        <div id="videoLiveIndicator" class="video-live-indicator" style="display: none;">
+          <div class="live-dot"></div>
+          <span>EN VIVO</span>
         </div>
       </div>
 
@@ -3227,47 +3233,35 @@
         </div>
         <div class="video-controls-row">
           <div class="video-controls-left">
+            <button class="video-control-btn" onclick="rewind()" title="Retroceder 10s">
+              <i class="fas fa-rotate-left" style="font-size:17px;"></i>
+              <span style="position:absolute;font-size:8px;font-weight:700;margin-top:2px;">10</span>
+            </button>
             <button class="video-control-btn play-pause" id="playPauseBtn" onclick="togglePlayPause()">
               <i class="fas fa-play"></i>
             </button>
-            <button class="video-control-btn" onclick="rewind()">
-              <i class="fas fa-backward"></i>
-            </button>
-            <button class="video-control-btn" onclick="forward()">
-              <i class="fas fa-forward"></i>
+            <button class="video-control-btn" onclick="forward()" title="Adelantar 10s">
+              <i class="fas fa-rotate-right" style="font-size:17px;"></i>
+              <span style="position:absolute;font-size:8px;font-weight:700;margin-top:2px;">10</span>
             </button>
             <div class="video-time">
               <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
             </div>
           </div>
           <div class="video-controls-right">
-            <button class="video-control-btn" id="audioLanguageBtn" onclick="toggleAudioLanguage()">
-              <i class="fas fa-language"></i>
-            </button>
             <button class="video-control-btn" id="volumeBtn" onclick="toggleMute()">
               <i class="fas fa-volume-up"></i>
             </button>
             <button class="video-control-btn" id="subtitlesBtn" onclick="toggleSubtitles()">
               <i class="fas fa-closed-captioning"></i>
             </button>
+            <button class="video-control-btn" id="audioLanguageBtn" onclick="toggleAudioLanguage()">
+              <i class="fas fa-language"></i>
+            </button>
           </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Overlay de bloqueo de pantalla -->
-  <div id="screenLockOverlay" class="screen-lock-overlay">
-    <div class="lock-icon-container">
-      <i class="fas fa-lock"></i>
-    </div>
-    <div class="lock-message">
-      Pantalla bloqueada<br>
-      Toca para desbloquear
-    </div>
-    <button class="unlock-button" onclick="unlockScreen()">
-      <i class="fas fa-unlock"></i> Desbloquear
-    </button>
   </div>
 
   <!-- Sección de búsqueda - Pantalla completa estilo Uber -->
@@ -3279,34 +3273,76 @@
       <div class="search-page-subtitle">Películas, series y más</div>
     </div>
 
-    <!-- Barra de búsqueda -->
+    <!-- Barra de búsqueda pill -->
     <div class="search-input-shell">
       <div class="search-wrapper search-section-wrapper">
         <div class="search-icon">
           <i class="fas fa-search"></i>
         </div>
-        <input type="text" id="searchSectionInput" placeholder="Título, género o tipo de contenido…" autocomplete="off">
+        <input type="text" id="searchSectionInput" placeholder="Busca un título, género…" autocomplete="off">
         <button class="search-btn" id="searchSectionBtn" onclick="performSearchFromSection()" aria-label="Buscar">
           <i class="fas fa-arrow-right"></i>
         </button>
       </div>
     </div>
 
+    <!-- Chips de categorías deslizables -->
+    <div class="search-category-chips" id="searchCategoryChips">
+      <button class="search-chip active" onclick="filterSearchByChip(this, '')">Todo</button>
+      <button class="search-chip" onclick="filterSearchByChip(this, 'accion')">Acción</button>
+      <button class="search-chip" onclick="filterSearchByChip(this, 'drama')">Drama</button>
+      <button class="search-chip" onclick="filterSearchByChip(this, 'comedia')">Comedia</button>
+      <button class="search-chip" onclick="filterSearchByChip(this, 'terror')">Terror</button>
+      <button class="search-chip" onclick="filterSearchByChip(this, 'thriller')">Thriller</button>
+      <button class="search-chip" onclick="filterSearchByChip(this, 'romance')">Romance</button>
+      <button class="search-chip" onclick="filterSearchByChip(this, 'animacion')">Animación</button>
+      <button class="search-chip" onclick="filterSearchByChip(this, 'documentales')">Docs</button>
+    </div>
+
     <!-- Área de resultados con scroll -->
     <div class="search-content-area">
       <div id="searchLoading" class="search-loading hidden">
         <div class="search-loading-spinner"></div>
-        <div class="search-loading-text">Buscando contenido...</div>
+        <div class="search-loading-text">Buscando...</div>
       </div>
 
-      <div id="searchResultsGrid" class="search-results-grid">
-        <!-- Los resultados se cargarán aquí -->
+      <!-- Estado vacío: sugerencias populares -->
+      <div id="searchSuggestions" class="search-suggestions">
+        <div class="search-suggestions-label">Popular ahora</div>
+        <div class="search-suggestion-row" onclick="doSuggestedSearch('Acción')">
+          <div class="search-suggestion-icon"><i class="fas fa-fire"></i></div>
+          <div class="search-suggestion-text">Acción</div>
+          <div class="search-suggestion-arrow"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="search-suggestion-row" onclick="doSuggestedSearch('Drama')">
+          <div class="search-suggestion-icon"><i class="fas fa-heart"></i></div>
+          <div class="search-suggestion-text">Drama</div>
+          <div class="search-suggestion-arrow"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="search-suggestion-row" onclick="doSuggestedSearch('Comedia')">
+          <div class="search-suggestion-icon"><i class="fas fa-laugh"></i></div>
+          <div class="search-suggestion-text">Comedia</div>
+          <div class="search-suggestion-arrow"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="search-suggestion-row" onclick="doSuggestedSearch('Terror')">
+          <div class="search-suggestion-icon"><i class="fas fa-skull"></i></div>
+          <div class="search-suggestion-text">Terror</div>
+          <div class="search-suggestion-arrow"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="search-suggestion-row" onclick="doSuggestedSearch('Thriller')">
+          <div class="search-suggestion-icon"><i class="fas fa-eye"></i></div>
+          <div class="search-suggestion-text">Thriller</div>
+          <div class="search-suggestion-arrow"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      </div>
+
+      <div id="searchResultsGrid" class="search-results-grid" style="display:none;">
       </div>
 
       <div id="searchNoResults" class="search-no-results hidden">
         <i class="fas fa-search"></i>
         <h3>Sin resultados</h3>
-        <p>Intenta con otro título, género o tipo de contenido.</p>
+        <p>Intenta con otro título o género.</p>
       </div>
     </div>
 
@@ -3454,7 +3490,6 @@
           <select class="setting-select" id="themeSelect">
             <option value="default">Predeterminado</option>
             <option value="dark">Oscuro</option>
-            <option value="light">Claro</option>
           </select>
         </div>
         <div class="setting-item">
@@ -3882,7 +3917,6 @@
     }
 
     // Variables globales necesarias
-    let isScreenLocked = false;
     let isPlayingIntro = false;
     let controlsTimeout = null;
 
@@ -3958,7 +3992,16 @@
       document.getElementById('searchLoading').classList.add('hidden');
       document.getElementById('searchNoResults').classList.add('hidden');
       document.getElementById('searchSectionInput').value = '';
-      displaySearchResults(Object.values(seriesDatabase), '');
+
+      // Mostrar sugerencias por defecto (no todos los resultados)
+      showSearchSuggestions();
+
+      // Reset chips
+      document.querySelectorAll('.search-chip').forEach(c => c.classList.remove('active'));
+      const firstChip = document.querySelector('.search-chip');
+      if (firstChip) firstChip.classList.add('active');
+      activeChipGenre = '';
+
       document.getElementById('searchSectionInput').focus();
     }
 
@@ -4029,28 +4072,48 @@
             performSearchFromSection();
           }
         });
+        searchSectionInput.addEventListener('input', function() {
+          if (this.value.trim() === '') {
+            showSearchSuggestions();
+            document.getElementById('searchNoResults').classList.add('hidden');
+          } else {
+            performSearchFromSection();
+          }
+        });
       }
     }
 
     // Realizar búsqueda desde la sección de búsqueda
     function performSearchFromSection() {
       const query = document.getElementById('searchSectionInput').value.trim();
-      if (!query) {
-        displaySearchResults(Object.values(seriesDatabase), '');
+      const genre = activeChipGenre || '';
+
+      // Sin texto y sin chip → mostrar sugerencias
+      if (!query && !genre) {
+        showSearchSuggestions();
+        document.getElementById('searchNoResults').classList.add('hidden');
         return;
       }
+
+      hideSearchSuggestions();
 
       // Mostrar loading
       document.getElementById('searchLoading').classList.remove('hidden');
       document.getElementById('searchResultsGrid').innerHTML = '';
       document.getElementById('searchNoResults').classList.add('hidden');
 
-      // Simular búsqueda
       setTimeout(() => {
-        const results = searchContent(query);
-        displaySearchResults(results, query);
+        let results = searchContent(query || genre);
+        // Filtrar adicionalmente por género si hay chip activo
+        if (genre && query) {
+          results = results.filter(item => {
+            const g = (item.genre || item.genres || '').toLowerCase();
+            return g.includes(genre.replace('accion','acción').replace('animacion','animación'));
+          });
+        }
+        displaySearchResults(results, query || genre);
         document.getElementById('searchLoading').classList.add('hidden');
-      }, 1000);
+      }, 600);
     }
 
     // Realizar búsqueda
@@ -4094,14 +4157,9 @@
     function displaySearchResults(results, query) {
       const resultsGrid = document.getElementById('searchResultsGrid');
       const noResults = document.getElementById('searchNoResults');
-      const resultsTitle = document.getElementById('searchResultsTitle');
-      const resultsCount = document.getElementById('searchResultsCount');
 
-      const hasQuery = Boolean(query);
-      resultsTitle.textContent = hasQuery ? `Resultados para "${query}"` : 'Explora el catálogo';
-      resultsCount.textContent = hasQuery
-        ? `${results.length} resultado${results.length !== 1 ? 's' : ''} encontrado${results.length !== 1 ? 's' : ''}`
-        : `${results.length} título${results.length !== 1 ? 's' : ''} disponible${results.length !== 1 ? 's' : ''} para ver`;
+      // Mostrar grid y ocultar sugerencias
+      hideSearchSuggestions();
 
       resultsGrid.innerHTML = '';
 
@@ -5770,7 +5828,6 @@
 
       currentVideo = null;
       isPlayingIntro = false;
-      isScreenLocked = false;
 
       // Refrescar sección "Continuar Viendo" con el progreso actualizado
       setTimeout(buildContinueWatchingSection, 300);
@@ -6082,11 +6139,6 @@
     // Función para mostrar mensaje de bloqueo
     function showLockedMessage(series) {
       showErrorMessage('Este contenido no está disponible aún. Revisa la fecha de estreno.');
-    }
-
-    // Función para mostrar mensaje de bloqueo de pantalla
-    function showLockMessage(message) {
-      showErrorMessage(message);
     }
 
     // Función para mostrar mensaje de estreno del 11 de junio
@@ -6682,49 +6734,38 @@
       }
 
 
-    // Modificación para la función de bloqueo de pantalla
-    // Reemplazar en la función lockScreen()
-    function lockScreen() {
-      if (!videoPlayer.classList.contains('active')) return;
+    // ── Chips de búsqueda ──────────────────────────────────────────
+    let activeChipGenre = '';
 
-      isScreenLocked = true;
-      document.getElementById('screenLockOverlay').classList.add('active');
-
-      // Ocultar controles del video
-      const header = document.querySelector('.video-player-header');
-      const controls = document.querySelector('.video-player-controls');
-      if (header && controls) {
-        // Ocultar controles para siempre hasta desbloquear
-        header.style.display = 'none';
-        controls.style.display = 'none';
+    function filterSearchByChip(btn, genre) {
+      document.querySelectorAll('.search-chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      activeChipGenre = genre;
+      const query = document.getElementById('searchSectionInput').value.trim();
+      if (query || genre) {
+        performSearchFromSection();
       }
-      // Ocultar el botón de bloqueo también, para evitar clics accidentales
-      const lockButton = document.querySelector('.screen-lock-btn');
-      if(lockButton) lockButton.style.display = 'none';
-
-      // Mostrar mensaje
-      showLockMessage('Pantalla bloqueada - Toca el botón para desbloquear');
     }
 
-    // Modificación para la función de desbloqueo de pantalla
-    // Reemplazar en la función unlockScreen()
-    function unlockScreen() {
-      isScreenLocked = false;
-      document.getElementById('screenLockOverlay').classList.remove('active');
+    function doSuggestedSearch(term) {
+      const input = document.getElementById('searchSectionInput');
+      input.value = term;
+      performSearchFromSection();
+    }
 
-      // Mostrar controles del video
-      const header = document.querySelector('.video-player-header');
-      const controls = document.querySelector('.video-player-controls');
-      if (header && controls) {
-        header.style.display = 'flex'; // Asegurarse de que sean visibles
-        controls.style.display = 'block'; // Asegurarse de que sean visibles
-      }
-      // Mostrar el botón de bloqueo nuevamente
-      const lockButton = document.querySelector('.screen-lock-btn');
-      if(lockButton) lockButton.style.display = 'flex';
+    // Mostrar/ocultar sugerencias vs resultados
+    function showSearchSuggestions() {
+      const suggestions = document.getElementById('searchSuggestions');
+      const grid = document.getElementById('searchResultsGrid');
+      if (suggestions) suggestions.style.display = 'block';
+      if (grid) grid.style.display = 'none';
+    }
 
-      // Mostrar mensaje
-      showLockMessage('Pantalla desbloqueada');
+    function hideSearchSuggestions() {
+      const suggestions = document.getElementById('searchSuggestions');
+      const grid = document.getElementById('searchResultsGrid');
+      if (suggestions) suggestions.style.display = 'none';
+      if (grid) grid.style.display = 'grid';
     }
 
   </script>
