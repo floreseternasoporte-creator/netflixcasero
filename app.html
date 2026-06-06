@@ -1204,6 +1204,38 @@
       opacity: 1;
     }
 
+    /* Spinner de buffering */
+    .video-buffering-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56px;
+      height: 56px;
+      z-index: 22;
+      display: none;
+      pointer-events: none;
+    }
+
+    .video-buffering-spinner.visible {
+      display: block;
+    }
+
+    .video-buffering-spinner::before {
+      content: '';
+      display: block;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.15);
+      border-top-color: #ffffff;
+      animation: videoSpinnerAnim 0.75s linear infinite;
+    }
+
+    @keyframes videoSpinnerAnim {
+      to { transform: rotate(360deg); }
+    }
+
     /* Indicador EN VIVO en el video */
     .video-live-indicator {
       display: flex;
@@ -3291,6 +3323,9 @@
       <div class="pause-indicator" id="pauseIndicator">
         <i class="fas fa-pause"></i>
       </div>
+
+      <!-- Spinner de buffering -->
+      <div class="video-buffering-spinner" id="videoBufferingSpinner"></div>
 
       <div class="video-player-controls">
         <div class="video-progress-container">
@@ -5688,6 +5723,9 @@
     const durationElement = document.getElementById('duration');
     const volumeBtn = document.getElementById('volumeBtn');
 
+    // Conectar spinner de buffering al elemento de video desde el inicio
+    setupBufferingListeners();
+
     // Función para mostrar detalles de serie estilo Netflix
     function showSeriesDetail(seriesId) {
       console.log('=== DEBUG showSeriesDetail ===');
@@ -6459,9 +6497,33 @@
       return urls;
     }
 
+    const bufferingSpinner = () => document.getElementById('videoBufferingSpinner');
+
+    function showBufferingSpinner() {
+      const s = bufferingSpinner();
+      if (s) s.classList.add('visible');
+    }
+
+    function hideBufferingSpinner() {
+      const s = bufferingSpinner();
+      if (s) s.classList.remove('visible');
+    }
+
+    function setupBufferingListeners() {
+      if (!videoElement) return;
+      videoElement.addEventListener('waiting', showBufferingSpinner);
+      videoElement.addEventListener('stalled', showBufferingSpinner);
+      videoElement.addEventListener('playing', hideBufferingSpinner);
+      videoElement.addEventListener('canplay', hideBufferingSpinner);
+      videoElement.addEventListener('pause', hideBufferingSpinner);
+      videoElement.addEventListener('ended', hideBufferingSpinner);
+      videoElement.addEventListener('error', hideBufferingSpinner);
+    }
+
     function resetVideoElement() {
       if (!videoElement) return;
 
+      hideBufferingSpinner();
       videoElement.pause();
       videoElement.onloadedmetadata = null;
       videoElement.onloadeddata = null;
