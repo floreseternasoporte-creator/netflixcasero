@@ -1286,6 +1286,156 @@
       }
     }
 
+
+
+    /* Modal de pistas de audio y subtítulos del reproductor */
+    .tracks-modal {
+      position: absolute;
+      inset: 0;
+      z-index: 120;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.72);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+    }
+
+    .tracks-modal.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition-delay: 0s;
+    }
+
+    .tracks-modal-panel {
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      color: #ffffff;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+      padding: max(24px, env(safe-area-inset-top)) 28px max(28px, env(safe-area-inset-bottom));
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tracks-modal.active .tracks-modal-panel {
+      transform: translateY(0);
+    }
+
+    .tracks-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 34px;
+    }
+
+    .tracks-modal-title {
+      font-size: clamp(24px, 4vw, 42px);
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+    }
+
+    .tracks-modal-close {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.24);
+      background: rgba(255,255,255,0.12);
+      color: #ffffff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .tracks-modal-content {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(28px, 7vw, 90px);
+      width: min(980px, 100%);
+      margin: 0 auto;
+      flex: 1;
+      align-content: start;
+    }
+
+    .tracks-column-title {
+      color: rgba(255,255,255,0.72);
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.3px;
+      margin-bottom: 18px;
+    }
+
+    .track-options {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .track-option {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: #ffffff;
+      min-height: 54px;
+      padding: 12px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      text-align: left;
+      cursor: pointer;
+      font-size: clamp(18px, 2.2vw, 28px);
+      font-weight: 650;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      transition: color 0.18s ease, background 0.18s ease;
+    }
+
+    .track-option:hover,
+    .track-option.active {
+      color: #ffffff;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .track-option.active .track-check {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .track-check {
+      color: #06C167;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      font-size: 18px;
+    }
+
+    .subtitle-empty-state {
+      min-height: 54px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+    }
+
+    @media screen and (max-width: 700px) {
+      .tracks-modal-panel {
+        padding: max(20px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+      }
+
+      .tracks-modal-content {
+        grid-template-columns: 1fr;
+        gap: 34px;
+      }
+    }
+
     /* Navegación inferior estilo Uber */
     .bottom-nav {
       position: fixed;
@@ -3254,6 +3404,27 @@
       <!-- Spinner de buffering -->
       <div class="video-buffering-spinner" id="videoBufferingSpinner"></div>
 
+      <div class="tracks-modal" id="tracksModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="tracksModalTitle">
+        <div class="tracks-modal-panel">
+          <div class="tracks-modal-header">
+            <h2 class="tracks-modal-title" id="tracksModalTitle">Audio y subtítulos</h2>
+            <button class="tracks-modal-close" type="button" onclick="closeTracksModal()" aria-label="Cerrar selección de audio y subtítulos">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="tracks-modal-content">
+            <section class="tracks-column" aria-labelledby="audioTracksTitle">
+              <h3 class="tracks-column-title" id="audioTracksTitle">Pistas de audio</h3>
+              <div class="track-options" id="audioTracksOptions"></div>
+            </section>
+            <section class="tracks-column" aria-labelledby="subtitleTracksTitle">
+              <h3 class="tracks-column-title" id="subtitleTracksTitle">Subtítulos</h3>
+              <div class="track-options" id="subtitleTracksOptions"></div>
+            </section>
+          </div>
+        </div>
+      </div>
+
       <div class="video-player-controls">
         <div class="video-progress-container">
           <div class="video-progress" id="videoProgress">
@@ -3281,10 +3452,10 @@
             <button class="video-control-btn" id="volumeBtn" onclick="toggleMute()">
               <i class="fas fa-volume-up"></i>
             </button>
-            <button class="video-control-btn" id="subtitlesBtn" onclick="toggleSubtitles()">
+            <button class="video-control-btn" id="subtitlesBtn" onclick="openTracksModal()" title="Audio y subtítulos">
               <i class="fas fa-closed-captioning"></i>
             </button>
-            <button class="video-control-btn" id="audioLanguageBtn" onclick="toggleAudioLanguage()">
+            <button class="video-control-btn" id="audioLanguageBtn" onclick="openTracksModal()" title="Audio y subtítulos">
               <i class="fas fa-language"></i>
             </button>
           </div>
@@ -5543,6 +5714,25 @@
     let currentVideo = null;
     let progressUpdateInterval = null;
 
+    const audioTrackLabels = {
+      original: 'Japonés',
+      japanese: 'Japonés',
+      ja: 'Japonés',
+      es: 'Español',
+      spanish: 'Español',
+      en: 'Inglés',
+      english: 'Inglés'
+    };
+
+    const subtitleTrackLabels = {
+      es: 'Español',
+      spanish: 'Español',
+      en: 'Inglés',
+      english: 'Inglés',
+      ja: 'Japonés',
+      japanese: 'Japonés'
+    };
+
 
 
     // Función para crear fecha de estreno para el 11 de junio a las 2:40 AM Houston
@@ -5988,6 +6178,7 @@
 
     // Funciones del reproductor de video
     function closeVideoPlayer() {
+      closeTracksModal();
       videoPlayer.classList.remove('active');
       document.body.classList.remove('video-playing');
 
@@ -6171,28 +6362,116 @@
       }
     }
 
-    // Función para alternar idioma de audio (botón en reproductor)
-    function toggleAudioLanguage() {
-      if (!currentSeries || !currentSeries.audioTracks) {
-        showErrorMessage('No hay pistas de audio alternativas disponibles');
+    function getAudioTrackLabel(trackKey) {
+      return audioTrackLabels[trackKey] || trackKey;
+    }
+
+    function getSubtitleTrackLabel(trackKey) {
+      return subtitleTrackLabels[trackKey] || trackKey;
+    }
+
+    function getAvailableAudioTracks() {
+      if (!currentSeries) return [];
+      if (currentSeries.audioTracks && Object.keys(currentSeries.audioTracks).length > 0) {
+        return Object.keys(currentSeries.audioTracks);
+      }
+      return currentVideo && currentVideo.videoUrl ? ['original'] : [];
+    }
+
+    function openTracksModal() {
+      const modal = document.getElementById('tracksModal');
+      if (!modal) return;
+
+      renderTracksModal();
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+
+      const header = document.querySelector('.video-player-header');
+      const controls = document.querySelector('.video-player-controls');
+      if (header) header.classList.remove('hidden');
+      if (controls) controls.classList.remove('hidden');
+    }
+
+    function closeTracksModal() {
+      const modal = document.getElementById('tracksModal');
+      if (!modal) return;
+
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function renderTracksModal() {
+      const audioContainer = document.getElementById('audioTracksOptions');
+      const subtitlesContainer = document.getElementById('subtitleTracksOptions');
+      if (!audioContainer || !subtitlesContainer) return;
+
+      const selectedAudioTrack = currentSeries ? (currentSeries.currentAudioTrack || 'original') : 'original';
+      const audioTracks = getAvailableAudioTracks();
+
+      audioContainer.innerHTML = '';
+      audioTracks.forEach(track => {
+        const button = document.createElement('button');
+        const isActive = selectedAudioTrack === track;
+        button.type = 'button';
+        button.className = `track-option${isActive ? ' active' : ''}`;
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        button.innerHTML = `
+          <span>${getAudioTrackLabel(track)}</span>
+          <i class="fas fa-check track-check" aria-hidden="true"></i>
+        `;
+        button.onclick = () => {
+          selectAudioTrack(track);
+        };
+        audioContainer.appendChild(button);
+      });
+
+      subtitlesContainer.innerHTML = '';
+      const subtitles = currentSeries && currentSeries.subtitles ? Object.keys(currentSeries.subtitles) : [];
+      subtitles.forEach(track => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'track-option';
+        button.innerHTML = `
+          <span>${getSubtitleTrackLabel(track)}</span>
+          <i class="fas fa-check track-check" aria-hidden="true"></i>
+        `;
+        subtitlesContainer.appendChild(button);
+      });
+
+      if (subtitles.length === 0) {
+        const emptyState = document.createElement('div');
+        emptyState.className = 'subtitle-empty-state';
+        emptyState.setAttribute('aria-label', 'No hay subtítulos disponibles');
+        subtitlesContainer.appendChild(emptyState);
+      }
+    }
+
+    function selectAudioTrack(track) {
+      if (!currentSeries) return;
+
+      if ((currentSeries.currentAudioTrack || 'original') === track) {
+        renderTracksModal();
         return;
       }
 
-      const tracks = Object.keys(currentSeries.audioTracks);
-      const currentIndex = tracks.indexOf(currentSeries.currentAudioTrack || 'original');
-      const nextIndex = (currentIndex + 1) % tracks.length;
-      const nextTrack = tracks[nextIndex];
+      changeAudioTrack(track);
+      renderTracksModal();
+    }
 
-      changeAudioTrack(nextTrack);
+    // Función para abrir el selector de audio y subtítulos (botón en reproductor)
+    function toggleAudioLanguage() {
+      openTracksModal();
     }
 
     // Función para configurar subtítulos
     function configureSubtitles() {
-      if (!currentSeries || !currentSeries.subtitles) return;
+      if (!videoElement) return;
 
       // Remover tracks existentes
       const existingTracks = videoElement.querySelectorAll('track');
       existingTracks.forEach(track => track.remove());
+
+      if (!currentSeries || !currentSeries.subtitles) return;
 
       // Agregar nuevos tracks
       Object.keys(currentSeries.subtitles).forEach(language => {
@@ -6772,7 +7051,10 @@
       const liveIndicator = document.getElementById('videoLiveIndicator');
       liveIndicator.style.display = 'none';
 
-      const playbackUrls = getMediaPlaybackUrls(episode.videoUrl);
+      const selectedAudioUrl = currentSeries.audioTracks && currentSeries.currentAudioTrack
+        ? currentSeries.audioTracks[currentSeries.currentAudioTrack]
+        : episode.videoUrl;
+      const playbackUrls = getMediaPlaybackUrls(selectedAudioUrl || episode.videoUrl);
       let sourceIndex = 0;
       let hasStartedPlaying = false;
 
@@ -7096,6 +7378,19 @@
       if (suggestions) suggestions.style.display = 'none';
       if (grid) grid.style.display = 'grid';
     }
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeTracksModal();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      const modal = document.getElementById('tracksModal');
+      if (modal && modal.classList.contains('active') && event.target === modal) {
+        closeTracksModal();
+      }
+    });
 
   </script>
 </body>
