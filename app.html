@@ -2471,6 +2471,50 @@
       }
     }
 
+    /* Tarjeta de perfil en ajustes */
+    .settings-profile-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #161616;
+      border: 1px solid #2d2d2d;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .settings-profile-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .settings-profile-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .settings-profile-email {
+      font-size: 13px;
+      color: #6b6b6b;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .settings-profile-plan {
+      font-size: 12px;
+      color: #06C167;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
     /* Sección de Ajustes estilo Uber */
     .settings-section {
       position: fixed;
@@ -3361,19 +3405,35 @@
 
     <div class="settings-header">
       <h2 class="settings-title">Configuración</h2>
-      <p class="settings-subtitle">Personaliza tu experiencia de visualización</p>
+      <p class="settings-subtitle">Personaliza tu experiencia</p>
     </div>
 
     <div class="settings-content">
+
+      <!-- Tarjeta de perfil -->
+      <div class="settings-profile-card">
+        <div id="userAvatar" style="width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; flex-shrink: 0;"></div>
+        <div class="settings-profile-info">
+          <div class="settings-profile-name" id="currentProfileName">Cargando...</div>
+          <div class="settings-profile-email" id="userEmail">Cargando...</div>
+          <div class="settings-profile-plan" id="currentPlan">Cargando...</div>
+        </div>
+        <button class="settings-btn secondary" onclick="editProfile()" style="width: auto; padding: 8px 16px; font-size: 13px; flex-shrink: 0;">
+          <i class="fas fa-edit"></i>
+          Editar
+        </button>
+      </div>
+
+      <!-- Reproducción -->
       <div class="settings-group">
         <h3 class="settings-group-title">
-          <i class="fas fa-video"></i>
+          <i class="fas fa-play-circle"></i>
           Reproducción
         </h3>
         <div class="setting-item">
           <div class="setting-info">
             <div class="setting-name">Reproducción automática</div>
-            <div class="setting-description">Reproducir automáticamente el siguiente episodio</div>
+            <div class="setting-description">Reproducir el siguiente episodio automáticamente</div>
           </div>
           <label class="toggle-switch">
             <input type="checkbox" id="autoplayToggle" checked>
@@ -3383,26 +3443,27 @@
         <div class="setting-item">
           <div class="setting-info">
             <div class="setting-name">Calidad de video</div>
-            <div class="setting-description">Seleccionar calidad predeterminada</div>
+            <div class="setting-description">Resolución de reproducción</div>
           </div>
           <select class="setting-select" id="videoQuality">
             <option value="auto">Automática</option>
             <option value="1080p">1080p HD</option>
-            <option value="720p">720p HD</option>
+            <option value="720p">720p</option>
             <option value="480p">480p</option>
           </select>
         </div>
       </div>
 
+      <!-- Idioma y Subtítulos -->
       <div class="settings-group">
         <h3 class="settings-group-title">
           <i class="fas fa-language"></i>
-          Idioma y Audio
+          Idioma y Subtítulos
         </h3>
         <div class="setting-item">
           <div class="setting-info">
             <div class="setting-name">Idioma de la interfaz</div>
-            <div class="setting-description">Cambiar idioma de la aplicación</div>
+            <div class="setting-description">Idioma de la aplicación</div>
           </div>
           <select class="setting-select" id="interfaceLanguage" onchange="handleLanguageChange(this.value)">
             <option value="es">Español</option>
@@ -3412,19 +3473,8 @@
         </div>
         <div class="setting-item">
           <div class="setting-info">
-            <div class="setting-name">Audio preferido</div>
-            <div class="setting-description">Idioma de audio predeterminado</div>
-          </div>
-          <select class="setting-select" id="preferredAudio">
-            <option value="original">Audio original</option>
-            <option value="es">Español</option>
-            <option value="en">English</option>
-          </select>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Subtítulos</div>
-            <div class="setting-description">Mostrar subtítulos por defecto</div>
+            <div class="setting-name">Subtítulos por defecto</div>
+            <div class="setting-description">Mostrar subtítulos al iniciar</div>
           </div>
           <label class="toggle-switch">
             <input type="checkbox" id="defaultSubtitles">
@@ -3433,33 +3483,7 @@
         </div>
       </div>
 
-      <div class="settings-group">
-        <h3 class="settings-group-title">
-          <i class="fas fa-bell"></i>
-          Notificaciones
-        </h3>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Nuevos estrenos</div>
-            <div class="setting-description">Notificar sobre nuevas películas y series</div>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="releaseNotifications" checked>
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Recordatorios</div>
-            <div class="setting-description">Recordar contenido pausado</div>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="reminderNotifications" checked>
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-      </div>
-
+      <!-- Control Parental -->
       <div class="settings-group">
         <h3 class="settings-group-title">
           <i class="fas fa-shield-alt"></i>
@@ -3467,181 +3491,51 @@
         </h3>
         <div class="setting-item">
           <div class="setting-info">
-            <div class="setting-name">Contenido para menores</div>
-            <div class="setting-description">Filtrar contenido por clasificación</div>
+            <div class="setting-name">Clasificación de contenido</div>
+            <div class="setting-description">Limitar el contenido según la edad</div>
           </div>
           <select class="setting-select" id="parentalControl">
             <option value="all">Todo el contenido</option>
             <option value="13+">13+ y menor</option>
-            <option value="pg">Solo contenido familiar</option>
+            <option value="pg">Solo familiar</option>
           </select>
         </div>
       </div>
 
-
-
+      <!-- Suscripción y Cuenta -->
       <div class="settings-group">
         <h3 class="settings-group-title">
-          <i class="fas fa-palette"></i>
-          Apariencia
+          <i class="fas fa-user-circle"></i>
+          Cuenta
         </h3>
         <div class="setting-item">
           <div class="setting-info">
-            <div class="setting-name">Tema</div>
-            <div class="setting-description">Cambiar tema de la aplicación</div>
-          </div>
-          <select class="setting-select" id="themeSelect">
-            <option value="default">Predeterminado</option>
-            <option value="dark">Oscuro</option>
-          </select>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Tamaño de texto</div>
-            <div class="setting-description">Ajustar tamaño de fuente</div>
-          </div>
-          <select class="setting-select" id="textSize">
-            <option value="small">Pequeño</option>
-            <option value="medium">Mediano</option>
-            <option value="large">Grande</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <h3 class="settings-group-title">
-          <i class="fas fa-wifi"></i>
-          Red y Datos
-        </h3>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Reproducir solo con WiFi</div>
-            <div class="setting-description">Evitar uso de datos móviles</div>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="wifiOnlyToggle">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Ahorro de datos</div>
-            <div class="setting-description">Reducir calidad para ahorrar datos</div>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="dataSaverToggle">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <h3 class="settings-group-title">
-          <i class="fas fa-shield-alt"></i>
-          Privacidad y Seguridad
-        </h3>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Nombre Completo</div>
+            <div class="setting-name">Nombre</div>
             <div class="setting-description" id="userFullName">Cargando...</div>
           </div>
         </div>
         <div class="setting-item">
           <div class="setting-info">
-            <div class="setting-name">Correo Electrónico</div>
-            <div class="setting-description" id="userEmail">Cargando...</div>
+            <div class="setting-name">Cambiar plan</div>
+            <div class="setting-description">Actualizar tu suscripción</div>
           </div>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">ID de Usuario</div>
-            <div class="setting-description" id="userId" style="font-family: monospace; font-size: 12px;">Cargando...</div>
-          </div>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Plan Actual</div>
-            <div class="setting-description" id="currentPlan">Cargando...</div>
-          </div>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Fecha de Registro</div>
-            <div class="setting-description" id="registrationDate">Cargando...</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <h3 class="settings-group-title">
-          <i class="fas fa-user"></i>
-          Cuenta
-        </h3>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Perfil Actual</div>
-            <div class="setting-description" id="currentProfileName">Cargando...</div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <div id="userAvatar" style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px;"></div>
-            <button class="settings-btn secondary" onclick="editProfile()" style="width: auto; padding: 8px 16px; font-size: 14px;">
-              <i class="fas fa-edit"></i>
-              Editar
-            </button>
-          </div>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Historial de reproducción</div>
-            <div class="setting-description">Ver y gestionar tu historial</div>
-          </div>
-          <button class="settings-btn secondary" onclick="viewHistory()" style="width: auto; padding: 8px 16px; font-size: 14px;">
-            <i class="fas fa-history"></i>
-            Ver
+          <button class="settings-btn secondary" onclick="changePlan()" style="width: auto; padding: 8px 16px; font-size: 13px;">
+            <i class="fas fa-crown"></i>
+            Ver planes
           </button>
         </div>
-        <div class="setting-item">
+        <div class="setting-item" style="border-bottom: none;">
           <div class="setting-info">
-            <div class="setting-name">Cambiar Plan</div>
-            <div class="setting-description">Actualizar o cambiar tu plan de suscripción</div>
+            <div class="setting-name" style="color: #ff4444;">Cerrar sesión</div>
+            <div class="setting-description">Salir de tu cuenta en este dispositivo</div>
           </div>
-          <button class="settings-btn secondary" onclick="changePlan()" style="width: auto; padding: 8px 16px; font-size: 14px;">
-            <i class="fas fa-credit-card"></i>
-            Cambiar
-          </button>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Desactivar Cuenta</div>
-            <div class="setting-description">Desactivar temporalmente tu cuenta</div>
-          </div>
-          <button class="settings-btn secondary" onclick="deactivateAccount()" style="width: auto; padding: 8px 16px; font-size: 14px; background: #2d2d2d; color: #ffffff; border: 1px solid #3d3d3d;">
-            <i class="fas fa-user-slash"></i>
-            Desactivar
-          </button>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Cerrar Sesión</div>
-            <div class="setting-description">Salir de tu cuenta de Atenis</div>
-          </div>
-          <button class="settings-btn secondary" onclick="logoutFirebase()" style="width: auto; padding: 8px 16px; font-size: 14px;">
+          <button class="settings-btn secondary" onclick="logoutFirebase()" style="width: auto; padding: 8px 16px; font-size: 13px; border-color: #ff4444; color: #ff4444;">
             <i class="fas fa-sign-out-alt"></i>
             Salir
           </button>
         </div>
       </div>
 
-      <div class="settings-actions">
-        <button class="settings-btn secondary" onclick="resetSettings()">
-          <i class="fas fa-undo"></i>
-          Restablecer
-        </button>
-        <button class="settings-btn primary" onclick="saveSettings()">
-          <i class="fas fa-save"></i>
-          Guardar Cambios
-        </button>
-      </div>
     </div>
   </div>
 
@@ -6311,6 +6205,33 @@
       if (btn) btn.style.display = 'none';
     }
 
+    // Detectar aspect-ratio real del video y ajustar el contenedor para evitar formato cuadrado
+    function adjustVideoAspectRatio(videoEl) {
+      if (!videoEl) return;
+      const vw = videoEl.videoWidth;
+      const vh = videoEl.videoHeight;
+      if (!vw || !vh) return;
+
+      const container = document.querySelector('.video-player-container');
+      if (!container) return;
+
+      const isLandscape = vw >= vh;
+
+      if (isLandscape) {
+        // Video horizontal: llenar ancho, altura proporcional
+        videoEl.style.width = '100%';
+        videoEl.style.height = '100%';
+        videoEl.style.objectFit = 'contain';
+      } else {
+        // Video vertical: centrar y contener
+        videoEl.style.width = 'auto';
+        videoEl.style.height = '100%';
+        videoEl.style.objectFit = 'contain';
+      }
+
+      console.log(`Video dimensions: ${vw}x${vh} — ${isLandscape ? 'landscape' : 'portrait'}`);
+    }
+
     // Función para habilitar pantalla completa y rotación
     function enableVideoFullscreenAndRotation() {
       // Forzar orientación landscape en móviles si es posible
@@ -6631,14 +6552,26 @@
       let introFallbackTimer;
 
       // Event listeners del intro
-      const onIntroLoadedMetadata = () => {
+      let introHasStarted = false;
+      const tryPlayIntro = () => {
+        if (introHasStarted) return;
         clearTimeout(introFallbackTimer);
-        updateDuration();
-        // Auto-reproducir el intro sin botón de play
-        videoElement.play().catch(e => {
-          console.warn('Autoplay blocked, showing play button for intro');
+        videoElement.play().then(() => {
+          introHasStarted = true;
+        }).catch(e => {
+          console.warn('Autoplay blocked for intro, showing play button');
           showPlayButton();
         });
+      };
+
+      const onIntroLoadedMetadata = () => {
+        updateDuration();
+        adjustVideoAspectRatio(videoElement);
+        tryPlayIntro();
+      };
+
+      const onIntroCanPlay = () => {
+        tryPlayIntro();
       };
 
       const onIntroPlay = () => {
@@ -6689,6 +6622,7 @@
 
       // Agregar listeners del intro antes de cargar la fuente para no perder eventos en caché.
       videoElement.addEventListener('loadedmetadata', onIntroLoadedMetadata);
+      videoElement.addEventListener('canplay', onIntroCanPlay);
       videoElement.addEventListener('play', onIntroPlay);
       videoElement.addEventListener('pause', onIntroPause);
       videoElement.addEventListener('ended', onIntroEnded);
@@ -6726,7 +6660,7 @@
       videoElement.setAttribute('x5-video-player-type', 'h5');
       videoElement.setAttribute('x5-video-player-fullscreen', 'true');
       videoElement.controls = false;
-      videoElement.preload = 'metadata';
+      videoElement.preload = 'auto';
       videoElement.removeAttribute('crossorigin');
 
       // Título diferente para películas vs series
@@ -6742,8 +6676,20 @@
 
       const playbackUrls = getMediaPlaybackUrls(episode.videoUrl);
       let sourceIndex = 0;
+      let hasStartedPlaying = false;
+
+      const tryPlay = () => {
+        if (hasStartedPlaying) return;
+        videoElement.play().then(() => {
+          hasStartedPlaying = true;
+        }).catch(e => {
+          console.warn('Autoplay blocked:', e);
+          showPlayButton();
+        });
+      };
 
       const loadCurrentSource = () => {
+        hasStartedPlaying = false;
         const nextUrl = playbackUrls[sourceIndex];
         console.log('Setting video source to:', nextUrl);
         videoElement.src = nextUrl;
@@ -6755,10 +6701,12 @@
       const onLoadedMetadata = () => {
         updateDuration();
         updateRealTimeDuration(episode.id);
-        videoElement.play().catch(e => {
-          console.warn('Autoplay blocked after intro');
-          showPlayButton();
-        });
+        adjustVideoAspectRatio(videoElement);
+        tryPlay();
+      };
+
+      const onCanPlay = () => {
+        tryPlay();
       };
 
       const onPlay = () => {
@@ -6787,6 +6735,7 @@
 
       // Asignar handlers únicos para evitar callbacks viejos que reusen fuentes anteriores.
       videoElement.onloadedmetadata = onLoadedMetadata;
+      videoElement.oncanplay = onCanPlay;
       videoElement.onplay = onPlay;
       videoElement.onpause = onPause;
       videoElement.onerror = onError;
@@ -6878,29 +6827,39 @@
 
       const playbackUrls = getMediaPlaybackUrls(trailerVideo.videoUrl);
       let sourceIndex = 0;
+      let hasStartedPlaying = false;
 
-      const loadCurrentSource = () => {
-        const nextUrl = playbackUrls[sourceIndex];
-        console.log('Loading trailer source:', nextUrl);
-        videoElement.src = nextUrl;
-        videoElement.load();
+      const tryPlay = () => {
+        if (hasStartedPlaying) return;
         const playPromise = videoElement.play();
         if (playPromise !== undefined) {
-          playPromise.catch(error => {
-            console.warn('Trailer play is waiting for metadata or user permission:', error);
-          });
-        }
-      };
-
-      const onLoadedMetadata = () => {
-        updateDuration();
-        const playPromise = videoElement.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(error => {
+          playPromise.then(() => {
+            hasStartedPlaying = true;
+          }).catch(error => {
             console.warn('Trailer autoplay blocked:', error);
             showPlayButton();
           });
         }
+      };
+
+      const loadCurrentSource = () => {
+        hasStartedPlaying = false;
+        const nextUrl = playbackUrls[sourceIndex];
+        console.log('Loading trailer source:', nextUrl);
+        // Solo asignar src y load — no llamar .play() aquí, esperar canplay
+        videoElement.src = nextUrl;
+        videoElement.load();
+      };
+
+      const onLoadedMetadata = () => {
+        updateDuration();
+        // Ajustar aspect-ratio del contenedor según dimensiones reales del video
+        adjustVideoAspectRatio(videoElement);
+        tryPlay();
+      };
+
+      const onCanPlay = () => {
+        tryPlay();
       };
 
       const onPlay = () => {
@@ -6928,6 +6887,7 @@
       };
 
       videoElement.onloadedmetadata = onLoadedMetadata;
+      videoElement.oncanplay = onCanPlay;
       videoElement.onplay = onPlay;
       videoElement.onpause = onPause;
       videoElement.onerror = onError;
