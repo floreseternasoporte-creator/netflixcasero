@@ -6893,9 +6893,16 @@
       btn.classList.add('active');
       activeChipGenre = genre;
       const query = document.getElementById('searchSectionInput').value.trim();
+
       if (query || genre) {
         performSearchFromSection();
+        return;
       }
+
+      document.getElementById('searchLoading').classList.add('hidden');
+      document.getElementById('searchNoResults').classList.add('hidden');
+      document.getElementById('searchResultsGrid').innerHTML = '';
+      showSearchSuggestions();
     }
 
     function doSuggestedSearch(term) {
