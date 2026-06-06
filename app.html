@@ -3679,6 +3679,31 @@
     </div>
   </div>
 
+  <!-- Sección de Calendario -->
+  <div id="calendarSection" class="history-section">
+    <button class="history-close-btn" onclick="closeCalendarSection()">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <div class="history-header">
+      <h2 class="history-title">
+        <i class="fas fa-calendar-days"></i>
+        Próximos estrenos
+      </h2>
+      <p class="history-subtitle">Contenido programado que se desbloqueará automáticamente</p>
+    </div>
+
+    <div id="calendarContent" class="history-content">
+      <!-- Los próximos estrenos se cargarán aquí -->
+    </div>
+
+    <div id="calendarEmpty" class="history-empty hidden">
+      <i class="fas fa-calendar-plus"></i>
+      <h3>No hay próximos estrenos</h3>
+      <p>Cuando se anuncien nuevos títulos aparecerán en este calendario.</p>
+    </div>
+  </div>
+
   <!-- Navegación inferior -->
   <nav class="bottom-nav">
     <button id="navHome" class="active">
@@ -3688,6 +3713,10 @@
     <button id="navSearch">
       <i class="fas fa-search"></i>
       <span>Buscar</span>
+    </button>
+    <button id="navCalendar">
+      <i class="fas fa-calendar-days"></i>
+      <span>Calendario</span>
     </button>
     <button id="navSettings">
       <i class="fas fa-cog"></i>
@@ -3745,6 +3774,8 @@
           .fas.fa-star::before { content: '★'; }
           .fas.fa-user-plus::before { content: '👥'; }
           .fas.fa-user-check::before { content: '✓'; }
+          .fas.fa-calendar-days::before { content: '📅'; }
+          .fas.fa-calendar-plus::before { content: '🗓️'; }
         `;
         
         const style = document.createElement('style');
@@ -3969,6 +4000,8 @@
             showHomeSection();
           } else if (buttonId === 'navSearch') {
             showSearchSection();
+          } else if (buttonId === 'navCalendar') {
+            showCalendarSection();
           } else if (buttonId === 'navSettings') {
             showSettingsSection();
           }
@@ -4022,6 +4055,7 @@
       searchSection.setAttribute('aria-hidden', 'true');
       document.getElementById('settingsSection').classList.remove('active');
       document.getElementById('historySection').classList.remove('active');
+      document.getElementById('calendarSection').classList.remove('active');
     }
 
     // Cerrar sección de búsqueda
@@ -4029,6 +4063,24 @@
       const searchSection = document.getElementById('searchSection');
       searchSection.classList.remove('active');
       searchSection.setAttribute('aria-hidden', 'true');
+      showHomeSection();
+
+      // Activar botón home
+      document.querySelectorAll('.bottom-nav button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('navHome').classList.add('active');
+    }
+
+
+    // Mostrar sección de calendario
+    function showCalendarSection() {
+      hideAllSections();
+      document.getElementById('calendarSection').classList.add('active');
+      renderUpcomingReleases();
+    }
+
+    // Cerrar sección de calendario
+    function closeCalendarSection() {
+      document.getElementById('calendarSection').classList.remove('active');
       showHomeSection();
 
       // Activar botón home
@@ -4143,9 +4195,16 @@
       const lowerQuery = query.toLowerCase();
 
       Object.values(seriesDatabase).forEach(series => {
-        if (series.title.toLowerCase().includes(lowerQuery) ||
-            series.description.toLowerCase().includes(lowerQuery) ||
-            series.genre.toLowerCase().includes(lowerQuery)) {
+        const searchableText = [
+          series.title,
+          series.spanishTitle,
+          series.description,
+          series.genre,
+          series.year,
+          ...(series.searchAliases || [])
+        ].filter(Boolean).join(' ').toLowerCase();
+
+        if (searchableText.includes(lowerQuery)) {
           results.push(series);
         }
       });
@@ -4183,8 +4242,9 @@
             <h3 class="search-result-title">${series.title}</h3>
             <div class="search-result-meta">
               <span>${series.year}</span>
-              <span>${series.type === 'movie' ? 'Película' : 'Serie'}</span>
+              <span>${getContentTypeLabel(series)}</span>
               <span>${series.rating}</span>
+              ${series.isLocked && !isMovieAvailable(series) ? '<span>Próximamente</span>' : ''}
             </div>
             <p class="search-result-description">${series.description}</p>
           </div>
@@ -5296,6 +5356,7 @@
       // Navegación
       'Inicio': 'Home',
       'Buscar': 'Search',
+      'Calendario': 'Calendar',
       'Ajustes': 'Settings',
 
       // Búsqueda
@@ -5395,8 +5456,36 @@
 
     // Base de datos de series y episodios
     const seriesDatabase = {
-      // Catálogo limpio: las películas anteriores fueron retiradas.
-      // Agrega aquí las nuevas películas cuando estén listas para publicarse.
+      'kikyo-no-kioku': {
+        id: 'kikyo-no-kioku',
+        title: '桔梗の記憶',
+        spanishTitle: 'El recuerdo de Kikyo',
+        searchAliases: ['El recuerdo de Kikyo', 'Kikyo no Kioku', 'Kikyō no Kioku', '桔梗の記憶'],
+        type: 'shortfilm',
+        year: '2026',
+        genre: 'Aventura',
+        duration: '6 min',
+        rating: 'PG',
+        poster: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
+        trailer: 'https://www.dropbox.com/scl/fi/1oaobidv1634c7p4dn4ji/copy_43FDE436-0897-424D-8609-CA358390FBC2.MOV?rlkey=vdyfek1upqr9l30rygn1o2061&st=suw9wi32&dl=0',
+        description: 'Kikyo es una sacerdotisa serena y valiente marcada por sus recuerdos, su deber espiritual y una aventura breve que revela la fuerza tranquila que guarda en su corazón.',
+        director: 'Atenis',
+        cast: 'Kikyo',
+        isFeatured: true,
+        isTrending: true,
+        isLocked: true,
+        releaseDate: '2026-06-25T00:00:00-05:00',
+        episodes: [
+          {
+            id: 1,
+            title: '桔梗の記憶',
+            duration: '6 min',
+            description: 'Un cortometraje de aventura sobre Kikyo, sus recuerdos y la calma fortaleza que la acompaña.',
+            thumbnail: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
+            videoUrl: 'https://www.dropbox.com/scl/fi/1oaobidv1634c7p4dn4ji/copy_43FDE436-0897-424D-8609-CA358390FBC2.MOV?rlkey=vdyfek1upqr9l30rygn1o2061&st=suw9wi32&dl=0'
+          }
+        ]
+      }
     };
 
     const contentSections = [
@@ -5423,13 +5512,23 @@
       const card = document.createElement('div');
       card.className = 'carousel-item';
       card.onclick = () => showSeriesDetail(series.id);
+      const isLocked = series.isLocked && !isMovieAvailable(series);
+      const releaseText = series.releaseDate ? formatReleaseDate(series.releaseDate) : '';
+
       card.innerHTML = `
         <img src="${series.poster}" alt="${series.title}" loading="lazy">
-        <div class="movie-badge">${getContentTypeLabel(series)}</div>
+        <div class="${isLocked ? 'premiere-badge' : 'movie-badge'}" id="${series.id}-badge">${isLocked ? 'Estreno' : getContentTypeLabel(series)}</div>
         <div class="carousel-item-overlay">
           <div class="carousel-item-title">${series.title}</div>
           <div class="carousel-item-info">${series.year} • ${series.genre.split(',')[0]}</div>
         </div>
+        ${isLocked ? `
+          <div class="locked-overlay" id="${series.id}-lock">
+            <div class="locked-icon"><i class="fas fa-lock"></i></div>
+            <div class="locked-text">Próximamente</div>
+            <div class="release-date">${releaseText}</div>
+          </div>
+        ` : ''}
       `;
       return card;
     }
@@ -5466,6 +5565,56 @@
         }
 
         items.forEach(series => carousel.appendChild(createContentCard(series)));
+      });
+    }
+
+    function formatReleaseDate(releaseDateValue) {
+      return new Date(releaseDateValue).toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+    }
+
+    function renderUpcomingReleases() {
+      const calendarContent = document.getElementById('calendarContent');
+      const calendarEmpty = document.getElementById('calendarEmpty');
+      if (!calendarContent || !calendarEmpty) return;
+
+      const upcomingItems = Object.values(seriesDatabase)
+        .filter(series => series.releaseDate && !isMovieAvailable(series))
+        .sort((a, b) => new Date(a.releaseDate) - new Date(b.releaseDate));
+
+      calendarContent.innerHTML = '';
+
+      if (upcomingItems.length === 0) {
+        calendarEmpty.classList.remove('hidden');
+        return;
+      }
+
+      calendarEmpty.classList.add('hidden');
+
+      upcomingItems.forEach(series => {
+        const releaseDate = formatReleaseDate(series.releaseDate);
+        const calendarItem = document.createElement('div');
+        calendarItem.className = 'history-item';
+        calendarItem.onclick = () => showSeriesDetail(series.id);
+        calendarItem.innerHTML = `
+          <div class="history-item-poster">
+            <img src="${series.poster}" alt="${series.title}">
+            <div class="locked-overlay" style="border-radius: 12px;">
+              <div class="locked-icon"><i class="fas fa-lock"></i></div>
+              <div class="locked-text">Bloqueado</div>
+            </div>
+          </div>
+          <div class="history-item-content">
+            <h3 class="history-item-title">${series.title}</h3>
+            <div class="history-item-meta">${series.spanishTitle || getContentTypeLabel(series)} • ${series.year} • ${series.genre}</div>
+            <div class="history-item-time">Estreno: ${releaseDate}</div>
+            <p style="color: #ababab; font-size: 13px; line-height: 1.4; margin-top: 10px;">${series.description}</p>
+          </div>
+        `;
+        calendarContent.appendChild(calendarItem);
       });
     }
 
@@ -5562,7 +5711,7 @@
                   badgeElement.textContent = 'EN VIVO';
                 } else {
                   badgeElement.className = 'movie-badge';
-                  badgeElement.textContent = 'Película';
+                  badgeElement.textContent = getContentTypeLabel(series);
                 }
               } else {
                 lockElement.style.display = 'flex';
@@ -5635,6 +5784,7 @@
 
       // Actualizar botón de reproducir según disponibilidad
       updateNetflixPlayButton(series);
+      updatePlayButton(series);
 
       // Mostrar cuenta regresiva en detalles si es necesario
       showCountdownInDetails(series);
@@ -6138,7 +6288,8 @@
 
     // Función para mostrar mensaje de bloqueo
     function showLockedMessage(series) {
-      showErrorMessage('Este contenido no está disponible aún. Revisa la fecha de estreno.');
+      const releaseText = series && series.releaseDate ? formatReleaseDate(series.releaseDate) : 'su fecha de estreno';
+      showErrorMessage(`Este contenido está bloqueado hasta el ${releaseText}.`);
     }
 
     // Función para mostrar mensaje de estreno del 11 de junio
@@ -6189,7 +6340,7 @@
       // Función para actualizar cuenta regresiva
       function updateDetailsCountdown() {
         const now = new Date();
-        const releaseDate = createJuneReleaseDate();
+        const releaseDate = new Date(series.releaseDate);
         const timeDiff = releaseDate.getTime() - now.getTime();
 
         if (timeDiff <= 0) {
@@ -6227,10 +6378,10 @@
             </div>
           </div>
           <div style="color: #71767b; font-size: 12px; font-weight: 600; margin-bottom: 8px;">
-            11 de Junio - 2:40 AM Houston | 12:40 AM Las Vegas
+            ${formatReleaseDate(series.releaseDate)}
           </div>
           <div style="color: #1d9bf0; font-size: 11px; font-weight: 600;">
-            Transmisión simultánea mundial - Una sola vez
+            Se desbloquea automáticamente el día del estreno
           </div>
         `;
       }
