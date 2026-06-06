@@ -29,28 +29,10 @@ body {
   letter-spacing: -0.01em;
 }
 
-*,
-*::before,
-*::after {
-  text-shadow: none !important;
-  box-shadow: none !important;
-  filter: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   * {
-    transition-duration: 180ms !important;
     transition-timing-function: ease !important;
   }
-}
-
-/* Quita efectos caricaturescos sin tocar la estructura ni la lógica. */
-* {
-  animation-duration: 0.001ms !important;
-  animation-iteration-count: 1 !important;
-  animation-timing-function: linear !important;
 }
 
 body::before,

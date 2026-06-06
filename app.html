@@ -12,6 +12,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#000000">
   <title>Atenis</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
@@ -1701,44 +1702,44 @@
 
     .info-tabs {
       display: flex;
-      gap: 12px;
+      gap: 4px;
       margin-bottom: 24px;
-      border-bottom: 2px solid rgba(0, 162, 255, 0.3);
-      padding-bottom: 12px;
+      border-bottom: 1px solid #1f1f1f;
+      padding-bottom: 0;
     }
 
     .info-tab {
       background: transparent;
       border: none;
-      color: #71767b;
+      color: #6b6b6b;
       padding: 12px 20px;
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
-      border-radius: 8px 8px 0 0;
+      transition: color 0.2s ease;
+      border-radius: 0;
       position: relative;
     }
 
     .info-tab.active {
       color: #ffffff;
-      background: linear-gradient(135deg, rgba(0, 162, 255, 0.2), rgba(0, 120, 212, 0.2));
+      background: transparent;
     }
 
     .info-tab.active::after {
       content: '';
       position: absolute;
-      bottom: -14px;
+      bottom: -1px;
       left: 0;
       right: 0;
       height: 2px;
       background: #06C167;
-      border-radius: 2px;
+      border-radius: 2px 2px 0 0;
     }
 
     .info-tab:hover:not(.active) {
-      color: #ffffff;
-      background: rgba(255,255,255,0.06);
+      color: #ababab;
+      background: transparent;
     }
 
     .info-tab-content {
@@ -1758,15 +1759,15 @@
     /* Estilos para detalles */
     .details-content {
       padding: 20px;
-      background: linear-gradient(135deg, rgba(0, 120, 212, 0.1), rgba(0, 90, 159, 0.1));
+      background: #111111;
       border-radius: 12px;
-      border: 2px solid rgba(0, 162, 255, 0.2);
+      border: 1px solid #1f1f1f;
     }
 
     .detail-row {
       display: flex;
       padding: 16px 0;
-      border-bottom: 1px solid rgba(0, 162, 255, 0.1);
+      border-bottom: 1px solid #1a1a1a;
     }
 
     .detail-row:last-child {
@@ -3220,6 +3221,28 @@
              x5-playsinline
              preload="metadata">
       </video>
+
+      <!-- Botón central de play para cuando autoplay está bloqueado -->
+      <div id="bigPlayButton" style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        background: rgba(255,255,255,0.15);
+        border: 2px solid rgba(255,255,255,0.6);
+        border-radius: 50%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 25;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      " onclick="togglePlayPause()">
+        <i class="fas fa-play" style="font-size: 28px; color: #fff; margin-left: 4px;"></i>
+      </div>
 
       <div class="pause-indicator" id="pauseIndicator">
         <i class="fas fa-pause"></i>
@@ -6277,13 +6300,15 @@
       }, 1000);
     }
 
-    // Función para mostrar/ocultar botón de play
+    // Función para mostrar/ocultar botón de play central
     function showPlayButton() {
-      // Implementar si es necesario
+      const btn = document.getElementById('bigPlayButton');
+      if (btn) btn.style.display = 'flex';
     }
 
     function hidePlayButton() {
-      // Implementar si es necesario
+      const btn = document.getElementById('bigPlayButton');
+      if (btn) btn.style.display = 'none';
     }
 
     // Función para habilitar pantalla completa y rotación
@@ -6468,16 +6493,16 @@
       try {
         const mediaUrl = new URL(url, window.location.href);
 
+        // Nuevos enlaces SCL de Dropbox (/scl/fi/...): solo cambiar hostname y eliminar dl=0/1
         if (mediaUrl.hostname === 'www.dropbox.com' || mediaUrl.hostname === 'dropbox.com') {
           mediaUrl.hostname = 'dl.dropboxusercontent.com';
           mediaUrl.searchParams.delete('dl');
-          mediaUrl.searchParams.set('raw', '1');
+          // Mantener rlkey y st que son necesarios para autenticación
           return mediaUrl.toString();
         }
 
         if (mediaUrl.hostname === 'dl.dropboxusercontent.com') {
           mediaUrl.searchParams.delete('dl');
-          mediaUrl.searchParams.set('raw', '1');
           return mediaUrl.toString();
         }
 
