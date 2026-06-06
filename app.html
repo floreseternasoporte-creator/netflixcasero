@@ -3267,12 +3267,6 @@
   <!-- Sección de búsqueda - Pantalla completa estilo Uber -->
   <div id="searchSection" class="search-section" aria-hidden="true">
 
-    <!-- Cabecera de página -->
-    <div class="search-page-header">
-      <div class="search-page-title">Buscar</div>
-      <div class="search-page-subtitle">Películas, series y más</div>
-    </div>
-
     <!-- Barra de búsqueda pill -->
     <div class="search-input-shell">
       <div class="search-wrapper search-section-wrapper">
@@ -3306,9 +3300,8 @@
         <div class="search-loading-text">Buscando...</div>
       </div>
 
-      <!-- Estado vacío: sugerencias populares -->
+      <!-- Estado vacío: sugerencias -->
       <div id="searchSuggestions" class="search-suggestions">
-        <div class="search-suggestions-label">Popular ahora</div>
         <div class="search-suggestion-row" onclick="doSuggestedSearch('Acción')">
           <div class="search-suggestion-icon"><i class="fas fa-fire"></i></div>
           <div class="search-suggestion-text">Acción</div>
@@ -5467,7 +5460,7 @@
         duration: '6 min',
         rating: 'PG',
         poster: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
-        trailer: 'https://www.dropbox.com/scl/fi/1oaobidv1634c7p4dn4ji/copy_43FDE436-0897-424D-8609-CA358390FBC2.MOV?rlkey=vdyfek1upqr9l30rygn1o2061&st=suw9wi32&dl=0',
+        trailer: 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0',
         description: 'Kikyo es una sacerdotisa serena y valiente marcada por sus recuerdos, su deber espiritual y una aventura breve que revela la fuerza tranquila que guarda en su corazón.',
         director: 'Atenis',
         cast: 'Kikyo',
@@ -5482,7 +5475,7 @@
             duration: '6 min',
             description: 'Un cortometraje de aventura sobre Kikyo, sus recuerdos y la calma fortaleza que la acompaña.',
             thumbnail: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
-            videoUrl: 'https://www.dropbox.com/scl/fi/1oaobidv1634c7p4dn4ji/copy_43FDE436-0897-424D-8609-CA358390FBC2.MOV?rlkey=vdyfek1upqr9l30rygn1o2061&st=suw9wi32&dl=0'
+            videoUrl: 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0'
           }
         ]
       }
@@ -5809,80 +5802,82 @@
       const videoEl = document.getElementById('seriesDetailVideo');
       const playBtn = document.getElementById('netflixPlayBtn');
       const soundBtn = document.getElementById('soundToggle');
+      const trailerUrl = series.preview || series.trailer;
 
-      // Limpiar estado anterior
+      // Limpiar estado anterior para que el preview del nuevo estreno no herede eventos o fuentes viejas.
+      videoEl.onloadeddata = null;
+      videoEl.oncanplay = null;
+      videoEl.onerror = null;
+      videoEl.pause();
+      videoEl.removeAttribute('src');
+      videoEl.load();
       videoEl.classList.remove('loaded');
+      videoEl.style.opacity = '0';
       playBtn.classList.remove('loading');
+      playBtn.innerHTML = '<i class="fas fa-play"></i>';
       playBtn.style.display = 'flex';
+      soundBtn.style.display = 'none';
+      soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
 
-      if (!series.trailer) {
+      if (!trailerUrl) {
         videoEl.style.display = 'none';
-        soundBtn.style.display = 'none';
         return;
       }
 
-      // Mantener solamente el icono de Play mientras carga el preview; no mostrar spinner.
-      playBtn.classList.remove('loading');
-      playBtn.innerHTML = '<i class="fas fa-play"></i>';
-      soundBtn.style.display = 'none';
+      const showPreview = () => {
+        videoEl.style.opacity = '1';
+        videoEl.classList.add('loaded');
+        playBtn.classList.remove('loading');
+        playBtn.style.display = 'none';
+        soundBtn.style.display = 'flex';
+      };
 
-      // Configurar video con atributos correctos para evitar difuminado
+      const showPosterFallback = () => {
+        console.log('Error loading trailer preview, using poster only');
+        videoEl.pause();
+        videoEl.style.display = 'none';
+        videoEl.classList.remove('loaded');
+        playBtn.classList.remove('loading');
+        playBtn.style.display = 'flex';
+        soundBtn.style.display = 'none';
+      };
+
+      // Configurar video con atributos correctos para preview móvil y enlaces de Dropbox.
       videoEl.style.display = 'block';
-      videoEl.style.opacity = '0';
+      videoEl.poster = series.poster || '';
       videoEl.muted = true;
+      videoEl.defaultMuted = true;
       videoEl.loop = true;
+      videoEl.autoplay = true;
       videoEl.playsInline = true;
+      videoEl.preload = 'auto';
+      videoEl.removeAttribute('crossorigin');
+      videoEl.setAttribute('muted', '');
       videoEl.setAttribute('playsinline', 'true');
       videoEl.setAttribute('webkit-playsinline', 'true');
       videoEl.setAttribute('x5-playsinline', 'true');
 
-      // Event listener para cuando el video esté listo
-      const onLoadedData = () => {
-        setTimeout(() => {
-          videoEl.style.opacity = '1';
-          videoEl.classList.add('loaded');
-          playBtn.classList.remove('loading');
-          playBtn.style.display = 'none'; // Ocultar botón de play cuando el video carga
-          soundBtn.style.display = 'flex';
-
-          // Auto-reproducir el trailer
-          const playPromise = videoEl.play();
-          if (playPromise !== undefined) {
-            playPromise.then(() => {
-              console.log('Trailer playing automatically');
-            }).catch(e => {
-              console.log('Autoplay prevented:', e);
-              playBtn.classList.remove('loading');
-              playBtn.style.display = 'flex'; // Mostrar botón si autoplay falla
-            });
-          }
-        }, 500);
-
-        videoEl.removeEventListener('loadeddata', onLoadedData);
+      videoEl.onloadeddata = () => {
+        showPreview();
+        videoEl.currentTime = 0;
+        const playPromise = videoEl.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log('Trailer preview autoplay prevented:', error);
+            playBtn.style.display = 'flex';
+          });
+        }
       };
 
-      const onCanPlay = () => {
-        playBtn.classList.remove('loading');
-        playBtn.style.display = 'none'; // Asegurar que se oculte cuando puede reproducir
-        videoEl.oncanplay = null;
+      videoEl.oncanplay = () => {
+        if (videoEl.readyState >= 3) {
+          showPreview();
+        }
       };
 
-      const onError = () => {
-        console.log('Error loading trailer, using poster only');
-        videoEl.style.display = 'none';
-        playBtn.classList.remove('loading');
-        playBtn.style.display = 'flex';
-        soundBtn.style.display = 'none';
-        videoEl.removeEventListener('error', onError);
-      };
+      videoEl.onerror = showPosterFallback;
 
-      // Agregar event listeners
-      videoEl.onloadeddata = onLoadedData;
-      videoEl.oncanplay = onCanPlay;
-      videoEl.onerror = onError;
-
-      // Configurar source y cargar
-      videoEl.src = normalizeMediaUrl(series.trailer);
+      videoEl.src = normalizeMediaUrl(trailerUrl);
       videoEl.load();
     }
 
@@ -6893,9 +6888,16 @@
       btn.classList.add('active');
       activeChipGenre = genre;
       const query = document.getElementById('searchSectionInput').value.trim();
+
       if (query || genre) {
         performSearchFromSection();
+        return;
       }
+
+      document.getElementById('searchLoading').classList.add('hidden');
+      document.getElementById('searchNoResults').classList.add('hidden');
+      document.getElementById('searchResultsGrid').innerHTML = '';
+      showSearchSuggestions();
     }
 
     function doSuggestedSearch(term) {
