@@ -829,3 +829,18 @@ body[style*="linear-gradient"] {
     min-height: 142px !important;
   }
 }
+
+/* Search copy cleanup: the page now starts directly with the search bar. */
+.search-input-shell:first-child,
+.search-section > .search-input-shell {
+  padding-top: max(18px, env(safe-area-inset-top, 0px) + 16px) !important;
+}
+
+.search-suggestions-label:empty,
+.search-suggestions-label {
+  display: none !important;
+}
+
+.search-suggestions {
+  padding-top: 0 !important;
+}
