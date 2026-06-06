@@ -5382,7 +5382,7 @@
         duration: '6 min',
         rating: 'PG',
         poster: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
-        trailer: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663203786467/tduZKVzDpXhovFOU.mp4',
+        trailer: 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0',
         description: 'Kikyo es una sacerdotisa serena y valiente marcada por sus recuerdos, su deber espiritual y una aventura breve que revela la fuerza tranquila que guarda en su corazón.',
         director: 'Atenis',
         cast: 'Kikyo',
@@ -5390,6 +5390,11 @@
         isTrending: true,
         isLocked: true,
         releaseDate: '2026-06-25T00:00:00-05:00',
+        audioTracks: {
+          'original': 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0',
+          'es': 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663203786467/tduZKVzDpXhovFOU.mp4'
+        },
+        currentAudioTrack: 'original',
         episodes: [
           {
             id: 1,
@@ -5802,22 +5807,126 @@
 
       videoEl.onerror = showPosterFallback;
 
-      videoEl.src = normalizeMediaUrl(trailerUrl);
+      // Usar la pista de audio actual si existe, de lo contrario la URL por defecto
+      const currentTrackUrl = (series.audioTracks && series.currentAudioTrack) ? series.audioTracks[series.currentAudioTrack] : trailerUrl;
+      
+      videoEl.src = normalizeMediaUrl(currentTrackUrl);
       videoEl.load();
     }
 
-    // Función para alternar sonido del trailer
+    // Función para alternar sonido del trailer o cambiar pista de audio
     function toggleTrailerSound() {
       const videoEl = document.getElementById('seriesDetailVideo');
       const soundBtn = document.getElementById('soundToggle');
 
       if (videoEl.muted) {
         videoEl.muted = false;
-        videoEl.volume = 0.3; // Volumen moderado
+        videoEl.volume = 0.5;
         soundBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        
+        // Si hay múltiples pistas de audio, mostrar opción de cambio
+        if (currentSeries && currentSeries.audioTracks) {
+          showAudioTrackSelector();
+        }
       } else {
         videoEl.muted = true;
         soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+      }
+    }
+
+    // Mostrar selector de pistas de audio para el trailer
+    function showAudioTrackSelector() {
+      if (!currentSeries || !currentSeries.audioTracks) return;
+      
+      const tracks = Object.keys(currentSeries.audioTracks);
+      if (tracks.length <= 1) return;
+      
+      const audioNames = {
+        'original': '🇯🇵 Japonés (Original)',
+        'es': '🇪🇸 Español (Doblaje)'
+      };
+      
+      const selector = document.createElement('div');
+      selector.id = 'trailerAudioSelector';
+      selector.style.cssText = `
+        position: absolute;
+        bottom: 80px;
+        right: 20px;
+        background: rgba(20, 20, 20, 0.95);
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 10px;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      `;
+      
+      const title = document.createElement('div');
+      title.style.cssText = 'font-size: 11px; color: #777; text-transform: uppercase; font-weight: 700; margin-bottom: 4px;';
+      title.textContent = 'Idioma del Audio';
+      selector.appendChild(title);
+      
+      tracks.forEach(track => {
+        const btn = document.createElement('button');
+        const isActive = (currentSeries.currentAudioTrack || 'original') === track;
+        btn.style.cssText = `
+          background: ${isActive ? '#fff' : 'transparent'};
+          color: ${isActive ? '#000' : '#fff'};
+          border: none;
+          padding: 8px 12px;
+          border-radius: 4px;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          text-align: left;
+          transition: all 0.2s;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        `;
+        btn.innerHTML = `${audioNames[track] || track} ${isActive ? '<i class="fas fa-check"></i>' : ''}`;
+        
+        btn.onclick = () => {
+          changeTrailerAudio(track);
+          selector.remove();
+        };
+        
+        selector.appendChild(btn);
+      });
+      
+      const closeBtn = document.querySelector('.series-detail-header');
+      document.getElementById('seriesDetail').appendChild(selector);
+      
+      // Cerrar al hacer clic fuera
+      setTimeout(() => {
+        const closeSelector = (e) => {
+          if (!selector.contains(e.target) && e.target !== document.getElementById('soundToggle')) {
+            selector.remove();
+            document.removeEventListener('click', closeSelector);
+          }
+        };
+        document.addEventListener('click', closeSelector);
+      }, 100);
+    }
+
+    // Cambiar audio del trailer específicamente
+    function changeTrailerAudio(track) {
+      const videoEl = document.getElementById('seriesDetailVideo');
+      if (!videoEl || !currentSeries || !currentSeries.audioTracks) return;
+      
+      const url = currentSeries.audioTracks[track];
+      if (url) {
+        const currentTime = videoEl.currentTime;
+        currentSeries.currentAudioTrack = track;
+        videoEl.src = normalizeMediaUrl(url);
+        videoEl.load();
+        videoEl.currentTime = currentTime;
+        videoEl.play();
+        
+        showErrorMessage(`Audio cambiado a: ${track === 'es' ? 'Español' : 'Japonés'}`);
       }
     }
 
