@@ -3267,12 +3267,6 @@
   <!-- Sección de búsqueda - Pantalla completa estilo Uber -->
   <div id="searchSection" class="search-section" aria-hidden="true">
 
-    <!-- Cabecera de página -->
-    <div class="search-page-header">
-      <div class="search-page-title">Buscar</div>
-      <div class="search-page-subtitle">Películas, series y más</div>
-    </div>
-
     <!-- Barra de búsqueda pill -->
     <div class="search-input-shell">
       <div class="search-wrapper search-section-wrapper">
@@ -3286,19 +3280,6 @@
       </div>
     </div>
 
-    <!-- Chips de categorías deslizables -->
-    <div class="search-category-chips" id="searchCategoryChips">
-      <button class="search-chip active" onclick="filterSearchByChip(this, '')">Todo</button>
-      <button class="search-chip" onclick="filterSearchByChip(this, 'accion')">Acción</button>
-      <button class="search-chip" onclick="filterSearchByChip(this, 'drama')">Drama</button>
-      <button class="search-chip" onclick="filterSearchByChip(this, 'comedia')">Comedia</button>
-      <button class="search-chip" onclick="filterSearchByChip(this, 'terror')">Terror</button>
-      <button class="search-chip" onclick="filterSearchByChip(this, 'thriller')">Thriller</button>
-      <button class="search-chip" onclick="filterSearchByChip(this, 'romance')">Romance</button>
-      <button class="search-chip" onclick="filterSearchByChip(this, 'animacion')">Animación</button>
-      <button class="search-chip" onclick="filterSearchByChip(this, 'documentales')">Docs</button>
-    </div>
-
     <!-- Área de resultados con scroll -->
     <div class="search-content-area">
       <div id="searchLoading" class="search-loading hidden">
@@ -3306,9 +3287,8 @@
         <div class="search-loading-text">Buscando...</div>
       </div>
 
-      <!-- Estado vacío: sugerencias populares -->
+      <!-- Estado vacío: sugerencias -->
       <div id="searchSuggestions" class="search-suggestions">
-        <div class="search-suggestions-label">Popular ahora</div>
         <div class="search-suggestion-row" onclick="doSuggestedSearch('Acción')">
           <div class="search-suggestion-icon"><i class="fas fa-fire"></i></div>
           <div class="search-suggestion-text">Acción</div>
@@ -3987,6 +3967,8 @@
 
       navButtons.forEach(button => {
         button.addEventListener('click', function() {
+          showBottomNav();
+
           // Remover active de todos
           navButtons.forEach(btn => btn.classList.remove('active'));
 
@@ -4007,17 +3989,73 @@
           }
         });
       });
+
+      setupBottomNavAutoHide();
+    }
+
+    function showBottomNav() {
+      const bottomNav = document.querySelector('.bottom-nav');
+      if (bottomNav) bottomNav.classList.remove('bottom-nav--hidden');
+    }
+
+    function hideBottomNav() {
+      const bottomNav = document.querySelector('.bottom-nav');
+      if (bottomNav) bottomNav.classList.add('bottom-nav--hidden');
+    }
+
+    function setupBottomNavAutoHide() {
+      const scrollTargets = [
+        window,
+        document.getElementById('searchSection'),
+        document.querySelector('.search-content-area'),
+        document.getElementById('settingsSection'),
+        document.getElementById('historySection'),
+        document.getElementById('calendarSection'),
+        document.getElementById('seriesDetail')
+      ].filter(Boolean);
+
+      const lastPositions = new WeakMap();
+
+      const getScrollTop = target => {
+        if (target === window) {
+          return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        }
+        return target.scrollTop || 0;
+      };
+
+      const handleScroll = target => {
+        const currentTop = getScrollTop(target);
+        const previousTop = lastPositions.get(target) || 0;
+        const delta = currentTop - previousTop;
+
+        if (Math.abs(delta) < 8) return;
+
+        if (delta > 0 && currentTop > 80) {
+          hideBottomNav();
+        } else {
+          showBottomNav();
+        }
+
+        lastPositions.set(target, currentTop);
+      };
+
+      scrollTargets.forEach(target => {
+        lastPositions.set(target, getScrollTop(target));
+        target.addEventListener('scroll', () => handleScroll(target), { passive: true });
+      });
     }
 
     // Mostrar sección home
     function showHomeSection() {
       hideAllSections();
+      showBottomNav();
       document.getElementById('homeSection').style.display = 'block';
     }
 
     // Mostrar sección de búsqueda
     function showSearchSection() {
       hideAllSections();
+      showBottomNav();
       const searchSection = document.getElementById('searchSection');
       searchSection.classList.add('active');
       searchSection.setAttribute('aria-hidden', 'false');
@@ -4029,10 +4067,6 @@
       // Mostrar sugerencias por defecto (no todos los resultados)
       showSearchSuggestions();
 
-      // Reset chips
-      document.querySelectorAll('.search-chip').forEach(c => c.classList.remove('active'));
-      const firstChip = document.querySelector('.search-chip');
-      if (firstChip) firstChip.classList.add('active');
       activeChipGenre = '';
 
       document.getElementById('searchSectionInput').focus();
@@ -4043,6 +4077,7 @@
     // Mostrar sección de ajustes
     function showSettingsSection() {
       hideAllSections();
+      showBottomNav();
       document.getElementById('settingsSection').classList.add('active');
       loadCurrentSettings();
     }
@@ -4074,6 +4109,7 @@
     // Mostrar sección de calendario
     function showCalendarSection() {
       hideAllSections();
+      showBottomNav();
       document.getElementById('calendarSection').classList.add('active');
       renderUpcomingReleases();
     }
@@ -5467,7 +5503,7 @@
         duration: '6 min',
         rating: 'PG',
         poster: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
-        trailer: 'https://www.dropbox.com/scl/fi/1oaobidv1634c7p4dn4ji/copy_43FDE436-0897-424D-8609-CA358390FBC2.MOV?rlkey=vdyfek1upqr9l30rygn1o2061&st=suw9wi32&dl=0',
+        trailer: 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0',
         description: 'Kikyo es una sacerdotisa serena y valiente marcada por sus recuerdos, su deber espiritual y una aventura breve que revela la fuerza tranquila que guarda en su corazón.',
         director: 'Atenis',
         cast: 'Kikyo',
@@ -5482,7 +5518,7 @@
             duration: '6 min',
             description: 'Un cortometraje de aventura sobre Kikyo, sus recuerdos y la calma fortaleza que la acompaña.',
             thumbnail: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
-            videoUrl: 'https://www.dropbox.com/scl/fi/1oaobidv1634c7p4dn4ji/copy_43FDE436-0897-424D-8609-CA358390FBC2.MOV?rlkey=vdyfek1upqr9l30rygn1o2061&st=suw9wi32&dl=0'
+            videoUrl: 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0'
           }
         ]
       }
@@ -5809,80 +5845,82 @@
       const videoEl = document.getElementById('seriesDetailVideo');
       const playBtn = document.getElementById('netflixPlayBtn');
       const soundBtn = document.getElementById('soundToggle');
+      const trailerUrl = series.preview || series.trailer;
 
-      // Limpiar estado anterior
+      // Limpiar estado anterior para que el preview del nuevo estreno no herede eventos o fuentes viejas.
+      videoEl.onloadeddata = null;
+      videoEl.oncanplay = null;
+      videoEl.onerror = null;
+      videoEl.pause();
+      videoEl.removeAttribute('src');
+      videoEl.load();
       videoEl.classList.remove('loaded');
+      videoEl.style.opacity = '0';
       playBtn.classList.remove('loading');
+      playBtn.innerHTML = '<i class="fas fa-play"></i>';
       playBtn.style.display = 'flex';
+      soundBtn.style.display = 'none';
+      soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
 
-      if (!series.trailer) {
+      if (!trailerUrl) {
         videoEl.style.display = 'none';
-        soundBtn.style.display = 'none';
         return;
       }
 
-      // Mantener solamente el icono de Play mientras carga el preview; no mostrar spinner.
-      playBtn.classList.remove('loading');
-      playBtn.innerHTML = '<i class="fas fa-play"></i>';
-      soundBtn.style.display = 'none';
+      const showPreview = () => {
+        videoEl.style.opacity = '1';
+        videoEl.classList.add('loaded');
+        playBtn.classList.remove('loading');
+        playBtn.style.display = 'none';
+        soundBtn.style.display = 'flex';
+      };
 
-      // Configurar video con atributos correctos para evitar difuminado
+      const showPosterFallback = () => {
+        console.log('Error loading trailer preview, using poster only');
+        videoEl.pause();
+        videoEl.style.display = 'none';
+        videoEl.classList.remove('loaded');
+        playBtn.classList.remove('loading');
+        playBtn.style.display = 'flex';
+        soundBtn.style.display = 'none';
+      };
+
+      // Configurar video con atributos correctos para preview móvil y enlaces de Dropbox.
       videoEl.style.display = 'block';
-      videoEl.style.opacity = '0';
+      videoEl.poster = series.poster || '';
       videoEl.muted = true;
+      videoEl.defaultMuted = true;
       videoEl.loop = true;
+      videoEl.autoplay = true;
       videoEl.playsInline = true;
+      videoEl.preload = 'auto';
+      videoEl.removeAttribute('crossorigin');
+      videoEl.setAttribute('muted', '');
       videoEl.setAttribute('playsinline', 'true');
       videoEl.setAttribute('webkit-playsinline', 'true');
       videoEl.setAttribute('x5-playsinline', 'true');
 
-      // Event listener para cuando el video esté listo
-      const onLoadedData = () => {
-        setTimeout(() => {
-          videoEl.style.opacity = '1';
-          videoEl.classList.add('loaded');
-          playBtn.classList.remove('loading');
-          playBtn.style.display = 'none'; // Ocultar botón de play cuando el video carga
-          soundBtn.style.display = 'flex';
-
-          // Auto-reproducir el trailer
-          const playPromise = videoEl.play();
-          if (playPromise !== undefined) {
-            playPromise.then(() => {
-              console.log('Trailer playing automatically');
-            }).catch(e => {
-              console.log('Autoplay prevented:', e);
-              playBtn.classList.remove('loading');
-              playBtn.style.display = 'flex'; // Mostrar botón si autoplay falla
-            });
-          }
-        }, 500);
-
-        videoEl.removeEventListener('loadeddata', onLoadedData);
+      videoEl.onloadeddata = () => {
+        showPreview();
+        videoEl.currentTime = 0;
+        const playPromise = videoEl.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log('Trailer preview autoplay prevented:', error);
+            playBtn.style.display = 'flex';
+          });
+        }
       };
 
-      const onCanPlay = () => {
-        playBtn.classList.remove('loading');
-        playBtn.style.display = 'none'; // Asegurar que se oculte cuando puede reproducir
-        videoEl.oncanplay = null;
+      videoEl.oncanplay = () => {
+        if (videoEl.readyState >= 3) {
+          showPreview();
+        }
       };
 
-      const onError = () => {
-        console.log('Error loading trailer, using poster only');
-        videoEl.style.display = 'none';
-        playBtn.classList.remove('loading');
-        playBtn.style.display = 'flex';
-        soundBtn.style.display = 'none';
-        videoEl.removeEventListener('error', onError);
-      };
+      videoEl.onerror = showPosterFallback;
 
-      // Agregar event listeners
-      videoEl.onloadeddata = onLoadedData;
-      videoEl.oncanplay = onCanPlay;
-      videoEl.onerror = onError;
-
-      // Configurar source y cargar
-      videoEl.src = normalizeMediaUrl(series.trailer);
+      videoEl.src = normalizeMediaUrl(trailerUrl);
       videoEl.load();
     }
 
@@ -6449,6 +6487,32 @@
       }
     }
 
+    function getMediaPlaybackUrls(url) {
+      const urls = [];
+      const addUrl = candidate => {
+        if (candidate && !urls.includes(candidate)) urls.push(candidate);
+      };
+
+      addUrl(normalizeMediaUrl(url));
+
+      try {
+        const mediaUrl = new URL(url, window.location.href);
+
+        if (mediaUrl.hostname === 'www.dropbox.com' || mediaUrl.hostname === 'dropbox.com') {
+          const downloadUrl = new URL(url, window.location.href);
+          downloadUrl.searchParams.delete('raw');
+          downloadUrl.searchParams.set('dl', '1');
+          addUrl(downloadUrl.toString());
+        }
+
+        addUrl(mediaUrl.toString());
+      } catch (error) {
+        addUrl(url);
+      }
+
+      return urls;
+    }
+
     function resetVideoElement() {
       if (!videoElement) return;
 
@@ -6539,11 +6603,11 @@
       // Mostrar reproductor
       videoPlayer.classList.add('active');
 
-      // Configurar fuente del intro
-      videoElement.src = normalizeMediaUrl(introVideoUrl);
+      let introFallbackTimer;
 
       // Event listeners del intro
       const onIntroLoadedMetadata = () => {
+        clearTimeout(introFallbackTimer);
         updateDuration();
         // Auto-reproducir el intro sin botón de play
         videoElement.play().catch(e => {
@@ -6566,6 +6630,7 @@
       const onIntroEnded = () => {
         // Cuando termina el intro, reproducir el contenido principal
         isPlayingIntro = false;
+        clearTimeout(introFallbackTimer);
 
         // Limpiar listeners del intro
         videoElement.removeEventListener('loadedmetadata', onIntroLoadedMetadata);
@@ -6583,6 +6648,7 @@
       const onIntroError = (e) => {
         console.error('Intro error:', e);
         isPlayingIntro = false;
+        clearTimeout(introFallbackTimer);
 
         // Si hay error en el intro, ir directo al contenido
         videoElement.removeEventListener('loadedmetadata', onIntroLoadedMetadata);
@@ -6596,12 +6662,20 @@
         }
       };
 
-      // Agregar listeners del intro
+      // Agregar listeners del intro antes de cargar la fuente para no perder eventos en caché.
       videoElement.addEventListener('loadedmetadata', onIntroLoadedMetadata);
       videoElement.addEventListener('play', onIntroPlay);
       videoElement.addEventListener('pause', onIntroPause);
       videoElement.addEventListener('ended', onIntroEnded);
       videoElement.addEventListener('error', onIntroError);
+
+      introFallbackTimer = setTimeout(() => {
+        console.warn('Intro did not start in time, skipping to requested video');
+        onIntroError(new Error('Intro timeout'));
+      }, 8000);
+
+      videoElement.src = normalizeMediaUrl(introVideoUrl);
+      videoElement.load();
 
       // Iniciar actualización de progreso
       startProgressUpdate();
@@ -6641,31 +6715,21 @@
       const liveIndicator = document.getElementById('videoLiveIndicator');
       liveIndicator.style.display = 'none';
 
-      // IMPORTANTE: Limpiar todos los elementos source anteriores PRIMERO para evitar reproducir videos incorrectos
-      while (videoElement.firstChild) {
-        videoElement.removeChild(videoElement.firstChild);
-      }
+      const playbackUrls = getMediaPlaybackUrls(episode.videoUrl);
+      let sourceIndex = 0;
 
-      // Configurar fuente de video con mejor compatibilidad
-      const source = document.createElement('source');
-      const mediaUrl = normalizeMediaUrl(episode.videoUrl);
-      console.log('Setting video source to:', mediaUrl);
-      source.src = mediaUrl;
-      source.type = 'video/mp4'; // Asumir mp4 por defecto
-      videoElement.appendChild(source);
-
-      // Configurar subtítulos DESPUÉS de agregar el source (para que no sean borrados)
-      configureSubtitles();
-      
-      // Cargar el video después de agregar la fuente y subtítulos
-      console.log('Loading video...');
-      videoElement.load();
+      const loadCurrentSource = () => {
+        const nextUrl = playbackUrls[sourceIndex];
+        console.log('Setting video source to:', nextUrl);
+        videoElement.src = nextUrl;
+        configureSubtitles();
+        videoElement.load();
+      };
 
       // Event listeners del contenido principal
       const onLoadedMetadata = () => {
         updateDuration();
         updateRealTimeDuration(episode.id);
-        // Auto-reproducir después del intro
         videoElement.play().catch(e => {
           console.warn('Autoplay blocked after intro');
           showPlayButton();
@@ -6684,8 +6748,16 @@
       };
 
       const onError = (e) => {
-        console.error('Video error:', e);
+        console.error('Video source error:', e);
+        sourceIndex += 1;
+
+        if (sourceIndex < playbackUrls.length) {
+          loadCurrentSource();
+          return;
+        }
+
         showErrorMessage('Error al cargar el video. Verifica tu conexión e intenta de nuevo.');
+        showPlayButton();
       };
 
       // Asignar handlers únicos para evitar callbacks viejos que reusen fuentes anteriores.
@@ -6693,6 +6765,8 @@
       videoElement.onplay = onPlay;
       videoElement.onpause = onPause;
       videoElement.onerror = onError;
+
+      loadCurrentSource();
 
       // Iniciar actualización de progreso
       startProgressUpdate();
@@ -6737,91 +6811,105 @@
 
     // Función para reproducir trailer
     function playTrailer() {
-      if (!currentSeries || !currentSeries.trailer) {
+      const trailerUrl = currentSeries ? (currentSeries.preview || currentSeries.trailer) : '';
+      if (!currentSeries || !trailerUrl) {
         showErrorMessage('Trailer no disponible');
         return;
       }
 
-      // Crear objeto de trailer para reproducir
       const trailerVideo = {
         id: 'trailer',
         title: 'Trailer Oficial',
         description: 'Trailer oficial',
         duration: '2:30',
         thumbnail: currentSeries.poster,
-        videoUrl: currentSeries.trailer
+        videoUrl: trailerUrl
       };
 
       currentVideo = trailerVideo;
-
-      // Reproducir intro de Atenis primero, luego el trailer
-      playAtenisIntro(() => {
-        playTrailerContent(trailerVideo);
-      });
+      playTrailerContent(trailerVideo);
     }
 
+    // Función para reproducir contenido de trailer
+    function playTrailerContent(trailerVideo) {
+      resetVideoElement();
 
-      // Función para reproducir contenido de trailer después del intro
-      function playTrailerContent(trailerVideo) {
-        // Limpiar video anterior
-        resetVideoElement();
+      document.body.classList.add('video-playing');
+      videoPlayer.classList.add('active');
+      hideBottomNav();
 
-        // Configurar video para máxima compatibilidad móvil
-        videoElement.setAttribute('playsinline', 'true');
-        videoElement.setAttribute('webkit-playsinline', 'true');
-        videoElement.setAttribute('x5-playsinline', 'true');
-        videoElement.setAttribute('x5-video-player-type', 'h5');
-        videoElement.controls = false;
-        videoElement.preload = 'metadata';
-        videoElement.removeAttribute('crossorigin');
+      videoElement.setAttribute('playsinline', 'true');
+      videoElement.setAttribute('webkit-playsinline', 'true');
+      videoElement.setAttribute('x5-playsinline', 'true');
+      videoElement.setAttribute('x5-video-player-type', 'h5');
+      videoElement.controls = false;
+      videoElement.preload = 'auto';
+      videoElement.removeAttribute('crossorigin');
 
-        videoPlayerTitle.textContent = `${currentSeries.title} - ${trailerVideo.title}`;
+      videoPlayerTitle.textContent = `${currentSeries.title} - ${trailerVideo.title}`;
 
-        // Ocultar indicador EN VIVO para trailers
-        const liveIndicator = document.getElementById('videoLiveIndicator');
-        liveIndicator.style.display = 'none';
+      const liveIndicator = document.getElementById('videoLiveIndicator');
+      liveIndicator.style.display = 'none';
 
-        // Configurar fuente
-        videoElement.src = normalizeMediaUrl(trailerVideo.videoUrl);
+      const playbackUrls = getMediaPlaybackUrls(trailerVideo.videoUrl);
+      let sourceIndex = 0;
 
-        // Event listeners para trailer
-        const onLoadedMetadata = () => {
-            updateDuration();
-            // Auto-reproducir después del intro
-            const playPromise = videoElement.play();
-            if (playPromise !== undefined) {
-              playPromise.then(() => {
-                console.log('Trailer playing automatically');
-              }).catch(e => {
-                console.log('Autoplay prevented:', e);
-                showPlayButton();
-              });
-            }
-        };
+      const loadCurrentSource = () => {
+        const nextUrl = playbackUrls[sourceIndex];
+        console.log('Loading trailer source:', nextUrl);
+        videoElement.src = nextUrl;
+        videoElement.load();
+        const playPromise = videoElement.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.warn('Trailer play is waiting for metadata or user permission:', error);
+          });
+        }
+      };
 
-        const onPlay = () => {
-            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            pauseIndicator.classList.remove('visible');
-            hidePlayButton();
-        };
+      const onLoadedMetadata = () => {
+        updateDuration();
+        const playPromise = videoElement.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.warn('Trailer autoplay blocked:', error);
+            showPlayButton();
+          });
+        }
+      };
 
-        const onPause = () => {
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            pauseIndicator.classList.add('visible');
-        };
+      const onPlay = () => {
+        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        pauseIndicator.classList.remove('visible');
+        hidePlayButton();
+      };
 
-        const onError = (e) => {
-            console.error('Trailer error:', e);
-            showErrorMessage('Error al cargar el trailer');
-        };
+      const onPause = () => {
+        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        pauseIndicator.classList.add('visible');
+      };
 
-        videoElement.onloadedmetadata = onLoadedMetadata;
-        videoElement.onplay = onPlay;
-        videoElement.onpause = onPause;
-        videoElement.onerror = onError;
+      const onError = (error) => {
+        console.error('Trailer source error:', error);
+        sourceIndex += 1;
 
-        startProgressUpdate();
-      }
+        if (sourceIndex < playbackUrls.length) {
+          loadCurrentSource();
+          return;
+        }
+
+        showErrorMessage('Error al cargar el trailer. Verifica tu conexión e intenta de nuevo.');
+        showPlayButton();
+      };
+
+      videoElement.onloadedmetadata = onLoadedMetadata;
+      videoElement.onplay = onPlay;
+      videoElement.onpause = onPause;
+      videoElement.onerror = onError;
+
+      loadCurrentSource();
+      startProgressUpdate();
+    }
 
       // Función de descarga de contenido actual
       function downloadCurrentContent() {
@@ -6893,9 +6981,16 @@
       btn.classList.add('active');
       activeChipGenre = genre;
       const query = document.getElementById('searchSectionInput').value.trim();
+
       if (query || genre) {
         performSearchFromSection();
+        return;
       }
+
+      document.getElementById('searchLoading').classList.add('hidden');
+      document.getElementById('searchNoResults').classList.add('hidden');
+      document.getElementById('searchResultsGrid').innerHTML = '';
+      showSearchSuggestions();
     }
 
     function doSuggestedSearch(term) {
