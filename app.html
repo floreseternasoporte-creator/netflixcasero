@@ -348,8 +348,8 @@
       position: absolute;
       top: 8px;
       left: 8px;
-      background: #d93025;
-      color: #ffffff;
+      background: #ffffff;
+      color: #000000;
       padding: 4px 10px;
       border-radius: 4px;
       font-size: 11px;
@@ -358,6 +358,24 @@
       z-index: 10;
       letter-spacing: 0.5px;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .live-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #06C167;
+      border-radius: 50%;
+      display: inline-block;
+      animation: liveDot 1.4s ease-in-out infinite;
+    }
+
+    @keyframes liveDot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
 
     /* Overlay de bloqueo estilo Roblox */
@@ -397,14 +415,14 @@
       margin-top: 4px;
     }
 
-    /* Cuenta regresiva */
+    /* Cuenta regresiva — estilo Uber */
     .countdown-overlay {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.92);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -412,35 +430,36 @@
       color: white;
       border-radius: 8px;
       z-index: 20;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(6px);
     }
 
     .countdown-title {
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 10px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
       text-align: center;
+      color: #06C167;
     }
 
     .countdown-timer {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       margin-bottom: 8px;
     }
 
     .countdown-segment {
-      background: #1a1a1a;
+      background: #111111;
       border-radius: 6px;
-      padding: 8px 6px;
-      min-width: 36px;
+      padding: 7px 5px;
+      min-width: 34px;
       text-align: center;
-      border: 1px solid #2d2d2d;
+      border: 1px solid #222222;
     }
 
     .countdown-number {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       line-height: 1;
       display: block;
@@ -448,44 +467,29 @@
     }
 
     .countdown-label {
-      font-size: 9px;
+      font-size: 8px;
       text-transform: uppercase;
-      font-weight: 500;
+      font-weight: 600;
       margin-top: 3px;
-      color: #ababab;
+      color: #555555;
+      letter-spacing: 0.5px;
     }
 
     .countdown-premiere-time {
-      font-size: 11px;
-      opacity: 0.9;
+      font-size: 10px;
+      color: #555555;
       text-align: center;
-      font-weight: 600;
+      font-weight: 500;
     }
 
-    /* Animación de pulso para cuenta regresiva */
-    @keyframes countdownPulse {
-      0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 0 20px rgba(29, 155, 240, 0.4);
-      }
-      50% {
-        transform: scale(1.02);
-        box-shadow: 0 0 30px rgba(29, 155, 240, 0.6);
-      }
-    }
-
-    .countdown-overlay {
-      animation: countdownPulse 3s ease-in-out infinite;
-    }
-
-    /* Animación de estreno en vivo */
+    /* Overlay EN VIVO — estilo Uber */
     .premiere-live-overlay {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(135deg, rgba(255, 0, 0, 0.9), rgba(255, 69, 0, 0.9));
+      background: rgba(0,0,0,0.90);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -493,65 +497,22 @@
       color: white;
       border-radius: 12px;
       z-index: 25;
-      animation: liveGlow 2s ease-in-out infinite;
+      backdrop-filter: blur(6px);
     }
 
     .live-title {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 2px;
-      margin-bottom: 8px;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      margin-bottom: 6px;
+      color: #ffffff;
     }
 
     .live-subtitle {
-      font-size: 12px;
-      font-weight: 600;
-      opacity: 0.9;
-    }
-
-    @keyframes liveGlow {
-      0%, 100% {
-        box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
-        transform: scale(1);
-      }
-      50% {
-        box-shadow: 0 0 40px rgba(255, 0, 0, 0.8);
-        transform: scale(1.02);
-      }
-    }
-
-    @keyframes robloxPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    @keyframes robloxGlow {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    @keyframes robloxLive {
-      0%, 100% {
-        transform: scale(1) rotate(-1deg);
-        box-shadow: 0 3px 12px rgba(255, 56, 56, 0.6);
-      }
-      50% {
-        transform: scale(1.12) rotate(1deg);
-        box-shadow: 0 8px 25px rgba(255, 56, 56, 0.9);
-      }
-    }
-
-    @keyframes robloxBorderGlow {
-      0%, 100% {
-        opacity: 0.5;
-        transform: rotate(0deg);
-      }
-      50% {
-        opacity: 1;
-        transform: rotate(180deg);
-      }
+      font-size: 11px;
+      font-weight: 500;
+      color: #888888;
     }
 
     @keyframes robloxDotPulse {
@@ -3677,6 +3638,44 @@
         </div>
       </div>
 
+      <!-- Notificaciones -->
+      <div class="settings-group">
+        <h3 class="settings-group-title">
+          <i class="fas fa-bell"></i>
+          Notificaciones
+        </h3>
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-name">Nuevos estrenos</div>
+            <div class="setting-description">Notificar sobre nuevas películas y series</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="newReleasesNotif" onchange="handleNewReleasesNotif(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-name">Recordatorios</div>
+            <div class="setting-description">Recordar contenido que dejaste pausado</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="remindersNotif" onchange="handleRemindersNotif(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="setting-item" style="border-bottom: none;">
+          <div class="setting-info">
+            <div class="setting-name">Estrenos en vivo</div>
+            <div class="setting-description">Avisar cuando comience una transmisión en vivo</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="liveNotifToggle" onchange="handleLiveNotifToggle(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -4834,6 +4833,9 @@
       if (settings.language) {
         translateInterface(settings.language);
       }
+
+      // Cargar estados de notificaciones
+      loadNotificationStates();
     }
 
     // Guardar ajustes
@@ -5079,6 +5081,53 @@
       });
     }
 
+    // Handlers para toggles de Notificaciones
+    function handleNewReleasesNotif(checked) {
+      const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
+      settings.notifNewReleases = checked;
+      localStorage.setItem('atenis_settings', JSON.stringify(settings));
+      showLiveNotification(checked ? 'Notificaciones de estrenos activadas.' : 'Notificaciones de estrenos desactivadas.');
+    }
+
+    function handleRemindersNotif(checked) {
+      const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
+      settings.notifReminders = checked;
+      localStorage.setItem('atenis_settings', JSON.stringify(settings));
+      showLiveNotification(checked ? 'Recordatorios activados.' : 'Recordatorios desactivados.');
+    }
+
+    function handleLiveNotifToggle(checked) {
+      if (checked) {
+        if ('Notification' in window) {
+          Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+              isNotificationEnabled = true;
+              localStorage.setItem('live_notifications_enabled', 'true');
+              showLiveNotification('Notificaciones en vivo activadas.');
+            } else {
+              document.getElementById('liveNotifToggle').checked = false;
+              showLiveNotification('Permiso denegado. Activa las notificaciones en ajustes del navegador.');
+            }
+          });
+        }
+      } else {
+        isNotificationEnabled = false;
+        localStorage.setItem('live_notifications_enabled', 'false');
+        showLiveNotification('Notificaciones en vivo desactivadas.');
+      }
+    }
+
+    // Cargar estados guardados de notificaciones
+    function loadNotificationStates() {
+      const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
+      const newRelEl = document.getElementById('newReleasesNotif');
+      const remEl = document.getElementById('remindersNotif');
+      const liveEl = document.getElementById('liveNotifToggle');
+      if (newRelEl) newRelEl.checked = settings.notifNewReleases || false;
+      if (remEl) remEl.checked = settings.notifReminders || false;
+      if (liveEl) liveEl.checked = localStorage.getItem('live_notifications_enabled') === 'true';
+    }
+
     // Restablecer ajustes
     function resetSettings() {
       localStorage.removeItem('atenis_settings');
@@ -5086,22 +5135,24 @@
       showSettingsMessage('Configuración restablecida a valores predeterminados');
     }
 
-    // Mostrar mensaje de ajustes
+    // Mostrar mensaje de ajustes — estilo Uber
     function showSettingsMessage(message) {
       const messageEl = document.createElement('div');
       messageEl.style.cssText = `
         position: fixed;
-        bottom: 100px;
+        bottom: 90px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(29, 155, 240, 0.9);
-        color: white;
-        padding: 12px 20px;
+        background: #1a1a1a;
+        color: #ffffff;
+        padding: 11px 16px;
         border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 13px;
+        font-weight: 500;
         z-index: 5000;
-        backdrop-filter: blur(12px);
+        border: 1px solid #2a2a2a;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        white-space: nowrap;
       `;
       messageEl.textContent = message;
 
@@ -5198,27 +5249,25 @@
       const liveSection = document.querySelector('.live-programming-section');
       if (!liveSection) return;
 
-      // Cambiar toda la sección para mostrar que está en vivo
+      // Cambiar toda la sección para mostrar que está en vivo — estilo Uber
       liveSection.innerHTML = `
-        <div class="live-header" style="text-align: center; margin-bottom: 30px;">
-          <h2 style="font-size: 32px; font-weight: 800; color: #ffffff; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 12px;">
-            <i class="fas fa-broadcast-tower" style="color: #ff0000; animation: livePulse 1s ease-in-out infinite;"></i>
-            ¡EN VIVO AHORA!
-          </h2>
-          <p style="color: #71767b; font-size: 16px;">Cortometraje exclusivo transmitiéndose ahora</p>
+        <div style="padding: 24px 20px 8px 20px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+            <span style="width: 8px; height: 8px; background: #06C167; border-radius: 50%; display: inline-block; animation: liveDot 1.4s ease-in-out infinite; flex-shrink: 0;"></span>
+            <span style="font-size: 11px; font-weight: 700; color: #06C167; text-transform: uppercase; letter-spacing: 1.5px;">En vivo ahora</span>
+          </div>
+          <h2 style="font-size: 26px; font-weight: 800; color: #ffffff; margin: 0 0 4px 0; letter-spacing: -0.5px;">Cortometraje exclusivo</h2>
+          <p style="color: #555555; font-size: 14px; margin: 0;">Transmisión única · Disponible ahora</p>
         </div>
 
-        <div class="live-content-card" style="background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(255, 69, 0, 0.2)); border-radius: 16px; padding: 24px; border: 2px solid #ff0000; position: relative; animation: liveGlow 2s ease-in-out infinite;">
-          <div style="text-align: center;">
-            <div style="background: #ff0000; color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; animation: livePulse 1.5s ease-in-out infinite;">
-              <i class="fas fa-play-circle" style="font-size: 48px; margin-bottom: 12px;"></i>
-              <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 8px;">CORTOMETRAJE EN VIVO</h3>
-              <p style="font-size: 14px; opacity: 0.9;">Transmisión exclusiva - Una sola vez</p>
+        <div style="margin: 16px 20px; background: #111111; border-radius: 12px; border: 1px solid #1e1e1e; overflow: hidden;">
+          <div style="padding: 24px; text-align: center;">
+            <div style="width: 64px; height: 64px; background: #06C167; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+              <i class="fas fa-play" style="font-size: 24px; color: #000000; margin-left: 4px;"></i>
             </div>
-            
-            <button onclick="watchLivePremiere()" style="background: linear-gradient(45deg, #ffffff, #f0f0f0); border: none; color: #000000; padding: 16px 32px; border-radius: 25px; font-size: 18px; font-weight: 800; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);">
-              <i class="fas fa-play" style="margin-right: 8px;"></i>
-              VER EN VIVO
+            <p style="color: #888888; font-size: 13px; margin: 0 0 20px 0;">Esta transmisión solo está disponible en este momento.</p>
+            <button onclick="watchLivePremiere()" style="background: #06C167; border: none; color: #000000; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; letter-spacing: -0.2px;">
+              Ver en vivo
             </button>
           </div>
         </div>
@@ -5242,34 +5291,32 @@
       const text = document.getElementById('notifyText');
 
       if (!isNotificationEnabled) {
-        // Activar notificaciones
         if ('Notification' in window) {
           Notification.requestPermission().then(permission => {
             if (permission === 'granted') {
               isNotificationEnabled = true;
               localStorage.setItem('live_notifications_enabled', 'true');
-              
-              button.style.background = 'linear-gradient(45deg, #10b981, #34d399)';
+              button.style.background = '#06C167';
+              button.style.color = '#000000';
+              button.style.borderColor = 'transparent';
               icon.className = 'fas fa-bell';
-              text.textContent = 'NOTIFICACIONES ACTIVADAS';
-              
-              showLiveNotification('¡Notificaciones activadas! Te avisaremos cuando comience el estreno.');
+              text.textContent = 'Activadas';
+              showLiveNotification('Notificaciones activadas. Te avisaremos cuando comience el estreno.');
             } else {
-              showLiveNotification('Permiso de notificaciones denegado. Actívalas en configuración del navegador.');
+              showLiveNotification('Permiso denegado. Activa las notificaciones en ajustes del navegador.');
             }
           });
         } else {
           showLiveNotification('Las notificaciones no están disponibles en este navegador.');
         }
       } else {
-        // Desactivar notificaciones
         isNotificationEnabled = false;
         localStorage.setItem('live_notifications_enabled', 'false');
-        
-        button.style.background = 'linear-gradient(45deg, #ff0000, #ff4444)';
+        button.style.background = '#1a1a1a';
+        button.style.color = '#ffffff';
+        button.style.borderColor = '#2a2a2a';
         icon.className = 'fas fa-bell-slash';
-        text.textContent = 'NOTIFICARME';
-        
+        text.textContent = 'Notificarme';
         showLiveNotification('Notificaciones desactivadas.');
       }
     }
@@ -5286,36 +5333,36 @@
         });
       }
 
-      // Notificación visual en la página
+      // Notificación visual — estilo Uber
       const notification = document.createElement('div');
       notification.style.cssText = `
         position: fixed;
         top: 20px;
-        right: 20px;
-        background: linear-gradient(45deg, #ff0000, #ff4444);
-        color: white;
-        padding: 16px 20px;
-        border-radius: 12px;
-        font-size: 14px;
-        font-weight: 600;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1a1a1a;
+        color: #ffffff;
+        padding: 13px 18px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 500;
         z-index: 10000;
-        max-width: 300px;
-        box-shadow: 0 8px 32px rgba(255, 0, 0, 0.4);
-        animation: slideInRight 0.5s ease-out;
-        border: 2px solid rgba(255, 255, 255, 0.2);
+        max-width: 320px;
+        width: calc(100vw - 40px);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+        animation: slideInDown 0.3s ease-out;
+        border: 1px solid #2a2a2a;
+        display: flex;
+        align-items: center;
+        gap: 10px;
       `;
       
       notification.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <i class="fas fa-broadcast-tower" style="font-size: 18px;"></i>
-          <div>
-            <div style="font-weight: 800; margin-bottom: 4px;">EN VIVO</div>
-            <div style="font-size: 13px; opacity: 0.9;">${message}</div>
-          </div>
-          <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer; opacity: 0.7; hover: opacity: 1;">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
+        <span style="width: 8px; height: 8px; background: #06C167; border-radius: 50%; flex-shrink: 0;"></span>
+        <span style="flex: 1; line-height: 1.4;">${message}</span>
+        <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #555555; font-size: 14px; cursor: pointer; padding: 0; flex-shrink: 0;">
+          <i class="fas fa-times"></i>
+        </button>
       `;
 
       document.body.appendChild(notification);
@@ -5323,12 +5370,12 @@
       // Auto-remover después de 5 segundos
       setTimeout(() => {
         if (notification.parentElement) {
-          notification.style.animation = 'slideOutRight 0.5s ease-out';
+          notification.style.animation = 'slideOutUp 0.3s ease-out forwards';
           setTimeout(() => {
             if (notification.parentElement) {
               notification.remove();
             }
-          }, 500);
+          }, 300);
         }
       }, 5000);
     }
@@ -5348,26 +5395,13 @@
     // Agregar estilos de animación para las notificaciones
     const liveStyles = document.createElement('style');
     liveStyles.innerHTML = `
-      @keyframes slideInRight {
-        from {
-          opacity: 0;
-          transform: translateX(100%);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
+      @keyframes slideInDown {
+        from { opacity: 0; transform: translateX(-50%) translateY(-16px); }
+        to   { opacity: 1; transform: translateX(-50%) translateY(0); }
       }
-      
-      @keyframes slideOutRight {
-        from {
-          opacity: 1;
-          transform: translateX(0);
-        }
-        to {
-          opacity: 0;
-          transform: translateX(100%);
-        }
+      @keyframes slideOutUp {
+        from { opacity: 1; transform: translateX(-50%) translateY(0); }
+        to   { opacity: 0; transform: translateX(-50%) translateY(-16px); }
       }
     `;
     document.head.appendChild(liveStyles);
@@ -5385,9 +5419,11 @@
           const text = document.getElementById('notifyText');
           
           if (button && icon && text) {
-            button.style.background = 'linear-gradient(45deg, #10b981, #34d399)';
+            button.style.background = '#06C167';
+            button.style.color = '#000000';
+            button.style.borderColor = 'transparent';
             icon.className = 'fas fa-bell';
-            text.textContent = 'NOTIFICACIONES ACTIVADAS';
+            text.textContent = 'Activadas';
           }
         }
       }
@@ -6716,13 +6752,12 @@
       const countdownEl = document.createElement('div');
       countdownEl.id = 'detailsCountdown';
       countdownEl.style.cssText = `
-        background: linear-gradient(135deg, rgba(29, 155, 240, 0.1), rgba(13, 110, 253, 0.1));
-        border: 2px solid rgba(29, 155, 240, 0.3);
+        background: #0d0d0d;
+        border: 1px solid #1e1e1e;
         border-radius: 12px;
         padding: 20px;
         margin: 20px 16px;
         text-align: center;
-        backdrop-filter: blur(10px);
       `;
 
       // Insertar después de las acciones
@@ -6748,32 +6783,31 @@
         const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
         countdownEl.innerHTML = `
-          <div style="color: #1d9bf0; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">
-            ESTRENO MUNDIAL
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
+            <span style="font-size: 10px; font-weight: 700; color: #06C167; text-transform: uppercase; letter-spacing: 1.5px;">Estreno</span>
+            <span style="font-size: 10px; color: #333333;">·</span>
+            <span style="font-size: 10px; color: #555555;">${formatReleaseDate(series.releaseDate)}</span>
           </div>
-          <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 12px;">
-            <div style="background: rgba(29, 155, 240, 0.2); border-radius: 8px; padding: 8px; min-width: 45px; border: 1px solid rgba(29, 155, 240, 0.3);">
-              <div style="font-size: 18px; font-weight: 800; color: #ffffff;">${days}</div>
-              <div style="font-size: 10px; color: #71767b; font-weight: 600;">DÍAS</div>
+          <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 14px;">
+            <div style="background: #111111; border-radius: 8px; padding: 10px 8px; min-width: 50px; border: 1px solid #1e1e1e; text-align: center;">
+              <div style="font-size: 22px; font-weight: 800; color: #ffffff; line-height: 1;">${days}</div>
+              <div style="font-size: 9px; color: #444444; font-weight: 600; margin-top: 4px; letter-spacing: 0.5px;">DÍAS</div>
             </div>
-            <div style="background: rgba(29, 155, 240, 0.2); border-radius: 8px; padding: 8px; min-width: 45px; border: 1px solid rgba(29, 155, 240, 0.3);">
-              <div style="font-size: 18px; font-weight: 800; color: #ffffff;">${hours}</div>
-              <div style="font-size: 10px; color: #71767b; font-weight: 600;">HRS</div>
+            <div style="background: #111111; border-radius: 8px; padding: 10px 8px; min-width: 50px; border: 1px solid #1e1e1e; text-align: center;">
+              <div style="font-size: 22px; font-weight: 800; color: #ffffff; line-height: 1;">${hours}</div>
+              <div style="font-size: 9px; color: #444444; font-weight: 600; margin-top: 4px; letter-spacing: 0.5px;">HRS</div>
             </div>
-            <div style="background: rgba(29, 155, 240, 0.2); border-radius: 8px; padding: 8px; min-width: 45px; border: 1px solid rgba(29, 155, 240, 0.3);">
-              <div style="font-size: 18px; font-weight: 800; color: #ffffff;">${minutes}</div>
-              <div style="font-size: 10px; color: #71767b; font-weight: 600;">MIN</div>
+            <div style="background: #111111; border-radius: 8px; padding: 10px 8px; min-width: 50px; border: 1px solid #1e1e1e; text-align: center;">
+              <div style="font-size: 22px; font-weight: 800; color: #ffffff; line-height: 1;">${minutes}</div>
+              <div style="font-size: 9px; color: #444444; font-weight: 600; margin-top: 4px; letter-spacing: 0.5px;">MIN</div>
             </div>
-            <div style="background: rgba(29, 155, 240, 0.2); border-radius: 8px; padding: 8px; min-width: 45px; border: 1px solid rgba(29, 155, 240, 0.3);">
-              <div style="font-size: 18px; font-weight: 800; color: #ffffff;">${seconds}</div>
-              <div style="font-size: 10px; color: #71767b; font-weight: 600;">SEG</div>
+            <div style="background: #111111; border-radius: 8px; padding: 10px 8px; min-width: 50px; border: 1px solid #1e1e1e; text-align: center;">
+              <div style="font-size: 22px; font-weight: 800; color: #ffffff; line-height: 1;">${seconds}</div>
+              <div style="font-size: 9px; color: #444444; font-weight: 600; margin-top: 4px; letter-spacing: 0.5px;">SEG</div>
             </div>
           </div>
-          <div style="color: #71767b; font-size: 12px; font-weight: 600; margin-bottom: 8px;">
-            ${formatReleaseDate(series.releaseDate)}
-          </div>
-          <div style="color: #1d9bf0; font-size: 11px; font-weight: 600;">
-            Se desbloquea automáticamente el día del estreno
+          <div style="color: #444444; font-size: 11px; font-weight: 500;">
+            Se desbloquea automáticamente al estreno
           </div>
         `;
       }
