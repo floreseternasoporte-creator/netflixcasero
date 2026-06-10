@@ -3229,6 +3229,14 @@
         </div>
       </div>
 
+      <!-- Series -->
+      <div class="section">
+        <h2 class="section-title">Series</h2>
+        <div class="carousel-container">
+          <div class="carousel" id="seriesCarousel"></div>
+        </div>
+      </div>
+
       <!-- Tendencias -->
       <div class="section">
         <h2 class="section-title">Tendencias</h2>
@@ -5542,6 +5550,52 @@
 
     // Base de datos de series y episodios
     const seriesDatabase = {
+      'los-gemelos': {
+        id: 'los-gemelos',
+        title: 'Los Gemelos',
+        spanishTitle: 'Los Gemelos',
+        searchAliases: ['Los Gemelos', 'Los gemelos', 'gemelos'],
+        type: 'series',
+        year: '2026',
+        genre: 'Suspenso',
+        duration: '6 min',
+        rating: 'PG-13',
+        poster: 'https://i.ibb.co/36Vqmn4/IMG-2939.jpg',
+        trailer: '',
+        description: 'Una serie de suspenso que te mantendrá al borde de tu asiento.',
+        director: 'Atenis',
+        cast: 'Darel Narayan',
+        isFeatured: true,
+        isTrending: true,
+        isLocked: true,
+        releaseDate: '2026-08-17T00:00:00-05:00',
+        episodes: [
+          {
+            id: 1,
+            title: 'Episodio 1',
+            duration: '6 min',
+            description: 'Primer episodio de Los Gemelos.',
+            thumbnail: 'https://i.ibb.co/36Vqmn4/IMG-2939.jpg',
+            videoUrl: ''
+          },
+          {
+            id: 2,
+            title: 'Episodio 2',
+            duration: '6 min',
+            description: 'Segundo episodio de Los Gemelos.',
+            thumbnail: 'https://i.ibb.co/36Vqmn4/IMG-2939.jpg',
+            videoUrl: ''
+          },
+          {
+            id: 3,
+            title: 'Episodio 3',
+            duration: '6 min',
+            description: 'Tercer episodio de Los Gemelos.',
+            thumbnail: 'https://i.ibb.co/36Vqmn4/IMG-2939.jpg',
+            videoUrl: ''
+          }
+        ]
+      },
       'kikyo-no-kioku': {
         id: 'kikyo-no-kioku',
         title: '桔梗の記憶',
@@ -5581,6 +5635,7 @@
 
     const contentSections = [
       { carouselId: 'moviesCarousel', types: ['movie', 'shortfilm'] },
+      { carouselId: 'seriesCarousel', types: ['series'] },
       { carouselId: 'trendingCarousel', featuredOnly: true },
       { carouselId: 'animeCarousel', genre: 'Anime' },
       { carouselId: 'terrorCarousel', genre: 'Terror' }
