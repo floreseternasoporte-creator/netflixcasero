@@ -73,8 +73,6 @@ body::after,
 .profile-form,
 .avatars-grid,
 .step,
-.settings-group,
-.setting-item,
 .history-item,
 .search-result-item,
 .episode-item,
@@ -96,6 +94,24 @@ body::after,
   background: var(--uber-surface-elevated) !important;
   border: 1px solid var(--uber-border) !important;
   border-radius: var(--uber-radius-lg) !important;
+}
+
+/* Configuración: sin cajas — lista plana tipo iOS */
+.settings-group {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+.setting-item {
+  background: transparent !important;
+  border: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid #141414 !important;
 }
 
 .header,
@@ -481,7 +497,6 @@ button[style*="linear-gradient"],
 
 hr,
 .plan-features li,
-.setting-item,
 .payment-method,
 .info-tab-content {
   border-color: var(--uber-border) !important;
@@ -590,7 +605,6 @@ body[style*="linear-gradient"] {
   .welcome-container,
   .forms-container,
   .plan-card,
-  .settings-group,
   .payment-section {
     border-radius: var(--uber-radius-lg) !important;
   }
