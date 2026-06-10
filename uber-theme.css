@@ -73,15 +73,9 @@ body::after,
 .profile-form,
 .avatars-grid,
 .step,
-.history-item,
-.search-result-item,
-.episode-item,
-.info-tab-content,
-.live-content-card,
 .trial-card,
 .offer-card,
 .subscription-card,
-.content-card,
 .container,
 .form-section,
 .benefits,
@@ -94,6 +88,50 @@ body::after,
   background: var(--uber-surface-elevated) !important;
   border: 1px solid var(--uber-border) !important;
   border-radius: var(--uber-radius-lg) !important;
+}
+
+/* Listas planas — sin cajas */
+.episode-item {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid #141414 !important;
+}
+
+.episode-item:last-child {
+  border-bottom: none !important;
+}
+
+.history-item {
+  background: #161616 !important;
+  border: 1px solid #2d2d2d !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.search-result-item {
+  background: #0e0e0e !important;
+  border: 1px solid #1f1f1f !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+.info-tab-content {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.live-content-card {
+  background: #111111 !important;
+  border: 1px solid #1e1e1e !important;
+  border-radius: var(--uber-radius-lg) !important;
+}
+
+.content-card {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
 }
 
 /* Configuración: sin cajas — lista plana tipo iOS */
@@ -374,11 +412,15 @@ textarea:focus,
   box-shadow: none !important;
 }
 
-.auth-tab.active,
-.info-tab.active,
-.bottom-nav button.active {
+.auth-tab.active {
   color: var(--uber-black) !important;
   background: var(--uber-white) !important;
+}
+
+.info-tab.active {
+  color: var(--uber-white) !important;
+  background: transparent !important;
+  border-bottom: 2px solid var(--uber-green) !important;
 }
 
 .bottom-nav {
@@ -431,40 +473,16 @@ textarea:focus,
   border-color: var(--uber-green) !important;
 }
 
-/* Anula colores inline o gradientes chillones generados dinámicamente. */
-[style*="linear-gradient"],
-[style*="#FFD700"],
-[style*="#FFA500"],
-[style*="#FF1493"],
-[style*="#FF6B35"],
-[style*="#F7931E"],
-[style*="#00FF88"],
-[style*="255, 215"],
-[style*="255, 20, 147"],
-[style*="255, 107, 53"],
-[style*="0, 255, 136"] {
-  background: var(--uber-surface-elevated) !important;
-  color: var(--uber-white) !important;
-  border-color: var(--uber-border) !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
-}
-
+/* Neutralizar colores neón chillones solo en textos de colores específicos */
 [style*="color: #FF1493"],
 [style*="color:#FF1493"],
 [style*="color: #00FF88"],
 [style*="color:#00FF88"],
 [style*="color: #FFD700"],
-[style*="color:#FFD700"] {
+[style*="color:#FFD700"],
+[style*="color: #FFA500"],
+[style*="color:#FFA500"] {
   color: var(--uber-white) !important;
-}
-
-button[style*="linear-gradient"],
-.settings-btn[style*="linear-gradient"],
-.notification[style*="linear-gradient"] {
-  background: var(--uber-white) !important;
-  color: var(--uber-black) !important;
-  border-color: var(--uber-white) !important;
 }
 
 .message,
@@ -497,8 +515,7 @@ button[style*="linear-gradient"],
 
 hr,
 .plan-features li,
-.payment-method,
-.info-tab-content {
+.payment-method {
   border-color: var(--uber-border) !important;
 }
 
