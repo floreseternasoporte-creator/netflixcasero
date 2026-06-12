@@ -5649,7 +5649,7 @@
         cast: 'Kikyo',
         isFeatured: true,
         isTrending: true,
-        isLocked: false,
+        isLocked: true,
         releaseDate: '2026-06-25T00:00:00-05:00',
         audioTracks: {
           'original': 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0',
@@ -5897,29 +5897,37 @@
     // Función para actualizar indicadores de estreno
     function updateReleaseIndicators() {
       Object.values(seriesDatabase).forEach(series => {
-        if (series.releaseDate) {
-          const badgeElement = document.getElementById(`${series.id}-badge`);
+        const badgeElement = document.getElementById(`${series.id}-badge`);
+        if (!badgeElement) return;
 
-          if (badgeElement) {
-            const lockElement = document.getElementById(`${series.id}-lock`);
+        const lockElement = document.getElementById(`${series.id}-lock`);
 
-            if (lockElement) {
-              if (isMovieAvailable(series)) {
-                lockElement.style.display = 'none';
+        // Si isLocked es false explícitamente, asegurar que el badge y overlay sean correctos
+        if (!series.isLocked) {
+          if (lockElement) lockElement.style.display = 'none';
+          badgeElement.className = 'movie-badge';
+          badgeElement.textContent = getContentTypeLabel(series);
+          return;
+        }
 
-                if (isMovieLive(series)) {
-                  badgeElement.className = 'live-badge';
-                  badgeElement.textContent = 'EN VIVO';
-                } else {
-                  badgeElement.className = 'movie-badge';
-                  badgeElement.textContent = getContentTypeLabel(series);
-                }
-              } else {
-                lockElement.style.display = 'flex';
-                badgeElement.className = 'premiere-badge';
-                badgeElement.textContent = 'Estreno';
-              }
+        // Bloqueado por fecha: solo actualizar si tiene releaseDate
+        if (!series.releaseDate) return;
+
+        if (lockElement) {
+          if (isMovieAvailable(series)) {
+            lockElement.style.display = 'none';
+
+            if (isMovieLive(series)) {
+              badgeElement.className = 'live-badge';
+              badgeElement.textContent = 'EN VIVO';
+            } else {
+              badgeElement.className = 'movie-badge';
+              badgeElement.textContent = getContentTypeLabel(series);
             }
+          } else {
+            lockElement.style.display = 'flex';
+            badgeElement.className = 'premiere-badge';
+            badgeElement.textContent = 'Estreno';
           }
         }
       });
@@ -6988,6 +6996,12 @@
 
     // Función para reproducir intro de Atenis
     function playAtenisIntro(callback) {
+      // Ir directo al contenido sin reproducir intro externo
+      isPlayingIntro = false;
+      if (callback) callback();
+      return;
+
+      // (código de intro deshabilitado — reemplazar introVideoUrl con el video correcto para reactivar)
       isPlayingIntro = true;
 
       // IMPORTANTE: Limpiar todos los elementos source y src anteriores
