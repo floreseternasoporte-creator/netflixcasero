@@ -323,9 +323,12 @@
       );
     }
 
-    /* individual slide backgrounds */
+    /* Fondos de cada slide — si hay imagen de póster se muestra encima del gradiente */
+    .slide-bg {
+      background-color: #050505;
+    }
     .slide:nth-child(1) .slide-bg {
-      background: linear-gradient(135deg, #0a0a1a 0%, #1a0530 40%, #2d0a50 70%, #0d0d20 100%);
+      background: linear-gradient(135deg, #0a0518 0%, #150830 60%, #0a0a20 100%);
     }
     .slide:nth-child(2) .slide-bg {
       background: linear-gradient(135deg, #0a1a0a 0%, #051a10 40%, #0a3020 70%, #050f0a 100%);
@@ -335,6 +338,12 @@
     }
     .slide:nth-child(4) .slide-bg {
       background: linear-gradient(135deg, #000a1a 0%, #001530 40%, #002050 70%, #000d20 100%);
+    }
+    /* Cuando el slide-bg tiene una imagen de póster */
+    .slide-bg.has-poster {
+      background-size: cover;
+      background-position: center 20%;
+      background-repeat: no-repeat;
     }
 
     /* Decorative cinematic shapes per slide */
@@ -670,142 +679,146 @@
   <!-- Promo Slider -->
   <section class="promo-slider" id="promoSlider">
 
-    <!-- Slide 1: Película de acción épica -->
+    <!--
+    SLIDER DE INICIO - COMO EDITAR
+
+    * Cada div.slide es una tarjeta del carrusel.
+    * Para AGREGAR un slide: copia un bloque div.slide completo
+      y pegalo antes del div.slider-arrow-prev. Actualiza
+      "totalSlides" en el script de abajo al nuevo total.
+    * Para ELIMINAR un slide: borra el bloque div.slide completo
+      y reduce "totalSlides" en 1 en el script de abajo.
+
+    * Para poner IMAGEN DE FONDO en un slide, reemplaza el div
+      de fondo con este formato (copia exactamente):
+        <div class="slide-bg has-poster"
+          style="background-image:url('URL_DE_TU_POSTER');
+                 background-size:cover;
+                 background-position:center 20%;
+                 background-repeat:no-repeat;">
+        </div>
+      Si no pones imagen, se usa un degradado automatico.
+
+    COLORES DE BADGE (badge-top):
+      Verde   - style="background:#06C167;"  para Originales
+      Naranja - style="background:#ff6b00;"  para Estrenos
+      Azul    - style="background:#0066dd;"  para Exclusivos
+      Sin color extra                        para TOP 1 etc.
+    -->
+
+    <!-- ═══ SLIDE 1 ═══════════════════════════════════════════ -->
+    <!-- Película: 桔梗の記憶 — El recuerdo de Kikyo            -->
     <div class="slide active">
-      <div class="slide-bg"></div>
+      <!-- IMAGEN: pon la URL del póster aquí (background-image, size, position, repeat)  -->
+      <div class="slide-bg has-poster" style="background-image:url('https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg');background-size:cover;background-position:center 20%;background-repeat:no-repeat;"></div>
       <div class="slide-deco"></div>
       <div class="slide-content">
         <div class="slide-badges">
-          <span class="badge-top">TOP 1</span>
-          <span class="badge-tag">Acción</span>
-          <span class="badge-tag">Thriller</span>
+          <!-- BADGE PRINCIPAL: cambia el texto y color a gusto  -->
+          <span class="badge-top" style="background:#ff6b00;">ESTRENO</span>
+          <!-- GÉNEROS: agrega o quita <span class="badge-tag">  -->
+          <span class="badge-tag">Aventura</span>
+          <span class="badge-tag">Cortometraje</span>
           <span class="badge-4k">4K</span>
         </div>
-        <div class="slide-title">El Último<br>Imperio</div>
+        <!-- TÍTULO: usa <br> para dividir en dos líneas          -->
+        <div class="slide-title">El recuerdo<br>de Kikyo</div>
+        <!-- META: año · duración · tipo                          -->
         <div class="slide-meta">
-          <span>2024</span>
+          <span>2026</span>
           <span class="slide-meta-dot"></span>
-          <span>2h 18min</span>
+          <span>6 min</span>
           <span class="slide-meta-dot"></span>
-          <span>12 episodios</span>
+          <span>Cortometraje</span>
         </div>
         <div class="slide-actions">
-          <a href="login.html" class="slide-play-btn">
-            <i class="fas fa-play"></i>
-          </a>
-          <a href="login.html" class="slide-watch-btn">
-            <i class="fas fa-plus"></i>
-            Mi lista
-          </a>
-          <a href="login.html" class="slide-watch-btn">
-            <i class="fas fa-info-circle"></i>
-            Más info
-          </a>
+          <a href="login.html" class="slide-play-btn"><i class="fas fa-play"></i></a>
+          <a href="login.html" class="slide-watch-btn"><i class="fas fa-plus"></i> Mi lista</a>
+          <a href="login.html" class="slide-watch-btn"><i class="fas fa-info-circle"></i> Más info</a>
         </div>
       </div>
     </div>
 
-    <!-- Slide 2: Serie original -->
+    <!-- ═══ SLIDE 2 ═══════════════════════════════════════════ -->
+    <!-- Serie: Los Gemelos                                      -->
     <div class="slide">
+      <!-- Sin póster → fondo degradado automático del CSS       -->
+      <div class="slide-bg"></div>
+      <div class="slide-deco"></div>
+      <div class="slide-content">
+        <div class="slide-badges">
+          <span class="badge-top">PRÓXIMAMENTE</span>
+          <span class="badge-tag">Suspenso</span>
+          <span class="badge-tag">Serie</span>
+          <span class="badge-4k">4K</span>
+        </div>
+        <div class="slide-title">Los<br>Gemelos</div>
+        <div class="slide-meta">
+          <span>2026</span>
+          <span class="slide-meta-dot"></span>
+          <span>6 min / ep.</span>
+          <span class="slide-meta-dot"></span>
+          <span>3 episodios</span>
+        </div>
+        <div class="slide-actions">
+          <a href="login.html" class="slide-play-btn"><i class="fas fa-play"></i></a>
+          <a href="login.html" class="slide-watch-btn"><i class="fas fa-plus"></i> Mi lista</a>
+          <a href="login.html" class="slide-watch-btn"><i class="fas fa-info-circle"></i> Más info</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 3 ═══════════════════════════════════════════ -->
+    <!-- PLANTILLA — reemplaza con tu próxima película o serie   -->
+    <div class="slide">
+      <!-- Para poner imagen: <div class="slide-bg has-poster" style="background-image:url('URL_DEL_POSTER')"> -->
       <div class="slide-bg"></div>
       <div class="slide-deco"></div>
       <div class="slide-content">
         <div class="slide-badges">
           <span class="badge-top" style="background:#06C167;">ORIGINAL</span>
-          <span class="badge-tag">Drama</span>
-          <span class="badge-tag">Romance</span>
+          <span class="badge-tag">Drama</span>          <!-- ← cambia el género -->
           <span class="badge-4k">4K</span>
         </div>
-        <div class="slide-title">Sombras<br>del Pacífico</div>
+        <div class="slide-title">Título<br>aquí</div>    <!-- ← cambia el título -->
         <div class="slide-meta">
-          <span>2025</span>
+          <span>2026</span>                              <!-- ← cambia el año -->
           <span class="slide-meta-dot"></span>
-          <span>Temporada 1</span>
+          <span>Duración</span>                          <!-- ← p.ej. "1h 30min" -->
           <span class="slide-meta-dot"></span>
-          <span>8 episodios</span>
+          <span>Tipo</span>                              <!-- ← "Película", "Serie", etc. -->
         </div>
         <div class="slide-actions">
-          <a href="login.html" class="slide-play-btn">
-            <i class="fas fa-play"></i>
-          </a>
-          <a href="login.html" class="slide-watch-btn">
-            <i class="fas fa-plus"></i>
-            Mi lista
-          </a>
-          <a href="login.html" class="slide-watch-btn">
-            <i class="fas fa-info-circle"></i>
-            Más info
-          </a>
+          <a href="login.html" class="slide-play-btn"><i class="fas fa-play"></i></a>
+          <a href="login.html" class="slide-watch-btn"><i class="fas fa-plus"></i> Mi lista</a>
+          <a href="login.html" class="slide-watch-btn"><i class="fas fa-info-circle"></i> Más info</a>
         </div>
       </div>
     </div>
 
-    <!-- Slide 3: Estreno exclusivo -->
-    <div class="slide">
-      <div class="slide-bg"></div>
-      <div class="slide-deco"></div>
-      <div class="slide-content">
-        <div class="slide-badges">
-          <span class="badge-top" style="background:#ff6b00;">ESTRENO</span>
-          <span class="badge-tag">Aventura</span>
-          <span class="badge-tag">Fantasía</span>
-          <span class="badge-4k">4K</span>
-        </div>
-        <div class="slide-title">Dragones<br>de Fuego</div>
-        <div class="slide-meta">
-          <span>2025</span>
-          <span class="slide-meta-dot"></span>
-          <span>1h 52min</span>
-          <span class="slide-meta-dot"></span>
-          <span>Película</span>
-        </div>
-        <div class="slide-actions">
-          <a href="login.html" class="slide-play-btn">
-            <i class="fas fa-play"></i>
-          </a>
-          <a href="login.html" class="slide-watch-btn">
-            <i class="fas fa-plus"></i>
-            Mi lista
-          </a>
-          <a href="login.html" class="slide-watch-btn">
-            <i class="fas fa-info-circle"></i>
-            Más info
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Slide 4: Documental -->
+    <!-- ═══ SLIDE 4 ═══════════════════════════════════════════ -->
+    <!-- PLANTILLA — reemplaza con tu próxima película o serie   -->
     <div class="slide">
       <div class="slide-bg"></div>
       <div class="slide-deco"></div>
       <div class="slide-content">
         <div class="slide-badges">
           <span class="badge-top" style="background:#0066dd;">EXCLUSIVO</span>
-          <span class="badge-tag">Documental</span>
-          <span class="badge-tag">Ciencia</span>
+          <span class="badge-tag">Género</span>          <!-- ← cambia el género -->
           <span class="badge-4k">4K</span>
         </div>
-        <div class="slide-title">Universo<br>Infinito</div>
+        <div class="slide-title">Título<br>aquí</div>    <!-- ← cambia el título -->
         <div class="slide-meta">
-          <span>2025</span>
+          <span>2026</span>
           <span class="slide-meta-dot"></span>
-          <span>3 partes</span>
+          <span>Duración</span>
           <span class="slide-meta-dot"></span>
-          <span>Atenis Docs</span>
+          <span>Tipo</span>
         </div>
         <div class="slide-actions">
-          <a href="login.html" class="slide-play-btn">
-            <i class="fas fa-play"></i>
-          </a>
-          <a href="login.html" class="slide-watch-btn">
-            <i class="fas fa-plus"></i>
-            Mi lista
-          </a>
-          <a href="login.html" class="slide-watch-btn">
-            <i class="fas fa-info-circle"></i>
-            Más info
-          </a>
+          <a href="login.html" class="slide-play-btn"><i class="fas fa-play"></i></a>
+          <a href="login.html" class="slide-watch-btn"><i class="fas fa-plus"></i> Mi lista</a>
+          <a href="login.html" class="slide-watch-btn"><i class="fas fa-info-circle"></i> Más info</a>
         </div>
       </div>
     </div>
