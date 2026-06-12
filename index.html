@@ -676,170 +676,15 @@
     <a href="login.html" class="header-login">Iniciar sesión</a>
   </header>
 
-  <!-- Promo Slider -->
+  <!-- Promo Slider — los slides se generan automáticamente desde catalog.js -->
   <section class="promo-slider" id="promoSlider">
-
-    <!--
-    SLIDER DE INICIO - COMO EDITAR
-
-    * Cada div.slide es una tarjeta del carrusel.
-    * Para AGREGAR un slide: copia un bloque div.slide completo
-      y pegalo antes del div.slider-arrow-prev. Actualiza
-      "totalSlides" en el script de abajo al nuevo total.
-    * Para ELIMINAR un slide: borra el bloque div.slide completo
-      y reduce "totalSlides" en 1 en el script de abajo.
-
-    * Para poner IMAGEN DE FONDO en un slide, reemplaza el div
-      de fondo con este formato (copia exactamente):
-        <div class="slide-bg has-poster"
-          style="background-image:url('URL_DE_TU_POSTER');
-                 background-size:cover;
-                 background-position:center 20%;
-                 background-repeat:no-repeat;">
-        </div>
-      Si no pones imagen, se usa un degradado automatico.
-
-    COLORES DE BADGE (badge-top):
-      Verde   - style="background:#06C167;"  para Originales
-      Naranja - style="background:#ff6b00;"  para Estrenos
-      Azul    - style="background:#0066dd;"  para Exclusivos
-      Sin color extra                        para TOP 1 etc.
-    -->
-
-    <!-- ═══ SLIDE 1 ═══════════════════════════════════════════ -->
-    <!-- Película: 桔梗の記憶 — El recuerdo de Kikyo            -->
-    <div class="slide active">
-      <!-- IMAGEN: pon la URL del póster aquí (background-image, size, position, repeat)  -->
-      <div class="slide-bg has-poster" style="background-image:url('https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg');background-size:cover;background-position:center 20%;background-repeat:no-repeat;"></div>
-      <div class="slide-deco"></div>
-      <div class="slide-content">
-        <div class="slide-badges">
-          <!-- BADGE PRINCIPAL: cambia el texto y color a gusto  -->
-          <span class="badge-top" style="background:#ff6b00;">ESTRENO</span>
-          <!-- GÉNEROS: agrega o quita <span class="badge-tag">  -->
-          <span class="badge-tag">Aventura</span>
-          <span class="badge-tag">Cortometraje</span>
-          <span class="badge-4k">4K</span>
-        </div>
-        <!-- TÍTULO: usa <br> para dividir en dos líneas          -->
-        <div class="slide-title">El recuerdo<br>de Kikyo</div>
-        <!-- META: año · duración · tipo                          -->
-        <div class="slide-meta">
-          <span>2026</span>
-          <span class="slide-meta-dot"></span>
-          <span>6 min</span>
-          <span class="slide-meta-dot"></span>
-          <span>Cortometraje</span>
-        </div>
-        <div class="slide-actions">
-          <a href="login.html" class="slide-play-btn"><i class="fas fa-play"></i></a>
-          <a href="login.html" class="slide-watch-btn"><i class="fas fa-plus"></i> Mi lista</a>
-          <a href="login.html" class="slide-watch-btn"><i class="fas fa-info-circle"></i> Más info</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ SLIDE 2 ═══════════════════════════════════════════ -->
-    <!-- Serie: Los Gemelos                                      -->
-    <div class="slide">
-      <!-- Sin póster → fondo degradado automático del CSS       -->
-      <div class="slide-bg"></div>
-      <div class="slide-deco"></div>
-      <div class="slide-content">
-        <div class="slide-badges">
-          <span class="badge-top">PRÓXIMAMENTE</span>
-          <span class="badge-tag">Suspenso</span>
-          <span class="badge-tag">Serie</span>
-          <span class="badge-4k">4K</span>
-        </div>
-        <div class="slide-title">Los<br>Gemelos</div>
-        <div class="slide-meta">
-          <span>2026</span>
-          <span class="slide-meta-dot"></span>
-          <span>6 min / ep.</span>
-          <span class="slide-meta-dot"></span>
-          <span>3 episodios</span>
-        </div>
-        <div class="slide-actions">
-          <a href="login.html" class="slide-play-btn"><i class="fas fa-play"></i></a>
-          <a href="login.html" class="slide-watch-btn"><i class="fas fa-plus"></i> Mi lista</a>
-          <a href="login.html" class="slide-watch-btn"><i class="fas fa-info-circle"></i> Más info</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ SLIDE 3 ═══════════════════════════════════════════ -->
-    <!-- PLANTILLA — reemplaza con tu próxima película o serie   -->
-    <div class="slide">
-      <!-- Para poner imagen: <div class="slide-bg has-poster" style="background-image:url('URL_DEL_POSTER')"> -->
-      <div class="slide-bg"></div>
-      <div class="slide-deco"></div>
-      <div class="slide-content">
-        <div class="slide-badges">
-          <span class="badge-top" style="background:#06C167;">ORIGINAL</span>
-          <span class="badge-tag">Drama</span>          <!-- ← cambia el género -->
-          <span class="badge-4k">4K</span>
-        </div>
-        <div class="slide-title">Título<br>aquí</div>    <!-- ← cambia el título -->
-        <div class="slide-meta">
-          <span>2026</span>                              <!-- ← cambia el año -->
-          <span class="slide-meta-dot"></span>
-          <span>Duración</span>                          <!-- ← p.ej. "1h 30min" -->
-          <span class="slide-meta-dot"></span>
-          <span>Tipo</span>                              <!-- ← "Película", "Serie", etc. -->
-        </div>
-        <div class="slide-actions">
-          <a href="login.html" class="slide-play-btn"><i class="fas fa-play"></i></a>
-          <a href="login.html" class="slide-watch-btn"><i class="fas fa-plus"></i> Mi lista</a>
-          <a href="login.html" class="slide-watch-btn"><i class="fas fa-info-circle"></i> Más info</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ SLIDE 4 ═══════════════════════════════════════════ -->
-    <!-- PLANTILLA — reemplaza con tu próxima película o serie   -->
-    <div class="slide">
-      <div class="slide-bg"></div>
-      <div class="slide-deco"></div>
-      <div class="slide-content">
-        <div class="slide-badges">
-          <span class="badge-top" style="background:#0066dd;">EXCLUSIVO</span>
-          <span class="badge-tag">Género</span>          <!-- ← cambia el género -->
-          <span class="badge-4k">4K</span>
-        </div>
-        <div class="slide-title">Título<br>aquí</div>    <!-- ← cambia el título -->
-        <div class="slide-meta">
-          <span>2026</span>
-          <span class="slide-meta-dot"></span>
-          <span>Duración</span>
-          <span class="slide-meta-dot"></span>
-          <span>Tipo</span>
-        </div>
-        <div class="slide-actions">
-          <a href="login.html" class="slide-play-btn"><i class="fas fa-play"></i></a>
-          <a href="login.html" class="slide-watch-btn"><i class="fas fa-plus"></i> Mi lista</a>
-          <a href="login.html" class="slide-watch-btn"><i class="fas fa-info-circle"></i> Más info</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Arrows -->
     <button class="slider-arrow slider-arrow-prev" onclick="slideMove(-1)">
       <i class="fas fa-chevron-left"></i>
     </button>
     <button class="slider-arrow slider-arrow-next" onclick="slideMove(1)">
       <i class="fas fa-chevron-right"></i>
     </button>
-
-    <!-- Dots -->
-    <div class="slider-dots" id="sliderDots">
-      <button class="slider-dot active" onclick="goToSlide(0)"></button>
-      <button class="slider-dot" onclick="goToSlide(1)"></button>
-      <button class="slider-dot" onclick="goToSlide(2)"></button>
-      <button class="slider-dot" onclick="goToSlide(3)"></button>
-    </div>
-
-    <!-- Progress bar -->
+    <div class="slider-dots" id="sliderDots"></div>
     <div class="slider-progress" id="sliderProgress"></div>
   </section>
 
@@ -944,22 +789,113 @@
 
   </div>
 
+  <script src="catalog.js"></script>
   <script>
-    // ===== PROMO SLIDER =====
+    // ═══════════════════════════════════════════════════════════
+    //  SLIDER AUTOMÁTICO — lee catalog.js y genera los slides
+    // ═══════════════════════════════════════════════════════════
+
+    const SLIDE_GRADIENTS = [
+      'linear-gradient(135deg,#0a0518 0%,#150830 60%,#0a0a20 100%)',
+      'linear-gradient(135deg,#051a10 0%,#0a3020 60%,#050f0a 100%)',
+      'linear-gradient(135deg,#1a0a00 0%,#3d1800 60%,#150800 100%)',
+      'linear-gradient(135deg,#000a1a 0%,#002050 60%,#000d20 100%)',
+      'linear-gradient(135deg,#1a001a 0%,#3d0050 60%,#150015 100%)',
+      'linear-gradient(135deg,#001a1a 0%,#003030 60%,#000f0f 100%)',
+    ];
+
+    function _isAvailable(item) {
+      if (!item.releaseDate) return true;
+      return new Date() >= new Date(item.releaseDate);
+    }
+
+    function _badge(item) {
+      if (item.isLocked && !_isAvailable(item))
+        return { text: 'ESTRENO', color: '#ff6b00' };
+      const map = {
+        'movie':     { text: 'PELÍCULA',     color: '#06C167' },
+        'series':    { text: 'SERIE',         color: '#0066dd' },
+        'shortfilm': { text: 'CORTOMETRAJE',  color: '#06C167' },
+      };
+      return map[item.type] || { text: 'ORIGINAL', color: '#06C167' };
+    }
+
+    function _typeLabel(type) {
+      return { movie:'Película', series:'Serie', shortfilm:'Cortometraje' }[type] || 'Contenido';
+    }
+
+    function buildSlider() {
+      const slider = document.getElementById('promoSlider');
+      const dotsEl = document.getElementById('sliderDots');
+      const arrowPrev = slider.querySelector('.slider-arrow-prev');
+
+      const items = Object.values(seriesDatabase)
+        .filter(s => s.isFeatured || s.isTrending)
+        .slice(0, 6);
+
+      if (!items.length) return;
+
+      items.forEach((item, i) => {
+        const badge = _badge(item);
+        const genre = (item.genre || '').split(',')[0].trim();
+        const label = _typeLabel(item.type);
+        const title = item.spanishTitle || item.title;
+        const bgStyle = item.poster
+          ? `background-image:url('${item.poster}');background-size:cover;background-position:center 20%;background-repeat:no-repeat;`
+          : `background:${SLIDE_GRADIENTS[i % SLIDE_GRADIENTS.length]};`;
+
+        const slide = document.createElement('div');
+        slide.className = 'slide' + (i === 0 ? ' active' : '');
+        slide.innerHTML = `
+          <div class="slide-bg" style="${bgStyle}"></div>
+          <div class="slide-deco"></div>
+          <div class="slide-content">
+            <div class="slide-badges">
+              <span class="badge-top" style="background:${badge.color};">${badge.text}</span>
+              <span class="badge-tag">${genre}</span>
+              <span class="badge-tag">${label}</span>
+              <span class="badge-4k">4K</span>
+            </div>
+            <div class="slide-title">${title}</div>
+            <div class="slide-meta">
+              <span>${item.year}</span>
+              <span class="slide-meta-dot"></span>
+              <span>${item.duration}</span>
+              <span class="slide-meta-dot"></span>
+              <span>${label}</span>
+            </div>
+            <div class="slide-actions">
+              <a href="login.html" class="slide-play-btn"><i class="fas fa-play"></i></a>
+              <a href="login.html" class="slide-watch-btn"><i class="fas fa-plus"></i> Mi lista</a>
+              <a href="login.html" class="slide-watch-btn"><i class="fas fa-info-circle"></i> Más info</a>
+            </div>
+          </div>`;
+        slider.insertBefore(slide, arrowPrev);
+
+        const dot = document.createElement('button');
+        dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => { clearAutoPlay(); goToSlide(i); startAutoPlay(); });
+        dotsEl.appendChild(dot);
+      });
+
+      totalSlides = items.length;
+      startAutoPlay();
+    }
+
+    // ═══ Controles del slider ═══
     let currentSlide = 0;
-    const totalSlides = 4;
-    let autoTimer = null;
+    let totalSlides  = 0;
     let progressTimer = null;
     let progressWidth = 0;
-    const SLIDE_DURATION = 5000;
+    const SLIDE_DURATION   = 5000;
     const PROGRESS_INTERVAL = 50;
 
     function getSlides() { return document.querySelectorAll('.slide'); }
     function getDots()   { return document.querySelectorAll('.slider-dot'); }
 
     function goToSlide(index) {
-      const slides = getSlides();
-      const dots   = getDots();
+      if (!totalSlides) return;
+      const slides = getSlides(), dots = getDots();
       slides[currentSlide].classList.remove('active');
       dots[currentSlide].classList.remove('active');
       currentSlide = (index + totalSlides) % totalSlides;
@@ -985,21 +921,15 @@
       progressTimer = setInterval(() => {
         progressWidth += (PROGRESS_INTERVAL / SLIDE_DURATION) * 100;
         document.getElementById('sliderProgress').style.width = progressWidth + '%';
-        if (progressWidth >= 100) {
-          goToSlide(currentSlide + 1);
-        }
+        if (progressWidth >= 100) goToSlide(currentSlide + 1);
       }, PROGRESS_INTERVAL);
     }
 
-    function clearAutoPlay() {
-      clearInterval(progressTimer);
-    }
+    function clearAutoPlay() { clearInterval(progressTimer); }
 
-    // Pause on hover
     document.getElementById('promoSlider').addEventListener('mouseenter', clearAutoPlay);
     document.getElementById('promoSlider').addEventListener('mouseleave', startAutoPlay);
 
-    // Swipe support
     let touchStartX = 0;
     document.getElementById('promoSlider').addEventListener('touchstart', e => {
       touchStartX = e.touches[0].clientX;
@@ -1009,8 +939,7 @@
       if (Math.abs(diff) > 40) slideMove(diff > 0 ? 1 : -1);
     }, { passive: true });
 
-    // Start
-    startAutoPlay();
+    buildSlider();
   </script>
 </body>
 </html>
