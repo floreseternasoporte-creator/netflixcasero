@@ -309,6 +309,63 @@
       backdrop-filter: blur(8px);
     }
 
+    /* Hero: fondo con crossfade entre slides */
+    .featured-hero-bg {
+      transition: opacity 0.7s ease;
+    }
+    .featured-hero-bg.fading {
+      opacity: 0;
+    }
+
+    /* Hero: contenido con fade + slide arriba */
+    .featured-hero-content {
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .featured-hero-content.fading {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    /* Dots indicadores */
+    .featured-hero-dots {
+      position: absolute;
+      bottom: 14px;
+      right: 20px;
+      display: flex;
+      gap: 6px;
+      z-index: 3;
+    }
+    .featured-hero-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .featured-hero-dot.active {
+      background: #06C167;
+      transform: scale(1.4);
+    }
+
+    /* Barra de progreso del slide */
+    .featured-hero-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      background: #06C167;
+      width: 0%;
+      transition: none;
+      z-index: 3;
+    }
+    .featured-hero-progress.running {
+      transition: width 7s linear;
+      width: 100%;
+    }
+
     /* Secciones de carruseles */
     .content-sections {
       padding: 40px 0;
@@ -3277,11 +3334,11 @@
   <!-- Sección principal -->
   <div id="homeSection" class="app-container">
 
-    <!-- Hero destacado — generado automáticamente desde catalog.js -->
+    <!-- Hero destacado — slider automático desde catalog.js -->
     <div id="featuredHero" class="featured-hero">
       <div class="featured-hero-bg" id="featuredHeroBg"></div>
       <div class="featured-hero-overlay"></div>
-      <div class="featured-hero-content">
+      <div class="featured-hero-content" id="featuredHeroContent">
         <div class="featured-hero-badges" id="featuredHeroBadges"></div>
         <h1 class="featured-hero-title" id="featuredHeroTitle"></h1>
         <p class="featured-hero-desc" id="featuredHeroDesc"></p>
@@ -3294,6 +3351,8 @@
           </button>
         </div>
       </div>
+      <div class="featured-hero-dots" id="featuredHeroDots"></div>
+      <div class="featured-hero-progress" id="featuredHeroProgress"></div>
     </div>
 
     <!-- Secciones de contenido -->
@@ -5567,39 +5626,126 @@
     }
 
     // Inicializar el sistema cuando se carga la página
-    // ── Hero destacado automático ──────────────────────────────────────
-    function buildFeaturedHero() {
-      const items = Object.values(seriesDatabase)
-        .filter(s => s.isFeatured || s.isTrending);
-      if (!items.length) { document.getElementById('featuredHero').style.display='none'; return; }
+    // ── Hero slider automático ─────────────────────────────────────────
+    (function() {
+      const SLIDE_DURATION = 7000; // ms por slide
+      const TYPE_LABELS = { movie:'Película', series:'Serie', shortfilm:'Cortometraje' };
 
-      // Disponibles primero, luego próximos
-      const item = items.find(s => !s.isLocked || isMovieAvailable(s)) || items[0];
-      const typeLabels = { movie:'Película', series:'Serie', shortfilm:'Cortometraje' };
-      const isLocked = item.isLocked && !isMovieAvailable(item);
+      let heroItems   = [];
+      let heroIndex   = 0;
+      let heroTimer   = null;
+      let heroPaused  = false;
 
-      document.getElementById('featuredHeroBg').style.backgroundImage = `url('${item.poster}')`;
-      document.getElementById('featuredHeroTitle').textContent = item.spanishTitle || item.title;
-      document.getElementById('featuredHeroDesc').textContent = item.description || '';
+      // Aplica los datos de un item al hero (con animación de fade)
+      function applyHeroSlide(item, animate) {
+        const bg      = document.getElementById('featuredHeroBg');
+        const content = document.getElementById('featuredHeroContent');
+        const prog    = document.getElementById('featuredHeroProgress');
+        const isLocked = item.isLocked && !isMovieAvailable(item);
 
-      document.getElementById('featuredHeroBadges').innerHTML = `
-        <span style="background:${isLocked?'#ff6b00':'#06C167'};color:#000;font-size:11px;font-weight:800;padding:3px 9px;border-radius:4px;text-transform:uppercase;">${isLocked?'ESTRENO':(typeLabels[item.type]||'CONTENIDO')}</span>
-        <span style="background:rgba(255,255,255,0.12);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;">${(item.genre||'').split(',')[0].trim()}</span>
-        <span style="border:1px solid rgba(255,255,255,0.28);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;">4K</span>`;
+        if (animate) {
+          bg.classList.add('fading');
+          content.classList.add('fading');
+        }
 
-      const playBtn = document.getElementById('featuredHeroPlay');
-      const infoBtn = document.getElementById('featuredHeroInfo');
-      if (isLocked) {
-        playBtn.innerHTML = '<i class="fas fa-lock"></i> Próximamente';
-        playBtn.style.background = '#444';
-        playBtn.style.color = '#aaa';
-        playBtn.style.cursor = 'default';
-        playBtn.onclick = null;
-      } else {
-        playBtn.onclick = () => showSeriesDetail(item.id);
+        const doApply = () => {
+          bg.style.backgroundImage = `url('${item.poster}')`;
+          document.getElementById('featuredHeroTitle').textContent = item.spanishTitle || item.title;
+          document.getElementById('featuredHeroDesc').textContent  = item.description || '';
+          document.getElementById('featuredHeroBadges').innerHTML  = `
+            <span style="background:${isLocked?'#ff6b00':'#06C167'};color:#000;font-size:11px;font-weight:800;padding:3px 9px;border-radius:4px;text-transform:uppercase;">${isLocked?'ESTRENO':(TYPE_LABELS[item.type]||'CONTENIDO')}</span>
+            <span style="background:rgba(255,255,255,0.12);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;">${(item.genre||'').split(',')[0].trim()}</span>
+            <span style="border:1px solid rgba(255,255,255,0.28);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;">4K</span>`;
+
+          const playBtn = document.getElementById('featuredHeroPlay');
+          if (isLocked) {
+            playBtn.innerHTML = '<i class="fas fa-lock"></i> Próximamente';
+            playBtn.style.cssText = 'background:#444;color:#aaa;cursor:default;';
+            playBtn.onclick = null;
+          } else {
+            playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir';
+            playBtn.style.cssText = '';
+            playBtn.onclick = () => showSeriesDetail(item.id);
+          }
+          document.getElementById('featuredHeroInfo').onclick = () => showSeriesDetail(item.id);
+
+          // Actualizar dots
+          document.querySelectorAll('.featured-hero-dot').forEach((d, i) => {
+            d.classList.toggle('active', i === heroIndex);
+          });
+
+          // Reiniciar barra de progreso
+          prog.classList.remove('running');
+          prog.style.transition = 'none';
+          prog.style.width = '0%';
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            prog.classList.add('running');
+          }));
+        };
+
+        if (animate) {
+          setTimeout(() => {
+            doApply();
+            bg.classList.remove('fading');
+            content.classList.remove('fading');
+          }, 550);
+        } else {
+          doApply();
+        }
       }
-      infoBtn.onclick = () => showSeriesDetail(item.id);
-    }
+
+      function goToSlide(index, animate) {
+        heroIndex = ((index % heroItems.length) + heroItems.length) % heroItems.length;
+        applyHeroSlide(heroItems[heroIndex], animate);
+      }
+
+      function startAutoPlay() {
+        clearInterval(heroTimer);
+        heroTimer = setInterval(() => {
+          if (!heroPaused) goToSlide(heroIndex + 1, true);
+        }, SLIDE_DURATION);
+      }
+
+      function buildFeaturedHero() {
+        heroItems = Object.values(seriesDatabase)
+          .filter(s => s.isFeatured || s.isTrending);
+        if (!heroItems.length) {
+          document.getElementById('featuredHero').style.display = 'none';
+          return;
+        }
+
+        // Disponibles primero
+        const availIdx = heroItems.findIndex(s => !s.isLocked || isMovieAvailable(s));
+        if (availIdx > 0) heroItems.unshift(...heroItems.splice(availIdx, 1));
+
+        // Construir dots
+        const dotsEl = document.getElementById('featuredHeroDots');
+        dotsEl.innerHTML = heroItems.map((_, i) =>
+          `<button class="featured-hero-dot${i===0?' active':''}" data-i="${i}"></button>`
+        ).join('');
+        dotsEl.addEventListener('click', e => {
+          const btn = e.target.closest('.featured-hero-dot');
+          if (!btn) return;
+          goToSlide(parseInt(btn.dataset.i), true);
+          startAutoPlay(); // reinicia el temporizador al hacer clic
+        });
+
+        // Pausar al tocar / hacer hover
+        const hero = document.getElementById('featuredHero');
+        hero.addEventListener('mouseenter', () => { heroPaused = true; });
+        hero.addEventListener('mouseleave', () => { heroPaused = false; });
+        hero.addEventListener('touchstart', () => { heroPaused = true;  }, { passive:true });
+        hero.addEventListener('touchend',   () => {
+          setTimeout(() => { heroPaused = false; }, 3000);
+        }, { passive:true });
+
+        goToSlide(0, false);
+        startAutoPlay();
+      }
+
+      // Exponer globalmente para que DOMContentLoaded la llame
+      window.buildFeaturedHero = buildFeaturedHero;
+    })();
 
     document.addEventListener('DOMContentLoaded', async function() {
       const authenticated = await checkAuthentication();
