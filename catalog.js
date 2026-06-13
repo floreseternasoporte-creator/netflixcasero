@@ -173,6 +173,41 @@
 
 const seriesDatabase = {
 
+  'kikyo-no-kioku': {
+    id: 'kikyo-no-kioku',
+    title: '桔梗の記憶',
+    spanishTitle: 'El recuerdo de Kikyo',
+    searchAliases: ['El recuerdo de Kikyo', 'Kikyo no Kioku', 'Kikyō no Kioku', '桔梗の記憶'],
+    type: 'shortfilm',
+    year: '2026',
+    genre: 'Aventura',
+    duration: '6 min',
+    rating: 'PG',
+    poster: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
+    trailer: 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0',
+    description: 'Kikyo es una sacerdotisa serena y valiente marcada por sus recuerdos, su deber espiritual y una aventura breve que revela la fuerza tranquila que guarda en su corazón.',
+    director: 'Atenis',
+    cast: 'Kikyo',
+    isFeatured: true,
+    isTrending: true,
+    isLocked: false,
+    audioTracks: {
+      'original': 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0',
+      'es': 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663203786467/tduZKVzDpXhovFOU.mp4'
+    },
+    currentAudioTrack: 'original',
+    episodes: [
+      {
+        id: 1,
+        title: '桔梗の記憶',
+        duration: '6 min',
+        description: 'Un cortometraje de aventura sobre Kikyo, sus recuerdos y la calma fortaleza que la acompaña.',
+        thumbnail: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
+        videoUrl: 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0'
+      }
+    ]
+  },
+
   'los-gemelos': {
     id: 'los-gemelos',
     title: 'Los Gemelos',
@@ -185,7 +220,7 @@ const seriesDatabase = {
     rating: 'PG-13',
     poster: 'https://i.ibb.co/36Vqmn4/IMG-2939.jpg',
     trailer: '',
-    description: 'Una serie de suspenso que te mantendrá al borde de tu asiento.',
+    description: 'Una serie de suspenso que te mantendrá al borde de tu asiento. Dos hermanos, un secreto que cambiará todo.',
     director: 'Atenis',
     cast: 'Darel Narayan',
     isFeatured: true,
@@ -216,42 +251,6 @@ const seriesDatabase = {
         description: 'Tercer episodio de Los Gemelos.',
         thumbnail: 'https://i.ibb.co/36Vqmn4/IMG-2939.jpg',
         videoUrl: ''
-      }
-    ]
-  },
-
-  'kikyo-no-kioku': {
-    id: 'kikyo-no-kioku',
-    title: '桔梗の記憶',
-    spanishTitle: 'El recuerdo de Kikyo',
-    searchAliases: ['El recuerdo de Kikyo', 'Kikyo no Kioku', 'Kikyō no Kioku', '桔梗の記憶'],
-    type: 'shortfilm',
-    year: '2026',
-    genre: 'Aventura',
-    duration: '6 min',
-    rating: 'PG',
-    poster: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
-    trailer: 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0',
-    description: 'Kikyo es una sacerdotisa serena y valiente marcada por sus recuerdos, su deber espiritual y una aventura breve que revela la fuerza tranquila que guarda en su corazón.',
-    director: 'Atenis',
-    cast: 'Kikyo',
-    isFeatured: true,
-    isTrending: true,
-    isLocked: true,
-    releaseDate: '2026-06-25T00:00:00-05:00',
-    audioTracks: {
-      'original': 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0',
-      'es': 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663203786467/tduZKVzDpXhovFOU.mp4'
-    },
-    currentAudioTrack: 'original',
-    episodes: [
-      {
-        id: 1,
-        title: '桔梗の記憶',
-        duration: '6 min',
-        description: 'Un cortometraje de aventura sobre Kikyo, sus recuerdos y la calma fortaleza que la acompaña.',
-        thumbnail: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
-        videoUrl: 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0'
       }
     ]
   }

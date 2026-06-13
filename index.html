@@ -446,13 +446,55 @@
     }
 
     .slide-title {
-      font-size: clamp(28px, 5vw, 48px);
-      font-weight: 800;
+      font-size: clamp(30px, 5.5vw, 56px);
+      font-weight: 900;
       color: #ffffff;
-      letter-spacing: -1px;
+      letter-spacing: -1.5px;
       line-height: 1.05;
-      margin-bottom: 10px;
-      text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+      margin-bottom: 12px;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.7);
+    }
+
+    .slide-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.68);
+      line-height: 1.6;
+      margin-bottom: 14px;
+      max-width: 480px;
+      font-weight: 400;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .slide-countdown {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,107,0,0.12);
+      border: 1px solid rgba(255,107,0,0.45);
+      color: #ff8c3a;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 13px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      letter-spacing: 0.03em;
+    }
+
+    .slide-countdown::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #ff6b00;
+      animation: cdPulse 1.2s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes cdPulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.5; transform: scale(1.4); }
     }
 
     .slide-meta {
@@ -829,20 +871,30 @@
       const dotsEl = document.getElementById('sliderDots');
       const arrowPrev = slider.querySelector('.slider-arrow-prev');
 
-      const items = Object.values(seriesDatabase)
-        .filter(s => s.isFeatured || s.isTrending)
-        .slice(0, 6);
+      // Disponibles primero, luego próximos; máximo 6 slides
+      const all      = Object.values(seriesDatabase).filter(s => s.isFeatured || s.isTrending);
+      const avail    = all.filter(s => !s.isLocked || _isAvailable(s));
+      const upcoming = all.filter(s => s.isLocked  && !_isAvailable(s));
+      const items    = [...avail, ...upcoming].slice(0, 6);
 
       if (!items.length) return;
 
       items.forEach((item, i) => {
-        const badge = _badge(item);
-        const genre = (item.genre || '').split(',')[0].trim();
-        const label = _typeLabel(item.type);
-        const title = item.spanishTitle || item.title;
+        const badge  = _badge(item);
+        const genre  = (item.genre || '').split(',')[0].trim();
+        const label  = _typeLabel(item.type);
+        const title  = item.spanishTitle || item.title;
+        const locked = item.isLocked && !_isAvailable(item);
+        const cdId   = `slide-cd-${i}`;
+
         const bgStyle = item.poster
           ? `background-image:url('${item.poster}');background-size:cover;background-position:center 20%;background-repeat:no-repeat;`
           : `background:${SLIDE_GRADIENTS[i % SLIDE_GRADIENTS.length]};`;
+
+        const descHtml = item.description
+          ? `<p class="slide-desc">${item.description}</p>` : '';
+        const cdHtml   = (locked && item.releaseDate)
+          ? `<div class="slide-countdown" id="${cdId}">Calculando...</div>` : '';
 
         const slide = document.createElement('div');
         slide.className = 'slide' + (i === 0 ? ' active' : '');
@@ -857,6 +909,8 @@
               <span class="badge-4k">4K</span>
             </div>
             <div class="slide-title">${title}</div>
+            ${descHtml}
+            ${cdHtml}
             <div class="slide-meta">
               <span>${item.year}</span>
               <span class="slide-meta-dot"></span>
@@ -872,6 +926,8 @@
           </div>`;
         slider.insertBefore(slide, arrowPrev);
 
+        if (locked && item.releaseDate) _startCountdown(cdId, item.releaseDate);
+
         const dot = document.createElement('button');
         dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
         dot.addEventListener('click', () => { clearAutoPlay(); goToSlide(i); startAutoPlay(); });
@@ -880,6 +936,23 @@
 
       totalSlides = items.length;
       startAutoPlay();
+    }
+
+    function _startCountdown(elId, dateStr) {
+      (function tick() {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        const diff = new Date(dateStr) - new Date();
+        if (diff <= 0) { el.textContent = '¡Disponible ahora!'; return; }
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000)  / 60000);
+        const s = Math.floor((diff % 60000)    / 1000);
+        el.textContent = d > 0
+          ? `Estrena en ${d}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m`
+          : `Estrena en ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+        setTimeout(tick, 1000);
+      })();
     }
 
     // ═══ Controles del slider ═══

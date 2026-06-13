@@ -751,6 +751,15 @@
       font-size: 13px;
     }
 
+    .series-detail-subtitle {
+      font-size: 13px;
+      color: rgba(255,255,255,0.38);
+      font-style: italic;
+      letter-spacing: 0.04em;
+      margin-top: -10px;
+      margin-bottom: 14px;
+    }
+
     .series-detail-description {
       font-size: 15px;
       line-height: 1.6;
@@ -3251,6 +3260,7 @@
 
       <div class="series-detail-content">
         <h1 class="series-detail-title" id="seriesDetailTitle">Título</h1>
+        <p class="series-detail-subtitle" id="seriesDetailSubtitle"></p>
         <div class="series-detail-meta" id="seriesDetailMeta">
           <span>Año</span>
           <span>Tipo</span>
@@ -5883,8 +5893,21 @@
       currentSeries = series;
 
       // Actualizar contenido
-      document.getElementById('seriesDetailTitle').textContent = series.title;
+      const displayTitle = series.spanishTitle || series.title;
+      document.getElementById('seriesDetailTitle').textContent = displayTitle;
       document.getElementById('seriesDetailDescription').textContent = series.description;
+
+      // Mostrar título original como subtítulo si es distinto
+      const subtitleEl = document.getElementById('seriesDetailSubtitle');
+      if (subtitleEl) {
+        if (series.spanishTitle && series.title !== series.spanishTitle) {
+          subtitleEl.textContent = series.title;
+          subtitleEl.style.display = 'block';
+        } else {
+          subtitleEl.textContent = '';
+          subtitleEl.style.display = 'none';
+        }
+      }
 
       // Configurar imagen de fondo
       const backgroundEl = document.getElementById('seriesDetailBackground');
@@ -6188,9 +6211,9 @@
         playButton.style.cursor = 'not-allowed';
         playButton.onclick = () => showLockedMessage(series);
       } else {
-        // Otras películas disponibles
         playButton.innerHTML = '<i class="fas fa-play"></i> Reproducir';
-        playButton.style.background = '#1d9bf0';
+        playButton.style.background = '#06C167';
+        playButton.style.color = '#000000';
         playButton.style.cursor = 'pointer';
         playButton.onclick = () => playEpisode(1, 1);
       }
