@@ -4964,11 +4964,12 @@
         const card = document.createElement('div');
         card.className = 'continue-item';
         card.onclick = () => showSeriesDetail(series.id);
+        const contTitle = series.spanishTitle || series.title;
         card.innerHTML = `
-          <img src="${series.poster}" alt="${series.title}" loading="lazy">
+          <img src="${series.poster}" alt="${contTitle}" loading="lazy">
           <div class="continue-play-btn"><i class="fas fa-play" style="margin-left:2px;"></i></div>
           <div class="continue-overlay">
-            <div class="continue-title">${series.title}</div>
+            <div class="continue-title">${contTitle}</div>
             <div class="continue-progress-bar">
               <div class="continue-progress-fill" style="width:${Math.round(item.progress)}%"></div>
             </div>
@@ -5766,6 +5767,13 @@
       const authenticated = await checkAuthentication();
       if (authenticated) {
         buildFeaturedHero();
+        renderCatalogSections();
+        renderUpcomingReleases();
+        updateReleaseIndicators();
+        setInterval(() => {
+          updateReleaseIndicators();
+          renderCatalogSections();
+        }, 60000); // refrescar badges y carruseles cada minuto
         initializePremiereSystem();
         initializeLiveProgramming(); // Nuevo: inicializar sistema en vivo
         setupRealtimeSettings(); // Configurar ajustes en tiempo real
@@ -5939,11 +5947,12 @@
       const isLocked = series.isLocked && !isMovieAvailable(series);
       const releaseText = series.releaseDate ? formatReleaseDate(series.releaseDate) : '';
 
+      const displayTitle = series.spanishTitle || series.title;
       card.innerHTML = `
-        <img src="${series.poster}" alt="${series.title}" loading="lazy">
+        <img src="${series.poster}" alt="${displayTitle}" loading="lazy">
         <div class="${isLocked ? 'premiere-badge' : 'movie-badge'}" id="${series.id}-badge">${isLocked ? 'Estreno' : getContentTypeLabel(series)}</div>
         <div class="carousel-item-overlay">
-          <div class="carousel-item-title">${series.title}</div>
+          <div class="carousel-item-title">${displayTitle}</div>
           <div class="carousel-item-info">${series.year} • ${series.genre.split(',')[0]}</div>
         </div>
         ${isLocked ? `
