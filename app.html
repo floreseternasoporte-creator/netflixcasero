@@ -5730,14 +5730,29 @@
           startAutoPlay(); // reinicia el temporizador al hacer clic
         });
 
-        // Pausar al tocar / hacer hover
+        // Pausar al hacer hover (escritorio)
         const hero = document.getElementById('featuredHero');
         hero.addEventListener('mouseenter', () => { heroPaused = true; });
         hero.addEventListener('mouseleave', () => { heroPaused = false; });
-        hero.addEventListener('touchstart', () => { heroPaused = true;  }, { passive:true });
-        hero.addEventListener('touchend',   () => {
-          setTimeout(() => { heroPaused = false; }, 3000);
-        }, { passive:true });
+
+        // Swipe horizontal en móvil
+        let swipeStartX = 0;
+        let swipeStartY = 0;
+        hero.addEventListener('touchstart', e => {
+          swipeStartX = e.touches[0].clientX;
+          swipeStartY = e.touches[0].clientY;
+          heroPaused = true;
+        }, { passive: true });
+        hero.addEventListener('touchend', e => {
+          const dx = e.changedTouches[0].clientX - swipeStartX;
+          const dy = e.changedTouches[0].clientY - swipeStartY;
+          // Solo cuenta como swipe si fue más horizontal que vertical
+          if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            goToSlide(dx < 0 ? heroIndex + 1 : heroIndex - 1, true);
+            startAutoPlay();
+          }
+          setTimeout(() => { heroPaused = false; }, 2500);
+        }, { passive: true });
 
         goToSlide(0, false);
         startAutoPlay();

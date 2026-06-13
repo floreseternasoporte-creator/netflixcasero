@@ -192,7 +192,7 @@ const seriesDatabase = {
     isTrending: true,
     isLocked: false,
     audioTracks: {
-      'original': 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0',
+      'original': 'https://www.dropbox.com/scl/fi/1oaobidv1634c7p4dn4ji/copy_43FDE436-0897-424D-8609-CA358390FBC2.MOV?rlkey=vdyfek1upqr9l30rygn1o2061&st=iqe64xh7&dl=0',
       'es': 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663203786467/tduZKVzDpXhovFOU.mp4'
     },
     currentAudioTrack: 'original',
@@ -203,7 +203,7 @@ const seriesDatabase = {
         duration: '6 min',
         description: 'Un cortometraje de aventura sobre Kikyo, sus recuerdos y la calma fortaleza que la acompaña.',
         thumbnail: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
-        videoUrl: 'https://www.dropbox.com/scl/fi/ooqwpaj7nj866v3p7xv0f/copy_DDCCB366-2F7E-437C-A608-1D52481B44F2.mov?rlkey=w0ffh728736z8ev1qqk60rez1&st=3gdwhjhl&dl=0'
+        videoUrl: 'https://www.dropbox.com/scl/fi/1oaobidv1634c7p4dn4ji/copy_43FDE436-0897-424D-8609-CA358390FBC2.MOV?rlkey=vdyfek1upqr9l30rygn1o2061&st=iqe64xh7&dl=0'
       }
     ]
   },
