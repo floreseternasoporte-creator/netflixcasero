@@ -1,20 +1,20 @@
 /*
-  Zambik Uber-inspired theme
-  Clean black/white interface, restrained spacing, neutral surfaces and one practical green accent.
+  Atenis Streaming — DeepSeek navy theme
+  Dark navy surfaces, blue accent, clean typography.
 */
 :root {
-  --uber-black: #000000;
-  --uber-surface: #111111;
-  --uber-surface-elevated: #161616;
-  --uber-surface-muted: #1f1f1f;
-  --uber-border: #2b2b2b;
-  --uber-border-strong: #3a3a3a;
+  --uber-black: #0a0b14;
+  --uber-surface: #0d0e1a;
+  --uber-surface-elevated: #111322;
+  --uber-surface-muted: #151830;
+  --uber-border: #1c1e2e;
+  --uber-border-strong: #252848;
   --uber-white: #ffffff;
   --uber-text: #f5f5f5;
-  --uber-muted: #a6a6a6;
-  --uber-subtle: #6b6b6b;
-  --uber-green: #06c167;
-  --uber-green-hover: #04a457;
+  --uber-muted: #8b9ab0;
+  --uber-subtle: #4d5a70;
+  --uber-green: #4c6ef5;
+  --uber-green-hover: #3b5fd4;
   --uber-danger: #e11900;
   --uber-radius: 8px;
   --uber-radius-lg: 12px;
@@ -873,7 +873,7 @@ body[style*="linear-gradient"] {
   grid-template-columns: repeat(4, 1fr) !important;
   gap: 6px !important;
   padding: 8px !important;
-  background: rgba(12, 12, 12, 0.96) !important;
+  background: rgba(13, 14, 26, 0.97) !important;
   border: 1px solid var(--uber-border-strong) !important;
   border-radius: 24px !important;
   transition: transform 220ms ease, opacity 220ms ease !important;
@@ -906,7 +906,7 @@ body[style*="linear-gradient"] {
 
 .bottom-nav button.active {
   color: var(--uber-green) !important;
-  background: rgba(6, 193, 103, 0.14) !important;
+  background: rgba(76, 110, 245, 0.14) !important;
 }
 
 .bottom-nav button.active span {

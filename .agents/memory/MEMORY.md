@@ -1,0 +1,3 @@
+- [DeepSeek navy theme](deepseek-theme.md) — uber-theme.css usa variables --uber-* pero con colores navy/azul DeepSeek, no verde Uber Eats.
+- [Duplicate const crash](duplicate-const.md) — Declarar const dos veces en mismo script causa SyntaxError que rompe toda la app.
+- [Firebase dynamic catalog](firebase-catalog.md) — catalog.js es estático; contenido adicional se carga de Firebase 'catalog/' vía loadDynamicCatalog().
