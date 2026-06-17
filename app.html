@@ -8842,18 +8842,8 @@
 
     // ── Cloudinary upload ─────────────────────────────────────────────────────
 
-    const CLOUDINARY_CLOUD_NAME = 'dubsgko2k';
-    const CLOUDINARY_API_KEY    = '238548142884869';
-    const CLOUDINARY_API_SECRET = 'R9mMGi3x6q6qp2U1hgaT_g1yWNQ';
-
-    async function sha1Hex(str) {
-      const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(str));
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    // Cloudinary unsigned upload — no server needed, no CORS issues
-    const CLOUDINARY_CLOUD_NAME  = 'dubsgko2k';
-    const CLOUDINARY_UPLOAD_PRESET = 'atenis_mini'; // unsigned preset created in Cloudinary dashboard
+    const CLOUDINARY_CLOUD_NAME    = 'dubsgko2k';
+    const CLOUDINARY_UPLOAD_PRESET = 'atenis_mini';
 
     async function uploadToCloudinary(file, onProgress, isVideo) {
       const formData = new FormData();
