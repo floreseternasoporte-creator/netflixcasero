@@ -8765,33 +8765,29 @@
 
     // ── Cloudinary upload ─────────────────────────────────────────────────────
 
+    const CLOUDINARY_CLOUD_NAME = 'dubsgko2k';
+    const CLOUDINARY_API_KEY    = '238548142884869';
+    const CLOUDINARY_API_SECRET = 'R9mMGi3x6q6qp2U1hgaT_g1yWNQ';
+
+    async function sha1Hex(str) {
+      const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
     async function uploadToCloudinary(file, onProgress, isVideo) {
-      // Get signature from server
-      let signData;
-      try {
-        const resp = await fetch('/api/cloudinary-sign', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ folder: 'atenis-mini' })
-        });
-        signData = await resp.json();
-      } catch (e) {
-        throw new Error('No se pudo conectar con el servidor de carga');
-      }
+      const timestamp = Math.floor(Date.now() / 1000);
+      const folder    = 'atenis-mini';
 
-      const { signature, timestamp, api_key, cloud_name } = signData;
-
-      if (!cloud_name || cloud_name === 'YOUR_CLOUD_NAME') {
-        throw new Error('Configura CLOUDINARY_CLOUD_NAME en server.py');
-      }
+      const paramString = `folder=${folder}&timestamp=${timestamp}${CLOUDINARY_API_SECRET}`;
+      const signature   = await sha1Hex(paramString);
 
       const resourceType = isVideo ? 'video' : 'image';
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('api_key', api_key);
+      formData.append('api_key', CLOUDINARY_API_KEY);
       formData.append('timestamp', timestamp);
       formData.append('signature', signature);
-      formData.append('folder', 'atenis-mini');
+      formData.append('folder', folder);
 
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -8810,7 +8806,7 @@
           }
         };
         xhr.onerror = () => reject(new Error('Error de red'));
-        xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloud_name}/${resourceType}/upload`);
+        xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`);
         xhr.send(formData);
       });
     }
