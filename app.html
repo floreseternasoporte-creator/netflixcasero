@@ -3774,6 +3774,7 @@
     }
     .mini-ep-title-input:focus { border-color: #E91E8C; }
     .mini-video-upload-area {
+      display: block;
       border: 1px dashed #333;
       border-radius: 8px;
       padding: 12px;
@@ -3781,10 +3782,14 @@
       cursor: pointer;
       color: #555;
       font-size: 13px;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, color 0.2s;
+      user-select: none;
+      -webkit-user-select: none;
     }
+    .mini-video-upload-area:hover { border-color: #555; color: #888; }
     .mini-video-upload-area.uploading { border-color: #E91E8C; color: #E91E8C; }
     .mini-video-upload-area.done { border-color: #06C167; color: #06C167; }
+    .mini-video-upload-area.error { border-color: #ff4444; color: #ff4444; }
     .mini-video-upload-area i { margin-right: 6px; }
     .mini-ep-video-prog {
       height: 4px;
@@ -8710,12 +8715,14 @@
         </div>
         <input class="mini-ep-title-input" id="miniEpTitle${idx}" type="text"
                placeholder="Título del episodio ${idx}">
-        <div class="mini-video-upload-area" id="miniEpVideoArea${idx}"
-             onclick="document.getElementById('miniEpVideoFile${idx}').click()">
+        <label class="mini-video-upload-area" id="miniEpVideoArea${idx}" for="miniEpVideoFile${idx}">
           <i class="fas fa-video"></i> Toca para subir video
-        </div>
-        <input type="file" id="miniEpVideoFile${idx}" accept="video/*" style="display:none;"
+        </label>
+        <input type="file" id="miniEpVideoFile${idx}"
+               accept="video/mp4,video/quicktime,video/x-msvideo,video/x-matroska,video/*"
+               style="display:none;"
                onchange="handleMiniEpisodeVideo(this, ${idx})">
+        <p class="mini-ep-video-status" id="miniEpStatus${idx}" style="font-size:12px;margin:4px 0 0;color:#aaa;display:none;"></p>
         <div class="mini-ep-video-prog" style="display:none;" id="miniEpProg${idx}">
           <div class="mini-ep-video-prog-fill" id="miniEpProgFill${idx}"></div>
         </div>
@@ -8739,14 +8746,26 @@
       const area     = document.getElementById('miniEpVideoArea' + idx);
       const progWrap = document.getElementById('miniEpProg' + idx);
       const progFill = document.getElementById('miniEpProgFill' + idx);
+      const status   = document.getElementById('miniEpStatus' + idx);
 
+      const MAX_MB = 500;
+      if (file.size > MAX_MB * 1024 * 1024) {
+        area.classList.add('error');
+        area.innerHTML = '<i class="fas fa-exclamation-circle"></i> Video demasiado grande (máx ' + MAX_MB + ' MB)';
+        return;
+      }
+
+      area.classList.remove('done', 'error');
       area.classList.add('uploading');
-      area.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo video...';
+      area.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo... 0%';
       progWrap.style.display = 'block';
+      progFill.style.width = '0%';
+      if (status) { status.style.display = 'none'; status.textContent = ''; }
 
       try {
         const url = await uploadToCloudinary(file, pct => {
           progFill.style.width = pct + '%';
+          area.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo... ' + pct + '%';
         }, true);
 
         const ep = miniUploadData.episodes.find(e => e.id === idx);
@@ -8756,10 +8775,13 @@
         area.classList.add('done');
         area.innerHTML = '<i class="fas fa-check-circle"></i> Video listo';
         progFill.style.width = '100%';
+        if (status) { status.style.display = 'block'; status.style.color = '#06C167'; status.textContent = file.name; }
       } catch (err) {
         area.classList.remove('uploading');
-        area.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error: ' + err.message;
-        console.error('Episode video upload error:', err);
+        area.classList.add('error');
+        area.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error al subir';
+        if (status) { status.style.display = 'block'; status.style.color = '#ff4444'; status.textContent = err.message; }
+        console.error('Video upload error:', err);
       }
     }
 
