@@ -1,29 +1,65 @@
 #!/usr/bin/env python3
-import http.server
-import socketserver
+import hashlib
+import time
 import os
+import json
+from flask import Flask, request, jsonify, send_from_directory, send_file
 
-PORT = 5000
-HOST = "0.0.0.0"
+app = Flask(__name__)
+
+CLOUDINARY_API_KEY    = '238548142884869'
+CLOUDINARY_API_SECRET = 'R9mMGi3x6q6qp2U1hgaT_g1yWNQ'
+CLOUDINARY_CLOUD_NAME = 'YOUR_CLOUD_NAME'
+
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
-class MyHandler(http.server.SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=DIRECTORY, **kwargs)
+@app.route('/api/cloudinary-sign', methods=['POST', 'OPTIONS'])
+def cloudinary_sign():
+    if request.method == 'OPTIONS':
+        resp = jsonify({})
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        resp.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        return resp
 
-    def end_headers(self):
-        self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
-        self.send_header('Pragma', 'no-cache')
-        self.send_header('Expires', '0')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        super().end_headers()
+    data = request.get_json(force=True) or {}
+    timestamp = int(time.time())
 
-    def log_message(self, format, *args):
-        pass
+    extra = {k: v for k, v in data.items() if k not in ('file', 'api_key', 'api_secret')}
+    params = {'folder': 'atenis-mini', 'timestamp': timestamp}
+    params.update(extra)
 
-class ReuseAddressTCPServer(socketserver.TCPServer):
-    allow_reuse_address = True
+    sorted_params = sorted(params.items())
+    param_string = '&'.join(f'{k}={v}' for k, v in sorted_params)
+    param_string += CLOUDINARY_API_SECRET
 
-with ReuseAddressTCPServer((HOST, PORT), MyHandler) as httpd:
-    print(f"Serving at http://{HOST}:{PORT}")
-    httpd.serve_forever()
+    signature = hashlib.sha1(param_string.encode('utf-8')).hexdigest()
+
+    resp = jsonify({
+        'signature':    signature,
+        'timestamp':    timestamp,
+        'api_key':      CLOUDINARY_API_KEY,
+        'cloud_name':   CLOUDINARY_CLOUD_NAME
+    })
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
+
+@app.after_request
+def add_headers(response):
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma']        = 'no-cache'
+    response.headers['Expires']       = '0'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+@app.route('/')
+def index():
+    return send_from_directory(DIRECTORY, 'app.html')
+
+@app.route('/<path:path>')
+def static_files(path):
+    return send_from_directory(DIRECTORY, path)
+
+if __name__ == '__main__':
+    print('Atenis server running on http://0.0.0.0:5000')
+    app.run(host='0.0.0.0', port=5000, debug=False)

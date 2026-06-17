@@ -1584,15 +1584,20 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 500;
       cursor: pointer;
-      padding: 6px 16px;
+      padding: 6px 8px;
       border-radius: 0;
       transition: color 0.15s ease;
-      min-width: 64px;
+      min-width: 0;
+      flex: 1;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       letter-spacing: 0.2px;
+    }
+
+    #navMini.active i {
+      color: #E91E8C;
     }
 
     .bottom-nav button:hover,
@@ -3306,8 +3311,524 @@
       }
     }
 
-    /* Sección de Historial estilo Cartoon Network */
+    /* ═══════════════════════════════════════════
+       MINI — Sección de dramas cortos
+       ═══════════════════════════════════════════ */
 
+    .mini-section {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #000;
+      z-index: 2000;
+      display: none;
+      overflow-y: auto;
+    }
+    .mini-section.active { display: block; }
+
+    .mini-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #000;
+      display: flex;
+      align-items: center;
+      padding: 14px 16px 10px;
+      gap: 12px;
+    }
+    .mini-back-btn {
+      background: rgba(255,255,255,0.08);
+      border: none;
+      color: #fff;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .mini-logo-text {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #E91E8C, #FF6B35);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .mini-logo-sub {
+      font-size: 11px;
+      color: #555;
+      margin-top: -2px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .mini-filters {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .mini-filters::-webkit-scrollbar { display: none; }
+    .mini-chip {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      color: #aaa;
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .mini-chip.active {
+      background: #E91E8C;
+      border-color: #E91E8C;
+      color: #fff;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      padding: 0 12px 120px;
+    }
+    @media (max-width: 400px) {
+      .mini-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 0 8px 120px; }
+    }
+
+    .mini-card {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      aspect-ratio: 9/14;
+      background: #1a1a1a;
+      transition: transform 0.2s;
+    }
+    .mini-card:active { transform: scale(0.95); }
+    .mini-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .mini-card-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%);
+      padding: 28px 6px 6px;
+    }
+    .mini-card-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .mini-card-ep-badge {
+      position: absolute;
+      top: 6px; left: 6px;
+      background: #E91E8C;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .mini-card-locked {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #fff;
+      font-size: 11px;
+    }
+    .mini-card-locked i { font-size: 18px; }
+
+    .mini-empty {
+      text-align: center;
+      padding: 80px 20px;
+      color: #555;
+    }
+    .mini-empty.hidden { display: none; }
+    .mini-empty i { font-size: 44px; margin-bottom: 16px; display: block; }
+    .mini-empty h3 { color: #fff; font-size: 18px; margin-bottom: 8px; }
+
+    .mini-fab {
+      position: fixed;
+      bottom: 90px; right: 20px;
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #E91E8C, #FF6B35);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(233,30,140,0.5);
+      z-index: 2100;
+      transition: transform 0.2s;
+    }
+    .mini-fab:active { transform: scale(0.92); }
+
+    /* ── Upload Modal ── */
+    .mini-upload-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 4000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .mini-upload-modal.active {
+      display: flex;
+    }
+    .mini-upload-container {
+      background: #0f0f0f;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      padding-bottom: 30px;
+    }
+    .mini-upload-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 16px 10px;
+      border-bottom: 1px solid #1f1f1f;
+      position: sticky;
+      top: 0;
+      background: #0f0f0f;
+      z-index: 5;
+    }
+    .mini-upload-header h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .mini-upload-close-btn {
+      background: rgba(255,255,255,0.08);
+      border: none;
+      color: #fff;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .mini-publish-header-btn {
+      background: #E91E8C;
+      border: none;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      opacity: 0.5;
+    }
+    .mini-publish-header-btn.ready { opacity: 1; }
+
+    .mini-steps-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 0 8px;
+      gap: 0;
+    }
+    .mini-step-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: #222;
+      color: #555;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s;
+    }
+    .mini-step-dot.active {
+      background: #E91E8C;
+      color: #fff;
+    }
+    .mini-step-dot.done {
+      background: #06C167;
+      color: #fff;
+    }
+    .mini-step-line {
+      width: 40px;
+      height: 2px;
+      background: #222;
+    }
+
+    .mini-upload-step { padding: 16px; }
+    .mini-upload-step.hidden { display: none; }
+
+    .mini-cover-picker {
+      width: 100%;
+      aspect-ratio: 9/14;
+      max-height: 280px;
+      background: #1a1a1a;
+      border-radius: 12px;
+      border: 2px dashed #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    .mini-cover-picker img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .mini-cover-placeholder {
+      text-align: center;
+      color: #555;
+    }
+    .mini-cover-placeholder i { font-size: 36px; margin-bottom: 8px; display: block; }
+    .mini-cover-placeholder span { font-size: 14px; }
+
+    .mini-upload-prog {
+      background: #1a1a1a;
+      border-radius: 6px;
+      height: 6px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .mini-upload-prog.hidden { display: none; }
+    .mini-upload-prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #E91E8C, #FF6B35);
+      border-radius: 6px;
+      transition: width 0.3s;
+      width: 0%;
+    }
+    .mini-upload-prog-text {
+      font-size: 12px;
+      color: #aaa;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .mini-upload-prog-text.hidden { display: none; }
+
+    .mini-form-group {
+      margin-bottom: 14px;
+    }
+    .mini-form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #888;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .mini-form-group input,
+    .mini-form-group select,
+    .mini-form-group textarea {
+      width: 100%;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      color: #fff;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .mini-form-group input:focus,
+    .mini-form-group select:focus,
+    .mini-form-group textarea:focus {
+      border-color: #E91E8C;
+    }
+    .mini-form-group textarea { resize: vertical; min-height: 72px; }
+    .mini-form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .mini-step-btns {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .mini-next-btn {
+      width: 100%;
+      background: #E91E8C;
+      border: none;
+      color: #fff;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .mini-back-step-btn {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .mini-publish-btn {
+      flex: 1;
+      background: linear-gradient(135deg, #E91E8C, #FF6B35);
+      border: none;
+      color: #fff;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Episode rows */
+    .mini-episode-row {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+    .mini-ep-row-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .mini-ep-num {
+      font-size: 13px;
+      font-weight: 700;
+      color: #E91E8C;
+    }
+    .mini-ep-remove {
+      background: none;
+      border: none;
+      color: #555;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 2px 6px;
+    }
+    .mini-ep-title-input {
+      width: 100%;
+      background: #0f0f0f;
+      border: 1px solid #2a2a2a;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      margin-bottom: 10px;
+    }
+    .mini-ep-title-input:focus { border-color: #E91E8C; }
+    .mini-video-upload-area {
+      border: 1px dashed #333;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      color: #555;
+      font-size: 13px;
+      transition: border-color 0.2s;
+    }
+    .mini-video-upload-area.uploading { border-color: #E91E8C; color: #E91E8C; }
+    .mini-video-upload-area.done { border-color: #06C167; color: #06C167; }
+    .mini-video-upload-area i { margin-right: 6px; }
+    .mini-ep-video-prog {
+      height: 4px;
+      background: #0f0f0f;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .mini-ep-video-prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #E91E8C, #FF6B35);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .mini-add-episode-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px dashed #333;
+      color: #888;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .mini-add-episode-btn:hover { border-color: #E91E8C; color: #E91E8C; }
+
+    /* Home Mini carousel section */
+    .mini-carousel-item {
+      position: relative;
+      flex-shrink: 0;
+      width: 100px;
+      height: 155px;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #1a1a1a;
+    }
+    .mini-carousel-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .mini-carousel-item-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+      padding: 20px 6px 5px;
+    }
+    .mini-carousel-item-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: #fff;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .mini-carousel-badge {
+      position: absolute;
+      top: 4px; left: 4px;
+      background: #E91E8C;
+      color: #fff;
+      font-size: 8px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
 
   </style>
   <link rel="stylesheet" href="uber-theme.css">
@@ -3402,6 +3923,17 @@
         <h2 class="section-title">Terror</h2>
         <div class="carousel-container">
           <div class="carousel" id="terrorCarousel"></div>
+        </div>
+      </div>
+
+      <!-- Mini dramas -->
+      <div class="section" id="miniCarouselSection" style="display:none;">
+        <h2 class="section-title" style="display:flex;align-items:center;gap:8px;">
+          <span style="background:linear-gradient(135deg,#E91E8C,#FF6B35);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:900;">MINI</span>
+          <span style="font-size:11px;color:#888;font-weight:500;text-transform:uppercase;letter-spacing:1px;-webkit-text-fill-color:#888;">Dramas cortos</span>
+        </h2>
+        <div class="carousel-container">
+          <div class="carousel" id="miniCarousel"></div>
         </div>
       </div>
     </div>
@@ -3925,6 +4457,134 @@
     </div>
   </div>
 
+  <!-- Sección Mini -->
+  <div id="miniSection" class="mini-section">
+    <div class="mini-header">
+      <button class="mini-back-btn" onclick="closeMiniSection()">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div>
+        <div class="mini-logo-text">MINI</div>
+        <div class="mini-logo-sub">Dramas cortos</div>
+      </div>
+    </div>
+    <div class="mini-filters" id="miniFilters">
+      <button class="mini-chip active" onclick="filterMini(this,'')">Todo</button>
+      <button class="mini-chip" onclick="filterMini(this,'Romance')">Romance</button>
+      <button class="mini-chip" onclick="filterMini(this,'Drama')">Drama</button>
+      <button class="mini-chip" onclick="filterMini(this,'Acción')">Acción</button>
+      <button class="mini-chip" onclick="filterMini(this,'Comedia')">Comedia</button>
+      <button class="mini-chip" onclick="filterMini(this,'Suspenso')">Suspenso</button>
+      <button class="mini-chip" onclick="filterMini(this,'Anime')">Anime</button>
+    </div>
+    <div class="mini-grid" id="miniGrid"></div>
+    <div class="mini-empty hidden" id="miniEmpty">
+      <i class="fas fa-film"></i>
+      <h3>No hay Mini dramas aún</h3>
+      <p>Próximamente llegará contenido aquí.</p>
+    </div>
+    <button class="mini-fab" id="miniFab" onclick="openMiniUpload()">
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
+
+  <!-- Modal subida Mini -->
+  <div id="miniUploadModal" class="mini-upload-modal">
+    <div class="mini-upload-container">
+      <div class="mini-upload-header">
+        <button class="mini-upload-close-btn" onclick="closeMiniUpload()">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2>Nueva Mini</h2>
+        <button class="mini-publish-header-btn" id="miniPublishHeaderBtn" onclick="saveMini()">Publicar</button>
+      </div>
+      <div class="mini-steps-indicator">
+        <div class="mini-step-dot active" id="miniStepDot1">1</div>
+        <div class="mini-step-line"></div>
+        <div class="mini-step-dot" id="miniStepDot2">2</div>
+        <div class="mini-step-line"></div>
+        <div class="mini-step-dot" id="miniStepDot3">3</div>
+      </div>
+
+      <!-- Paso 1: Portada -->
+      <div class="mini-upload-step" id="miniStep1">
+        <p style="font-size:13px;color:#888;margin-bottom:12px;text-align:center;">Sube la portada de tu serie</p>
+        <div class="mini-cover-picker" id="miniCoverPicker" onclick="document.getElementById('miniCoverInput').click()">
+          <img id="miniCoverPreview" style="display:none;width:100%;height:100%;object-fit:cover;">
+          <div class="mini-cover-placeholder" id="miniCoverPlaceholder">
+            <i class="fas fa-image"></i>
+            <span>Toca para subir portada</span>
+          </div>
+        </div>
+        <input type="file" id="miniCoverInput" accept="image/*" style="display:none;" onchange="handleMiniCoverChange(this)">
+        <div class="mini-upload-prog hidden" id="coverUploadProg">
+          <div class="mini-upload-prog-fill" id="coverProgFill"></div>
+        </div>
+        <p class="mini-upload-prog-text hidden" id="coverProgText">Subiendo imagen...</p>
+        <button class="mini-next-btn" onclick="goToMiniStep(2)" style="margin-top:10px;">Siguiente →</button>
+      </div>
+
+      <!-- Paso 2: Detalles -->
+      <div class="mini-upload-step hidden" id="miniStep2">
+        <div class="mini-form-group">
+          <label>Título *</label>
+          <input type="text" id="miniTitleInput" placeholder="Título de la serie">
+        </div>
+        <div class="mini-form-row">
+          <div class="mini-form-group">
+            <label>Género</label>
+            <select id="miniGenreInput">
+              <option value="Drama">Drama</option>
+              <option value="Romance">Romance</option>
+              <option value="Acción">Acción</option>
+              <option value="Comedia">Comedia</option>
+              <option value="Suspenso">Suspenso</option>
+              <option value="Terror">Terror</option>
+              <option value="Anime">Anime</option>
+            </select>
+          </div>
+          <div class="mini-form-group">
+            <label>Año</label>
+            <input type="text" id="miniYearInput" value="2026" maxlength="4">
+          </div>
+        </div>
+        <div class="mini-form-group">
+          <label>Descripción</label>
+          <textarea id="miniDescInput" placeholder="Describe de qué trata la serie..." rows="3"></textarea>
+        </div>
+        <div class="mini-form-group">
+          <label>Rating</label>
+          <select id="miniRatingInput">
+            <option value="G">G</option>
+            <option value="PG">PG</option>
+            <option value="PG-13" selected>PG-13</option>
+            <option value="R">R</option>
+          </select>
+        </div>
+        <div class="mini-step-btns">
+          <button class="mini-back-step-btn" onclick="goToMiniStep(1)">← Atrás</button>
+          <button class="mini-next-btn" onclick="goToMiniStep(3)">Siguiente →</button>
+        </div>
+      </div>
+
+      <!-- Paso 3: Episodios -->
+      <div class="mini-upload-step hidden" id="miniStep3">
+        <p style="font-size:13px;color:#888;margin-bottom:14px;">Agrega los episodios de tu Mini. Cada episodio se sube a Cloudinary automáticamente.</p>
+        <div id="miniEpisodesList"></div>
+        <button class="mini-add-episode-btn" onclick="addMiniEpisodeRow()">
+          <i class="fas fa-plus"></i> Agregar episodio
+        </button>
+        <div class="mini-step-btns" style="margin-top:16px;">
+          <button class="mini-back-step-btn" onclick="goToMiniStep(2)">← Atrás</button>
+          <button class="mini-publish-btn" onclick="saveMini()" id="miniPublishFinalBtn">
+            <i class="fas fa-upload"></i> Publicar Mini
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Navegación inferior -->
   <nav class="bottom-nav">
     <button id="navHome" class="active">
@@ -3934,6 +4594,10 @@
     <button id="navSearch">
       <i class="fas fa-search"></i>
       <span>Buscar</span>
+    </button>
+    <button id="navMini">
+      <i class="fas fa-film"></i>
+      <span>Mini</span>
     </button>
     <button id="navCalendar">
       <i class="fas fa-calendar-days"></i>
@@ -4224,6 +4888,8 @@
             showHomeSection();
           } else if (buttonId === 'navSearch') {
             showSearchSection();
+          } else if (buttonId === 'navMini') {
+            showMiniSection();
           } else if (buttonId === 'navCalendar') {
             showCalendarSection();
           } else if (buttonId === 'navSettings') {
@@ -4333,6 +4999,7 @@
       document.getElementById('settingsSection').classList.remove('active');
       document.getElementById('historySection').classList.remove('active');
       document.getElementById('calendarSection').classList.remove('active');
+      document.getElementById('miniSection').classList.remove('active');
     }
 
     // Cerrar sección de búsqueda
@@ -5778,6 +6445,7 @@
         initializeLiveProgramming(); // Nuevo: inicializar sistema en vivo
         setupRealtimeSettings(); // Configurar ajustes en tiempo real
         buildContinueWatchingSection();
+        loadMiniDramas(); // Cargar dramas cortos Mini desde Firebase
         
         // Verificar si viene de la página de inicio
         checkIfFromLanding();
@@ -5930,6 +6598,7 @@
     function getContentTypeLabel(series) {
       if (series.type === 'shortfilm') return 'Cortometraje';
       if (series.type === 'movie') return 'Película';
+      if (series.type === 'mini') return 'Mini';
       return 'Serie';
     }
 
@@ -7763,6 +8432,451 @@
         closeTracksModal();
       }
     });
+
+    // ════════════════════════════════════════════════════════════════════════
+    //  MINI — Dramas cortos (DramaBox style)
+    // ════════════════════════════════════════════════════════════════════════
+
+    const MINI_ADMIN_EMAIL = 'zam.contact@yahoo.com';
+    let miniDatabase = {};
+    let miniCurrentFilter = '';
+    let miniCurrentStep = 1;
+    let miniUploadData = {
+      coverUrl: null,
+      episodes: []
+    };
+    let miniEpisodeCounter = 0;
+
+    // ── Navigation ──────────────────────────────────────────────────────────
+
+    function showMiniSection() {
+      hideAllSections();
+      showBottomNav();
+      document.getElementById('miniSection').classList.add('active');
+      checkMiniAdminAccess();
+      renderMiniGrid();
+    }
+
+    function closeMiniSection() {
+      document.getElementById('miniSection').classList.remove('active');
+      showHomeSection();
+      document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById('navHome').classList.add('active');
+    }
+
+    // ── Admin access ────────────────────────────────────────────────────────
+
+    function checkMiniAdminAccess() {
+      const fab = document.getElementById('miniFab');
+      if (!fab) return;
+      const user = currentFirebaseUser;
+      if (user && user.email && user.email.toLowerCase() === MINI_ADMIN_EMAIL.toLowerCase()) {
+        fab.style.display = 'flex';
+      } else {
+        fab.style.display = 'none';
+      }
+    }
+
+    // ── Firebase loading ────────────────────────────────────────────────────
+
+    function loadMiniDramas() {
+      database.ref('miniDramas').on('value', snapshot => {
+        miniDatabase = {};
+        const val = snapshot.val();
+        if (val) {
+          Object.values(val).forEach(item => {
+            if (item && item.id) {
+              miniDatabase[item.id] = { ...item, type: 'mini' };
+            }
+          });
+        }
+        renderMiniGrid();
+        renderMiniCarousel();
+      });
+    }
+
+    // ── Render mini grid (DramaBox style) ──────────────────────────────────
+
+    function renderMiniGrid(filterGenre) {
+      if (filterGenre !== undefined) miniCurrentFilter = filterGenre;
+      const grid = document.getElementById('miniGrid');
+      const empty = document.getElementById('miniEmpty');
+      if (!grid) return;
+
+      let items = Object.values(miniDatabase);
+      if (miniCurrentFilter) {
+        items = items.filter(m => (m.genre || '').toLowerCase().includes(miniCurrentFilter.toLowerCase()));
+      }
+      items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+      grid.innerHTML = '';
+
+      if (items.length === 0) {
+        empty && empty.classList.remove('hidden');
+        return;
+      }
+      empty && empty.classList.add('hidden');
+
+      items.forEach(mini => {
+        const card = document.createElement('div');
+        card.className = 'mini-card';
+        card.onclick = () => showSeriesDetail(mini.id);
+
+        const epCount = mini.episodes ? mini.episodes.length : 0;
+        card.innerHTML = `
+          <img src="${mini.poster || ''}" alt="${mini.title}" loading="lazy"
+               onerror="this.style.background='#1a1a1a';this.src='';">
+          ${epCount > 0 ? `<div class="mini-card-ep-badge">${epCount} EP</div>` : ''}
+          <div class="mini-card-overlay">
+            <div class="mini-card-title">${mini.spanishTitle || mini.title}</div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // ── Render mini home carousel ───────────────────────────────────────────
+
+    function renderMiniCarousel() {
+      const carousel = document.getElementById('miniCarousel');
+      const section  = document.getElementById('miniCarouselSection');
+      if (!carousel) return;
+
+      const items = Object.values(miniDatabase).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+      if (items.length === 0) {
+        section && (section.style.display = 'none');
+        return;
+      }
+      section && (section.style.display = 'block');
+
+      carousel.innerHTML = '';
+      items.forEach(mini => {
+        const card = document.createElement('div');
+        card.className = 'mini-carousel-item';
+        card.onclick = () => showSeriesDetail(mini.id);
+        const epCount = mini.episodes ? mini.episodes.length : 0;
+        card.innerHTML = `
+          <img src="${mini.poster || ''}" alt="${mini.title}" loading="lazy">
+          <div class="mini-carousel-badge">MINI</div>
+          <div class="mini-carousel-item-overlay">
+            <div class="mini-carousel-item-title">${mini.spanishTitle || mini.title}</div>
+          </div>
+        `;
+        carousel.appendChild(card);
+      });
+
+      // Also inject mini items into seriesDatabase so existing detail modal works
+      items.forEach(mini => {
+        if (!seriesDatabase[mini.id]) {
+          seriesDatabase[mini.id] = mini;
+        }
+      });
+    }
+
+    // ── Genre filter ─────────────────────────────────────────────────────────
+
+    function filterMini(btn, genre) {
+      document.querySelectorAll('.mini-chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      renderMiniGrid(genre);
+    }
+
+    // ── Upload modal ─────────────────────────────────────────────────────────
+
+    function openMiniUpload() {
+      miniUploadData = { coverUrl: null, episodes: [] };
+      miniEpisodeCounter = 0;
+      document.getElementById('miniUploadModal').classList.add('active');
+      document.getElementById('miniEpisodesList').innerHTML = '';
+      document.getElementById('miniTitleInput').value = '';
+      document.getElementById('miniDescInput').value = '';
+      document.getElementById('miniYearInput').value = '2026';
+      document.getElementById('miniCoverPreview').style.display = 'none';
+      document.getElementById('miniCoverPlaceholder').style.display = 'flex';
+      goToMiniStep(1);
+    }
+
+    function closeMiniUpload() {
+      document.getElementById('miniUploadModal').classList.remove('active');
+    }
+
+    function goToMiniStep(step) {
+      miniCurrentStep = step;
+      [1, 2, 3].forEach(n => {
+        document.getElementById('miniStep' + n).classList.toggle('hidden', n !== step);
+        const dot = document.getElementById('miniStepDot' + n);
+        dot.classList.remove('active', 'done');
+        if (n < step) dot.classList.add('done');
+        else if (n === step) dot.classList.add('active');
+      });
+    }
+
+    // ── Cover upload ──────────────────────────────────────────────────────────
+
+    async function handleMiniCoverChange(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      // Show local preview immediately
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.getElementById('miniCoverPreview');
+        img.src = e.target.result;
+        img.style.display = 'block';
+        document.getElementById('miniCoverPlaceholder').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+
+      // Upload to Cloudinary
+      const progBar  = document.getElementById('coverProgFill');
+      const progWrap = document.getElementById('coverUploadProg');
+      const progText = document.getElementById('coverProgText');
+      progWrap.classList.remove('hidden');
+      progText.classList.remove('hidden');
+      progText.textContent = 'Subiendo portada...';
+
+      try {
+        const url = await uploadToCloudinary(file, pct => {
+          progBar.style.width = pct + '%';
+        });
+        miniUploadData.coverUrl = url;
+        progText.textContent = '✓ Portada lista';
+        progBar.style.width = '100%';
+      } catch (err) {
+        progText.textContent = '✗ Error al subir: ' + err.message;
+        console.error('Cover upload error:', err);
+      }
+    }
+
+    // ── Episode rows ──────────────────────────────────────────────────────────
+
+    function addMiniEpisodeRow() {
+      miniEpisodeCounter++;
+      const idx = miniEpisodeCounter;
+      const list = document.getElementById('miniEpisodesList');
+
+      const row = document.createElement('div');
+      row.className = 'mini-episode-row';
+      row.id = 'miniEpRow' + idx;
+      row.innerHTML = `
+        <div class="mini-ep-row-header">
+          <span class="mini-ep-num">Episodio ${idx}</span>
+          <button class="mini-ep-remove" onclick="removeMiniEpisode(${idx})">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+        <input class="mini-ep-title-input" id="miniEpTitle${idx}" type="text"
+               placeholder="Título del episodio ${idx}">
+        <div class="mini-video-upload-area" id="miniEpVideoArea${idx}"
+             onclick="document.getElementById('miniEpVideoFile${idx}').click()">
+          <i class="fas fa-video"></i> Toca para subir video
+        </div>
+        <input type="file" id="miniEpVideoFile${idx}" accept="video/*" style="display:none;"
+               onchange="handleMiniEpisodeVideo(this, ${idx})">
+        <div class="mini-ep-video-prog" style="display:none;" id="miniEpProg${idx}">
+          <div class="mini-ep-video-prog-fill" id="miniEpProgFill${idx}"></div>
+        </div>
+      `;
+      list.appendChild(row);
+
+      // Register episode slot
+      miniUploadData.episodes.push({ id: idx, title: '', videoUrl: null, thumbnail: null, duration: '' });
+    }
+
+    function removeMiniEpisode(idx) {
+      const row = document.getElementById('miniEpRow' + idx);
+      if (row) row.remove();
+      miniUploadData.episodes = miniUploadData.episodes.filter(e => e.id !== idx);
+    }
+
+    async function handleMiniEpisodeVideo(input, idx) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const area     = document.getElementById('miniEpVideoArea' + idx);
+      const progWrap = document.getElementById('miniEpProg' + idx);
+      const progFill = document.getElementById('miniEpProgFill' + idx);
+
+      area.classList.add('uploading');
+      area.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo video...';
+      progWrap.style.display = 'block';
+
+      try {
+        const url = await uploadToCloudinary(file, pct => {
+          progFill.style.width = pct + '%';
+        }, true);
+
+        const ep = miniUploadData.episodes.find(e => e.id === idx);
+        if (ep) ep.videoUrl = url;
+
+        area.classList.remove('uploading');
+        area.classList.add('done');
+        area.innerHTML = '<i class="fas fa-check-circle"></i> Video listo';
+        progFill.style.width = '100%';
+      } catch (err) {
+        area.classList.remove('uploading');
+        area.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error: ' + err.message;
+        console.error('Episode video upload error:', err);
+      }
+    }
+
+    // ── Cloudinary upload ─────────────────────────────────────────────────────
+
+    async function uploadToCloudinary(file, onProgress, isVideo) {
+      // Get signature from server
+      let signData;
+      try {
+        const resp = await fetch('/api/cloudinary-sign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ folder: 'atenis-mini' })
+        });
+        signData = await resp.json();
+      } catch (e) {
+        throw new Error('No se pudo conectar con el servidor de carga');
+      }
+
+      const { signature, timestamp, api_key, cloud_name } = signData;
+
+      if (!cloud_name || cloud_name === 'YOUR_CLOUD_NAME') {
+        throw new Error('Configura CLOUDINARY_CLOUD_NAME en server.py');
+      }
+
+      const resourceType = isVideo ? 'video' : 'image';
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('api_key', api_key);
+      formData.append('timestamp', timestamp);
+      formData.append('signature', signature);
+      formData.append('folder', 'atenis-mini');
+
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.upload.onprogress = e => {
+          if (e.lengthComputable && onProgress) {
+            onProgress(Math.round(e.loaded / e.total * 100));
+          }
+        };
+        xhr.onload = () => {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            if (xhr.status === 200) resolve(data.secure_url);
+            else reject(new Error(data.error?.message || 'Upload failed'));
+          } catch {
+            reject(new Error('Respuesta inválida del servidor'));
+          }
+        };
+        xhr.onerror = () => reject(new Error('Error de red'));
+        xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloud_name}/${resourceType}/upload`);
+        xhr.send(formData);
+      });
+    }
+
+    // ── Save mini to Firebase ─────────────────────────────────────────────────
+
+    async function saveMini() {
+      const title = document.getElementById('miniTitleInput').value.trim();
+      if (!title) {
+        alert('Por favor escribe el título de la serie.');
+        goToMiniStep(2);
+        return;
+      }
+      if (!miniUploadData.coverUrl) {
+        alert('Por favor sube la portada primero.');
+        goToMiniStep(1);
+        return;
+      }
+
+      const hasEpisodes = miniUploadData.episodes.some(e => e.videoUrl);
+      if (!hasEpisodes) {
+        alert('Agrega al menos un episodio con video.');
+        return;
+      }
+
+      const publishBtn = document.getElementById('miniPublishFinalBtn');
+      if (publishBtn) {
+        publishBtn.disabled = true;
+        publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
+      }
+
+      try {
+        const id = 'mini-' + Date.now();
+        const genre   = document.getElementById('miniGenreInput').value;
+        const year    = document.getElementById('miniYearInput').value;
+        const desc    = document.getElementById('miniDescInput').value.trim();
+        const rating  = document.getElementById('miniRatingInput').value;
+
+        // Build episodes array from DOM + upload data
+        const episodes = miniUploadData.episodes
+          .filter(e => e.videoUrl)
+          .map((e, i) => {
+            const titleEl = document.getElementById('miniEpTitle' + e.id);
+            return {
+              id:        i + 1,
+              title:     (titleEl ? titleEl.value.trim() : '') || `Episodio ${i + 1}`,
+              videoUrl:  e.videoUrl,
+              thumbnail: miniUploadData.coverUrl,
+              duration:  ''
+            };
+          });
+
+        const miniData = {
+          id,
+          title,
+          spanishTitle: title,
+          searchAliases: [title],
+          type:          'mini',
+          year,
+          genre,
+          duration:      '5-15 min',
+          rating,
+          poster:        miniUploadData.coverUrl,
+          trailer:       '',
+          description:   desc,
+          director:      'Atenis',
+          cast:          '',
+          isFeatured:    false,
+          isTrending:    false,
+          isLocked:      false,
+          episodes,
+          createdAt:     Date.now(),
+          createdBy:     currentFirebaseUser ? currentFirebaseUser.email : ''
+        };
+
+        await database.ref('miniDramas/' + id).set(miniData);
+
+        closeMiniUpload();
+        // Reload section to show new mini
+        renderMiniGrid();
+
+        showMiniToast('✓ Mini publicada exitosamente');
+      } catch (err) {
+        console.error('Error saving mini:', err);
+        alert('Error al publicar: ' + err.message);
+      } finally {
+        if (publishBtn) {
+          publishBtn.disabled = false;
+          publishBtn.innerHTML = '<i class="fas fa-upload"></i> Publicar Mini';
+        }
+      }
+    }
+
+    // ── Toast notification ────────────────────────────────────────────────────
+
+    function showMiniToast(msg) {
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position:fixed;bottom:110px;left:50%;transform:translateX(-50%);
+        background:#1a1a1a;color:#fff;padding:12px 20px;border-radius:8px;
+        font-size:14px;font-weight:600;z-index:9999;
+        border:1px solid #E91E8C;white-space:nowrap;
+        animation:uberToast 0.3s ease forwards;
+      `;
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
 
   </script>
 </body>
