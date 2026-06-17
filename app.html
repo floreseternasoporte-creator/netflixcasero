@@ -8797,21 +8797,9 @@
     }
 
     async function uploadToCloudinary(file, onProgress, isVideo) {
-      const timestamp = Math.floor(Date.now() / 1000);
-      const folder    = 'atenis-mini';
-
-      const paramString = `folder=${folder}&timestamp=${timestamp}${CLOUDINARY_API_SECRET}`;
-      const signature   = await sha1Hex(paramString);
-
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('api_key', CLOUDINARY_API_KEY);
-      formData.append('timestamp', String(timestamp));
-      formData.append('signature', signature);
-      formData.append('folder', folder);
-
-      // Use 'auto' so Cloudinary detects image/video/raw automatically
-      const uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
+      formData.append('folder', 'atenis-mini');
 
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -8823,22 +8811,19 @@
         xhr.onload = () => {
           try {
             const data = JSON.parse(xhr.responseText);
-            if (xhr.status === 200) {
-              resolve(data.secure_url);
+            if (xhr.status === 200 && data.url) {
+              resolve(data.url);
             } else {
-              const msg = data.error?.message || `HTTP ${xhr.status}`;
-              reject(new Error(msg));
+              reject(new Error(data.error || `Error del servidor (${xhr.status})`));
             }
           } catch {
-            reject(new Error(`Respuesta inválida (HTTP ${xhr.status})`));
+            reject(new Error(`Respuesta inválida del servidor (${xhr.status})`));
           }
         };
-        xhr.onerror = () => {
-          reject(new Error('No se pudo conectar con Cloudinary — verifica tu conexión o los permisos de la cuenta'));
-        };
+        xhr.onerror = () => reject(new Error('Error de conexión con el servidor'));
         xhr.ontimeout = () => reject(new Error('Tiempo de espera agotado'));
-        xhr.timeout = 0; // no timeout for large video uploads
-        xhr.open('POST', uploadUrl);
+        xhr.timeout = 0;
+        xhr.open('POST', '/api/upload');
         xhr.send(formData);
       });
     }
