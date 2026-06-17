@@ -27,7 +27,7 @@
     }
 
     body {
-      background: #000000;
+      background: #0a0b14;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
       color: #ffffff;
       position: relative;
@@ -47,8 +47,8 @@
     .top-bar {
       position: fixed;
       top: 0; left: 0; right: 0;
-      height: 54px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0) 100%);
+      height: 56px;
+      background: linear-gradient(to bottom, rgba(10,11,20,0.97) 0%, rgba(10,11,20,0) 100%);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -63,6 +63,10 @@
       letter-spacing: -0.5px;
       pointer-events: auto;
       user-select: none;
+      background: linear-gradient(135deg, #4c6ef5, #74c0fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .top-bar-actions {
       display: flex;
@@ -71,8 +75,8 @@
       pointer-events: auto;
     }
     .top-bar-btn {
-      background: rgba(255,255,255,0.10);
-      border: none;
+      background: rgba(76,110,245,0.12);
+      border: 1px solid rgba(76,110,245,0.18);
       color: #fff;
       width: 38px; height: 38px;
       border-radius: 50%;
@@ -83,10 +87,10 @@
       -webkit-backdrop-filter: blur(8px);
       transition: background 0.2s;
     }
-    .top-bar-btn:active { background: rgba(255,255,255,0.22); }
+    .top-bar-btn:active { background: rgba(76,110,245,0.28); }
     .top-bar--solid {
-      background: #000 !important;
-      border-bottom: 1px solid #1f1f1f;
+      background: #0d0e1a !important;
+      border-bottom: 1px solid #1c1e2e;
     }
 
     /* Keep old .header hidden */
@@ -332,15 +336,16 @@
     .featured-hero-btn:hover { opacity: 0.85; transform: scale(1.03); }
 
     .featured-hero-btn.primary {
-      background: #06C167;
-      color: #000;
+      background: linear-gradient(135deg, #4c6ef5, #3b5bdb);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(76,110,245,0.45);
     }
 
     .featured-hero-btn.secondary {
-      background: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.10);
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.22);
-      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.20);
+      backdrop-filter: blur(10px);
     }
 
     /* Hero: fondo con crossfade entre slides */
@@ -380,7 +385,7 @@
       transition: background 0.3s, transform 0.3s;
     }
     .featured-hero-dot.active {
-      background: #06C167;
+      background: #4c6ef5;
       transform: scale(1.4);
     }
 
@@ -390,7 +395,7 @@
       bottom: 0;
       left: 0;
       height: 2px;
-      background: #06C167;
+      background: linear-gradient(90deg, #4c6ef5, #74c0fc);
       width: 0%;
       transition: none;
       z-index: 3;
@@ -402,22 +407,51 @@
 
     /* Secciones de carruseles */
     .content-sections {
-      padding: 40px 0;
+      padding: 24px 0 100px;
     }
 
     .section {
-      margin-bottom: 40px;
+      margin-bottom: 32px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      margin-bottom: 14px;
     }
 
     .section-title {
-      font-size: 22px;
+      font-size: 17px;
       font-weight: 700;
-      margin-bottom: 16px;
-      padding: 0 16px;
       color: #ffffff;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.2px;
+      position: relative;
+      padding-left: 11px;
     }
+    .section-title::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 2px; bottom: 2px;
+      width: 3px;
+      background: linear-gradient(180deg, #4c6ef5, #74c0fc);
+      border-radius: 2px;
+    }
+
+    .section-see-all {
+      font-size: 12px;
+      color: #4c6ef5;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .section-see-all:hover { color: #74c0fc; }
 
     .carousel-container {
       position: relative;
@@ -426,7 +460,7 @@
 
     .carousel {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       padding: 0 16px;
       overflow-x: auto;
       scroll-behavior: smooth;
@@ -440,20 +474,21 @@
 
     .carousel-item {
       flex-shrink: 0;
-      width: 180px;
-      height: 270px;
-      border-radius: 8px;
+      width: 118px;
+      height: 178px;
+      border-radius: 10px;
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.2s ease, opacity 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       position: relative;
-      background: #161616;
-      border: 1px solid #2d2d2d;
+      background: #13141f;
+      border: 1px solid #1c1e30;
     }
 
     .carousel-item:hover {
-      transform: scale(1.04);
-      border-color: #555555;
+      transform: scale(1.05);
+      box-shadow: 0 6px 24px rgba(76,110,245,0.3);
+      border-color: #4c6ef5;
     }
 
     .carousel-item img {
@@ -1600,8 +1635,8 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: #000000 !important;
-      border-top: 1px solid #1a1a1a;
+      background: #0d0e1a !important;
+      border-top: 1px solid #1c1e2e;
       display: flex;
       justify-content: space-around;
       align-items: stretch;
@@ -1615,7 +1650,7 @@
     .bottom-nav button {
       background: transparent;
       border: none;
-      color: #555;
+      color: #3d4260;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1636,7 +1671,7 @@
     }
 
     .bottom-nav button.active i {
-      color: #06C167;
+      color: #4c6ef5;
     }
 
     #navMini.active i {
@@ -3908,7 +3943,9 @@
     <div class="content-sections">
       <!-- Continuar Viendo -->
       <div id="continueWatchingSection" class="section" style="display:none;">
-        <h2 class="section-title">Continuar Viendo</h2>
+        <div class="section-header">
+          <h2 class="section-title">Continuar Viendo</h2>
+        </div>
         <div class="carousel-container">
           <div class="carousel" id="continueCarousel"></div>
         </div>
@@ -3916,7 +3953,10 @@
 
       <!-- Películas -->
       <div class="section">
-        <h2 class="section-title">Películas</h2>
+        <div class="section-header">
+          <h2 class="section-title">Películas</h2>
+          <span class="section-see-all">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
+        </div>
         <div class="carousel-container">
           <div class="carousel" id="moviesCarousel"></div>
         </div>
@@ -3924,7 +3964,10 @@
 
       <!-- Series -->
       <div class="section">
-        <h2 class="section-title">Series</h2>
+        <div class="section-header">
+          <h2 class="section-title">Series</h2>
+          <span class="section-see-all">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
+        </div>
         <div class="carousel-container">
           <div class="carousel" id="seriesCarousel"></div>
         </div>
@@ -3932,7 +3975,10 @@
 
       <!-- Tendencias -->
       <div class="section">
-        <h2 class="section-title">Tendencias</h2>
+        <div class="section-header">
+          <h2 class="section-title">🔥 Tendencias</h2>
+          <span class="section-see-all">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
+        </div>
         <div class="carousel-container">
           <div class="carousel" id="trendingCarousel"></div>
         </div>
@@ -3940,7 +3986,10 @@
 
       <!-- Anime -->
       <div class="section">
-        <h2 class="section-title">Anime</h2>
+        <div class="section-header">
+          <h2 class="section-title">Anime</h2>
+          <span class="section-see-all">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
+        </div>
         <div class="carousel-container">
           <div class="carousel" id="animeCarousel"></div>
         </div>
@@ -3948,7 +3997,10 @@
 
       <!-- Terror -->
       <div class="section">
-        <h2 class="section-title">Terror</h2>
+        <div class="section-header">
+          <h2 class="section-title">Terror</h2>
+          <span class="section-see-all">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
+        </div>
         <div class="carousel-container">
           <div class="carousel" id="terrorCarousel"></div>
         </div>
@@ -3956,10 +4008,13 @@
 
       <!-- Mini dramas -->
       <div class="section" id="miniCarouselSection" style="display:none;">
-        <h2 class="section-title" style="display:flex;align-items:center;gap:8px;">
-          <span style="background:linear-gradient(135deg,#E91E8C,#FF6B35);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:900;">MINI</span>
-          <span style="font-size:11px;color:#888;font-weight:500;text-transform:uppercase;letter-spacing:1px;-webkit-text-fill-color:#888;">Dramas cortos</span>
-        </h2>
+        <div class="section-header">
+          <h2 class="section-title" style="padding-left:11px;">
+            <span style="background:linear-gradient(135deg,#E91E8C,#FF6B35);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:900;">MINI</span>
+            <span style="font-size:11px;color:#8b9ab0;font-weight:500;text-transform:uppercase;letter-spacing:1px;margin-left:6px;">Dramas cortos</span>
+          </h2>
+          <span class="section-see-all" style="color:#E91E8C;">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
+        </div>
         <div class="carousel-container">
           <div class="carousel" id="miniCarousel"></div>
         </div>
@@ -8796,9 +8851,14 @@
       return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
+    // Cloudinary unsigned upload — no server needed, no CORS issues
+    const CLOUDINARY_CLOUD_NAME  = 'dubsgko2k';
+    const CLOUDINARY_UPLOAD_PRESET = 'atenis_mini'; // unsigned preset created in Cloudinary dashboard
+
     async function uploadToCloudinary(file, onProgress, isVideo) {
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
       formData.append('folder', 'atenis-mini');
 
       return new Promise((resolve, reject) => {
@@ -8811,19 +8871,18 @@
         xhr.onload = () => {
           try {
             const data = JSON.parse(xhr.responseText);
-            if (xhr.status === 200 && data.url) {
-              resolve(data.url);
+            if (xhr.status === 200 && data.secure_url) {
+              resolve(data.secure_url);
             } else {
-              reject(new Error(data.error || `Error del servidor (${xhr.status})`));
+              reject(new Error(data.error?.message || `Error Cloudinary (${xhr.status})`));
             }
           } catch {
-            reject(new Error(`Respuesta inválida del servidor (${xhr.status})`));
+            reject(new Error(`Respuesta inválida (${xhr.status})`));
           }
         };
-        xhr.onerror = () => reject(new Error('Error de conexión con el servidor'));
-        xhr.ontimeout = () => reject(new Error('Tiempo de espera agotado'));
+        xhr.onerror = () => reject(new Error('Error de red al conectar con Cloudinary'));
         xhr.timeout = 0;
-        xhr.open('POST', '/api/upload');
+        xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`);
         xhr.send(formData);
       });
     }
