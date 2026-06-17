@@ -43,20 +43,54 @@
       font-variant-ligatures: common-ligatures;
     }
 
-    /* Header estilo MrBeast - OCULTO */
-    .header {
-      display: none;
-      width: 100%;
-      padding: 20px 20px;
-      background: linear-gradient(135deg, #FF6B35, #F7931E);
-      backdrop-filter: blur(15px);
-      border-bottom: 6px solid #ffffff;
-      box-shadow: 0 8px 30px rgba(255, 107, 53, 0.5);
-      position: sticky;
-      top: 0;
+    /* ── Top Bar ── */
+    .top-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 54px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
       z-index: 900;
-      animation: headerBounce 3s ease-in-out infinite;
+      pointer-events: none;
     }
+    .top-bar-logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.5px;
+      pointer-events: auto;
+      user-select: none;
+    }
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: auto;
+    }
+    .top-bar-btn {
+      background: rgba(255,255,255,0.10);
+      border: none;
+      color: #fff;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: background 0.2s;
+    }
+    .top-bar-btn:active { background: rgba(255,255,255,0.22); }
+    .top-bar--solid {
+      background: #000 !important;
+      border-bottom: 1px solid #1f1f1f;
+    }
+
+    /* Keep old .header hidden */
+    .header { display: none !important; }
 
     @keyframes headerBounce {
       0%, 100% { transform: translateY(0px); }
@@ -1560,19 +1594,20 @@
       }
     }
 
-    /* Navegación inferior estilo Uber */
+    /* Navegación inferior — 4 ítems limpios */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       background: #000000 !important;
-      border-top: 1px solid #1f1f1f;
+      border-top: 1px solid #1a1a1a;
       display: flex;
       justify-content: space-around;
-      padding: 10px 0;
+      align-items: stretch;
+      padding: 8px 0;
+      padding-bottom: max(8px, env(safe-area-inset-bottom));
       z-index: 3000;
-      padding-bottom: env(safe-area-inset-bottom, 10px);
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
     }
@@ -1580,27 +1615,22 @@
     .bottom-nav button {
       background: transparent;
       border: none;
-      color: #666666;
+      color: #555;
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: 9px;
+      justify-content: center;
+      gap: 4px;
+      font-size: 10px;
       font-weight: 500;
       cursor: pointer;
-      padding: 6px 8px;
-      border-radius: 0;
-      transition: color 0.15s ease;
-      min-width: 0;
+      padding: 4px 0;
       flex: 1;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.3px;
+      transition: color 0.15s;
     }
 
-    #navMini.active i {
-      color: #E91E8C;
-    }
-
-    .bottom-nav button:hover,
     .bottom-nav button.active {
       color: #ffffff;
     }
@@ -1609,16 +1639,14 @@
       color: #06C167;
     }
 
-    .bottom-nav button i {
-      font-size: 20px;
-      margin-bottom: 3px;
-      transition: color 0.15s ease;
-      display: block;
+    #navMini.active i {
+      color: #E91E8C;
     }
 
-    .bottom-nav button:hover i,
-    .bottom-nav button.active i {
-      transform: none;
+    .bottom-nav button i {
+      font-size: 22px;
+      display: block;
+      transition: color 0.15s;
     }
 
 
@@ -3834,23 +3862,18 @@
   <link rel="stylesheet" href="uber-theme.css">
 </head>
 <body>
-  <!-- Header de búsqueda -->
-  <header class="header">
-    <div class="search-container">
-      <div class="search-wrapper">
-        <div class="search-icon">
-          <i class="fas fa-search"></i>
-        </div>
-        <input type="text" id="searchInput" placeholder="Buscar series y películas">
-        <button class="search-btn" id="searchBtn">
-          <i class="fas fa-arrow-right"></i>
-        </button>
-        <div id="searchSpinner" class="spinner hidden">
-          <i class="fas fa-spinner fa-spin"></i>
-        </div>
-      </div>
+  <!-- Top Bar fijo -->
+  <div class="top-bar" id="topBar">
+    <span class="top-bar-logo">Atenis</span>
+    <div class="top-bar-actions">
+      <button class="top-bar-btn" id="topBarCalendarBtn" onclick="topBarCalendar()" title="Próximos estrenos">
+        <i class="fas fa-calendar-days"></i>
+      </button>
+      <button class="top-bar-btn" id="topBarSettingsBtn" onclick="topBarSettings()" title="Ajustes">
+        <i class="fas fa-cog"></i>
+      </button>
     </div>
-  </header>
+  </div>
 
   <!-- Sección principal -->
   <div id="homeSection" class="app-container">
@@ -4585,7 +4608,7 @@
     </div>
   </div>
 
-  <!-- Navegación inferior -->
+  <!-- Navegación inferior — 4 ítems -->
   <nav class="bottom-nav">
     <button id="navHome" class="active">
       <i class="fas fa-home"></i>
@@ -4596,16 +4619,12 @@
       <span>Buscar</span>
     </button>
     <button id="navMini">
-      <i class="fas fa-film"></i>
+      <i class="fas fa-play-circle"></i>
       <span>Mini</span>
     </button>
-    <button id="navCalendar">
-      <i class="fas fa-calendar-days"></i>
-      <span>Calendario</span>
-    </button>
-    <button id="navSettings">
-      <i class="fas fa-cog"></i>
-      <span>Ajustes</span>
+    <button id="navProfile">
+      <i class="fas fa-user-circle"></i>
+      <span>Perfil</span>
     </button>
   </nav>
 
@@ -4890,9 +4909,7 @@
             showSearchSection();
           } else if (buttonId === 'navMini') {
             showMiniSection();
-          } else if (buttonId === 'navCalendar') {
-            showCalendarSection();
-          } else if (buttonId === 'navSettings') {
+          } else if (buttonId === 'navProfile') {
             showSettingsSection();
           }
         });
@@ -4904,11 +4921,40 @@
     function showBottomNav() {
       const bottomNav = document.querySelector('.bottom-nav');
       if (bottomNav) bottomNav.classList.remove('bottom-nav--hidden');
+      const topBar = document.getElementById('topBar');
+      if (topBar) topBar.style.display = 'flex';
     }
 
     function hideBottomNav() {
       const bottomNav = document.querySelector('.bottom-nav');
       if (bottomNav) bottomNav.classList.add('bottom-nav--hidden');
+      const topBar = document.getElementById('topBar');
+      if (topBar) topBar.style.display = 'none';
+    }
+
+    // ── Top bar section launchers ──────────────────────────────────
+    function topBarCalendar() {
+      hideAllSections();
+      document.getElementById('calendarSection').classList.add('active');
+      document.getElementById('topBar').classList.add('top-bar--solid');
+      renderUpcomingReleases();
+      document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+    }
+
+    function topBarSettings() {
+      hideAllSections();
+      document.getElementById('settingsSection').classList.add('active');
+      document.getElementById('topBar').classList.add('top-bar--solid');
+      document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById('navProfile') && document.getElementById('navProfile').classList.add('active');
+    }
+
+    // Make top bar transparent on home, solid elsewhere
+    function setTopBarMode(solid) {
+      const topBar = document.getElementById('topBar');
+      if (!topBar) return;
+      if (solid) topBar.classList.add('top-bar--solid');
+      else topBar.classList.remove('top-bar--solid');
     }
 
     function setupBottomNavAutoHide() {
@@ -4957,6 +5003,7 @@
     function showHomeSection() {
       hideAllSections();
       showBottomNav();
+      setTopBarMode(false);
       document.getElementById('homeSection').style.display = 'block';
     }
 
@@ -4964,6 +5011,7 @@
     function showSearchSection() {
       hideAllSections();
       showBottomNav();
+      setTopBarMode(true);
       const searchSection = document.getElementById('searchSection');
       searchSection.classList.add('active');
       searchSection.setAttribute('aria-hidden', 'false');
@@ -4972,20 +5020,16 @@
       document.getElementById('searchNoResults').classList.add('hidden');
       document.getElementById('searchSectionInput').value = '';
 
-      // Mostrar sugerencias por defecto (no todos los resultados)
       showSearchSuggestions();
-
       activeChipGenre = '';
-
       document.getElementById('searchSectionInput').focus();
     }
-
-
 
     // Mostrar sección de ajustes
     function showSettingsSection() {
       hideAllSections();
       showBottomNav();
+      setTopBarMode(true);
       document.getElementById('settingsSection').classList.add('active');
       loadCurrentSettings();
     }
@@ -5008,17 +5052,15 @@
       searchSection.classList.remove('active');
       searchSection.setAttribute('aria-hidden', 'true');
       showHomeSection();
-
-      // Activar botón home
       document.querySelectorAll('.bottom-nav button').forEach(btn => btn.classList.remove('active'));
       document.getElementById('navHome').classList.add('active');
     }
-
 
     // Mostrar sección de calendario
     function showCalendarSection() {
       hideAllSections();
       showBottomNav();
+      setTopBarMode(true);
       document.getElementById('calendarSection').classList.add('active');
       renderUpcomingReleases();
     }
@@ -5039,8 +5081,6 @@
     function closeSettingsSection() {
       document.getElementById('settingsSection').classList.remove('active');
       showHomeSection();
-
-      // Activar botón home
       document.querySelectorAll('.bottom-nav button').forEach(btn => btn.classList.remove('active'));
       document.getElementById('navHome').classList.add('active');
     }
@@ -8452,6 +8492,7 @@
     function showMiniSection() {
       hideAllSections();
       showBottomNav();
+      setTopBarMode(true);
       document.getElementById('miniSection').classList.add('active');
       checkMiniAdminAccess();
       renderMiniGrid();
@@ -8460,6 +8501,7 @@
     function closeMiniSection() {
       document.getElementById('miniSection').classList.remove('active');
       showHomeSection();
+      setTopBarMode(false);
       document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
       document.getElementById('navHome').classList.add('active');
     }
