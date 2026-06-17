@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 CLOUDINARY_API_KEY    = '238548142884869'
 CLOUDINARY_API_SECRET = 'R9mMGi3x6q6qp2U1hgaT_g1yWNQ'
-CLOUDINARY_CLOUD_NAME = 'YOUR_CLOUD_NAME'
+CLOUDINARY_CLOUD_NAME = 'dubsgko2k'
 
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
