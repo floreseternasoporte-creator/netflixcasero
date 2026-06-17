@@ -8803,13 +8803,15 @@
       const paramString = `folder=${folder}&timestamp=${timestamp}${CLOUDINARY_API_SECRET}`;
       const signature   = await sha1Hex(paramString);
 
-      const resourceType = isVideo ? 'video' : 'image';
       const formData = new FormData();
       formData.append('file', file);
       formData.append('api_key', CLOUDINARY_API_KEY);
-      formData.append('timestamp', timestamp);
+      formData.append('timestamp', String(timestamp));
       formData.append('signature', signature);
       formData.append('folder', folder);
+
+      // Use 'auto' so Cloudinary detects image/video/raw automatically
+      const uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
 
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -8821,14 +8823,22 @@
         xhr.onload = () => {
           try {
             const data = JSON.parse(xhr.responseText);
-            if (xhr.status === 200) resolve(data.secure_url);
-            else reject(new Error(data.error?.message || 'Upload failed'));
+            if (xhr.status === 200) {
+              resolve(data.secure_url);
+            } else {
+              const msg = data.error?.message || `HTTP ${xhr.status}`;
+              reject(new Error(msg));
+            }
           } catch {
-            reject(new Error('Respuesta inválida del servidor'));
+            reject(new Error(`Respuesta inválida (HTTP ${xhr.status})`));
           }
         };
-        xhr.onerror = () => reject(new Error('Error de red'));
-        xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`);
+        xhr.onerror = () => {
+          reject(new Error('No se pudo conectar con Cloudinary — verifica tu conexión o los permisos de la cuenta'));
+        };
+        xhr.ontimeout = () => reject(new Error('Tiempo de espera agotado'));
+        xhr.timeout = 0; // no timeout for large video uploads
+        xhr.open('POST', uploadUrl);
         xhr.send(formData);
       });
     }
