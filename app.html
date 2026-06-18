@@ -3701,6 +3701,77 @@
       opacity: 0.25; pointer-events: none;
     }
 
+    /* ── Info sheet (mitad de pantalla) ── */
+    .mini-info-sheet {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: #0d0e1a;
+      border-radius: 22px 22px 0 0;
+      z-index: 22;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      max-height: 52vh;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      padding-bottom: max(24px, env(safe-area-inset-bottom,0px));
+    }
+    .mini-info-sheet.open { transform: translateY(0); }
+
+    .mini-info-sheet-inner {
+      overflow-y: auto; flex: 1;
+      padding: 8px 20px 20px;
+      scrollbar-width: none;
+    }
+    .mini-info-sheet-inner::-webkit-scrollbar { display: none; }
+
+    .mini-info-poster-row {
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .mini-info-poster {
+      width: 70px; height: 100px;
+      object-fit: cover; border-radius: 10px;
+      background: #1c1e2e; flex-shrink: 0;
+    }
+    .mini-info-meta { flex: 1; min-width: 0; }
+    .mini-info-title {
+      font-size: 17px; font-weight: 800; color: #fff;
+      line-height: 1.2; margin-bottom: 7px;
+    }
+    .mini-info-badges {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-bottom: 8px;
+    }
+    .mini-info-badge {
+      font-size: 11px; font-weight: 600; padding: 3px 9px;
+      border-radius: 20px; border: 1px solid #252848;
+      color: #8b9ab0; background: #111322;
+    }
+    .mini-info-badge.highlight {
+      background: rgba(76,110,245,0.15);
+      border-color: rgba(76,110,245,0.4);
+      color: #a0b4ff;
+    }
+    .mini-info-rating {
+      font-size: 13px; color: #f5a623; font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .mini-info-ep-count {
+      font-size: 12px; color: #5a6480;
+    }
+    .mini-info-divider {
+      height: 1px; background: #1c1e2e;
+      margin: 0 0 14px;
+    }
+    .mini-info-section-label {
+      font-size: 11px; text-transform: uppercase;
+      letter-spacing: 1.5px; color: #5a6480;
+      font-weight: 700; margin-bottom: 8px;
+    }
+    .mini-info-description {
+      font-size: 14px; color: #9aa3bf;
+      line-height: 1.65; margin-bottom: 16px;
+    }
+
     /* Episode bottom sheet */
     /* ── DramaBox-style info panel ── */
     .mini-eps-sheet {
@@ -5003,11 +5074,15 @@
       <div class="mini-next-countdown" id="miniNextCountdown">Iniciando en 5...</div>
     </div>
 
-    <!-- Side buttons (episodios only) -->
+    <!-- Side buttons -->
     <div class="mini-player-side">
       <button class="mini-side-btn" onclick="toggleMiniEpsSheet()">
         <i class="fas fa-list"></i>
         <span>Episodios</span>
+      </button>
+      <button class="mini-side-btn" onclick="toggleMiniInfoSheet()">
+        <i class="fas fa-info-circle"></i>
+        <span>Info</span>
       </button>
     </div>
 
@@ -5041,6 +5116,15 @@
         <span id="miniPlayerCurrentTime">0:00</span>
         <span id="miniPlayerDuration">0:00</span>
       </div>
+    </div>
+
+    <!-- Info sheet (½ pantalla) -->
+    <div class="mini-info-sheet" id="miniInfoSheet">
+      <div class="mini-eps-sheet-handle"></div>
+      <button class="mini-sheet-close-btn" style="position:absolute;top:14px;right:16px;" onclick="closeMiniInfoSheet()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="mini-info-sheet-inner" id="miniInfoSheetInner"></div>
     </div>
 
     <!-- DramaBox-style info/episode panel -->
@@ -5637,11 +5721,12 @@
       }, 1000);
     }
 
-    // Buscar contenido
+    // Buscar contenido (series + mini dramas)
     function searchContent(query) {
       const results = [];
       const lowerQuery = query.toLowerCase();
 
+      // Series regulares
       Object.values(seriesDatabase).forEach(series => {
         const searchableText = [
           series.title,
@@ -5651,11 +5736,27 @@
           series.year,
           ...(series.searchAliases || [])
         ].filter(Boolean).join(' ').toLowerCase();
-
         if (searchableText.includes(lowerQuery)) {
           results.push(series);
         }
       });
+
+      // Mini dramas (si ya cargaron)
+      if (typeof miniDatabase !== 'undefined') {
+        Object.values(miniDatabase).forEach(mini => {
+          const searchableText = [
+            mini.title,
+            mini.spanishTitle,
+            mini.description,
+            mini.genre,
+            mini.year,
+            'mini drama', 'mini'
+          ].filter(Boolean).join(' ').toLowerCase();
+          if (searchableText.includes(lowerQuery)) {
+            results.push({ ...mini, _isMini: true });
+          }
+        });
+      }
 
       return results;
     }
@@ -5680,21 +5781,35 @@
       results.forEach(series => {
         const resultItem = document.createElement('div');
         resultItem.className = 'search-result-item';
-        resultItem.onclick = () => showSeriesDetail(series.id);
+
+        const isMini = series._isMini || (typeof miniDatabase !== 'undefined' && !!miniDatabase[series.id]);
+        resultItem.onclick = () => {
+          if (isMini) {
+            closeSearchSection();
+            showMiniSection();
+            setTimeout(() => showMiniPlayer(series.id, 0), 100);
+          } else {
+            showSeriesDetail(series.id);
+          }
+        };
+
+        const typeLabel = isMini ? 'Mini Drama' : getContentTypeLabel(series);
+        const epCount = isMini && series.episodes ? series.episodes.length + ' eps' : '';
 
         resultItem.innerHTML = `
-          <div class="search-result-poster">
+          <div class="search-result-poster" style="position:relative;">
             <img src="${series.poster}" alt="${series.title}">
+            ${isMini ? '<div style="position:absolute;bottom:5px;left:5px;background:rgba(76,110,245,0.9);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;">MINI</div>' : ''}
           </div>
           <div class="search-result-content">
-            <h3 class="search-result-title">${series.title}</h3>
+            <h3 class="search-result-title">${series.spanishTitle || series.title}</h3>
             <div class="search-result-meta">
-              <span>${series.year}</span>
-              <span>${getContentTypeLabel(series)}</span>
-              <span>${series.rating}</span>
-              ${series.isLocked && !isMovieAvailable(series) ? '<span>Próximamente</span>' : ''}
+              <span>${series.year || ''}</span>
+              <span>${typeLabel}</span>
+              ${epCount ? `<span>${epCount}</span>` : ''}
+              ${series.rating ? `<span>★ ${series.rating}</span>` : ''}
             </div>
-            <p class="search-result-description">${series.description}</p>
+            <p class="search-result-description">${series.description || ''}</p>
           </div>
         `;
 
@@ -9416,6 +9531,14 @@
       player.classList.add('active');
       hideBottomNav();
 
+      // Reset all sheets
+      _miniEpsSheetOpen = false;
+      _miniInfoSheetOpen = false;
+      const epsSheet = document.getElementById('miniEpsSheet');
+      const infoSheet = document.getElementById('miniInfoSheet');
+      if (epsSheet) epsSheet.classList.remove('open');
+      if (infoSheet) infoSheet.classList.remove('open');
+
       document.getElementById('miniPlayerTitle').textContent = mini.spanishTitle || mini.title;
       document.getElementById('miniPlayerGenreTag').textContent =
         [mini.genre, mini.duration].filter(Boolean).join(' · ');
@@ -9580,11 +9703,69 @@
       }
     }
 
+    let _miniInfoSheetOpen = false;
+
+    function toggleMiniInfoSheet() {
+      _miniInfoSheetOpen = !_miniInfoSheetOpen;
+      const sheet = document.getElementById('miniInfoSheet');
+      if (sheet) sheet.classList.toggle('open', _miniInfoSheetOpen);
+      if (_miniInfoSheetOpen) _renderMiniInfoSheet();
+      // Close eps sheet if open
+      if (_miniInfoSheetOpen && _miniEpsSheetOpen) {
+        _miniEpsSheetOpen = false;
+        const eps = document.getElementById('miniEpsSheet');
+        if (eps) eps.classList.remove('open');
+      }
+    }
+
+    function closeMiniInfoSheet() {
+      _miniInfoSheetOpen = false;
+      const sheet = document.getElementById('miniInfoSheet');
+      if (sheet) sheet.classList.remove('open');
+    }
+
+    function _renderMiniInfoSheet() {
+      const inner = document.getElementById('miniInfoSheetInner');
+      if (!inner || !_miniPlayerMini) return;
+      const m = _miniPlayerMini;
+      const title = m.spanishTitle || m.title || '';
+      const year = m.year || '';
+      const rating = m.rating ? '★ ' + m.rating : '';
+      const epCount = (m.episodes && m.episodes.length) ? m.episodes.length + ' episodios' : '';
+      const genres = (m.genre || '').split(',').map(g => g.trim()).filter(Boolean);
+      const description = m.description || 'Sin descripción disponible.';
+      const duration = m.duration || '';
+
+      const genreChips = genres.map(g => `<span class="mini-info-badge highlight">${g}</span>`).join('');
+      const metaBadges = [year, duration].filter(Boolean).map(v => `<span class="mini-info-badge">${v}</span>`).join('');
+
+      inner.innerHTML = `
+        <div class="mini-info-poster-row">
+          <img class="mini-info-poster" src="${m.poster || ''}" alt="">
+          <div class="mini-info-meta">
+            <div class="mini-info-title">${title}</div>
+            ${rating ? `<div class="mini-info-rating">${rating}</div>` : ''}
+            <div class="mini-info-badges">${metaBadges}${genreChips}</div>
+            ${epCount ? `<div class="mini-info-ep-count"><i class="fas fa-film" style="margin-right:5px;color:#4c6ef5"></i>${epCount}</div>` : ''}
+          </div>
+        </div>
+        <div class="mini-info-divider"></div>
+        <div class="mini-info-section-label">Sinopsis</div>
+        <div class="mini-info-description">${description}</div>
+      `;
+    }
+
     function toggleMiniEpsSheet() {
       _miniEpsSheetOpen = !_miniEpsSheetOpen;
       const sheet = document.getElementById('miniEpsSheet');
       if (sheet) sheet.classList.toggle('open', _miniEpsSheetOpen);
       if (_miniEpsSheetOpen) _renderMiniEpsList();
+      // Close info sheet if open
+      if (_miniEpsSheetOpen && _miniInfoSheetOpen) {
+        _miniInfoSheetOpen = false;
+        const info = document.getElementById('miniInfoSheet');
+        if (info) info.classList.remove('open');
+      }
     }
 
     function _closeMiniEpsSheet() {
