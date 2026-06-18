@@ -2903,7 +2903,7 @@
       background: #0a0a0a;
       z-index: 2000;
       display: none;
-      overflow-y: auto;
+      overflow: hidden;
     }
 
     .settings-section::before {
@@ -2912,6 +2912,22 @@
 
     .settings-section.active {
       display: block;
+    }
+
+    /* Make the main scrollable area inside settings */
+    .settings-section > .settings-header,
+    .settings-section > .settings-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Main scroll wrapper */
+    .settings-section > .settings-header {
+      overflow: visible;
+    }
+    .settings-section > .settings-content {
+      overflow-y: auto;
+      max-height: calc(100vh - 120px);
     }
 
     .settings-close-btn {
@@ -2960,53 +2976,92 @@
       margin: 0 auto;
     }
 
-    /* Grupos accordion — iOS style */
-    .settings-group {
-      margin: 0 16px 10px;
-      background: #0d0e1a;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid #1c1e2e;
+    /* ── Netflix-style settings nav rows ── */
+    .settings-nav-list {
+      padding: 0 16px;
     }
 
-    .settings-group-toggle {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 16px;
+    .settings-nav-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 13px 16px;
+      background: #0d0e1a;
+      border: 1px solid #1c1e2e;
+      border-radius: 14px;
+      margin-bottom: 8px;
       cursor: pointer;
       user-select: none;
       transition: background 0.15s;
     }
-    .settings-group-toggle:hover { background: rgba(255,255,255,0.03); }
-    .settings-group-toggle:active { background: rgba(255,255,255,0.06); }
+    .settings-nav-row:active { background: #141626; }
 
-    .settings-group-icon {
-      width: 34px; height: 34px; border-radius: 9px;
+    .settings-nav-icon {
+      width: 36px; height: 36px; border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
       font-size: 15px; flex-shrink: 0;
     }
-    .settings-group-label {
+    .settings-nav-label {
       flex: 1; font-size: 15px; font-weight: 500; color: #e8ecf4;
     }
-    .settings-group-count {
-      font-size: 12px; color: #5a6480; margin-right: 6px;
+    .settings-nav-value {
+      font-size: 13px; color: #5a6480; margin-right: 6px;
     }
-    .settings-group-arrow {
-      color: #5a6480; font-size: 11px;
-      transition: transform 0.2s;
-    }
-    .settings-group.open > .settings-group-toggle .settings-group-arrow {
-      transform: rotate(90deg);
+    .settings-nav-arrow {
+      color: #3a4460; font-size: 12px;
     }
 
-    .settings-group-body {
-      display: none;
-      border-top: 1px solid #1c1e2e;
+    /* ── Sub-section panels ── */
+    .settings-sub {
+      position: absolute; inset: 0;
+      background: #0a0a0a;
+      z-index: 10;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      overflow-y: auto;
     }
-    .settings-group.open > .settings-group-body { display: block; }
+    .settings-sub.open { transform: translateX(0); }
 
-    .settings-group-title {
-      display: none;
+    .settings-sub-topbar {
+      display: flex; align-items: center; gap: 14px;
+      padding: max(16px,env(safe-area-inset-top,0px)) 16px 14px;
+      border-bottom: 1px solid #1c1e2e;
+      position: sticky; top: 0;
+      background: #0a0a0a;
+      z-index: 5;
     }
+    .settings-sub-back {
+      background: rgba(255,255,255,0.06);
+      border: none; color: #fff;
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; cursor: pointer; flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .settings-sub-back:active { background: rgba(255,255,255,0.12); }
+    .settings-sub-topbar-title {
+      font-size: 16px; font-weight: 700; color: #fff;
+    }
+    .settings-sub-body {
+      padding: 16px;
+    }
+    .settings-sub-group {
+      background: #0d0e1a;
+      border: 1px solid #1c1e2e;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .settings-sub-group-label {
+      font-size: 11px; text-transform: uppercase;
+      letter-spacing: 1.5px; color: #5a6480;
+      font-weight: 600; padding: 14px 16px 4px;
+    }
+
+    /* Backwards compat — accordion groups no longer used but keep CSS for fallback */
+    .settings-group { display: none; }
+    .settings-group-toggle { display: none; }
+    .settings-group-icon { display: none; }
+    .settings-group-body { display: none; }
+    .settings-group-title { display: none; }
 
     .setting-item {
       display: flex;
@@ -3470,65 +3525,118 @@
       color: #fff;
     }
 
+    /* ===== MINI GRID — iQiYi style ===== */
     .mini-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      padding: 4px 12px 100px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 4px 14px 100px;
     }
-    @media (min-width: 400px) {
+    @media (min-width: 480px) {
       .mini-grid { grid-template-columns: repeat(3, 1fr); }
     }
-    @media (min-width: 600px) {
+    @media (min-width: 700px) {
       .mini-grid { grid-template-columns: repeat(4, 1fr); }
     }
 
+    /* iQiYi-style: poster image tall + info below */
     .mini-card {
       position: relative;
-      border-radius: 10px;
-      overflow: hidden;
       cursor: pointer;
-      aspect-ratio: 9/14;
-      background: #111322;
-      transition: transform 0.2s;
+      transition: transform 0.18s;
     }
     .mini-card:active { transform: scale(0.96); }
+
+    /* Poster wrapper — tall 2:3 ratio like iQiYi */
+    .mini-card-poster {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 2/3;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #111322;
+    }
     .mini-card img {
       width: 100%; height: 100%;
       object-fit: cover;
       display: block;
+      border-radius: 10px;
     }
+
+    /* Bottom-left gradient + episode count on poster */
     .mini-card-overlay {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0) 60%);
-      padding: 30px 8px 8px;
+      background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, transparent 55%);
+      padding: 28px 8px 7px;
+      border-radius: 0 0 10px 10px;
     }
-    .mini-card-title {
-      font-size: 11px;
+    .mini-card-ep-text {
+      font-size: 10px;
       font-weight: 700;
-      color: #fff;
-      line-height: 1.2;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      color: rgba(255,255,255,0.75);
     }
+
+    /* MINI badge top-left */
     .mini-card-ep-badge {
       position: absolute;
       top: 7px; left: 7px;
-      background: rgba(76,110,245,0.9);
+      background: #4c6ef5;
       color: #fff;
       font-size: 9px;
       font-weight: 800;
       padding: 2px 7px;
       border-radius: 5px;
       backdrop-filter: blur(4px);
+      letter-spacing: 0.04em;
     }
+
+    /* Rating badge top-right */
+    .mini-card-rating {
+      position: absolute;
+      top: 7px; right: 7px;
+      background: rgba(0,0,0,0.65);
+      color: #f5c518;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 5px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Title + meta BELOW the poster, iQiYi style */
+    .mini-card-info {
+      padding: 7px 2px 2px;
+    }
+    .mini-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #e8ecf4;
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 3px;
+    }
+    .mini-card-meta {
+      font-size: 11px;
+      color: #5a6a8a;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .mini-card-meta-dot {
+      width: 2px; height: 2px;
+      background: #3a4a6a;
+      border-radius: 50%;
+    }
+
     .mini-card-locked {
       position: absolute;
       inset: 0;
       background: rgba(0,0,0,0.55);
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -3722,7 +3830,7 @@
       position: absolute;
       right: 14px; bottom: 160px;
       display: flex; flex-direction: column;
-      align-items: center; gap: 24px; z-index: 10;
+      align-items: center; gap: 24px; z-index: 12;
     }
     .mini-side-btn {
       background: none; border: none; color: #fff;
@@ -3741,7 +3849,7 @@
     .mini-player-nav {
       position: absolute; right: 14px; top: 50%;
       transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 10px; z-index: 10;
+      display: flex; flex-direction: column; gap: 10px; z-index: 12;
     }
     .mini-player-nav-btn {
       background: rgba(13,14,26,0.6);
@@ -4314,13 +4422,16 @@
     .mini-carousel-item {
       position: relative;
       flex-shrink: 0;
-      width: 100px;
-      height: 155px;
-      border-radius: 8px;
+      width: 108px;
+      height: 162px;
+      border-radius: 10px;
       overflow: hidden;
       cursor: pointer;
-      background: #1a1a1a;
+      background: #111322;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      transition: transform 0.18s;
     }
+    .mini-carousel-item:active { transform: scale(0.95); }
     .mini-carousel-item img {
       width: 100%; height: 100%;
       object-fit: cover;
@@ -4328,27 +4439,29 @@
     .mini-carousel-item-overlay {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-      padding: 20px 6px 5px;
+      background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, transparent 60%);
+      padding: 24px 7px 6px;
     }
     .mini-carousel-item-title {
-      font-size: 10px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
       color: #fff;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      line-height: 1.25;
     }
     .mini-carousel-badge {
       position: absolute;
-      top: 4px; left: 4px;
-      background: #E91E8C;
+      top: 5px; left: 5px;
+      background: #4c6ef5;
       color: #fff;
       font-size: 8px;
       font-weight: 800;
-      padding: 2px 5px;
-      border-radius: 3px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
     }
 
   </style>
@@ -4466,7 +4579,7 @@
             <span style="background:linear-gradient(135deg,#E91E8C,#FF6B35);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:900;">MINI</span>
             <span style="font-size:11px;color:#8b9ab0;font-weight:500;text-transform:uppercase;letter-spacing:1px;margin-left:6px;">Dramas cortos</span>
           </h2>
-          <span class="section-see-all" style="color:#E91E8C;">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
+          <span class="section-see-all" style="color:#4c6ef5;cursor:pointer;" onclick="showMiniSection()">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
         </div>
         <div class="carousel-container">
           <div class="carousel" id="miniCarousel"></div>
@@ -4754,38 +4867,73 @@
   <!-- Sección de Ajustes -->
   <div id="settingsSection" class="settings-section">
     <button class="settings-close-btn" onclick="closeSettingsSection()">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-chevron-left"></i>
     </button>
 
     <div class="settings-header">
       <h2 class="settings-title">Configuración</h2>
-      <p class="settings-subtitle">Personaliza tu experiencia</p>
     </div>
 
     <div class="settings-content">
 
       <!-- Tarjeta de perfil -->
-      <div class="settings-profile-card">
-        <div id="userAvatar" style="width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; flex-shrink: 0;"></div>
+      <div class="settings-profile-card" style="margin:0 16px 20px;">
+        <div id="userAvatar" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:22px;flex-shrink:0;"></div>
         <div class="settings-profile-info">
           <div class="settings-profile-name" id="currentProfileName">Cargando...</div>
           <div class="settings-profile-email" id="userEmail">Cargando...</div>
           <div class="settings-profile-plan" id="currentPlan">Cargando...</div>
         </div>
-        <button class="settings-btn secondary" onclick="editProfile()" style="width: auto; padding: 8px 16px; font-size: 13px; flex-shrink: 0;">
-          <i class="fas fa-edit"></i>
-          Editar
+        <button class="settings-btn secondary" onclick="editProfile()" style="width:auto;padding:8px 16px;font-size:13px;flex-shrink:0;">
+          <i class="fas fa-edit"></i> Editar
         </button>
       </div>
 
-      <!-- Cuenta -->
-      <div class="settings-group open">
-        <div class="settings-group-toggle" onclick="toggleSettingsGroup(this)">
-          <div class="settings-group-icon" style="background:#1a2540"><i class="fas fa-user-circle" style="color:#4c6ef5"></i></div>
-          <span class="settings-group-label">Cuenta</span>
-          <i class="fas fa-chevron-right settings-group-arrow"></i>
+      <!-- Nav list — Netflix style rows -->
+      <div class="settings-nav-list">
+        <div class="settings-nav-row" onclick="openSettingsSub('cuenta')">
+          <div class="settings-nav-icon" style="background:#1a2540"><i class="fas fa-user-circle" style="color:#4c6ef5"></i></div>
+          <span class="settings-nav-label">Cuenta</span>
+          <span class="settings-nav-value" id="settingsNavNameVal"></span>
+          <i class="fas fa-chevron-right settings-nav-arrow"></i>
         </div>
-        <div class="settings-group-body">
+        <div class="settings-nav-row" onclick="openSettingsSub('reproduccion')">
+          <div class="settings-nav-icon" style="background:#1a1e40"><i class="fas fa-play-circle" style="color:#7c6ef5"></i></div>
+          <span class="settings-nav-label">Reproducción</span>
+          <i class="fas fa-chevron-right settings-nav-arrow"></i>
+        </div>
+        <div class="settings-nav-row" onclick="openSettingsSub('idioma')">
+          <div class="settings-nav-icon" style="background:#1a2a20"><i class="fas fa-language" style="color:#4dc47c"></i></div>
+          <span class="settings-nav-label">Idioma y Subtítulos</span>
+          <i class="fas fa-chevron-right settings-nav-arrow"></i>
+        </div>
+        <div class="settings-nav-row" onclick="openSettingsSub('parental')">
+          <div class="settings-nav-icon" style="background:#2a1a1a"><i class="fas fa-shield-alt" style="color:#e55555"></i></div>
+          <span class="settings-nav-label">Control Parental</span>
+          <i class="fas fa-chevron-right settings-nav-arrow"></i>
+        </div>
+        <div class="settings-nav-row" onclick="openSettingsSub('notificaciones')">
+          <div class="settings-nav-icon" style="background:#2a2210"><i class="fas fa-bell" style="color:#f5a623"></i></div>
+          <span class="settings-nav-label">Notificaciones</span>
+          <i class="fas fa-chevron-right settings-nav-arrow"></i>
+        </div>
+        <div class="settings-nav-row" onclick="openSettingsSub('ayuda')">
+          <div class="settings-nav-icon" style="background:#1a1e2a"><i class="fas fa-question-circle" style="color:#a0b4ff"></i></div>
+          <span class="settings-nav-label">Ayuda y Soporte</span>
+          <i class="fas fa-chevron-right settings-nav-arrow"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Sub: Cuenta ── -->
+    <div class="settings-sub" id="settingsSubCuenta">
+      <div class="settings-sub-topbar">
+        <button class="settings-sub-back" onclick="closeSettingsSub('cuenta')"><i class="fas fa-chevron-left"></i></button>
+        <span class="settings-sub-topbar-title">Cuenta</span>
+      </div>
+      <div class="settings-sub-body">
+        <div class="settings-sub-group">
           <div class="setting-item">
             <div class="setting-info">
               <div class="setting-name">Nombre</div>
@@ -4794,33 +4942,40 @@
           </div>
           <div class="setting-item">
             <div class="setting-info">
-              <div class="setting-name">Mi plan</div>
-              <div class="setting-description">Actualizar suscripción</div>
+              <div class="setting-name">Correo</div>
+              <div class="setting-description" id="userEmailSub">Cargando...</div>
             </div>
-            <button class="settings-btn secondary" onclick="changePlan()" style="width: auto; padding: 7px 14px; font-size: 12px;">
-              <i class="fas fa-crown"></i> Ver planes
-            </button>
           </div>
           <div class="setting-item">
             <div class="setting-info">
-              <div class="setting-name" style="color:#ff4d4d;">Cerrar sesión</div>
-              <div class="setting-description">Salir de tu cuenta</div>
+              <div class="setting-name">Mi plan</div>
+              <div class="setting-description">Actualizar suscripción</div>
             </div>
-            <button class="settings-btn secondary" onclick="logoutFirebase()" style="width:auto;padding:7px 14px;font-size:12px;border-color:#ff4d4d;color:#ff4d4d;">
-              <i class="fas fa-sign-out-alt"></i> Salir
+            <button class="settings-btn secondary" onclick="changePlan()" style="width:auto;padding:7px 14px;font-size:12px;">
+              <i class="fas fa-crown"></i> Ver planes
             </button>
           </div>
         </div>
-      </div>
-
-      <!-- Reproducción -->
-      <div class="settings-group">
-        <div class="settings-group-toggle" onclick="toggleSettingsGroup(this)">
-          <div class="settings-group-icon" style="background:#1a1e40"><i class="fas fa-play-circle" style="color:#7c6ef5"></i></div>
-          <span class="settings-group-label">Reproducción</span>
-          <i class="fas fa-chevron-right settings-group-arrow"></i>
+        <div class="settings-sub-group">
+          <div class="setting-item" onclick="logoutFirebase()" style="cursor:pointer;">
+            <div class="setting-info">
+              <div class="setting-name" style="color:#ff4d4d;">Cerrar sesión</div>
+              <div class="setting-description">Salir de tu cuenta actual</div>
+            </div>
+            <i class="fas fa-sign-out-alt" style="color:#ff4d4d;font-size:16px;"></i>
+          </div>
         </div>
-        <div class="settings-group-body">
+      </div>
+    </div>
+
+    <!-- ── Sub: Reproducción ── -->
+    <div class="settings-sub" id="settingsSubReproduccion">
+      <div class="settings-sub-topbar">
+        <button class="settings-sub-back" onclick="closeSettingsSub('reproduccion')"><i class="fas fa-chevron-left"></i></button>
+        <span class="settings-sub-topbar-title">Reproducción</span>
+      </div>
+      <div class="settings-sub-body">
+        <div class="settings-sub-group">
           <div class="setting-item">
             <div class="setting-info">
               <div class="setting-name">Reproducción automática</div>
@@ -4831,6 +4986,28 @@
               <span class="toggle-slider"></span>
             </label>
           </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Solo WiFi</div>
+              <div class="setting-description">Reproducir solo con WiFi</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="wifiOnlyToggle" onchange="showSettingsMessage(this.checked?'Solo WiFi activado':'Solo WiFi desactivado')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Ahorro de datos</div>
+              <div class="setting-description">Reduce el consumo de datos</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="dataSaverToggle" onchange="showSettingsMessage(this.checked?'Ahorro de datos activado':'Ahorro de datos desactivado')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="settings-sub-group">
           <div class="setting-item">
             <div class="setting-info">
               <div class="setting-name">Calidad de video</div>
@@ -4845,15 +5022,16 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Idioma y Subtítulos -->
-      <div class="settings-group">
-        <div class="settings-group-toggle" onclick="toggleSettingsGroup(this)">
-          <div class="settings-group-icon" style="background:#1a2a20"><i class="fas fa-language" style="color:#4dc47c"></i></div>
-          <span class="settings-group-label">Idioma y Subtítulos</span>
-          <i class="fas fa-chevron-right settings-group-arrow"></i>
-        </div>
-        <div class="settings-group-body">
+    <!-- ── Sub: Idioma ── -->
+    <div class="settings-sub" id="settingsSubIdioma">
+      <div class="settings-sub-topbar">
+        <button class="settings-sub-back" onclick="closeSettingsSub('idioma')"><i class="fas fa-chevron-left"></i></button>
+        <span class="settings-sub-topbar-title">Idioma y Subtítulos</span>
+      </div>
+      <div class="settings-sub-body">
+        <div class="settings-sub-group">
           <div class="setting-item">
             <div class="setting-info">
               <div class="setting-name">Idioma de la interfaz</div>
@@ -4875,17 +5053,29 @@
               <span class="toggle-slider"></span>
             </label>
           </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Idioma de audio</div>
+              <div class="setting-description">Pista de audio preferida</div>
+            </div>
+            <select class="setting-select" id="audioLanguage" onchange="showSettingsMessage('Audio: '+(this.options[this.selectedIndex].text))">
+              <option value="es">Español</option>
+              <option value="en">English</option>
+              <option value="original">Original</option>
+            </select>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Control Parental -->
-      <div class="settings-group">
-        <div class="settings-group-toggle" onclick="toggleSettingsGroup(this)">
-          <div class="settings-group-icon" style="background:#2a1a1a"><i class="fas fa-shield-alt" style="color:#e55555"></i></div>
-          <span class="settings-group-label">Control Parental</span>
-          <i class="fas fa-chevron-right settings-group-arrow"></i>
-        </div>
-        <div class="settings-group-body">
+    <!-- ── Sub: Control Parental ── -->
+    <div class="settings-sub" id="settingsSubParental">
+      <div class="settings-sub-topbar">
+        <button class="settings-sub-back" onclick="closeSettingsSub('parental')"><i class="fas fa-chevron-left"></i></button>
+        <span class="settings-sub-topbar-title">Control Parental</span>
+      </div>
+      <div class="settings-sub-body">
+        <div class="settings-sub-group">
           <div class="setting-item">
             <div class="setting-info">
               <div class="setting-name">Clasificación máxima</div>
@@ -4899,15 +5089,16 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Notificaciones -->
-      <div class="settings-group">
-        <div class="settings-group-toggle" onclick="toggleSettingsGroup(this)">
-          <div class="settings-group-icon" style="background:#2a2210"><i class="fas fa-bell" style="color:#f5a623"></i></div>
-          <span class="settings-group-label">Notificaciones</span>
-          <i class="fas fa-chevron-right settings-group-arrow"></i>
-        </div>
-        <div class="settings-group-body">
+    <!-- ── Sub: Notificaciones ── -->
+    <div class="settings-sub" id="settingsSubNotificaciones">
+      <div class="settings-sub-topbar">
+        <button class="settings-sub-back" onclick="closeSettingsSub('notificaciones')"><i class="fas fa-chevron-left"></i></button>
+        <span class="settings-sub-topbar-title">Notificaciones</span>
+      </div>
+      <div class="settings-sub-body">
+        <div class="settings-sub-group">
           <div class="setting-item">
             <div class="setting-info">
               <div class="setting-name">Nuevos estrenos</div>
@@ -4940,8 +5131,40 @@
           </div>
         </div>
       </div>
-
     </div>
+
+    <!-- ── Sub: Ayuda ── -->
+    <div class="settings-sub" id="settingsSubAyuda">
+      <div class="settings-sub-topbar">
+        <button class="settings-sub-back" onclick="closeSettingsSub('ayuda')"><i class="fas fa-chevron-left"></i></button>
+        <span class="settings-sub-topbar-title">Ayuda y Soporte</span>
+      </div>
+      <div class="settings-sub-body">
+        <div class="settings-sub-group">
+          <div class="setting-item" onclick="window.open('mailto:soporte@atenis.app')" style="cursor:pointer;">
+            <div class="setting-info">
+              <div class="setting-name">Contactar soporte</div>
+              <div class="setting-description">soporte@atenis.app</div>
+            </div>
+            <i class="fas fa-chevron-right" style="color:#3a4460;font-size:12px;"></i>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Versión de la app</div>
+              <div class="setting-description">Atenis v1.0</div>
+            </div>
+          </div>
+          <div class="setting-item" style="cursor:pointer;" onclick="resetSettings()">
+            <div class="setting-info">
+              <div class="setting-name" style="color:#f5a623;">Restablecer ajustes</div>
+              <div class="setting-description">Volver a los valores predeterminados</div>
+            </div>
+            <i class="fas fa-chevron-right" style="color:#3a4460;font-size:12px;"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Sección de Historial -->
@@ -9267,12 +9490,27 @@
         card.onclick = () => showMiniPlayer(mini.id, 0);
 
         const epCount = mini.episodes ? mini.episodes.length : 0;
+        const rating  = mini.rating  ? mini.rating  : '';
+        const genre   = (mini.genre  || '').split(',')[0].trim();
+        const year    = mini.year    ? mini.year    : '';
+
         card.innerHTML = `
-          <img src="${mini.poster || ''}" alt="${mini.title}" loading="lazy"
-               onerror="this.style.background='#1a1a1a';this.src='';">
-          ${epCount > 0 ? `<div class="mini-card-ep-badge">${epCount} EP</div>` : ''}
-          <div class="mini-card-overlay">
+          <div class="mini-card-poster">
+            <img src="${mini.poster || ''}" alt="${mini.spanishTitle || mini.title}" loading="lazy"
+                 onerror="this.style.background='#1a1a1a';this.src='';">
+            <div class="mini-card-ep-badge">MINI</div>
+            ${rating ? `<div class="mini-card-rating">★ ${rating}</div>` : ''}
+            <div class="mini-card-overlay">
+              ${epCount > 0 ? `<div class="mini-card-ep-text">${epCount} episodios</div>` : ''}
+            </div>
+          </div>
+          <div class="mini-card-info">
             <div class="mini-card-title">${mini.spanishTitle || mini.title}</div>
+            <div class="mini-card-meta">
+              ${year ? `<span>${year}</span>` : ''}
+              ${year && genre ? '<span class="mini-card-meta-dot"></span>' : ''}
+              ${genre ? `<span>${genre}</span>` : ''}
+            </div>
           </div>
         `;
         grid.appendChild(card);
@@ -9994,15 +10232,47 @@
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    //  SETTINGS ACCORDION
+    //  SETTINGS — Netflix-style sub-section navigation
     // ════════════════════════════════════════════════════════════════════════
 
-    function toggleSettingsGroup(toggleEl) {
-      const group = toggleEl.closest('.settings-group');
-      if (!group) return;
-      const isOpen = group.classList.contains('open');
-      group.classList.toggle('open', !isOpen);
+    function openSettingsSub(name) {
+      const idMap = {
+        cuenta:         'settingsSubCuenta',
+        reproduccion:   'settingsSubReproduccion',
+        idioma:         'settingsSubIdioma',
+        parental:       'settingsSubParental',
+        notificaciones: 'settingsSubNotificaciones',
+        ayuda:          'settingsSubAyuda',
+      };
+      const id = idMap[name];
+      if (!id) return;
+      // Sync email to sub-section
+      if (name === 'cuenta') {
+        const emailEl = document.getElementById('userEmailSub');
+        const mainEmail = document.getElementById('userEmail');
+        if (emailEl && mainEmail) emailEl.textContent = mainEmail.textContent;
+      }
+      const el = document.getElementById(id);
+      if (el) el.classList.add('open');
     }
+
+    function closeSettingsSub(name) {
+      const idMap = {
+        cuenta:         'settingsSubCuenta',
+        reproduccion:   'settingsSubReproduccion',
+        idioma:         'settingsSubIdioma',
+        parental:       'settingsSubParental',
+        notificaciones: 'settingsSubNotificaciones',
+        ayuda:          'settingsSubAyuda',
+      };
+      const id = idMap[name];
+      if (!id) return;
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('open');
+    }
+
+    // Keep for backwards compat (no-op now)
+    function toggleSettingsGroup(toggleEl) { }
 
     // ── Toast notification ────────────────────────────────────────────────────
 
