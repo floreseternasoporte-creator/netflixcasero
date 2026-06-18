@@ -602,38 +602,32 @@
     }
 
     /* Overlay de bloqueo estilo Roblox */
-    /* Lock overlay — Netflix style */
+    /* Lock overlay — Netflix subtle (sin texto visible) */
     .locked-overlay {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.42);
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.38);
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: flex-end;
       justify-content: flex-start;
       padding: 7px;
       border-radius: 8px;
       z-index: 15;
-      backdrop-filter: none;
     }
 
     .locked-icon {
-      display: none;
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      background: rgba(0,0,0,0.45);
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
     }
+    .locked-icon i { font-size: 11px; }
 
     .locked-text {
-      font-size: 9px;
-      font-weight: 800;
-      color: #fff;
-      background: #e50914;
-      padding: 2px 7px;
-      border-radius: 3px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      line-height: 1.4;
+      display: none;
     }
 
     .release-date {
@@ -3411,10 +3405,11 @@
        MINI — Sección de dramas cortos
        ═══════════════════════════════════════════ */
 
+    /* ===== MINI SECTION — DeepSeek navy ===== */
     .mini-section {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: #000;
+      background: #0a0b14;
       z-index: 2000;
       display: none;
       overflow-y: auto;
@@ -3425,36 +3420,25 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      background: #000;
+      background: #0a0b14;
       display: flex;
       align-items: center;
-      padding: 14px 16px 10px;
+      padding: max(16px, env(safe-area-inset-top,0px)) 16px 12px;
       gap: 12px;
+      border-bottom: 1px solid #1c1e2e;
     }
-    .mini-back-btn {
-      background: rgba(255,255,255,0.08);
-      border: none;
-      color: #fff;
-      width: 38px; height: 38px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 15px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
+    .mini-back-btn { display: none; }
+
     .mini-logo-text {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
       letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #E91E8C, #FF6B35);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #ffffff;
     }
     .mini-logo-sub {
-      font-size: 11px;
-      color: #555;
-      margin-top: -2px;
+      font-size: 10px;
+      color: #5a6480;
+      margin-top: -1px;
       letter-spacing: 2px;
       text-transform: uppercase;
     }
@@ -3462,15 +3446,15 @@
     .mini-filters {
       display: flex;
       gap: 8px;
-      padding: 0 16px 14px;
+      padding: 12px 16px 12px;
       overflow-x: auto;
       scrollbar-width: none;
     }
     .mini-filters::-webkit-scrollbar { display: none; }
     .mini-chip {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      color: #aaa;
+      background: #111322;
+      border: 1px solid #1c1e2e;
+      color: #8b9ab0;
       padding: 7px 16px;
       border-radius: 20px;
       font-size: 13px;
@@ -3481,31 +3465,34 @@
       flex-shrink: 0;
     }
     .mini-chip.active {
-      background: #E91E8C;
-      border-color: #E91E8C;
+      background: #4c6ef5;
+      border-color: #4c6ef5;
       color: #fff;
     }
 
     .mini-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      padding: 0 12px 120px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 4px 12px 100px;
     }
-    @media (max-width: 400px) {
-      .mini-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 0 8px 120px; }
+    @media (min-width: 400px) {
+      .mini-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 600px) {
+      .mini-grid { grid-template-columns: repeat(4, 1fr); }
     }
 
     .mini-card {
       position: relative;
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
       cursor: pointer;
       aspect-ratio: 9/14;
-      background: #1a1a1a;
+      background: #111322;
       transition: transform 0.2s;
     }
-    .mini-card:active { transform: scale(0.95); }
+    .mini-card:active { transform: scale(0.96); }
     .mini-card img {
       width: 100%; height: 100%;
       object-fit: cover;
@@ -3514,11 +3501,11 @@
     .mini-card-overlay {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%);
-      padding: 28px 6px 6px;
+      background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0) 60%);
+      padding: 30px 8px 8px;
     }
     .mini-card-title {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
       color: #fff;
       line-height: 1.2;
@@ -3529,13 +3516,14 @@
     }
     .mini-card-ep-badge {
       position: absolute;
-      top: 6px; left: 6px;
-      background: #E91E8C;
+      top: 7px; left: 7px;
+      background: rgba(76,110,245,0.9);
       color: #fff;
       font-size: 9px;
       font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 4px;
+      padding: 2px 7px;
+      border-radius: 5px;
+      backdrop-filter: blur(4px);
     }
     .mini-card-locked {
       position: absolute;
@@ -3566,6 +3554,44 @@
       position: absolute; inset: 0;
       width: 100%; height: 100%;
       object-fit: cover;
+      transition: filter 0.9s ease, transform 0.9s ease;
+    }
+    .mini-player-video.mini-ending {
+      filter: blur(14px) brightness(0.7);
+      transform: scale(1.14);
+    }
+    /* Next-episode overlay */
+    .mini-next-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 15; opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .mini-next-overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .mini-next-label {
+      font-size: 13px; color: rgba(255,255,255,0.7);
+      text-transform: uppercase; letter-spacing: 2px;
+      margin-bottom: 12px; font-weight: 600;
+    }
+    .mini-next-title {
+      font-size: 20px; font-weight: 800; color: #fff;
+      text-align: center; margin-bottom: 20px;
+      padding: 0 32px; line-height: 1.3;
+    }
+    .mini-next-btn {
+      background: #4c6ef5; border: none; color: #fff;
+      padding: 12px 32px; border-radius: 30px;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .mini-next-countdown {
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      margin-top: 12px;
     }
 
     /* Top bar */
@@ -4967,12 +4993,18 @@
       <div style="width:40px;"></div>
     </div>
 
-    <!-- Side buttons -->
-    <div class="mini-player-side">
-      <button class="mini-side-btn" id="miniLikeBtn" onclick="toggleMiniLike()">
-        <i class="far fa-heart"></i>
-        <span>Me gusta</span>
+    <!-- Next episode overlay (blur+zoom freeze frame) -->
+    <div class="mini-next-overlay" id="miniNextOverlay">
+      <div class="mini-next-label">Siguiente episodio</div>
+      <div class="mini-next-title" id="miniNextTitle"></div>
+      <button class="mini-next-btn" onclick="_skipToNextMiniEp()">
+        <i class="fas fa-play"></i> Ver ahora
       </button>
+      <div class="mini-next-countdown" id="miniNextCountdown">Iniciando en 5...</div>
+    </div>
+
+    <!-- Side buttons (episodios only) -->
+    <div class="mini-player-side">
       <button class="mini-side-btn" onclick="toggleMiniEpsSheet()">
         <i class="fas fa-list"></i>
         <span>Episodios</span>
@@ -7099,8 +7131,6 @@
         ${isLocked ? `
           <div class="locked-overlay" id="${series.id}-lock">
             <div class="locked-icon"><i class="fas fa-lock"></i></div>
-            <div class="locked-text">Próximamente</div>
-            <div class="release-date">${releaseText}</div>
           </div>
         ` : ''}
       `;
@@ -7178,7 +7208,6 @@
             <img src="${series.poster}" alt="${series.title}">
             <div class="locked-overlay" style="border-radius: 12px;">
               <div class="locked-icon"><i class="fas fa-lock"></i></div>
-              <div class="locked-text">Bloqueado</div>
             </div>
           </div>
           <div class="history-item-content">
@@ -9374,7 +9403,6 @@
     let _miniPlayerEpIdx = 0;
     let _miniProgressInterval = null;
     let _miniEpsSheetOpen = false;
-    let _miniLiked = false;
 
     function showMiniPlayer(miniId, epIdx) {
       const mini = miniDatabase[miniId] || seriesDatabase[miniId];
@@ -9436,11 +9464,39 @@
         if (p) p.catch(() => {});
       }
 
+      // Reset ending state every time a new episode starts
+      vid.classList.remove('mini-ending');
+      const nextOvl = document.getElementById('miniNextOverlay');
+      if (nextOvl) nextOvl.classList.remove('visible');
+      if (window._miniNextCountdown) {
+        clearInterval(window._miniNextCountdown);
+        window._miniNextCountdown = null;
+      }
+
       vid.onplay  = updateMiniPlayBtn;
       vid.onpause = updateMiniPlayBtn;
       vid.onended = function() {
         if (_miniPlayerEpIdx < eps.length - 1) {
-          _playMiniEp(_miniPlayerEpIdx + 1);
+          // Blur + zoom freeze-frame effect then countdown
+          vid.classList.add('mini-ending');
+          const nextEp = eps[_miniPlayerEpIdx + 1];
+          const titleEl = document.getElementById('miniNextTitle');
+          if (titleEl) titleEl.textContent = nextEp.title || ('Episodio ' + (_miniPlayerEpIdx + 2));
+          const overlay = document.getElementById('miniNextOverlay');
+          const countEl = document.getElementById('miniNextCountdown');
+          if (overlay) overlay.classList.add('visible');
+          let secs = 5;
+          if (countEl) countEl.textContent = 'Iniciando en ' + secs + '...';
+          window._miniNextCountdown = setInterval(function() {
+            secs--;
+            if (secs <= 0) {
+              clearInterval(window._miniNextCountdown);
+              window._miniNextCountdown = null;
+              _skipToNextMiniEp();
+            } else {
+              if (countEl) countEl.textContent = 'Iniciando en ' + secs + '...';
+            }
+          }, 1000);
         }
       };
 
@@ -9509,13 +9565,18 @@
       if (vid && vid.duration) vid.currentTime = pct * vid.duration;
     }
 
-    function toggleMiniLike() {
-      _miniLiked = !_miniLiked;
-      const btn = document.getElementById('miniLikeBtn');
-      if (btn) {
-        btn.innerHTML = _miniLiked
-          ? '<i class="fas fa-heart" style="color:#e50914"></i><span>Me gusta</span>'
-          : '<i class="far fa-heart"></i><span>Me gusta</span>';
+    function _skipToNextMiniEp() {
+      if (window._miniNextCountdown) {
+        clearInterval(window._miniNextCountdown);
+        window._miniNextCountdown = null;
+      }
+      const overlay = document.getElementById('miniNextOverlay');
+      if (overlay) overlay.classList.remove('visible');
+      const vid = document.getElementById('miniPlayerVideo');
+      if (vid) vid.classList.remove('mini-ending');
+      const eps = (_miniPlayerMini && _miniPlayerMini.episodes) || [];
+      if (_miniPlayerEpIdx < eps.length - 1) {
+        _playMiniEp(_miniPlayerEpIdx + 1);
       }
     }
 
