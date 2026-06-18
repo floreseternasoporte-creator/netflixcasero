@@ -3539,7 +3539,7 @@
     }
     .mini-card-locked i { font-size: 18px; }
 
-    /* ===== MINI PLAYER — DramaBox style ===== */
+    /* ===== MINI PLAYER — DeepSeek Navy style ===== */
     .mini-player {
       position: fixed; inset: 0;
       background: #000;
@@ -3554,19 +3554,31 @@
       position: absolute; inset: 0;
       width: 100%; height: 100%;
       object-fit: cover;
-      transition: filter 0.9s ease, transform 0.9s ease;
+      transition: filter 0.8s ease, transform 0.8s ease;
     }
     .mini-player-video.mini-ending {
-      filter: blur(14px) brightness(0.7);
-      transform: scale(1.14);
+      filter: blur(12px) brightness(0.55);
+      transform: scale(1.08);
     }
-    /* Next-episode overlay */
+
+    /* ── Next-episode overlay — centrado en la parte baja del video ── */
     .mini-next-overlay {
-      position: absolute; inset: 0;
+      position: absolute;
+      bottom: 140px; left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 48px);
+      max-width: 320px;
+      background: rgba(13, 14, 26, 0.92);
+      border: 1px solid rgba(76,110,245,0.3);
+      border-radius: 18px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      z-index: 15; opacity: 0;
-      transition: opacity 0.4s ease;
+      align-items: center;
+      padding: 20px 24px 18px;
+      z-index: 15;
+      opacity: 0;
+      transition: opacity 0.35s ease;
       pointer-events: none;
     }
     .mini-next-overlay.visible {
@@ -3574,316 +3586,390 @@
       pointer-events: all;
     }
     .mini-next-label {
-      font-size: 13px; color: rgba(255,255,255,0.7);
+      font-size: 10px; color: #4c6ef5;
       text-transform: uppercase; letter-spacing: 2px;
-      margin-bottom: 12px; font-weight: 600;
+      margin-bottom: 8px; font-weight: 700;
     }
     .mini-next-title {
-      font-size: 20px; font-weight: 800; color: #fff;
-      text-align: center; margin-bottom: 20px;
-      padding: 0 32px; line-height: 1.3;
+      font-size: 15px; font-weight: 700; color: #fff;
+      text-align: center; margin-bottom: 16px;
+      line-height: 1.35;
     }
     .mini-next-btn {
       background: #4c6ef5; border: none; color: #fff;
-      padding: 12px 32px; border-radius: 30px;
-      font-size: 15px; font-weight: 700; cursor: pointer;
-      display: flex; align-items: center; gap: 8px;
+      padding: 10px 28px; border-radius: 24px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 7px;
+      transition: background 0.15s;
     }
+    .mini-next-btn:active { background: #3a5ce0; }
     .mini-next-countdown {
-      font-size: 13px; color: rgba(255,255,255,0.5);
-      margin-top: 12px;
+      font-size: 12px; color: rgba(255,255,255,0.45);
+      margin-top: 10px;
     }
 
-    /* Top bar */
+    /* ── Top bar ── */
     .mini-player-top {
       position: absolute;
       top: 0; left: 0; right: 0;
-      padding: max(18px, env(safe-area-inset-top,0px)) 16px 24px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, transparent 100%);
+      padding: max(16px, env(safe-area-inset-top,0px)) 16px 28px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, transparent 100%);
       display: flex;
       align-items: center;
       justify-content: space-between;
       z-index: 10;
     }
     .mini-player-back-btn {
-      background: rgba(0,0,0,0.45);
-      border: none; color: #fff;
-      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      width: 38px; height: 38px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px; cursor: pointer;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      font-size: 16px; cursor: pointer;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
     .mini-player-ep-label {
-      font-size: 13px; font-weight: 700; color: #fff;
-      background: rgba(0,0,0,0.5);
+      font-size: 12px; font-weight: 700; color: #fff;
+      background: rgba(13,14,26,0.65);
+      border: 1px solid rgba(76,110,245,0.25);
       padding: 5px 14px; border-radius: 20px;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      letter-spacing: 0.03em;
     }
 
-    /* Bottom info gradient */
+    /* ── Bottom gradient & controls ── */
     .mini-player-bottom {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      padding: 70px 20px max(24px, env(safe-area-inset-bottom,0px));
-      background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 55%, transparent 100%);
+      padding: 90px 20px max(20px, env(safe-area-inset-bottom,0px));
+      background: linear-gradient(to top,
+        rgba(0,0,0,0.95) 0%,
+        rgba(0,0,0,0.65) 50%,
+        transparent 100%);
       z-index: 10;
     }
     .mini-player-title {
-      font-size: 22px; font-weight: 800; color: #fff;
-      letter-spacing: -0.3px; margin-bottom: 4px;
-      line-height: 1.2;
+      font-size: 20px; font-weight: 800; color: #fff;
+      letter-spacing: -0.3px; margin-bottom: 3px;
+      line-height: 1.25;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.6);
     }
     .mini-player-genre-tag {
-      font-size: 12px; color: #8b9ab0; margin-bottom: 16px;
+      font-size: 12px; color: rgba(255,255,255,0.55);
+      margin-bottom: 18px; font-weight: 500;
     }
     .mini-player-controls-row {
-      display: flex; align-items: center; gap: 14px; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
     }
     .mini-player-play-btn {
       background: #fff; border: none; color: #000;
-      width: 46px; height: 46px; border-radius: 50%;
+      width: 44px; height: 44px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px; cursor: pointer; flex-shrink: 0;
+      font-size: 17px; cursor: pointer; flex-shrink: 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+      transition: transform 0.15s;
     }
+    .mini-player-play-btn:active { transform: scale(0.93); }
     .mini-player-play-btn i { margin-left: 2px; }
     .mini-player-eps-btn {
-      background: rgba(255,255,255,0.12); border: none; color: #fff;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: #fff;
       display: flex; align-items: center; gap: 7px;
-      padding: 8px 16px; border-radius: 20px;
+      padding: 8px 16px; border-radius: 22px;
       font-size: 13px; font-weight: 600; cursor: pointer;
-      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
       flex-shrink: 0;
+      transition: background 0.15s;
     }
+    .mini-player-eps-btn:active { background: rgba(255,255,255,0.18); }
+
+    /* Progress bar */
     .mini-player-progress-bar {
-      height: 3px; background: rgba(255,255,255,0.2);
-      border-radius: 3px; margin-bottom: 8px; cursor: pointer; overflow: hidden;
+      height: 3px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 3px; margin-bottom: 9px;
+      cursor: pointer; overflow: visible;
+      position: relative;
     }
+    .mini-player-progress-bar:active { height: 5px; }
     .mini-player-progress-fill {
       height: 100%; background: #4c6ef5; border-radius: 3px;
       transition: width 0.5s linear;
+      position: relative;
     }
+    .mini-player-progress-fill::after {
+      content: '';
+      position: absolute; right: -5px; top: 50%;
+      transform: translateY(-50%);
+      width: 11px; height: 11px;
+      background: #fff; border-radius: 50%;
+      box-shadow: 0 0 0 2px #4c6ef5;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .mini-player-progress-bar:hover .mini-player-progress-fill::after { opacity: 1; }
     .mini-player-time-row {
       display: flex; justify-content: space-between;
-      font-size: 11px; color: rgba(255,255,255,0.5);
+      font-size: 11px; color: rgba(255,255,255,0.45);
+      font-variant-numeric: tabular-nums;
     }
 
-    /* Side action buttons */
+    /* ── Side action buttons ── */
     .mini-player-side {
       position: absolute;
-      right: 16px; bottom: 130px;
+      right: 14px; bottom: 160px;
       display: flex; flex-direction: column;
-      align-items: center; gap: 22px; z-index: 10;
+      align-items: center; gap: 24px; z-index: 10;
     }
     .mini-side-btn {
       background: none; border: none; color: #fff;
       display: flex; flex-direction: column;
       align-items: center; gap: 5px;
-      font-size: 11px; cursor: pointer; font-weight: 600;
+      font-size: 10px; cursor: pointer; font-weight: 600;
+      letter-spacing: 0.03em;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     }
-    .mini-side-btn i { font-size: 26px; }
+    .mini-side-btn i {
+      font-size: 24px;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+    }
 
-    /* Navigation arrows */
+    /* ── Navigation arrows (prev/next episode) ── */
     .mini-player-nav {
-      position: absolute; right: 16px; top: 50%;
+      position: absolute; right: 14px; top: 50%;
       transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 12px; z-index: 10;
+      display: flex; flex-direction: column; gap: 10px; z-index: 10;
     }
     .mini-player-nav-btn {
-      background: rgba(0,0,0,0.5); border: none; color: #fff;
-      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(13,14,26,0.6);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      width: 38px; height: 38px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px; cursor: pointer;
-      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      font-size: 13px; cursor: pointer;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      transition: background 0.15s;
     }
+    .mini-player-nav-btn:active { background: rgba(76,110,245,0.35); }
     .mini-player-nav-btn:disabled {
-      opacity: 0.25; pointer-events: none;
+      opacity: 0.2; pointer-events: none;
     }
 
-    /* ── Info sheet (mitad de pantalla) ── */
+    /* ══════════════════════════════════════════
+       MINI INFO SHEET — DeepSeek navy
+    ══════════════════════════════════════════ */
     .mini-info-sheet {
       position: absolute; bottom: 0; left: 0; right: 0;
       background: #0d0e1a;
-      border-radius: 22px 22px 0 0;
+      border-top: 1px solid #1c1e2e;
+      border-radius: 20px 20px 0 0;
       z-index: 22;
       transform: translateY(100%);
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-      max-height: 52vh;
+      transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+      max-height: 55vh;
       display: flex; flex-direction: column;
       overflow: hidden;
-      padding-bottom: max(24px, env(safe-area-inset-bottom,0px));
+      padding-bottom: max(20px, env(safe-area-inset-bottom,0px));
     }
     .mini-info-sheet.open { transform: translateY(0); }
 
     .mini-info-sheet-inner {
       overflow-y: auto; flex: 1;
-      padding: 8px 20px 20px;
+      padding: 6px 20px 24px;
       scrollbar-width: none;
     }
     .mini-info-sheet-inner::-webkit-scrollbar { display: none; }
 
+    /* Handle bar reutiliza .mini-eps-sheet-handle */
+
     .mini-info-poster-row {
-      display: flex; gap: 14px; align-items: flex-start;
-      margin-bottom: 16px;
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 16px 0 14px;
     }
     .mini-info-poster {
-      width: 70px; height: 100px;
+      width: 72px; height: 102px;
       object-fit: cover; border-radius: 10px;
       background: #1c1e2e; flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
     }
-    .mini-info-meta { flex: 1; min-width: 0; }
+    .mini-info-meta { flex: 1; min-width: 0; padding-top: 2px; }
     .mini-info-title {
-      font-size: 17px; font-weight: 800; color: #fff;
-      line-height: 1.2; margin-bottom: 7px;
+      font-size: 16px; font-weight: 800; color: #fff;
+      line-height: 1.25; margin-bottom: 8px;
     }
     .mini-info-badges {
-      display: flex; flex-wrap: wrap; gap: 6px;
-      margin-bottom: 8px;
+      display: flex; flex-wrap: wrap; gap: 5px;
+      margin-bottom: 9px;
     }
     .mini-info-badge {
-      font-size: 11px; font-weight: 600; padding: 3px 9px;
-      border-radius: 20px; border: 1px solid #252848;
-      color: #8b9ab0; background: #111322;
+      font-size: 11px; font-weight: 600; padding: 3px 10px;
+      border-radius: 20px; border: 1px solid #1c2240;
+      color: #7a8cb0; background: #111727;
     }
     .mini-info-badge.highlight {
-      background: rgba(76,110,245,0.15);
-      border-color: rgba(76,110,245,0.4);
-      color: #a0b4ff;
+      background: rgba(76,110,245,0.12);
+      border-color: rgba(76,110,245,0.35);
+      color: #99b0ff;
     }
     .mini-info-rating {
-      font-size: 13px; color: #f5a623; font-weight: 700;
-      margin-bottom: 6px;
+      font-size: 12px; color: #f5a623; font-weight: 700;
+      margin-bottom: 5px;
     }
     .mini-info-ep-count {
-      font-size: 12px; color: #5a6480;
+      font-size: 12px; color: #4a5a80;
     }
     .mini-info-divider {
       height: 1px; background: #1c1e2e;
-      margin: 0 0 14px;
+      margin: 4px 0 14px;
     }
     .mini-info-section-label {
-      font-size: 11px; text-transform: uppercase;
-      letter-spacing: 1.5px; color: #5a6480;
+      font-size: 10px; text-transform: uppercase;
+      letter-spacing: 1.8px; color: #4a5a80;
       font-weight: 700; margin-bottom: 8px;
     }
     .mini-info-description {
-      font-size: 14px; color: #9aa3bf;
-      line-height: 1.65; margin-bottom: 16px;
+      font-size: 14px; color: #8a96b8;
+      line-height: 1.7; margin-bottom: 16px;
     }
 
-    /* Episode bottom sheet */
-    /* ── DramaBox-style info panel ── */
+    /* ══════════════════════════════════════════
+       MINI EPISODES SHEET — DeepSeek navy
+    ══════════════════════════════════════════ */
     .mini-eps-sheet {
       position: absolute; bottom: 0; left: 0; right: 0;
-      background: rgba(18, 18, 28, 0.97);
-      border-radius: 18px 18px 0 0;
+      background: #0d0e1a;
+      border-top: 1px solid #1c1e2e;
+      border-radius: 20px 20px 0 0;
       z-index: 20;
       transform: translateY(100%);
       transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-      max-height: 66vh;
+      max-height: 62vh;
       display: flex; flex-direction: column;
       overflow: hidden;
-      padding-bottom: max(20px, env(safe-area-inset-bottom,0px));
+      padding-bottom: max(16px, env(safe-area-inset-bottom,0px));
     }
     .mini-eps-sheet.open { transform: translateY(0); }
 
     .mini-eps-sheet-handle {
-      width: 40px; height: 4px; background: #3a3a50;
-      border-radius: 4px; margin: 12px auto 0; flex-shrink: 0;
+      width: 36px; height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 4px; margin: 10px auto 0; flex-shrink: 0;
     }
 
+    /* Header row: poster + title + close */
     .mini-sheet-title-row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 16px 10px; flex-shrink: 0;
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px 12px; flex-shrink: 0;
+      border-bottom: 1px solid #1c1e2e;
     }
     .mini-sheet-poster {
-      width: 52px; height: 68px; border-radius: 7px;
+      width: 46px; height: 62px; border-radius: 8px;
       object-fit: cover; background: #1c1e2e; flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
     .mini-sheet-info { flex: 1; min-width: 0; }
     .mini-sheet-series-title {
-      font-size: 15px; font-weight: 700; color: #fff;
-      margin-bottom: 4px; line-height: 1.25;
+      font-size: 14px; font-weight: 700; color: #fff;
+      margin-bottom: 3px; line-height: 1.3;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .mini-sheet-stats {
-      font-size: 12px; color: #8b9ab0; margin-bottom: 3px;
+      font-size: 12px; color: #6a7a9a; margin-bottom: 2px;
     }
     .mini-sheet-rating {
       font-size: 12px; color: #f5a623; font-weight: 600;
     }
     .mini-sheet-close-btn {
-      background: rgba(255,255,255,0.07); border: none; color: #fff;
-      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #8a96b8;
+      width: 30px; height: 30px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px; cursor: pointer; flex-shrink: 0;
+      font-size: 13px; cursor: pointer; flex-shrink: 0;
+      transition: background 0.15s;
     }
+    .mini-sheet-close-btn:active { background: rgba(255,255,255,0.14); }
 
+    /* Tabs */
     .mini-sheet-tabs {
       display: flex; padding: 0 16px;
       border-bottom: 1px solid #1c1e2e; flex-shrink: 0;
     }
     .mini-sheet-tab {
-      background: none; border: none; color: #8b9ab0;
-      padding: 10px 14px; font-size: 14px; font-weight: 600;
+      background: none; border: none; color: #6a7a9a;
+      padding: 11px 16px; font-size: 13px; font-weight: 600;
       cursor: pointer; position: relative;
+      transition: color 0.15s;
     }
     .mini-sheet-tab.active { color: #fff; }
     .mini-sheet-tab.active::after {
       content: ''; position: absolute;
-      bottom: -1px; left: 8px; right: 8px;
+      bottom: -1px; left: 10px; right: 10px;
       height: 2px; background: #4c6ef5; border-radius: 2px;
     }
 
-    .mini-sheet-body { overflow-y: auto; flex: 1; }
+    /* Scrollable body */
+    .mini-sheet-body { overflow-y: auto; flex: 1; padding: 4px 0 8px; }
+    .mini-sheet-body::-webkit-scrollbar { display: none; }
 
     .mini-synopsis-panel {
-      padding: 16px;
-      font-size: 14px; color: #8b9ab0; line-height: 1.65;
+      padding: 18px 18px 24px;
+      font-size: 14px; color: #8a96b8; line-height: 1.7;
     }
 
+    /* Episode range selector */
     .mini-ep-ranges {
-      display: flex; gap: 8px;
-      padding: 12px 16px 8px;
+      display: flex; gap: 7px;
+      padding: 12px 16px 10px;
       overflow-x: auto; scrollbar-width: none; flex-shrink: 0;
     }
     .mini-ep-ranges::-webkit-scrollbar { display: none; }
     .mini-ep-range-btn {
-      background: #1c1e2e; border: 1px solid #252848;
-      color: #8b9ab0; padding: 4px 12px;
-      border-radius: 6px; font-size: 12px;
+      background: #141626; border: 1px solid #1c2240;
+      color: #6a7a9a; padding: 5px 12px;
+      border-radius: 7px; font-size: 12px;
       font-weight: 600; cursor: pointer; white-space: nowrap;
       transition: all 0.15s;
     }
     .mini-ep-range-btn.active {
-      background: #252848; border-color: #4c6ef5; color: #fff;
+      background: rgba(76,110,245,0.15);
+      border-color: rgba(76,110,245,0.5);
+      color: #c0ccff;
     }
 
+    /* Episode grid */
     .mini-ep-grid {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 8px; padding: 4px 16px 16px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      padding: 8px 16px 16px;
     }
     .mini-ep-box {
-      aspect-ratio: 1; background: #1c1e2e;
-      border-radius: 8px;
+      aspect-ratio: 1;
+      background: #141626;
+      border: 1px solid #1c2240;
+      border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 14px; font-weight: 700;
-      color: #c8d0e0; position: relative;
-      transition: background 0.15s;
+      cursor: pointer; font-size: 13px; font-weight: 700;
+      color: #c0ccdf; position: relative;
+      transition: background 0.15s, border-color 0.15s;
     }
-    .mini-ep-box:active { transform: scale(0.94); }
+    .mini-ep-box:active { transform: scale(0.92); }
     .mini-ep-box.ep-playing {
-      background: #252848; color: #fff;
-      border: 1px solid #4c6ef5;
+      background: rgba(76,110,245,0.18);
+      border-color: #4c6ef5;
+      color: #fff;
     }
-    .mini-ep-box.ep-locked { color: #4a5268; cursor: default; }
+    .mini-ep-box.ep-locked { color: #3a4560; cursor: default; }
     .mini-ep-box-icon {
       position: absolute; bottom: 4px; right: 4px;
-      font-size: 8px;
+      font-size: 7px;
     }
     .mini-ep-box.ep-playing .mini-ep-box-icon { color: #4c6ef5; }
-    .mini-ep-box.ep-locked .mini-ep-box-icon { color: #4a5268; }
+    .mini-ep-box.ep-locked .mini-ep-box-icon { color: #3a4560; }
 
     .mini-empty {
       text-align: center;
@@ -4098,7 +4184,7 @@
       gap: 10px;
       margin-top: 20px;
     }
-    .mini-next-btn {
+    .mini-upload-next-btn {
       width: 100%;
       background: #E91E8C;
       border: none;
@@ -4984,7 +5070,7 @@
           <div class="mini-upload-prog-fill" id="coverProgFill"></div>
         </div>
         <p class="mini-upload-prog-text hidden" id="coverProgText">Subiendo imagen...</p>
-        <button class="mini-next-btn" onclick="goToMiniStep(2)" style="margin-top:10px;">Siguiente →</button>
+        <button class="mini-upload-next-btn" onclick="goToMiniStep(2)" style="margin-top:10px;">Siguiente →</button>
       </div>
 
       <!-- Paso 2: Detalles -->
@@ -5026,7 +5112,7 @@
         </div>
         <div class="mini-step-btns">
           <button class="mini-back-step-btn" onclick="goToMiniStep(1)">← Atrás</button>
-          <button class="mini-next-btn" onclick="goToMiniStep(3)">Siguiente →</button>
+          <button class="mini-upload-next-btn" onclick="goToMiniStep(3)">Siguiente →</button>
         </div>
       </div>
 
