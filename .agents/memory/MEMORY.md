@@ -1,3 +1,6 @@
 - [DeepSeek navy theme](deepseek-theme.md) — uber-theme.css usa variables --uber-* pero con colores navy/azul DeepSeek, no verde Uber Eats.
 - [Duplicate const crash](duplicate-const.md) — Declarar const dos veces en mismo script causa SyntaxError que rompe toda la app.
 - [Firebase dynamic catalog](firebase-catalog.md) — catalog.js es estático; contenido adicional se carga de Firebase 'catalog/' vía loadDynamicCatalog().
+- [Mini player DramaBox](mini-player.md) — mini dramas usan player vertical dedicado (#miniPlayer), NO el series detail modal.
+- [Settings accordion](settings-accordion.md) — grupos en cards con .settings-group-toggle; uber-theme.css NO debe tener overrides para .settings-group.
+- [Lock mode Netflix style](lock-mode.md) — locked-overlay es badge rojo ESTRENO en esquina, sin blur, no heavy overlay.

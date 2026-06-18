@@ -602,40 +602,42 @@
     }
 
     /* Overlay de bloqueo estilo Roblox */
+    /* Lock overlay — Netflix style */
     .locked-overlay {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.42);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: 7px;
       border-radius: 8px;
       z-index: 15;
-      backdrop-filter: blur(8px);
+      backdrop-filter: none;
     }
 
     .locked-icon {
-      font-size: 28px;
-      margin-bottom: 10px;
-      color: #ababab;
+      display: none;
     }
 
     .locked-text {
-      font-size: 12px;
-      text-align: center;
-      font-weight: 600;
-      margin-bottom: 4px;
+      font-size: 9px;
+      font-weight: 800;
+      color: #fff;
+      background: #e50914;
+      padding: 2px 7px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.4;
     }
 
     .release-date {
-      font-size: 11px;
-      color: #ababab;
-      margin-top: 4px;
+      display: none;
     }
 
     /* Cuenta regresiva — DeepSeek */
@@ -2080,23 +2082,27 @@
 
     .info-tabs {
       display: flex;
-      gap: 4px;
-      margin-bottom: 24px;
-      border-bottom: 1px solid #1f1f1f;
+      gap: 0;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #1c1e2e;
       padding-bottom: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
     }
+    .info-tabs::-webkit-scrollbar { display: none; }
 
     .info-tab {
       background: transparent;
       border: none;
-      color: #6b6b6b;
-      padding: 12px 20px;
-      font-size: 15px;
+      color: #5a6480;
+      padding: 12px 22px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: color 0.2s ease;
       border-radius: 0;
       position: relative;
+      white-space: nowrap;
     }
 
     .info-tab.active {
@@ -2108,8 +2114,8 @@
       content: '';
       position: absolute;
       bottom: -1px;
-      left: 0;
-      right: 0;
+      left: 16px;
+      right: 16px;
       height: 2px;
       background: #4c6ef5;
       border-radius: 2px 2px 0 0;
@@ -2960,29 +2966,51 @@
       margin: 0 auto;
     }
 
-    /* Grupos planos — sin cajas */
+    /* Grupos accordion — iOS style */
     .settings-group {
-      margin-bottom: 0;
-      background: transparent;
-      border-radius: 0;
-      padding: 0;
-      border: none;
+      margin: 0 16px 10px;
+      background: #0d0e1a;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #1c1e2e;
     }
+
+    .settings-group-toggle {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .settings-group-toggle:hover { background: rgba(255,255,255,0.03); }
+    .settings-group-toggle:active { background: rgba(255,255,255,0.06); }
+
+    .settings-group-icon {
+      width: 34px; height: 34px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+    .settings-group-label {
+      flex: 1; font-size: 15px; font-weight: 500; color: #e8ecf4;
+    }
+    .settings-group-count {
+      font-size: 12px; color: #5a6480; margin-right: 6px;
+    }
+    .settings-group-arrow {
+      color: #5a6480; font-size: 11px;
+      transition: transform 0.2s;
+    }
+    .settings-group.open > .settings-group-toggle .settings-group-arrow {
+      transform: rotate(90deg);
+    }
+
+    .settings-group-body {
+      display: none;
+      border-top: 1px solid #1c1e2e;
+    }
+    .settings-group.open > .settings-group-body { display: block; }
 
     .settings-group-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: #555555;
-      margin: 0;
-      padding: 20px 20px 8px 20px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .settings-group-title i {
       display: none;
     }
 
@@ -2990,10 +3018,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 20px;
-      border-bottom: 1px solid #141414;
+      padding: 14px 16px;
+      border-bottom: 1px solid #141822;
       background: transparent;
     }
+    .setting-item:last-child { border-bottom: none; }
 
     .settings-group:last-child .setting-item:last-child {
       border-bottom: none;
@@ -3521,6 +3550,177 @@
       font-size: 11px;
     }
     .mini-card-locked i { font-size: 18px; }
+
+    /* ===== MINI PLAYER — DramaBox style ===== */
+    .mini-player {
+      position: fixed; inset: 0;
+      background: #000;
+      z-index: 4000;
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .mini-player.active { display: flex; }
+
+    .mini-player-video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    /* Top bar */
+    .mini-player-top {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      padding: max(18px, env(safe-area-inset-top,0px)) 16px 24px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, transparent 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+    .mini-player-back-btn {
+      background: rgba(0,0,0,0.45);
+      border: none; color: #fff;
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; cursor: pointer;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .mini-player-ep-label {
+      font-size: 13px; font-weight: 700; color: #fff;
+      background: rgba(0,0,0,0.5);
+      padding: 5px 14px; border-radius: 20px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    /* Bottom info gradient */
+    .mini-player-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 70px 20px max(24px, env(safe-area-inset-bottom,0px));
+      background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 55%, transparent 100%);
+      z-index: 10;
+    }
+    .mini-player-title {
+      font-size: 22px; font-weight: 800; color: #fff;
+      letter-spacing: -0.3px; margin-bottom: 4px;
+      line-height: 1.2;
+    }
+    .mini-player-genre-tag {
+      font-size: 12px; color: #8b9ab0; margin-bottom: 16px;
+    }
+    .mini-player-controls-row {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 14px;
+    }
+    .mini-player-play-btn {
+      background: #fff; border: none; color: #000;
+      width: 46px; height: 46px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; cursor: pointer; flex-shrink: 0;
+    }
+    .mini-player-play-btn i { margin-left: 2px; }
+    .mini-player-eps-btn {
+      background: rgba(255,255,255,0.12); border: none; color: #fff;
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 16px; border-radius: 20px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      flex-shrink: 0;
+    }
+    .mini-player-progress-bar {
+      height: 3px; background: rgba(255,255,255,0.2);
+      border-radius: 3px; margin-bottom: 8px; cursor: pointer; overflow: hidden;
+    }
+    .mini-player-progress-fill {
+      height: 100%; background: #4c6ef5; border-radius: 3px;
+      transition: width 0.5s linear;
+    }
+    .mini-player-time-row {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: rgba(255,255,255,0.5);
+    }
+
+    /* Side action buttons */
+    .mini-player-side {
+      position: absolute;
+      right: 16px; bottom: 130px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 22px; z-index: 10;
+    }
+    .mini-side-btn {
+      background: none; border: none; color: #fff;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 5px;
+      font-size: 11px; cursor: pointer; font-weight: 600;
+    }
+    .mini-side-btn i { font-size: 26px; }
+
+    /* Navigation arrows */
+    .mini-player-nav {
+      position: absolute; right: 16px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 12px; z-index: 10;
+    }
+    .mini-player-nav-btn {
+      background: rgba(0,0,0,0.5); border: none; color: #fff;
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; cursor: pointer;
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    }
+    .mini-player-nav-btn:disabled {
+      opacity: 0.25; pointer-events: none;
+    }
+
+    /* Episode bottom sheet */
+    .mini-eps-sheet {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: #111322;
+      border-radius: 20px 20px 0 0;
+      padding: 0 0 max(24px, env(safe-area-inset-bottom,0px));
+      z-index: 20;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      max-height: 60vh; overflow-y: auto;
+    }
+    .mini-eps-sheet.open { transform: translateY(0); }
+    .mini-eps-sheet-handle {
+      width: 40px; height: 4px; background: #252848;
+      border-radius: 4px; margin: 14px auto 0;
+    }
+    .mini-eps-sheet-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px 0;
+    }
+    .mini-eps-sheet-title {
+      font-size: 15px; font-weight: 700; color: #fff;
+    }
+    .mini-eps-sheet-close {
+      background: none; border: none; color: #8b9ab0;
+      font-size: 20px; cursor: pointer; padding: 4px;
+    }
+    .mini-eps-list { padding: 12px 16px 0; }
+    .mini-ep-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid #1c1e2e;
+      cursor: pointer;
+    }
+    .mini-ep-item:last-child { border-bottom: none; }
+    .mini-ep-num {
+      font-size: 12px; font-weight: 700; color: #8b9ab0; min-width: 30px;
+    }
+    .mini-ep-item.active .mini-ep-num { color: #4c6ef5; }
+    .mini-ep-thumb {
+      width: 72px; height: 48px; border-radius: 6px;
+      object-fit: cover; background: #1c1e2e; flex-shrink: 0;
+    }
+    .mini-ep-info { flex: 1; min-width: 0; }
+    .mini-ep-title { font-size: 14px; font-weight: 600; color: #fff; }
+    .mini-ep-dur { font-size: 12px; color: #8b9ab0; margin-top: 2px; }
+    .mini-ep-item.active .mini-ep-title { color: #4c6ef5; }
 
     .mini-empty {
       text-align: center;
@@ -4329,153 +4529,166 @@
         </button>
       </div>
 
+      <!-- Cuenta -->
+      <div class="settings-group open">
+        <div class="settings-group-toggle" onclick="toggleSettingsGroup(this)">
+          <div class="settings-group-icon" style="background:#1a2540"><i class="fas fa-user-circle" style="color:#4c6ef5"></i></div>
+          <span class="settings-group-label">Cuenta</span>
+          <i class="fas fa-chevron-right settings-group-arrow"></i>
+        </div>
+        <div class="settings-group-body">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Nombre</div>
+              <div class="setting-description" id="userFullName">Cargando...</div>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Mi plan</div>
+              <div class="setting-description">Actualizar suscripción</div>
+            </div>
+            <button class="settings-btn secondary" onclick="changePlan()" style="width: auto; padding: 7px 14px; font-size: 12px;">
+              <i class="fas fa-crown"></i> Ver planes
+            </button>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name" style="color:#ff4d4d;">Cerrar sesión</div>
+              <div class="setting-description">Salir de tu cuenta</div>
+            </div>
+            <button class="settings-btn secondary" onclick="logoutFirebase()" style="width:auto;padding:7px 14px;font-size:12px;border-color:#ff4d4d;color:#ff4d4d;">
+              <i class="fas fa-sign-out-alt"></i> Salir
+            </button>
+          </div>
+        </div>
+      </div>
+
       <!-- Reproducción -->
       <div class="settings-group">
-        <h3 class="settings-group-title">
-          <i class="fas fa-play-circle"></i>
-          Reproducción
-        </h3>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Reproducción automática</div>
-            <div class="setting-description">Reproducir el siguiente episodio automáticamente</div>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="autoplayToggle" checked>
-            <span class="toggle-slider"></span>
-          </label>
+        <div class="settings-group-toggle" onclick="toggleSettingsGroup(this)">
+          <div class="settings-group-icon" style="background:#1a1e40"><i class="fas fa-play-circle" style="color:#7c6ef5"></i></div>
+          <span class="settings-group-label">Reproducción</span>
+          <i class="fas fa-chevron-right settings-group-arrow"></i>
         </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Calidad de video</div>
-            <div class="setting-description">Resolución de reproducción</div>
+        <div class="settings-group-body">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Reproducción automática</div>
+              <div class="setting-description">Siguiente episodio automáticamente</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="autoplayToggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
           </div>
-          <select class="setting-select" id="videoQuality">
-            <option value="auto">Automática</option>
-            <option value="1080p">1080p HD</option>
-            <option value="720p">720p</option>
-            <option value="480p">480p</option>
-          </select>
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Calidad de video</div>
+              <div class="setting-description">Resolución de reproducción</div>
+            </div>
+            <select class="setting-select" id="videoQuality">
+              <option value="auto">Automática</option>
+              <option value="1080p">1080p HD</option>
+              <option value="720p">720p</option>
+              <option value="480p">480p</option>
+            </select>
+          </div>
         </div>
       </div>
 
       <!-- Idioma y Subtítulos -->
       <div class="settings-group">
-        <h3 class="settings-group-title">
-          <i class="fas fa-language"></i>
-          Idioma y Subtítulos
-        </h3>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Idioma de la interfaz</div>
-            <div class="setting-description">Idioma de la aplicación</div>
-          </div>
-          <select class="setting-select" id="interfaceLanguage" onchange="handleLanguageChange(this.value)">
-            <option value="es">Español</option>
-            <option value="en">English</option>
-            <option value="pt">Português</option>
-          </select>
+        <div class="settings-group-toggle" onclick="toggleSettingsGroup(this)">
+          <div class="settings-group-icon" style="background:#1a2a20"><i class="fas fa-language" style="color:#4dc47c"></i></div>
+          <span class="settings-group-label">Idioma y Subtítulos</span>
+          <i class="fas fa-chevron-right settings-group-arrow"></i>
         </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Subtítulos por defecto</div>
-            <div class="setting-description">Mostrar subtítulos al iniciar</div>
+        <div class="settings-group-body">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Idioma de la interfaz</div>
+              <div class="setting-description">Idioma de la aplicación</div>
+            </div>
+            <select class="setting-select" id="interfaceLanguage" onchange="handleLanguageChange(this.value)">
+              <option value="es">Español</option>
+              <option value="en">English</option>
+              <option value="pt">Português</option>
+            </select>
           </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="defaultSubtitles">
-            <span class="toggle-slider"></span>
-          </label>
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Subtítulos por defecto</div>
+              <div class="setting-description">Mostrar subtítulos al iniciar</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="defaultSubtitles">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
         </div>
       </div>
 
       <!-- Control Parental -->
       <div class="settings-group">
-        <h3 class="settings-group-title">
-          <i class="fas fa-shield-alt"></i>
-          Control Parental
-        </h3>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Clasificación de contenido</div>
-            <div class="setting-description">Limitar el contenido según la edad</div>
-          </div>
-          <select class="setting-select" id="parentalControl">
-            <option value="all">Todo el contenido</option>
-            <option value="13+">13+ y menor</option>
-            <option value="pg">Solo familiar</option>
-          </select>
+        <div class="settings-group-toggle" onclick="toggleSettingsGroup(this)">
+          <div class="settings-group-icon" style="background:#2a1a1a"><i class="fas fa-shield-alt" style="color:#e55555"></i></div>
+          <span class="settings-group-label">Control Parental</span>
+          <i class="fas fa-chevron-right settings-group-arrow"></i>
         </div>
-      </div>
-
-      <!-- Suscripción y Cuenta -->
-      <div class="settings-group">
-        <h3 class="settings-group-title">
-          <i class="fas fa-user-circle"></i>
-          Cuenta
-        </h3>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Nombre</div>
-            <div class="setting-description" id="userFullName">Cargando...</div>
+        <div class="settings-group-body">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Clasificación máxima</div>
+              <div class="setting-description">Limitar contenido por edad</div>
+            </div>
+            <select class="setting-select" id="parentalControl">
+              <option value="all">Todo el contenido</option>
+              <option value="13+">13+ y menor</option>
+              <option value="pg">Solo familiar</option>
+            </select>
           </div>
-        </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Cambiar plan</div>
-            <div class="setting-description">Actualizar tu suscripción</div>
-          </div>
-          <button class="settings-btn secondary" onclick="changePlan()" style="width: auto; padding: 8px 16px; font-size: 13px;">
-            <i class="fas fa-crown"></i>
-            Ver planes
-          </button>
-        </div>
-        <div class="setting-item" style="border-bottom: none;">
-          <div class="setting-info">
-            <div class="setting-name" style="color: #ff4444;">Cerrar sesión</div>
-            <div class="setting-description">Salir de tu cuenta en este dispositivo</div>
-          </div>
-          <button class="settings-btn secondary" onclick="logoutFirebase()" style="width: auto; padding: 8px 16px; font-size: 13px; border-color: #ff4444; color: #ff4444;">
-            <i class="fas fa-sign-out-alt"></i>
-            Salir
-          </button>
         </div>
       </div>
 
       <!-- Notificaciones -->
       <div class="settings-group">
-        <h3 class="settings-group-title">
-          <i class="fas fa-bell"></i>
-          Notificaciones
-        </h3>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Nuevos estrenos</div>
-            <div class="setting-description">Notificar sobre nuevas películas y series</div>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="newReleasesNotif" onchange="handleNewReleasesNotif(this.checked)">
-            <span class="toggle-slider"></span>
-          </label>
+        <div class="settings-group-toggle" onclick="toggleSettingsGroup(this)">
+          <div class="settings-group-icon" style="background:#2a2210"><i class="fas fa-bell" style="color:#f5a623"></i></div>
+          <span class="settings-group-label">Notificaciones</span>
+          <i class="fas fa-chevron-right settings-group-arrow"></i>
         </div>
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-name">Recordatorios</div>
-            <div class="setting-description">Recordar contenido que dejaste pausado</div>
+        <div class="settings-group-body">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Nuevos estrenos</div>
+              <div class="setting-description">Nuevas películas y series</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="newReleasesNotif" onchange="handleNewReleasesNotif(this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
           </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="remindersNotif" onchange="handleRemindersNotif(this.checked)">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-        <div class="setting-item" style="border-bottom: none;">
-          <div class="setting-info">
-            <div class="setting-name">Estrenos en vivo</div>
-            <div class="setting-description">Avisar cuando comience una transmisión en vivo</div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Recordatorios</div>
+              <div class="setting-description">Continúa donde lo dejaste</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="remindersNotif" onchange="handleRemindersNotif(this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
           </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="liveNotifToggle" onchange="handleLiveNotifToggle(this.checked)">
-            <span class="toggle-slider"></span>
-          </label>
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Transmisiones en vivo</div>
+              <div class="setting-description">Avisar al iniciar una transmisión</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="liveNotifToggle" onchange="handleLiveNotifToggle(this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
         </div>
       </div>
 
@@ -4669,6 +4882,79 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ===== MINI PLAYER — DramaBox vertical style ===== -->
+  <div id="miniPlayer" class="mini-player">
+    <video id="miniPlayerVideo" class="mini-player-video"
+           playsinline webkit-playsinline x5-playsinline
+           preload="metadata">
+    </video>
+
+    <!-- Top bar -->
+    <div class="mini-player-top">
+      <button class="mini-player-back-btn" onclick="closeMiniPlayer()">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div class="mini-player-ep-label" id="miniPlayerEpLabel">EP 1</div>
+      <div style="width:40px;"></div>
+    </div>
+
+    <!-- Side buttons -->
+    <div class="mini-player-side">
+      <button class="mini-side-btn" id="miniLikeBtn" onclick="toggleMiniLike()">
+        <i class="far fa-heart"></i>
+        <span>Me gusta</span>
+      </button>
+      <button class="mini-side-btn" onclick="toggleMiniEpsSheet()">
+        <i class="fas fa-list"></i>
+        <span>Episodios</span>
+      </button>
+    </div>
+
+    <!-- Navigation arrows -->
+    <div class="mini-player-nav">
+      <button class="mini-player-nav-btn" id="miniPlayerPrev" onclick="prevMiniEpisode()">
+        <i class="fas fa-chevron-up"></i>
+      </button>
+      <button class="mini-player-nav-btn" id="miniPlayerNext" onclick="nextMiniEpisode()">
+        <i class="fas fa-chevron-down"></i>
+      </button>
+    </div>
+
+    <!-- Bottom info -->
+    <div class="mini-player-bottom">
+      <div class="mini-player-title" id="miniPlayerTitle">Título</div>
+      <div class="mini-player-genre-tag" id="miniPlayerGenreTag">Género</div>
+      <div class="mini-player-controls-row">
+        <button class="mini-player-play-btn" id="miniPlayerPlayBtn" onclick="toggleMiniPlay()">
+          <i class="fas fa-pause"></i>
+        </button>
+        <button class="mini-player-eps-btn" onclick="toggleMiniEpsSheet()">
+          <i class="fas fa-th-list"></i>
+          <span id="miniPlayerEpsBtnLabel">Ver episodios</span>
+        </button>
+      </div>
+      <div class="mini-player-progress-bar" id="miniProgressBar" onclick="seekMiniProgress(event)">
+        <div class="mini-player-progress-fill" id="miniPlayerProgressFill"></div>
+      </div>
+      <div class="mini-player-time-row">
+        <span id="miniPlayerCurrentTime">0:00</span>
+        <span id="miniPlayerDuration">0:00</span>
+      </div>
+    </div>
+
+    <!-- Episode bottom sheet -->
+    <div class="mini-eps-sheet" id="miniEpsSheet">
+      <div class="mini-eps-sheet-handle"></div>
+      <div class="mini-eps-sheet-header">
+        <div class="mini-eps-sheet-title" id="miniEpsSheetTitle">Episodios</div>
+        <button class="mini-eps-sheet-close" onclick="closeMiniEpsSheet()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="mini-eps-list" id="miniEpsList"></div>
     </div>
   </div>
 
@@ -6431,8 +6717,8 @@
 
           const playBtn = document.getElementById('featuredHeroPlay');
           if (isLocked) {
-            playBtn.innerHTML = '<i class="fas fa-lock"></i> Próximamente';
-            playBtn.style.cssText = 'background:#444;color:#aaa;cursor:default;';
+            playBtn.innerHTML = '<i class="fas fa-clock"></i> Próximamente';
+            playBtn.style.cssText = 'background:rgba(255,255,255,0.08);color:#ffffff;cursor:default;border:1px solid rgba(255,255,255,0.22);';
             playBtn.onclick = null;
           } else {
             playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir';
@@ -8655,7 +8941,7 @@
       items.forEach(mini => {
         const card = document.createElement('div');
         card.className = 'mini-card';
-        card.onclick = () => showSeriesDetail(mini.id);
+        card.onclick = () => showMiniPlayer(mini.id, 0);
 
         const epCount = mini.episodes ? mini.episodes.length : 0;
         card.innerHTML = `
@@ -8689,7 +8975,7 @@
       items.forEach(mini => {
         const card = document.createElement('div');
         card.className = 'mini-carousel-item';
-        card.onclick = () => showSeriesDetail(mini.id);
+        card.onclick = () => showMiniPlayer(mini.id, 0);
         const epCount = mini.episodes ? mini.episodes.length : 0;
         card.innerHTML = `
           <img src="${mini.poster || ''}" alt="${mini.title}" loading="lazy">
@@ -8997,6 +9283,209 @@
           publishBtn.innerHTML = '<i class="fas fa-upload"></i> Publicar Mini';
         }
       }
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    //  MINI PLAYER — DramaBox vertical style
+    // ════════════════════════════════════════════════════════════════════════
+
+    let _miniPlayerMini = null;
+    let _miniPlayerEpIdx = 0;
+    let _miniProgressInterval = null;
+    let _miniEpsSheetOpen = false;
+    let _miniLiked = false;
+
+    function showMiniPlayer(miniId, epIdx) {
+      const mini = miniDatabase[miniId] || seriesDatabase[miniId];
+      if (!mini) return;
+
+      _miniPlayerMini = mini;
+      _miniPlayerEpIdx = epIdx || 0;
+
+      const player = document.getElementById('miniPlayer');
+      if (!player) return;
+      player.classList.add('active');
+      hideBottomNav();
+
+      document.getElementById('miniPlayerTitle').textContent = mini.spanishTitle || mini.title;
+      document.getElementById('miniPlayerGenreTag').textContent =
+        [mini.genre, mini.duration].filter(Boolean).join(' · ');
+
+      const eps = mini.episodes || [];
+      if (eps.length > 1) {
+        document.getElementById('miniPlayerEpsBtnLabel').textContent = eps.length + ' episodios';
+      } else {
+        document.getElementById('miniPlayerEpsBtnLabel').textContent = 'Ver info';
+      }
+
+      _playMiniEp(_miniPlayerEpIdx);
+    }
+
+    function closeMiniPlayer() {
+      const player = document.getElementById('miniPlayer');
+      if (player) player.classList.remove('active');
+
+      const vid = document.getElementById('miniPlayerVideo');
+      if (vid) { vid.pause(); vid.src = ''; }
+
+      clearInterval(_miniProgressInterval);
+      _closeMiniEpsSheet();
+      showBottomNav();
+      _miniPlayerMini = null;
+    }
+
+    function _playMiniEp(idx) {
+      if (!_miniPlayerMini) return;
+      const eps = _miniPlayerMini.episodes || [];
+      if (idx < 0 || idx >= eps.length) return;
+
+      _miniPlayerEpIdx = idx;
+      const ep = eps[idx];
+
+      const total = eps.length;
+      document.getElementById('miniPlayerEpLabel').textContent =
+        total > 1 ? ('EP ' + (idx + 1) + ' / ' + total) : (_miniPlayerMini.spanishTitle || _miniPlayerMini.title);
+
+      const vid = document.getElementById('miniPlayerVideo');
+      const rawUrl = ep.videoUrl || '';
+      if (rawUrl) {
+        vid.src = (typeof normalizeMediaUrl === 'function') ? normalizeMediaUrl(rawUrl) : rawUrl;
+        vid.load();
+        const p = vid.play();
+        if (p) p.catch(() => {});
+      }
+
+      vid.onplay  = updateMiniPlayBtn;
+      vid.onpause = updateMiniPlayBtn;
+      vid.onended = function() {
+        if (_miniPlayerEpIdx < eps.length - 1) {
+          _playMiniEp(_miniPlayerEpIdx + 1);
+        }
+      };
+
+      const prevBtn = document.getElementById('miniPlayerPrev');
+      const nextBtn = document.getElementById('miniPlayerNext');
+      if (prevBtn) prevBtn.disabled = (idx === 0);
+      if (nextBtn) nextBtn.disabled = (idx >= eps.length - 1);
+
+      document.querySelectorAll('.mini-ep-item').forEach((el, i) => el.classList.toggle('active', i === idx));
+
+      clearInterval(_miniProgressInterval);
+      _miniProgressInterval = setInterval(_updateMiniProgress, 500);
+      updateMiniPlayBtn();
+    }
+
+    function _updateMiniProgress() {
+      const vid  = document.getElementById('miniPlayerVideo');
+      const fill = document.getElementById('miniPlayerProgressFill');
+      const tEl  = document.getElementById('miniPlayerCurrentTime');
+      const dEl  = document.getElementById('miniPlayerDuration');
+      if (!vid || !fill) return;
+
+      const pct = vid.duration ? (vid.currentTime / vid.duration) * 100 : 0;
+      fill.style.width = pct + '%';
+      tEl.textContent = _fmtTime(vid.currentTime);
+      dEl.textContent = _fmtTime(vid.duration || 0);
+    }
+
+    function _fmtTime(s) {
+      if (!s || isNaN(s)) return '0:00';
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return m + ':' + String(sec).padStart(2, '0');
+    }
+
+    function updateMiniPlayBtn() {
+      const vid = document.getElementById('miniPlayerVideo');
+      const btn = document.getElementById('miniPlayerPlayBtn');
+      if (!btn || !vid) return;
+      btn.innerHTML = vid.paused
+        ? '<i class="fas fa-play" style="margin-left:2px"></i>'
+        : '<i class="fas fa-pause"></i>';
+    }
+
+    function toggleMiniPlay() {
+      const vid = document.getElementById('miniPlayerVideo');
+      if (!vid) return;
+      if (vid.paused) vid.play().catch(() => {});
+      else vid.pause();
+      updateMiniPlayBtn();
+    }
+
+    function nextMiniEpisode() {
+      const eps = (_miniPlayerMini && _miniPlayerMini.episodes) || [];
+      if (_miniPlayerEpIdx < eps.length - 1) _playMiniEp(_miniPlayerEpIdx + 1);
+    }
+
+    function prevMiniEpisode() {
+      if (_miniPlayerEpIdx > 0) _playMiniEp(_miniPlayerEpIdx - 1);
+    }
+
+    function seekMiniProgress(e) {
+      const vid = document.getElementById('miniPlayerVideo');
+      const bar = e.currentTarget;
+      const pct = Math.max(0, Math.min(1, e.offsetX / bar.offsetWidth));
+      if (vid && vid.duration) vid.currentTime = pct * vid.duration;
+    }
+
+    function toggleMiniLike() {
+      _miniLiked = !_miniLiked;
+      const btn = document.getElementById('miniLikeBtn');
+      if (btn) {
+        btn.innerHTML = _miniLiked
+          ? '<i class="fas fa-heart" style="color:#e50914"></i><span>Me gusta</span>'
+          : '<i class="far fa-heart"></i><span>Me gusta</span>';
+      }
+    }
+
+    function toggleMiniEpsSheet() {
+      _miniEpsSheetOpen = !_miniEpsSheetOpen;
+      const sheet = document.getElementById('miniEpsSheet');
+      if (sheet) sheet.classList.toggle('open', _miniEpsSheetOpen);
+      if (_miniEpsSheetOpen) _renderMiniEpsList();
+    }
+
+    function _closeMiniEpsSheet() {
+      _miniEpsSheetOpen = false;
+      const sheet = document.getElementById('miniEpsSheet');
+      if (sheet) sheet.classList.remove('open');
+    }
+
+    function closeMiniEpsSheet() { _closeMiniEpsSheet(); }
+
+    function _renderMiniEpsList() {
+      if (!_miniPlayerMini) return;
+      const eps = _miniPlayerMini.episodes || [];
+      const list = document.getElementById('miniEpsList');
+      const titleEl = document.getElementById('miniEpsSheetTitle');
+      if (titleEl) titleEl.textContent = (_miniPlayerMini.spanishTitle || _miniPlayerMini.title) + ' — Episodios';
+      if (!list) return;
+
+      list.innerHTML = eps.map((ep, i) => `
+        <div class="mini-ep-item ${i === _miniPlayerEpIdx ? 'active' : ''}"
+             onclick="_playMiniEp(${i}); _closeMiniEpsSheet();">
+          <div class="mini-ep-num">EP ${i + 1}</div>
+          <img class="mini-ep-thumb"
+               src="${ep.thumbnail || _miniPlayerMini.poster || ''}"
+               alt="" loading="lazy"
+               onerror="this.style.background='#1c1e2e'">
+          <div class="mini-ep-info">
+            <div class="mini-ep-title">${ep.title || ('Episodio ' + (i + 1))}</div>
+            <div class="mini-ep-dur">${ep.duration || ''}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    //  SETTINGS ACCORDION
+    // ════════════════════════════════════════════════════════════════════════
+
+    function toggleSettingsGroup(toggleEl) {
+      const group = toggleEl.closest('.settings-group');
+      if (!group) return;
+      const isOpen = group.classList.contains('open');
+      group.classList.toggle('open', !isOpen);
     }
 
     // ── Toast notification ────────────────────────────────────────────────────

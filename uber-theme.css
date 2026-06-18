@@ -136,20 +136,16 @@ body::after,
 
 /* Configuración: sin cajas — lista plana tipo iOS */
 .settings-group {
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
+  /* Accordion card — styles from app.html */
 }
 
 .setting-item {
   background: transparent !important;
-  border: none !important;
-  border-top: none !important;
   border-left: none !important;
   border-right: none !important;
+  border-top: none !important;
   border-radius: 0 !important;
-  border-bottom: 1px solid #141414 !important;
+  border-bottom: 1px solid #141822 !important;
 }
 
 .header,
@@ -420,7 +416,6 @@ textarea:focus,
 .info-tab.active {
   color: var(--uber-white) !important;
   background: transparent !important;
-  border-bottom: 2px solid var(--uber-green) !important;
 }
 
 .bottom-nav {
@@ -864,23 +859,24 @@ body[style*="linear-gradient"] {
 }
 
 .bottom-nav {
-  left: 50% !important;
-  right: auto !important;
-  bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
-  width: min(calc(100% - 24px), 520px) !important;
-  transform: translateX(-50%) !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  transform: none !important;
   display: grid !important;
   grid-template-columns: repeat(4, 1fr) !important;
-  gap: 6px !important;
-  padding: 8px !important;
-  background: rgba(13, 14, 26, 0.97) !important;
-  border: 1px solid var(--uber-border-strong) !important;
-  border-radius: 24px !important;
+  gap: 0 !important;
+  padding: 8px 0 !important;
+  padding-bottom: max(8px, env(safe-area-inset-bottom, 0px)) !important;
+  background: #0a0b14 !important;
+  border-top: 1px solid #1c1e2e !important;
+  border-radius: 0 !important;
   transition: transform 220ms ease, opacity 220ms ease !important;
 }
 
 .bottom-nav.bottom-nav--hidden {
-  transform: translate(-50%, calc(120% + env(safe-area-inset-bottom, 0px))) !important;
+  transform: translateY(100%) !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
@@ -890,9 +886,9 @@ body[style*="linear-gradient"] {
 .bottom-nav button:hover {
   min-width: 0 !important;
   width: 100% !important;
-  padding: 9px 8px !important;
-  border-radius: 18px !important;
-  color: var(--uber-muted) !important;
+  padding: 8px 4px !important;
+  border-radius: 0 !important;
+  color: var(--uber-subtle) !important;
   background: transparent !important;
   border: 0 !important;
 }
@@ -906,22 +902,16 @@ body[style*="linear-gradient"] {
 
 .bottom-nav button.active {
   color: var(--uber-green) !important;
-  background: rgba(76, 110, 245, 0.14) !important;
+  background: transparent !important;
 }
 
 .bottom-nav button.active span {
-  color: var(--uber-white) !important;
+  color: var(--uber-green) !important;
 }
 
 @media (max-width: 480px) {
-  .bottom-nav {
-    border-radius: 22px !important;
-    gap: 4px !important;
-    padding: 7px !important;
-  }
-
   .bottom-nav button {
-    padding: 8px 4px !important;
+    padding: 8px 2px !important;
     font-size: 10px !important;
   }
 }
