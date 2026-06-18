@@ -349,29 +349,97 @@
       transition: width 0.3s, background 0.3s;
     }
 
+    /* ─── Mobile header (only visible on small screens) ─── */
+    .mobile-brand-header {
+      display: none;
+    }
+
     /* ─── Mobile: stack vertically ─── */
     @media (max-width: 720px) {
-      .auth-root { flex-direction: column; }
-      .auth-brand {
-        flex: 0 0 auto;
-        padding: 40px 24px 28px;
-        border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.06);
+      .auth-root { flex-direction: column; align-items: stretch; }
+
+      /* Hide the full desktop brand panel on mobile */
+      .auth-brand { display: none; }
+
+      /* Show slim mobile header with just the name */
+      .mobile-brand-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 36px 24px 20px;
       }
-      .auth-brand::after { display: none; }
-      .brand-features { display: none; }
-      .brand-logo { font-size: 48px; letter-spacing: -2px; }
-      .brand-tagline { font-size: 15px; }
+      .mobile-brand-header .brand-logo {
+        font-size: 42px;
+        letter-spacing: -2px;
+        margin-bottom: 0;
+      }
+
+      /* Form panel fills remaining space */
       .auth-panel {
-        padding: 28px 24px 40px;
+        flex: 1;
+        padding: 20px 20px 48px;
+        justify-content: flex-start;
       }
+
+      .auth-form-wrap {
+        max-width: 100%;
+      }
+
+      /* Tabs: bigger tap targets */
+      .auth-tabs {
+        margin-bottom: 24px;
+      }
+      .auth-tab {
+        padding: 13px 8px;
+        font-size: 15px;
+      }
+
+      /* Inputs: larger for touch */
+      .form-input {
+        font-size: 16px; /* prevents iOS zoom */
+        padding: 15px 44px 15px 42px;
+      }
+      .form-input-toggle {
+        right: 14px;
+        padding: 8px;
+        font-size: 16px;
+      }
+      .form-input-icon {
+        font-size: 15px;
+        left: 15px;
+      }
+
+      /* Button */
+      .auth-btn-primary {
+        padding: 16px;
+        font-size: 16px;
+        margin-top: 12px;
+      }
+
+      /* Headings */
+      .auth-view-title { font-size: 20px; }
+      .auth-view-sub { font-size: 14px; margin-bottom: 22px; }
+
+      /* Forgot password link row */
+      .forgot-link-row {
+        margin-top: -4px;
+        margin-bottom: 18px;
+      }
+
+      /* Switch text */
+      .auth-switch-text { font-size: 15px; margin-top: 18px; }
     }
   </style>
 </head>
 <body>
   <div class="auth-root">
 
-    <!-- ── Left: brand panel ── -->
+    <!-- ── Mobile-only top header (just the name) ── -->
+    <div class="mobile-brand-header">
+      <div class="brand-logo">Atenis</div>
+    </div>
+
+    <!-- ── Left: brand panel (desktop only) ── -->
     <div class="auth-brand">
       <div class="brand-logo">Atenis</div>
       <p class="brand-tagline">Tu plataforma de streaming favorita. Dramas, series y minis en un solo lugar.</p>
@@ -435,7 +503,7 @@
               </div>
             </div>
 
-            <div style="text-align:right;margin-top:-8px;margin-bottom:20px;">
+            <div class="forgot-link-row" style="text-align:right;margin-top:-8px;margin-bottom:20px;">
               <button type="button" class="auth-footer-link" onclick="showView('viewForgot')">
                 ¿Olvidaste tu contraseña?
               </button>
