@@ -3676,51 +3676,117 @@
     }
 
     /* Episode bottom sheet */
+    /* ── DramaBox-style info panel ── */
     .mini-eps-sheet {
       position: absolute; bottom: 0; left: 0; right: 0;
-      background: #111322;
-      border-radius: 20px 20px 0 0;
-      padding: 0 0 max(24px, env(safe-area-inset-bottom,0px));
+      background: rgba(18, 18, 28, 0.97);
+      border-radius: 18px 18px 0 0;
       z-index: 20;
       transform: translateY(100%);
       transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-      max-height: 60vh; overflow-y: auto;
+      max-height: 66vh;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      padding-bottom: max(20px, env(safe-area-inset-bottom,0px));
     }
     .mini-eps-sheet.open { transform: translateY(0); }
+
     .mini-eps-sheet-handle {
-      width: 40px; height: 4px; background: #252848;
-      border-radius: 4px; margin: 14px auto 0;
+      width: 40px; height: 4px; background: #3a3a50;
+      border-radius: 4px; margin: 12px auto 0; flex-shrink: 0;
     }
-    .mini-eps-sheet-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 20px 0;
-    }
-    .mini-eps-sheet-title {
-      font-size: 15px; font-weight: 700; color: #fff;
-    }
-    .mini-eps-sheet-close {
-      background: none; border: none; color: #8b9ab0;
-      font-size: 20px; cursor: pointer; padding: 4px;
-    }
-    .mini-eps-list { padding: 12px 16px 0; }
-    .mini-ep-item {
+
+    .mini-sheet-title-row {
       display: flex; align-items: center; gap: 12px;
-      padding: 10px 0; border-bottom: 1px solid #1c1e2e;
-      cursor: pointer;
+      padding: 14px 16px 10px; flex-shrink: 0;
     }
-    .mini-ep-item:last-child { border-bottom: none; }
-    .mini-ep-num {
-      font-size: 12px; font-weight: 700; color: #8b9ab0; min-width: 30px;
-    }
-    .mini-ep-item.active .mini-ep-num { color: #4c6ef5; }
-    .mini-ep-thumb {
-      width: 72px; height: 48px; border-radius: 6px;
+    .mini-sheet-poster {
+      width: 52px; height: 68px; border-radius: 7px;
       object-fit: cover; background: #1c1e2e; flex-shrink: 0;
     }
-    .mini-ep-info { flex: 1; min-width: 0; }
-    .mini-ep-title { font-size: 14px; font-weight: 600; color: #fff; }
-    .mini-ep-dur { font-size: 12px; color: #8b9ab0; margin-top: 2px; }
-    .mini-ep-item.active .mini-ep-title { color: #4c6ef5; }
+    .mini-sheet-info { flex: 1; min-width: 0; }
+    .mini-sheet-series-title {
+      font-size: 15px; font-weight: 700; color: #fff;
+      margin-bottom: 4px; line-height: 1.25;
+    }
+    .mini-sheet-stats {
+      font-size: 12px; color: #8b9ab0; margin-bottom: 3px;
+    }
+    .mini-sheet-rating {
+      font-size: 12px; color: #f5a623; font-weight: 600;
+    }
+    .mini-sheet-close-btn {
+      background: rgba(255,255,255,0.07); border: none; color: #fff;
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; cursor: pointer; flex-shrink: 0;
+    }
+
+    .mini-sheet-tabs {
+      display: flex; padding: 0 16px;
+      border-bottom: 1px solid #1c1e2e; flex-shrink: 0;
+    }
+    .mini-sheet-tab {
+      background: none; border: none; color: #8b9ab0;
+      padding: 10px 14px; font-size: 14px; font-weight: 600;
+      cursor: pointer; position: relative;
+    }
+    .mini-sheet-tab.active { color: #fff; }
+    .mini-sheet-tab.active::after {
+      content: ''; position: absolute;
+      bottom: -1px; left: 8px; right: 8px;
+      height: 2px; background: #4c6ef5; border-radius: 2px;
+    }
+
+    .mini-sheet-body { overflow-y: auto; flex: 1; }
+
+    .mini-synopsis-panel {
+      padding: 16px;
+      font-size: 14px; color: #8b9ab0; line-height: 1.65;
+    }
+
+    .mini-ep-ranges {
+      display: flex; gap: 8px;
+      padding: 12px 16px 8px;
+      overflow-x: auto; scrollbar-width: none; flex-shrink: 0;
+    }
+    .mini-ep-ranges::-webkit-scrollbar { display: none; }
+    .mini-ep-range-btn {
+      background: #1c1e2e; border: 1px solid #252848;
+      color: #8b9ab0; padding: 4px 12px;
+      border-radius: 6px; font-size: 12px;
+      font-weight: 600; cursor: pointer; white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .mini-ep-range-btn.active {
+      background: #252848; border-color: #4c6ef5; color: #fff;
+    }
+
+    .mini-ep-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px; padding: 4px 16px 16px;
+    }
+    .mini-ep-box {
+      aspect-ratio: 1; background: #1c1e2e;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 14px; font-weight: 700;
+      color: #c8d0e0; position: relative;
+      transition: background 0.15s;
+    }
+    .mini-ep-box:active { transform: scale(0.94); }
+    .mini-ep-box.ep-playing {
+      background: #252848; color: #fff;
+      border: 1px solid #4c6ef5;
+    }
+    .mini-ep-box.ep-locked { color: #4a5268; cursor: default; }
+    .mini-ep-box-icon {
+      position: absolute; bottom: 4px; right: 4px;
+      font-size: 8px;
+    }
+    .mini-ep-box.ep-playing .mini-ep-box-icon { color: #4c6ef5; }
+    .mini-ep-box.ep-locked .mini-ep-box-icon { color: #4a5268; }
 
     .mini-empty {
       text-align: center;
@@ -4945,16 +5011,31 @@
       </div>
     </div>
 
-    <!-- Episode bottom sheet -->
+    <!-- DramaBox-style info/episode panel -->
     <div class="mini-eps-sheet" id="miniEpsSheet">
       <div class="mini-eps-sheet-handle"></div>
-      <div class="mini-eps-sheet-header">
-        <div class="mini-eps-sheet-title" id="miniEpsSheetTitle">Episodios</div>
-        <button class="mini-eps-sheet-close" onclick="closeMiniEpsSheet()">
+
+      <!-- Header: poster + title + stats -->
+      <div class="mini-sheet-title-row">
+        <img class="mini-sheet-poster" id="miniSheetPoster" src="" alt="">
+        <div class="mini-sheet-info">
+          <div class="mini-sheet-series-title" id="miniSheetSeriesTitle">Título</div>
+          <div class="mini-sheet-stats" id="miniSheetStats"></div>
+          <div class="mini-sheet-rating" id="miniSheetRating"></div>
+        </div>
+        <button class="mini-sheet-close-btn" onclick="closeMiniEpsSheet()">
           <i class="fas fa-times"></i>
         </button>
       </div>
-      <div class="mini-eps-list" id="miniEpsList"></div>
+
+      <!-- Tabs: Sinopsis / Episodios -->
+      <div class="mini-sheet-tabs">
+        <button class="mini-sheet-tab" id="miniTabSynopsis" onclick="switchMiniSheetTab('synopsis', this)">Sinopsis</button>
+        <button class="mini-sheet-tab active" id="miniTabEpisodes" onclick="switchMiniSheetTab('episodes', this)">Episodios</button>
+      </div>
+
+      <!-- Scrollable body -->
+      <div class="mini-sheet-body" id="miniSheetBody"></div>
     </div>
   </div>
 
@@ -9453,28 +9534,108 @@
 
     function closeMiniEpsSheet() { _closeMiniEpsSheet(); }
 
+    let _miniSheetTab = 'episodes';
+    let _miniSheetRange = 0;
+
     function _renderMiniEpsList() {
       if (!_miniPlayerMini) return;
-      const eps = _miniPlayerMini.episodes || [];
-      const list = document.getElementById('miniEpsList');
-      const titleEl = document.getElementById('miniEpsSheetTitle');
-      if (titleEl) titleEl.textContent = (_miniPlayerMini.spanishTitle || _miniPlayerMini.title) + ' — Episodios';
-      if (!list) return;
 
-      list.innerHTML = eps.map((ep, i) => `
-        <div class="mini-ep-item ${i === _miniPlayerEpIdx ? 'active' : ''}"
-             onclick="_playMiniEp(${i}); _closeMiniEpsSheet();">
-          <div class="mini-ep-num">EP ${i + 1}</div>
-          <img class="mini-ep-thumb"
-               src="${ep.thumbnail || _miniPlayerMini.poster || ''}"
-               alt="" loading="lazy"
-               onerror="this.style.background='#1c1e2e'">
-          <div class="mini-ep-info">
-            <div class="mini-ep-title">${ep.title || ('Episodio ' + (i + 1))}</div>
-            <div class="mini-ep-dur">${ep.duration || ''}</div>
-          </div>
-        </div>
-      `).join('');
+      const m = _miniPlayerMini;
+
+      // Header
+      const posterEl = document.getElementById('miniSheetPoster');
+      const titleEl  = document.getElementById('miniSheetSeriesTitle');
+      const statsEl  = document.getElementById('miniSheetStats');
+      const ratingEl = document.getElementById('miniSheetRating');
+
+      if (posterEl) posterEl.src = m.poster || '';
+      if (titleEl)  titleEl.textContent = m.spanishTitle || m.title;
+      if (statsEl) {
+        const parts = [];
+        if (m.views)    parts.push(m.views + ' Vistas');
+        else if (m.year) parts.push(m.year);
+        if (m.duration) parts.push(m.duration);
+        statsEl.textContent = parts.join(' · ');
+      }
+      if (ratingEl) {
+        ratingEl.textContent = m.rating ? '★ ' + m.rating : '';
+      }
+
+      // Reset tabs to "Episodios" active
+      document.querySelectorAll('.mini-sheet-tab').forEach(b => b.classList.remove('active'));
+      const epTabEl = document.getElementById('miniTabEpisodes');
+      if (epTabEl) epTabEl.classList.add('active');
+      _miniSheetTab = 'episodes';
+      _miniSheetRange = 0;
+
+      _renderMiniSheetBody();
+    }
+
+    function switchMiniSheetTab(tab, el) {
+      _miniSheetTab = tab;
+      document.querySelectorAll('.mini-sheet-tab').forEach(b => b.classList.remove('active'));
+      if (el) el.classList.add('active');
+      _renderMiniSheetBody();
+    }
+
+    function _setMiniRange(idx) {
+      _miniSheetRange = idx;
+      _renderMiniSheetBody();
+    }
+
+    function _renderMiniSheetBody() {
+      const body = document.getElementById('miniSheetBody');
+      if (!body || !_miniPlayerMini) return;
+
+      if (_miniSheetTab === 'synopsis') {
+        body.innerHTML = `<div class="mini-synopsis-panel">${_miniPlayerMini.description || 'Sin descripción disponible.'}</div>`;
+        return;
+      }
+
+      // Episodes tab — DramaBox numbered grid
+      const eps = _miniPlayerMini.episodes || [];
+      if (eps.length === 0) {
+        body.innerHTML = '<div class="mini-synopsis-panel" style="color:#5a6480">No hay episodios disponibles.</div>';
+        return;
+      }
+
+      const RANGE_SIZE = 30;
+      const ranges = [];
+      for (let i = 0; i < eps.length; i += RANGE_SIZE) {
+        const end = Math.min(i + RANGE_SIZE - 1, eps.length - 1);
+        ranges.push({ start: i, end, label: (i + 1) + '-' + (end + 1) });
+      }
+
+      let rangesHtml = '';
+      if (ranges.length > 1) {
+        rangesHtml = `<div class="mini-ep-ranges">
+          ${ranges.map((r, i) => `
+            <button class="mini-ep-range-btn ${i === _miniSheetRange ? 'active' : ''}"
+                    onclick="_setMiniRange(${i})">${r.label}</button>
+          `).join('')}
+        </div>`;
+      }
+
+      const range = ranges[_miniSheetRange] || { start: 0, end: eps.length - 1 };
+      const visibleEps = eps.slice(range.start, range.end + 1);
+
+      const gridItems = visibleEps.map((ep, localIdx) => {
+        const globalIdx = range.start + localIdx;
+        const isPlaying = globalIdx === _miniPlayerEpIdx;
+        const isLocked  = ep.isLocked || false;
+        const cls = ['mini-ep-box', isPlaying ? 'ep-playing' : '', isLocked ? 'ep-locked' : ''].filter(Boolean).join(' ');
+        const icon = isPlaying
+          ? '<i class="fas fa-chart-bar mini-ep-box-icon"></i>'
+          : isLocked
+            ? '<i class="fas fa-lock mini-ep-box-icon"></i>'
+            : '';
+        const onclick = isLocked
+          ? ''
+          : `onclick="_playMiniEp(${globalIdx}); _closeMiniEpsSheet();"`;
+        return `<div class="${cls}" ${onclick}>${globalIdx + 1}${icon}</div>`;
+      }).join('');
+
+      body.innerHTML = rangesHtml + `<div class="mini-ep-grid">${gridItems}</div>`;
     }
 
     // ════════════════════════════════════════════════════════════════════════
