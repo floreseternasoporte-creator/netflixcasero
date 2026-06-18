@@ -6182,7 +6182,7 @@
     }
 
     // Guardar en historial cuando se reproduce
-    function saveToHistory(seriesId, progress, currentTimeSec, durationSec) {
+    function saveToHistory(seriesId, progress, currentTimeSec, durationSec, type) {
       const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
       
       // Buscar si ya existe
@@ -6190,6 +6190,7 @@
       
       const historyItem = {
         seriesId: seriesId,
+        type: type || 'series',
         progress: progress,
         currentTimeSec: currentTimeSec || 0,
         durationSec: durationSec || 0,
@@ -6234,7 +6235,12 @@
       carousel.innerHTML = '';
 
       inProgress.forEach(item => {
-        const series = seriesDatabase[item.seriesId];
+        // Buscar en miniDatabase primero si el tipo es mini, luego en seriesDatabase
+        const isMiniItem = item.type === 'mini' ||
+          (typeof miniDatabase !== 'undefined' && !!miniDatabase[item.seriesId]);
+        const series = isMiniItem
+          ? (typeof miniDatabase !== 'undefined' && miniDatabase[item.seriesId]) || seriesDatabase[item.seriesId]
+          : seriesDatabase[item.seriesId];
         if (!series) return;
 
         const timeLeftSec = item.durationSec > 0
@@ -6248,12 +6254,18 @@
 
         const card = document.createElement('div');
         card.className = 'continue-item';
-        card.onclick = () => showSeriesDetail(series.id);
+        // Si es mini, abrir el mini player; si no, abrir el detalle normal
+        if (isMiniItem) {
+          card.onclick = () => showMiniPlayer(series.id, 0);
+        } else {
+          card.onclick = () => showSeriesDetail(series.id);
+        }
         const contTitle = series.spanishTitle || series.title;
         card.innerHTML = `
           <img src="${series.poster}" alt="${contTitle}" loading="lazy">
           <div class="continue-play-btn"><i class="fas fa-play" style="margin-left:2px;"></i></div>
           <div class="continue-overlay">
+            ${isMiniItem ? '<div style="position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#E91E8C,#FF6B35);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:3px;letter-spacing:0.05em;">MINI</div>' : ''}
             <div class="continue-title">${contTitle}</div>
             <div class="continue-progress-bar">
               <div class="continue-progress-fill" style="width:${Math.round(item.progress)}%"></div>
@@ -9558,11 +9570,21 @@
       if (player) player.classList.remove('active');
 
       const vid = document.getElementById('miniPlayerVideo');
+      // Guardar progreso final antes de cerrar
+      if (vid && _miniPlayerMini && vid.duration) {
+        const pct = (vid.currentTime / vid.duration) * 100;
+        if (pct >= 1) {
+          saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, 'mini');
+        }
+      }
       if (vid) { vid.pause(); vid.src = ''; }
 
       clearInterval(_miniProgressInterval);
       _closeMiniEpsSheet();
+      closeMiniInfoSheet();
       showBottomNav();
+      // Refrescar "Continuar Viendo" con el progreso actualizado
+      setTimeout(buildContinueWatchingSection, 300);
       _miniPlayerMini = null;
     }
 
@@ -9644,8 +9666,13 @@
 
       const pct = vid.duration ? (vid.currentTime / vid.duration) * 100 : 0;
       fill.style.width = pct + '%';
-      tEl.textContent = _fmtTime(vid.currentTime);
-      dEl.textContent = _fmtTime(vid.duration || 0);
+      if (tEl) tEl.textContent = _fmtTime(vid.currentTime);
+      if (dEl) dEl.textContent = _fmtTime(vid.duration || 0);
+
+      // Guardar progreso en historial cada vez que se actualiza
+      if (_miniPlayerMini && vid.duration && pct >= 1) {
+        saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, 'mini');
+      }
     }
 
     function _fmtTime(s) {
