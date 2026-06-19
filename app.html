@@ -10671,13 +10671,28 @@
 
     async function uploadVttToFirebase(file, lang) {
       const timestamp = Date.now();
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const path = `subtitles/${lang}/${timestamp}_${safeName}`;
-      const ref = storage.ref(path);
-      const metadata = { contentType: 'text/vtt', cacheControl: 'public,max-age=31536000' };
-      const snapshot = await ref.put(file, metadata);
-      const downloadUrl = await snapshot.ref.getDownloadURL();
-      return downloadUrl;
+      const text = await file.text();
+      const dbPath = 'subtitles/' + lang + '/' + timestamp;
+      await database.ref(dbPath).set({
+        content: text,
+        filename: file.name,
+        uploadedAt: timestamp
+      });
+      return 'firebase-db:' + dbPath;
+    }
+
+    async function resolveSubtitleUrl(url) {
+      if (url && url.startsWith('firebase-db:')) {
+        const path = url.replace('firebase-db:', '');
+        const snap = await database.ref(path).once('value');
+        const data = snap.val();
+        if (data && data.content) {
+          const blob = new Blob([data.content], { type: 'text/vtt' });
+          return URL.createObjectURL(blob);
+        }
+        return null;
+      }
+      return url;
     }
 
     function removeMiniEpisode(idx) {
@@ -11034,7 +11049,7 @@
 
     let _miniCurrentSubLang = 'off';
 
-    function _loadMiniSubtitles(vid, ep, mini) {
+    async function _loadMiniSubtitles(vid, ep, mini) {
       // Remove all existing tracks
       Array.from(vid.querySelectorAll('track')).forEach(t => t.remove());
       _miniCurrentSubLang = 'off';
@@ -11054,16 +11069,18 @@
       const origLabel = (mini && mini.originalLang) ? mini.originalLang : 'Original';
       const langLabels = { es: 'Español', en: 'Inglés', original: origLabel };
 
-      Object.entries(subs).forEach(([lang, url]) => {
+      await Promise.all(Object.entries(subs).map(async ([lang, url]) => {
         if (!url) return;
+        const resolvedUrl = await resolveSubtitleUrl(url);
+        if (!resolvedUrl) return;
         const track = document.createElement('track');
         track.kind = 'subtitles';
         track.label = langLabels[lang] || lang;
         track.srclang = lang === 'original' ? 'orig' : lang;
-        track.src = url;
+        track.src = resolvedUrl;
         track.default = false;
         vid.appendChild(track);
-      });
+      }));
 
       // Disable all tracks initially
       Array.from(vid.textTracks).forEach(t => { t.mode = 'disabled'; });
