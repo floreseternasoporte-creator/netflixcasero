@@ -4450,6 +4450,77 @@
       cursor: pointer;
       margin-top: 10px;
     }
+    /* ── Episode rows inside edit modal ── */
+    .medit-ep-row {
+      background: #13141f;
+      border: 1px solid #1c1e30;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+    .medit-ep-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .medit-ep-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: #4c6ef5;
+      min-width: 32px;
+    }
+    .medit-ep-title-input {
+      flex: 1;
+      background: #0d0e1a;
+      border: 1px solid #1c1e30;
+      border-radius: 8px;
+      color: #fff;
+      padding: 7px 10px;
+      font-size: 13px;
+    }
+    .medit-ep-title-input:focus { outline: none; border-color: #4c6ef5; }
+    .medit-ep-remove {
+      background: none;
+      border: none;
+      color: #ff4444;
+      cursor: pointer;
+      padding: 4px 6px;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .medit-video-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #0d0e1a;
+      border: 1px dashed #2d2f4a;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .medit-video-area.ok { border-color: #4c6ef5; color: #4c6ef5; }
+    .medit-video-area:active { opacity: 0.7; }
+    .medit-ep-add-btn {
+      width: 100%;
+      padding: 11px;
+      background: #13141f;
+      border: 1px dashed #2d2f4a;
+      border-radius: 10px;
+      color: #4c6ef5;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 4px 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .medit-ep-add-btn:active { opacity: 0.7; }
     .mini-card-edit-btn {
       position: absolute;
       top: 6px;
@@ -5911,6 +5982,13 @@
         <label class="mini-lang-check"><input type="checkbox" id="meditTrending"> Trending</label>
         <label class="mini-lang-check"><input type="checkbox" id="meditLocked"> Locked</label>
       </div>
+
+      <!-- Episodes management section -->
+      <div class="mini-edit-section-label" data-i18n="episodes">Episodios</div>
+      <div id="meditEpisodesList"></div>
+      <button class="medit-ep-add-btn" onclick="addMiniEditEpisode()">
+        <i class="fas fa-plus"></i> <span data-i18n="add_episode">Agregar episodio</span>
+      </button>
 
       <button class="mini-edit-save-btn" onclick="saveMiniEdit()" data-i18n="save_changes">Guardar cambios</button>
       <button class="mini-edit-delete-btn" onclick="deleteMini()" data-i18n="delete_mini">Eliminar Mini</button>
@@ -9994,6 +10072,82 @@
 
     let _miniEditId = null;
     let _miniEditPosters = { orig: null, es: null, en: null };
+    let _miniEditEpisodes = []; // mutable working copy
+
+    // ── Episode list render ──────────────────────────────────────────────────
+
+    function renderMiniEditEpisodes() {
+      const list = document.getElementById('meditEpisodesList');
+      if (!list) return;
+      if (_miniEditEpisodes.length === 0) {
+        list.innerHTML = `<div style="color:#555;font-size:13px;text-align:center;padding:16px 0;">${t('no_episodes')}</div>`;
+        return;
+      }
+      list.innerHTML = _miniEditEpisodes.map((ep, i) => {
+        const hasVideo = !!(ep.videoUrl);
+        const safeTitle = (ep.title || '').replace(/"/g, '&quot;');
+        return `
+          <div class="medit-ep-row">
+            <div class="medit-ep-header">
+              <span class="medit-ep-num">EP ${i + 1}</span>
+              <input class="medit-ep-title-input" id="meditEpTitle_${i}" value="${safeTitle}"
+                     placeholder="${t('ep_label')} ${i + 1}">
+              <button class="medit-ep-remove" onclick="removeMiniEditEpisode(${i})" title="Eliminar">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+            <div class="medit-video-area ${hasVideo ? 'ok' : ''}" onclick="document.getElementById('meditEpFile_${i}').click()">
+              <i class="fas ${hasVideo ? 'fa-check-circle' : 'fa-video'}"></i>
+              <span id="meditEpLabel_${i}">${hasVideo ? '✓ ' + t('upload_done') : t('tap_upload') + ' video'}</span>
+            </div>
+            <input type="file" id="meditEpFile_${i}" accept="video/*" style="display:none;"
+                   onchange="handleMiniEditEpVideo(this,${i})">
+            <div class="mini-upload-prog hidden" id="meditEpProg_${i}">
+              <div class="mini-upload-prog-fill" id="meditEpProgFill_${i}"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function addMiniEditEpisode() {
+      _miniEditEpisodes.push({ id: _miniEditEpisodes.length + 1, title: '', videoUrl: '', thumbnail: '' });
+      renderMiniEditEpisodes();
+      // Scroll to new episode
+      const container = document.querySelector('.mini-edit-container');
+      if (container) setTimeout(() => { container.scrollTop = container.scrollHeight; }, 80);
+    }
+
+    function removeMiniEditEpisode(idx) {
+      _miniEditEpisodes.splice(idx, 1);
+      _miniEditEpisodes.forEach((ep, i) => { ep.id = i + 1; });
+      renderMiniEditEpisodes();
+    }
+
+    async function handleMiniEditEpVideo(input, idx) {
+      const file = input.files[0];
+      if (!file) return;
+      const label  = document.getElementById('meditEpLabel_' + idx);
+      const prog   = document.getElementById('meditEpProg_' + idx);
+      const fill   = document.getElementById('meditEpProgFill_' + idx);
+      const area   = input.previousElementSibling; // the .medit-video-area div
+
+      if (prog)  prog.classList.remove('hidden');
+      if (label) label.textContent = t('uploading');
+
+      try {
+        const url = await uploadToCloudinary(file, pct => {
+          if (fill) fill.style.width = pct + '%';
+        }, true);
+        _miniEditEpisodes[idx].videoUrl = url;
+        if (label) label.textContent = '✓ ' + t('upload_done');
+        if (area)  area.classList.add('ok');
+        if (fill)  fill.style.width = '100%';
+      } catch (err) {
+        if (label) label.textContent = t('upload_error') + ': ' + err.message;
+        console.error('Episode video upload error:', err);
+      }
+    }
 
     async function openMiniEdit(miniId) {
       if (!isMiniAdmin()) return;
@@ -10039,6 +10193,10 @@
           }
         }
       });
+
+      // Load episodes working copy
+      _miniEditEpisodes = (m.episodes || []).map(ep => ({ ...ep }));
+      renderMiniEditEpisodes();
 
       document.getElementById('miniEditModal').classList.add('active');
       applyMiniTranslations();
@@ -10098,6 +10256,15 @@
         if (document.getElementById('meditSubEn').checked)   availSubs.push('en');
         if (document.getElementById('meditSubOrig').checked) availSubs.push('original');
 
+        // Sync episode titles from DOM before saving
+        _miniEditEpisodes.forEach((ep, i) => {
+          const titleEl = document.getElementById('meditEpTitle_' + i);
+          if (titleEl) ep.title = titleEl.value.trim() || (t('ep_label') + ' ' + (i + 1));
+          ep.id = i + 1;
+          // Keep thumbnail as poster if not set
+          if (!ep.thumbnail) ep.thumbnail = posterOrig;
+        });
+
         const updates = {
           title:          document.getElementById('meditTitle').value.trim() || old.title,
           titleEs:        titleEs || old.titleEs || old.spanishTitle || '',
@@ -10118,6 +10285,7 @@
           isFeatured:     document.getElementById('meditFeatured').checked,
           isTrending:     document.getElementById('meditTrending').checked,
           isLocked:       document.getElementById('meditLocked').checked,
+          episodes:       _miniEditEpisodes,
           updatedAt:      Date.now(),
         };
 
