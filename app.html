@@ -5127,7 +5127,6 @@
             <select class="setting-select" id="interfaceLanguage" onchange="handleLanguageChange(this.value)">
               <option value="es">Español</option>
               <option value="en">English</option>
-              <option value="pt">Português</option>
             </select>
           </div>
           <div class="setting-item">
@@ -5367,7 +5366,12 @@
 
       <!-- Paso 1: Portada -->
       <div class="mini-upload-step" id="miniStep1">
-        <p style="font-size:13px;color:#888;margin-bottom:12px;text-align:center;">Sube la portada de tu serie</p>
+        <p style="font-size:13px;color:#888;margin-bottom:12px;text-align:center;">Sube portadas por idioma. La app mostrará automáticamente la portada que coincida con el idioma de la interfaz.</p>
+        <div style="display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;">
+          <button type="button" class="mini-chip active" id="miniCoverTabEs" onclick="setMiniCoverSlot('es')">Español</button>
+          <button type="button" class="mini-chip" id="miniCoverTabEn" onclick="setMiniCoverSlot('en')">English</button>
+          <button type="button" class="mini-chip" id="miniCoverTabOriginal" onclick="setMiniCoverSlot('original')">Original</button>
+        </div>
         <div class="mini-cover-picker" id="miniCoverPicker" onclick="document.getElementById('miniCoverInput').click()">
           <img id="miniCoverPreview" style="display:none;width:100%;height:100%;object-fit:cover;">
           <div class="mini-cover-placeholder" id="miniCoverPlaceholder">
@@ -5386,8 +5390,16 @@
       <!-- Paso 2: Detalles -->
       <div class="mini-upload-step hidden" id="miniStep2">
         <div class="mini-form-group">
-          <label>Título *</label>
-          <input type="text" id="miniTitleInput" placeholder="Título de la serie">
+          <label>Título en español *</label>
+          <input type="text" id="miniTitleInput" placeholder="Título de la serie en español">
+        </div>
+        <div class="mini-form-group">
+          <label>Title in English *</label>
+          <input type="text" id="miniTitleEnInput" placeholder="Series title in English">
+        </div>
+        <div class="mini-form-group">
+          <label>Título original</label>
+          <input type="text" id="miniTitleOriginalInput" placeholder="Título en el idioma original (opcional)">
         </div>
         <div class="mini-form-row">
           <div class="mini-form-group">
@@ -5408,8 +5420,12 @@
           </div>
         </div>
         <div class="mini-form-group">
-          <label>Descripción</label>
+          <label>Descripción en español</label>
           <textarea id="miniDescInput" placeholder="Describe de qué trata la serie..." rows="3"></textarea>
+        </div>
+        <div class="mini-form-group">
+          <label>Description in English</label>
+          <textarea id="miniDescEnInput" placeholder="Describe the series in English..." rows="3"></textarea>
         </div>
         <div class="mini-form-group">
           <label>Rating</label>
@@ -6213,7 +6229,7 @@
 
         resultItem.innerHTML = `
           <div class="search-result-poster" style="position:relative;">
-            <img src="${series.poster}" alt="${series.title}">
+            <img src="${getLocalizedPoster(series)}" alt="${getLocalizedTitle(series)}">
             ${isMini ? '<div style="position:absolute;bottom:5px;left:5px;background:rgba(76,110,245,0.9);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;">MINI</div>' : ''}
           </div>
           <div class="search-result-content">
@@ -6556,7 +6572,7 @@
       
       item.innerHTML = `
         <div class="history-item-poster">
-          <img src="${series.poster}" alt="${series.title}">
+          <img src="${getLocalizedPoster(series)}" alt="${getLocalizedTitle(series)}">
           <div class="history-progress-overlay">
             <div class="history-progress-bar" style="width: ${progress}%"></div>
           </div>
@@ -6675,9 +6691,9 @@
         } else {
           card.onclick = () => showSeriesDetail(series.id);
         }
-        const contTitle = series.spanishTitle || series.title;
+        const contTitle = getLocalizedTitle(series);
         card.innerHTML = `
-          <img src="${series.poster}" alt="${contTitle}" loading="lazy">
+          <img src="${getLocalizedPoster(series)}" alt="${contTitle}" loading="lazy">
           <div class="continue-play-btn"><i class="fas fa-play" style="margin-left:2px;"></i></div>
           <div class="continue-overlay">
             ${isMiniItem ? '<div style="position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#E91E8C,#FF6B35);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:3px;letter-spacing:0.05em;">MINI</div>' : ''}
@@ -6710,16 +6726,20 @@
       document.getElementById('autoplayToggle').checked = settings.autoplay !== false;
       document.getElementById('videoQuality').value = settings.videoQuality || 'auto';
       document.getElementById('interfaceLanguage').value = settings.language || 'es';
-      document.getElementById('preferredAudio').value = settings.preferredAudio || 'original';
+      document.getElementById('audioLanguage').value = settings.preferredAudio || 'original';
       document.getElementById('defaultSubtitles').checked = settings.defaultSubtitles || false;
-      document.getElementById('releaseNotifications').checked = settings.releaseNotifications !== false;
-      document.getElementById('reminderNotifications').checked = settings.reminderNotifications !== false;
+      const releaseNotificationsEl = document.getElementById('releaseNotifications');
+      if (releaseNotificationsEl) releaseNotificationsEl.checked = settings.releaseNotifications !== false;
+      const reminderNotificationsEl = document.getElementById('reminderNotifications');
+      if (reminderNotificationsEl) reminderNotificationsEl.checked = settings.reminderNotifications !== false;
       document.getElementById('parentalControl').value = settings.parentalControl || 'all';
       
       // Cargar nuevas configuraciones
 
-      document.getElementById('themeSelect').value = settings.theme || 'default';
-      document.getElementById('textSize').value = settings.textSize || 'medium';
+      const themeSelectEl = document.getElementById('themeSelect');
+      if (themeSelectEl) themeSelectEl.value = settings.theme || 'default';
+      const textSizeEl = document.getElementById('textSize');
+      if (textSizeEl) textSizeEl.value = settings.textSize || 'medium';
       document.getElementById('wifiOnlyToggle').checked = settings.wifiOnly || false;
       document.getElementById('dataSaverToggle').checked = settings.dataSaver || false;
 
@@ -6742,13 +6762,13 @@
         autoplay: document.getElementById('autoplayToggle').checked,
         videoQuality: document.getElementById('videoQuality').value,
         language: document.getElementById('interfaceLanguage').value,
-        preferredAudio: document.getElementById('preferredAudio').value,
+        preferredAudio: document.getElementById('audioLanguage')?.value || 'original',
         defaultSubtitles: document.getElementById('defaultSubtitles').checked,
-        releaseNotifications: document.getElementById('releaseNotifications').checked,
-        reminderNotifications: document.getElementById('reminderNotifications').checked,
+        releaseNotifications: document.getElementById('releaseNotifications')?.checked ?? true,
+        reminderNotifications: document.getElementById('reminderNotifications')?.checked ?? true,
         parentalControl: document.getElementById('parentalControl').value,
-        theme: document.getElementById('themeSelect').value,
-        textSize: document.getElementById('textSize').value,
+        theme: document.getElementById('themeSelect')?.value || 'default',
+        textSize: document.getElementById('textSize')?.value || 'medium',
         wifiOnly: document.getElementById('wifiOnlyToggle').checked,
         dataSaver: document.getElementById('dataSaverToggle').checked
       };
@@ -6925,7 +6945,7 @@
       });
 
       // Audio preferido - Cambio en tiempo real
-      document.getElementById('preferredAudio')?.addEventListener('change', function() {
+      document.getElementById('audioLanguage')?.addEventListener('change', function() {
         const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
         settings.preferredAudio = this.value;
         localStorage.setItem('atenis_settings', JSON.stringify(settings));
@@ -7078,24 +7098,55 @@
       }
     }
 
-    // Manejar cambio de idioma con Google Translate
+    // Manejar cambio de idioma con traducción nativa (solo Español/Inglés oficiales)
     function handleLanguageChange(language) {
-      localStorage.setItem('atenis_language', language);
-      currentLanguage = language;
-      
-      // Usar Google Translate para cambiar el idioma
-      const googleTranslateCombo = document.querySelector('.goog-te-combo');
-      if (googleTranslateCombo) {
-        googleTranslateCombo.value = language;
-        googleTranslateCombo.dispatchEvent(new Event('change'));
+      const normalizedLanguage = normalizeAppLanguage(language);
+      localStorage.setItem('atenis_language', normalizedLanguage);
+      currentLanguage = normalizedLanguage;
+
+      const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
+      settings.language = normalizedLanguage;
+      localStorage.setItem('atenis_settings', JSON.stringify(settings));
+
+      translateInterface(normalizedLanguage);
+      renderCatalogSections && renderCatalogSections();
+      renderMiniCarousel && renderMiniCarousel();
+      renderMiniGrid && renderMiniGrid();
+      renderUpcomingReleases && renderUpcomingReleases();
+
+      if (currentSeries && document.getElementById('seriesDetail')?.classList.contains('active')) {
+        showSeriesDetail(currentSeries.id);
       }
-      
-      showSettingsMessage(`Idioma cambiado a: ${language === 'es' ? 'Español' : language === 'en' ? 'English' : 'Português'}`);
+
+      showSettingsMessage(normalizedLanguage === 'es' ? 'Idioma cambiado a: Español' : 'Language changed to: English');
     }
 
-    // Traducir interfaz (ahora usa Google Translate automáticamente)
-    function translateInterface(language) {
-      handleLanguageChange(language);
+    function translateInterface(language = getAppLanguage()) {
+      const normalizedLanguage = normalizeAppLanguage(language);
+      currentLanguage = normalizedLanguage;
+      document.documentElement.lang = normalizedLanguage;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          const parent = node.parentElement;
+          if (!parent || ['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'OPTION'].includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(node => {
+        if (!node.__i18nSource) node.__i18nSource = node.nodeValue.trim();
+        const source = node.__i18nSource;
+        node.nodeValue = node.nodeValue.replace(node.nodeValue.trim(), normalizedLanguage === 'es' ? source : (interfaceTexts[source] || source));
+      });
+      document.querySelectorAll('[placeholder]').forEach(el => {
+        if (!el.dataset.i18nPlaceholderSource) el.dataset.i18nPlaceholderSource = el.getAttribute('placeholder');
+        const source = el.dataset.i18nPlaceholderSource;
+        el.setAttribute('placeholder', normalizedLanguage === 'es' ? source : (interfaceTexts[source] || source));
+      });
+      const langSelect = document.getElementById('interfaceLanguage');
+      if (langSelect) langSelect.value = normalizedLanguage;
     }
 
     // Sistema de programación en vivo - 17 de agosto
@@ -7521,9 +7572,51 @@
 
   <script>
     // Sistema de traducción
-    let currentLanguage = localStorage.getItem('atenis_language') || 'es';
+    let currentLanguage = normalizeAppLanguage(localStorage.getItem('atenis_language') || (JSON.parse(localStorage.getItem('atenis_settings') || '{}').language) || 'es');
     let translations = {};
     let isTranslating = false;
+
+    const SUPPORTED_APP_LANGUAGES = ['es', 'en'];
+    function normalizeAppLanguage(language) {
+      return SUPPORTED_APP_LANGUAGES.includes(language) ? language : 'es';
+    }
+
+    function getAppLanguage() {
+      return normalizeAppLanguage(currentLanguage || localStorage.getItem('atenis_language') || 'es');
+    }
+
+    function pickLocalizedValue(item, baseKey, fallback = '') {
+      if (!item) return fallback;
+      const lang = getAppLanguage();
+      const localized = item[baseKey + 's'] || item[baseKey + 'Translations'] || item[baseKey + 'ByLang'];
+      if (localized && localized[lang]) return localized[lang];
+      if (lang === 'es') return item[baseKey + 'Es'] || item.spanishTitle || item[baseKey] || item.title || fallback;
+      if (lang === 'en') return item[baseKey + 'En'] || item.englishTitle || item[baseKey] || item.title || item.spanishTitle || fallback;
+      return item[baseKey + lang.charAt(0).toUpperCase() + lang.slice(1)] || item[baseKey] || fallback;
+    }
+
+    function getLocalizedTitle(item) {
+      return pickLocalizedValue(item, 'title', item && (item.spanishTitle || item.title) || '');
+    }
+
+    function getLocalizedDescription(item) {
+      return pickLocalizedValue(item, 'description', item && item.description || '');
+    }
+
+    function getLocalizedPoster(item) {
+      const covers = item && (item.posters || item.covers || item.localizedPosters);
+      const lang = getAppLanguage();
+      return (covers && (covers[lang] || covers.original)) || (item && (item['poster' + lang.toUpperCase()] || item.poster)) || '';
+    }
+
+    function getLocalizedEpisodeTitle(episode, index) {
+      return pickLocalizedValue(episode, 'title', episode && episode.title || `${t('Episodio')} ${index + 1}`);
+    }
+
+    function t(text) {
+      if (getAppLanguage() === 'es') return text;
+      return interfaceTexts[text] || text;
+    }
 
     // Textos de la interfaz para traducir
     const interfaceTexts = {
@@ -7628,6 +7721,74 @@
       'domingo': 'Sunday'
     };
 
+    Object.assign(interfaceTexts, {
+      'Mini': 'Mini',
+      'Dramas cortos': 'Short dramas',
+      'Todo': 'All',
+      'Acción': 'Action',
+      'Comedia': 'Comedy',
+      'Suspenso': 'Suspense',
+      'No hay Mini dramas aún': 'No Mini dramas yet',
+      'Próximamente llegará contenido aquí.': 'Content is coming soon.',
+      'Nueva Mini': 'New Mini',
+      'Publicar': 'Publish',
+      'Sube portadas por idioma. La app mostrará automáticamente la portada que coincida con el idioma de la interfaz.': 'Upload covers by language. The app will automatically show the cover that matches the interface language.',
+      'Toca para subir portada': 'Tap to upload cover',
+      'Subiendo imagen...': 'Uploading image...',
+      'Título en español *': 'Spanish title *',
+      'Título original': 'Original title',
+      'Descripción en español': 'Spanish description',
+      'Género': 'Genre',
+      'Año': 'Year',
+      'Idioma original': 'Original language',
+      'Subtítulos disponibles': 'Available subtitles',
+      'Español': 'Spanish',
+      'Inglés': 'English',
+      'Original': 'Original',
+      'Agrega los episodios de tu Mini. Cada episodio se sube a Cloudinary automáticamente.': 'Add your Mini episodes. Each episode uploads automatically to Cloudinary.',
+      'Agregar episodio': 'Add episode',
+      'Publicar Mini': 'Publish Mini',
+      'Siguiente episodio': 'Next episode',
+      'Ver ahora': 'Watch now',
+      'Iniciando en 5...': 'Starting in 5...',
+      'Info': 'Info',
+      'Ver episodios': 'View episodes',
+      'Sinopsis': 'Synopsis',
+      'Cuenta': 'Account',
+      'Idioma y Subtítulos': 'Language & Subtitles',
+      'Ayuda y Soporte': 'Help & Support',
+      'Nombre': 'Name',
+      'Correo': 'Email',
+      'Mi plan': 'My plan',
+      'Actualizar suscripción': 'Update subscription',
+      'Ver planes': 'View plans',
+      'Cerrar sesión': 'Log out',
+      'Salir de tu cuenta actual': 'Leave your current account',
+      'Siguiente episodio automáticamente': 'Next episode automatically',
+      'Solo WiFi': 'WiFi only',
+      'Reproducir solo con WiFi': 'Play only on WiFi',
+      'Ahorro de datos': 'Data saver',
+      'Reduce el consumo de datos': 'Reduce data usage',
+      'Resolución de reproducción': 'Playback resolution',
+      'Idioma de la aplicación': 'App language',
+      'Subtítulos por defecto': 'Default subtitles',
+      'Mostrar subtítulos al iniciar': 'Show subtitles on start',
+      'Idioma de audio': 'Audio language',
+      'Pista de audio preferida': 'Preferred audio track',
+      'Clasificación máxima': 'Maximum rating',
+      'Limitar contenido por edad': 'Limit content by age',
+      'Contactar soporte': 'Contact support',
+      'Versión de la app': 'App version',
+      'Restablecer ajustes': 'Reset settings',
+      'Volver a los valores predeterminados': 'Return to default values',
+      'Historial de Reproducción': 'Watch History',
+      'Continúa viendo donde lo dejaste': 'Keep watching where you left off',
+      'Próximos estrenos': 'Upcoming premieres',
+      'Contenido programado que se desbloqueará automáticamente': 'Scheduled content that will unlock automatically',
+      'No hay próximos estrenos': 'No upcoming premieres',
+      'Cuando se anuncien nuevos títulos aparecerán en este calendario.': 'When new titles are announced, they will appear in this calendar.'
+    });
+
     // ════════════════════════════════════════════════════════════════════════
     //  CATÁLOGO — editado en catalog.js (archivo independiente)
     //  Agrega nuevos títulos allí; aparecen automáticamente en toda la app.
@@ -7642,10 +7803,10 @@
     ];
 
     function getContentTypeLabel(series) {
-      if (series.type === 'shortfilm') return 'Cortometraje';
-      if (series.type === 'movie') return 'Película';
+      if (series.type === 'shortfilm') return t('Cortometraje');
+      if (series.type === 'movie') return t('Película');
       if (series.type === 'mini') return 'Mini';
-      return 'Serie';
+      return t('Serie');
     }
 
     function createCatalogEmptyState(message = 'No hay películas disponibles. Pronto agregaremos nuevo contenido.') {
@@ -7662,9 +7823,9 @@
       const isLocked = series.isLocked && !isMovieAvailable(series);
       const releaseText = series.releaseDate ? formatReleaseDate(series.releaseDate) : '';
 
-      const displayTitle = series.spanishTitle || series.title;
+      const displayTitle = getLocalizedTitle(series);
       card.innerHTML = `
-        <img src="${series.poster}" alt="${displayTitle}" loading="lazy">
+        <img src="${getLocalizedPoster(series)}" alt="${displayTitle}" loading="lazy">
         <div class="${isLocked ? 'premiere-badge' : 'movie-badge'}" id="${series.id}-badge">${isLocked ? 'Estreno' : getContentTypeLabel(series)}</div>
         <div class="carousel-item-overlay">
           <div class="carousel-item-title">${displayTitle}</div>
@@ -7747,16 +7908,16 @@
         calendarItem.onclick = () => showSeriesDetail(series.id);
         calendarItem.innerHTML = `
           <div class="history-item-poster">
-            <img src="${series.poster}" alt="${series.title}">
+            <img src="${getLocalizedPoster(series)}" alt="${getLocalizedTitle(series)}">
             <div class="locked-overlay" style="border-radius: 12px;">
               <div class="locked-icon"><i class="fas fa-lock"></i></div>
             </div>
           </div>
           <div class="history-item-content">
-            <h3 class="history-item-title">${series.title}</h3>
+            <h3 class="history-item-title">${getLocalizedTitle(series)}</h3>
             <div class="history-item-meta">${series.spanishTitle || getContentTypeLabel(series)} • ${series.year} • ${series.genre}</div>
             <div class="history-item-time">Estreno: ${releaseDate}</div>
-            <p style="color: #ababab; font-size: 13px; line-height: 1.4; margin-top: 10px;">${series.description}</p>
+            <p style="color: #ababab; font-size: 13px; line-height: 1.4; margin-top: 10px;">${getLocalizedDescription(series)}</p>
           </div>
         `;
         calendarContent.appendChild(calendarItem);
@@ -7925,9 +8086,9 @@
       currentSeries = series;
 
       // Actualizar contenido
-      const displayTitle = series.spanishTitle || series.title;
+      const displayTitle = getLocalizedTitle(series);
       document.getElementById('seriesDetailTitle').textContent = displayTitle;
-      document.getElementById('seriesDetailDescription').textContent = series.description;
+      document.getElementById('seriesDetailDescription').textContent = getLocalizedDescription(series);
 
       // Mostrar título original como subtítulo si es distinto
       const subtitleEl = document.getElementById('seriesDetailSubtitle');
@@ -7943,7 +8104,7 @@
 
       // Configurar imagen de fondo
       const backgroundEl = document.getElementById('seriesDetailBackground');
-      backgroundEl.style.backgroundImage = `url('${series.poster}')`;
+      backgroundEl.style.backgroundImage = `url('${getLocalizedPoster(series)}')`;
 
       // Configurar video de trailer si está disponible
       setupNetflixTrailer(series);
@@ -8039,7 +8200,7 @@
 
       // Configurar video con atributos correctos para preview móvil y enlaces de Dropbox.
       videoEl.style.display = 'block';
-      videoEl.poster = series.poster || '';
+      videoEl.poster = getLocalizedPoster(series) || '';
       videoEl.muted = true;
       videoEl.defaultMuted = true;
       videoEl.loop = true;
@@ -9126,9 +9287,9 @@
 
       // Título diferente para películas vs series
       if (currentSeries.type === 'movie' || currentSeries.type === 'shortfilm') {
-        videoPlayerTitle.textContent = currentSeries.title;
+        videoPlayerTitle.textContent = getLocalizedTitle(currentSeries);
       } else {
-        videoPlayerTitle.textContent = `${currentSeries.title} - ${episode.title}`;
+        videoPlayerTitle.textContent = `${getLocalizedTitle(currentSeries)} - ${getLocalizedEpisodeTitle(episode, (currentSeries.episodes || []).indexOf(episode))}`;
       }
 
       // Ocultar indicador EN VIVO para películas normales
@@ -9284,7 +9445,7 @@
       videoElement.preload = 'auto';
       videoElement.removeAttribute('crossorigin');
 
-      videoPlayerTitle.textContent = `${currentSeries.title} - ${trailerVideo.title}`;
+      videoPlayerTitle.textContent = `${getLocalizedTitle(currentSeries)} - ${t(trailerVideo.title)}`;
 
       const liveIndicator = document.getElementById('videoLiveIndicator');
       liveIndicator.style.display = 'none';
@@ -9602,7 +9763,7 @@
 
         card.innerHTML = `
           <div class="mini-card-poster">
-            <img src="${mini.poster || ''}" alt="${mini.spanishTitle || mini.title}" loading="lazy"
+            <img src="${getLocalizedPoster(mini) || ''}" alt="${getLocalizedTitle(mini)}" loading="lazy"
                  onerror="this.style.background='#1a1a1a';this.src='';">
             <div class="mini-card-ep-badge">MINI</div>
             ${rating ? `<div class="mini-card-rating">★ ${rating}</div>` : ''}
@@ -9611,7 +9772,7 @@
             </div>
           </div>
           <div class="mini-card-info">
-            <div class="mini-card-title">${mini.spanishTitle || mini.title}</div>
+            <div class="mini-card-title">${getLocalizedTitle(mini)}</div>
             <div class="mini-card-meta">
               ${year ? `<span>${year}</span>` : ''}
               ${year && genre ? '<span class="mini-card-meta-dot"></span>' : ''}
@@ -9645,10 +9806,10 @@
         card.onclick = () => showMiniPlayer(mini.id, 0);
         const epCount = mini.episodes ? mini.episodes.length : 0;
         card.innerHTML = `
-          <img src="${mini.poster || ''}" alt="${mini.title}" loading="lazy">
+          <img src="${getLocalizedPoster(mini) || ''}" alt="${getLocalizedTitle(mini)}" loading="lazy">
           <div class="mini-carousel-badge">MINI</div>
           <div class="mini-carousel-item-overlay">
-            <div class="mini-carousel-item-title">${mini.spanishTitle || mini.title}</div>
+            <div class="mini-carousel-item-title">${getLocalizedTitle(mini)}</div>
           </div>
         `;
         carousel.appendChild(card);
@@ -9673,12 +9834,16 @@
     // ── Upload modal ─────────────────────────────────────────────────────────
 
     function openMiniUpload() {
-      miniUploadData = { coverUrl: null, episodes: [] };
+      miniUploadData = { coverUrl: null, coverSlot: 'es', covers: {}, episodes: [] };
       miniEpisodeCounter = 0;
       document.getElementById('miniUploadModal').classList.add('active');
       document.getElementById('miniEpisodesList').innerHTML = '';
       document.getElementById('miniTitleInput').value = '';
       document.getElementById('miniDescInput').value = '';
+      document.getElementById('miniTitleEnInput').value = '';
+      document.getElementById('miniTitleOriginalInput').value = '';
+      document.getElementById('miniDescEnInput').value = '';
+      setMiniCoverSlot('es');
       document.getElementById('miniYearInput').value = '2026';
       document.getElementById('miniOriginalLangInput').value = '';
       document.getElementById('miniSubEs').checked = false;
@@ -9702,6 +9867,28 @@
         if (n < step) dot.classList.add('done');
         else if (n === step) dot.classList.add('active');
       });
+    }
+
+
+    function setMiniCoverSlot(slot) {
+      miniUploadData.coverSlot = slot;
+      ['es', 'en', 'original'].forEach(lang => {
+        const btn = document.getElementById('miniCoverTab' + (lang === 'original' ? 'Original' : lang.charAt(0).toUpperCase() + lang.slice(1)));
+        if (btn) btn.classList.toggle('active', lang === slot);
+      });
+      const img = document.getElementById('miniCoverPreview');
+      const placeholder = document.getElementById('miniCoverPlaceholder');
+      const url = miniUploadData.covers && miniUploadData.covers[slot];
+      if (img && placeholder) {
+        if (url) {
+          img.src = url;
+          img.style.display = 'block';
+          placeholder.style.display = 'none';
+        } else {
+          img.style.display = 'none';
+          placeholder.style.display = 'flex';
+        }
+      }
     }
 
     // ── Cover upload ──────────────────────────────────────────────────────────
@@ -9732,7 +9919,8 @@
         const url = await uploadToCloudinary(file, pct => {
           progBar.style.width = pct + '%';
         });
-        miniUploadData.coverUrl = url;
+        miniUploadData.covers[miniUploadData.coverSlot || 'es'] = url;
+        miniUploadData.coverUrl = miniUploadData.covers.es || miniUploadData.covers.en || miniUploadData.covers.original || url;
         progText.textContent = '✓ Portada lista';
         progBar.style.width = '100%';
       } catch (err) {
@@ -9790,7 +9978,11 @@
           </button>
         </div>
         <input class="mini-ep-title-input" id="miniEpTitle${idx}" type="text"
-               placeholder="Título del episodio ${idx}">
+               placeholder="Título del episodio ${idx} en español">
+        <input class="mini-ep-title-input" id="miniEpTitleEn${idx}" type="text"
+               placeholder="Episode ${idx} title in English">
+        <input class="mini-ep-title-input" id="miniEpTitleOriginal${idx}" type="text"
+               placeholder="Título original del episodio ${idx} (opcional)">
         <label class="mini-video-upload-area" id="miniEpVideoArea${idx}" for="miniEpVideoFile${idx}">
           <i class="fas fa-video"></i> Toca para subir video
         </label>
@@ -9943,8 +10135,10 @@
 
     async function saveMini() {
       const title = document.getElementById('miniTitleInput').value.trim();
-      if (!title) {
-        alert('Por favor escribe el título de la serie.');
+      const titleEn = document.getElementById('miniTitleEnInput').value.trim();
+      const titleOriginal = document.getElementById('miniTitleOriginalInput').value.trim();
+      if (!title || !titleEn) {
+        alert('Por favor escribe el título en español e inglés de la serie.');
         goToMiniStep(2);
         return;
       }
@@ -9971,6 +10165,7 @@
         const genre   = document.getElementById('miniGenreInput').value;
         const year    = document.getElementById('miniYearInput').value;
         const desc    = document.getElementById('miniDescInput').value.trim();
+        const descEn  = document.getElementById('miniDescEnInput').value.trim();
         const rating  = document.getElementById('miniRatingInput').value;
 
         // Build episodes array from DOM + upload data
@@ -9978,9 +10173,18 @@
           .filter(e => e.videoUrl)
           .map((e, i) => {
             const titleEl = document.getElementById('miniEpTitle' + e.id);
+            const titleEnEl = document.getElementById('miniEpTitleEn' + e.id);
+            const titleOriginalEl = document.getElementById('miniEpTitleOriginal' + e.id);
+            const epTitleEs = (titleEl ? titleEl.value.trim() : '') || `Episodio ${i + 1}`;
+            const epTitleEn = (titleEnEl ? titleEnEl.value.trim() : '') || `Episode ${i + 1}`;
+            const epTitleOriginal = titleOriginalEl ? titleOriginalEl.value.trim() : '';
             return {
               id:        i + 1,
-              title:     (titleEl ? titleEl.value.trim() : '') || `Episodio ${i + 1}`,
+              title:     epTitleEs,
+              titleEs:   epTitleEs,
+              titleEn:   epTitleEn,
+              titleOriginal: epTitleOriginal,
+              titles:    { es: epTitleEs, en: epTitleEn, original: epTitleOriginal || epTitleEs },
               videoUrl:  e.videoUrl,
               thumbnail: miniUploadData.coverUrl,
               subtitles: e.subtitles || {}
@@ -9991,7 +10195,11 @@
           id,
           title,
           spanishTitle: title,
-          searchAliases: [title],
+          titleEs: title,
+          titleEn,
+          titleOriginal,
+          titles: { es: title, en: titleEn, original: titleOriginal || title },
+          searchAliases: [title, titleEn, titleOriginal].filter(Boolean),
           type:          'mini',
           year,
           genre,
@@ -9999,8 +10207,12 @@
           availableSubs: getMiniSelectedLangs(),
           rating,
           poster:        miniUploadData.coverUrl,
+          posters:       { ...miniUploadData.covers },
           trailer:       '',
           description:   desc,
+          descriptionEs: desc,
+          descriptionEn: descEn,
+          descriptions:  { es: desc, en: descEn },
           director:      'Atenis',
           cast:          '',
           isFeatured:    false,
@@ -10058,7 +10270,7 @@
       if (epsSheet) epsSheet.classList.remove('open');
       if (infoSheet) infoSheet.classList.remove('open');
 
-      document.getElementById('miniPlayerTitle').textContent = mini.spanishTitle || mini.title;
+      document.getElementById('miniPlayerTitle').textContent = getLocalizedTitle(mini);
       document.getElementById('miniPlayerGenreTag').textContent = mini.genre || '';
 
       const eps = mini.episodes || [];
@@ -10104,7 +10316,7 @@
 
       const total = eps.length;
       document.getElementById('miniPlayerEpLabel').textContent =
-        total > 1 ? ('EP ' + (idx + 1) + ' / ' + total) : (_miniPlayerMini.spanishTitle || _miniPlayerMini.title);
+        total > 1 ? ('EP ' + (idx + 1) + ' / ' + total) : getLocalizedTitle(_miniPlayerMini);
 
       const vid = document.getElementById('miniPlayerVideo');
       const rawUrl = ep.videoUrl || '';
@@ -10350,7 +10562,7 @@
       const inner = document.getElementById('miniInfoSheetInner');
       if (!inner || !_miniPlayerMini) return;
       const m = _miniPlayerMini;
-      const title = m.spanishTitle || m.title || '';
+      const title = getLocalizedTitle(m);
       const year = m.year || '';
       const rating = m.rating ? '★ ' + m.rating : '';
       const epCount = (m.episodes && m.episodes.length) ? m.episodes.length + ' episodios' : '';
@@ -10363,7 +10575,7 @@
 
       inner.innerHTML = `
         <div class="mini-info-poster-row">
-          <img class="mini-info-poster" src="${m.poster || ''}" alt="">
+          <img class="mini-info-poster" src="${getLocalizedPoster(m) || ''}" alt="">
           <div class="mini-info-meta">
             <div class="mini-info-title">${title}</div>
             ${rating ? `<div class="mini-info-rating">${rating}</div>` : ''}
@@ -10412,8 +10624,8 @@
       const statsEl  = document.getElementById('miniSheetStats');
       const ratingEl = document.getElementById('miniSheetRating');
 
-      if (posterEl) posterEl.src = m.poster || '';
-      if (titleEl)  titleEl.textContent = m.spanishTitle || m.title;
+      if (posterEl) posterEl.src = getLocalizedPoster(m) || '';
+      if (titleEl)  titleEl.textContent = getLocalizedTitle(m);
       if (statsEl) {
         const parts = [];
         if (m.views)    parts.push(m.views + ' Vistas');
@@ -10452,7 +10664,7 @@
       if (!body || !_miniPlayerMini) return;
 
       if (_miniSheetTab === 'synopsis') {
-        body.innerHTML = `<div class="mini-synopsis-panel">${_miniPlayerMini.description || 'Sin descripción disponible.'}</div>`;
+        body.innerHTML = `<div class="mini-synopsis-panel">${getLocalizedDescription(_miniPlayerMini) || t('Sin descripción disponible.')}</div>`;
         return;
       }
 
