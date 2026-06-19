@@ -5235,6 +5235,11 @@
           <span class="settings-nav-label">Ayuda y Soporte</span>
           <i class="fas fa-chevron-right settings-nav-arrow"></i>
         </div>
+        <div class="settings-nav-row" id="adminSubsNavRow" style="display:none;" onclick="openSettingsSub('subtitulos')">
+          <div class="settings-nav-icon" style="background:#1a2530"><i class="fas fa-closed-captioning" style="color:#4c6ef5"></i></div>
+          <span class="settings-nav-label">Admin — Subtítulos VTT</span>
+          <i class="fas fa-chevron-right settings-nav-arrow"></i>
+        </div>
       </div>
 
     </div>
@@ -5472,6 +5477,24 @@
               <div class="setting-description">Volver a los valores predeterminados</div>
             </div>
             <i class="fas fa-chevron-right" style="color:#3a4460;font-size:12px;"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Sub: Admin Subtítulos VTT ── -->
+    <div class="settings-sub" id="settingsSubSubtitulos">
+      <div class="settings-sub-topbar">
+        <button class="settings-sub-back" onclick="closeSettingsSub('subtitulos')"><i class="fas fa-chevron-left"></i></button>
+        <span class="settings-sub-topbar-title">Subtítulos VTT</span>
+      </div>
+      <div class="settings-sub-body">
+        <div class="settings-sub-group">
+          <p style="font-size:12px;color:#888;padding:0 4px 8px;">Aquí aparecen todos los archivos VTT subidos a Firebase. Puedes eliminarlos individualmente.</p>
+          <div id="adminSubsList" style="display:flex;flex-direction:column;gap:8px;">
+            <div style="text-align:center;padding:24px;color:#555;font-size:13px;">
+              <i class="fas fa-spinner fa-spin"></i> Cargando...
+            </div>
           </div>
         </div>
       </div>
@@ -6229,6 +6252,7 @@
         localStorage.setItem('atenis_user_profile', JSON.stringify(userProfile));
         localStorage.setItem('atenis_subscription', 'active');
       }
+      _showAdminSubsNavIfAdmin();
     }
 
     // Función para cerrar sesión de Firebase
@@ -11380,6 +11404,7 @@
         parental:       'settingsSubParental',
         notificaciones: 'settingsSubNotificaciones',
         ayuda:          'settingsSubAyuda',
+        subtitulos:     'settingsSubSubtitulos',
       };
       const id = idMap[name];
       if (!id) return;
@@ -11391,6 +11416,7 @@
       }
       const el = document.getElementById(id);
       if (el) el.classList.add('open');
+      if (name === 'subtitulos') loadAdminSubtitles();
     }
 
     function closeSettingsSub(name) {
@@ -11401,6 +11427,7 @@
         parental:       'settingsSubParental',
         notificaciones: 'settingsSubNotificaciones',
         ayuda:          'settingsSubAyuda',
+        subtitulos:     'settingsSubSubtitulos',
       };
       const id = idMap[name];
       if (!id) return;
@@ -11410,6 +11437,62 @@
 
     // Keep for backwards compat (no-op now)
     function toggleSettingsGroup(toggleEl) { }
+
+    // ── Admin Subtitles Panel ─────────────────────────────────────────────────
+
+    function _showAdminSubsNavIfAdmin() {
+      const row = document.getElementById('adminSubsNavRow');
+      if (row) row.style.display = isMiniAdmin() ? 'flex' : 'none';
+    }
+
+    async function loadAdminSubtitles() {
+      const container = document.getElementById('adminSubsList');
+      if (!container) return;
+      container.innerHTML = '<div style="text-align:center;padding:24px;color:#555;font-size:13px;"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
+      try {
+        const snap = await database.ref('subtitles').once('value');
+        const data = snap.val();
+        if (!data) {
+          container.innerHTML = '<div style="text-align:center;padding:24px;color:#555;font-size:13px;">No hay subtítulos subidos aún.</div>';
+          return;
+        }
+        let html = '';
+        Object.entries(data).forEach(([lang, entries]) => {
+          Object.entries(entries).forEach(([ts, entry]) => {
+            const date = new Date(entry.uploadedAt || parseInt(ts)).toLocaleString('es', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+            const langLabel = { es:'Español', en:'Inglés', original:'Original' }[lang] || lang;
+            html += `
+              <div style="background:#0d0e1a;border:1px solid #1c1e30;border-radius:10px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:13px;font-weight:600;color:#fff;display:flex;align-items:center;gap:6px;">
+                    <span style="background:#1a2540;color:#4c6ef5;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;">${langLabel}</span>
+                    <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${entry.filename || ts + '.vtt'}</span>
+                  </div>
+                  <div style="font-size:11px;color:#555;margin-top:3px;">${date}</div>
+                </div>
+                <button onclick="deleteAdminSubtitle('${lang}','${ts}')"
+                  style="background:#2a1010;border:1px solid #5a2020;color:#e55555;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;flex-shrink:0;white-space:nowrap;">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>`;
+          });
+        });
+        container.innerHTML = html || '<div style="text-align:center;padding:24px;color:#555;font-size:13px;">No hay subtítulos subidos aún.</div>';
+      } catch (err) {
+        container.innerHTML = '<div style="text-align:center;padding:24px;color:#e55555;font-size:13px;">Error al cargar subtítulos.</div>';
+        console.error(err);
+      }
+    }
+
+    async function deleteAdminSubtitle(lang, ts) {
+      if (!confirm('¿Eliminar este archivo VTT de Firebase?')) return;
+      try {
+        await database.ref('subtitles/' + lang + '/' + ts).remove();
+        await loadAdminSubtitles();
+      } catch (err) {
+        alert('Error al eliminar: ' + err.message);
+      }
+    }
 
     // ── Toast notification ────────────────────────────────────────────────────
 
