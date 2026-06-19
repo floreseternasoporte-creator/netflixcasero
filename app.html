@@ -4314,6 +4314,161 @@
     .mini-cover-placeholder i { font-size: 36px; margin-bottom: 8px; display: block; }
     .mini-cover-placeholder span { font-size: 14px; }
 
+    /* ── 3-poster multilingual layout ── */
+    .mini-cover-lang-block {
+      margin-bottom: 16px;
+    }
+    .mini-cover-lang-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #ccc;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mini-cover-sm {
+      width: 100% !important;
+      height: 160px !important;
+    }
+    .mini-cover-sm .mini-cover-placeholder i { font-size: 24px; margin-bottom: 4px; }
+    .mini-cover-sm .mini-cover-placeholder span { font-size: 12px; }
+    .mini-cover-lang-divider {
+      border: none;
+      border-top: 1px solid #1c1e30;
+      margin: 4px 0 14px;
+    }
+    /* ── Mini edit modal ── */
+    .mini-edit-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 8000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .mini-edit-modal.active { display: flex; }
+    .mini-edit-container {
+      background: #0d0e1a;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px 20px 40px;
+      border: 1px solid #1c1e30;
+    }
+    .mini-edit-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .mini-edit-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .mini-edit-close {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+    .mini-edit-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #4c6ef5;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 16px 0 8px;
+    }
+    .mini-edit-poster-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .mini-edit-poster-block {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .mini-edit-poster-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #888;
+      text-align: center;
+    }
+    .mini-edit-poster-thumb {
+      width: 100%;
+      aspect-ratio: 2/3;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #13141f;
+      border: 1px dashed #2d2f4a;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .mini-edit-poster-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .mini-edit-poster-thumb-empty {
+      color: #444;
+      font-size: 22px;
+    }
+    .mini-edit-save-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #4c6ef5, #3b5bdb);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .mini-edit-delete-btn {
+      width: 100%;
+      padding: 12px;
+      background: none;
+      border: 1px solid #ff4444;
+      border-radius: 12px;
+      color: #ff4444;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .mini-card-edit-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: rgba(0,0,0,0.7);
+      border: none;
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 10;
+      backdrop-filter: blur(4px);
+    }
+
     .mini-upload-prog {
       background: #1a1a1a;
       border-radius: 6px;
@@ -5127,7 +5282,6 @@
             <select class="setting-select" id="interfaceLanguage" onchange="handleLanguageChange(this.value)">
               <option value="es">Español</option>
               <option value="en">English</option>
-              <option value="pt">Português</option>
             </select>
           </div>
           <div class="setting-item">
@@ -5324,23 +5478,23 @@
       </button>
       <div>
         <div class="mini-logo-text">MINI</div>
-        <div class="mini-logo-sub">Dramas cortos</div>
+        <div class="mini-logo-sub" data-i18n="mini_subtitle">Dramas cortos</div>
       </div>
     </div>
     <div class="mini-filters" id="miniFilters">
-      <button class="mini-chip active" onclick="filterMini(this,'')">Todo</button>
+      <button class="mini-chip active" onclick="filterMini(this,'')" data-i18n="filter_all">Todo</button>
       <button class="mini-chip" onclick="filterMini(this,'Romance')">Romance</button>
       <button class="mini-chip" onclick="filterMini(this,'Drama')">Drama</button>
-      <button class="mini-chip" onclick="filterMini(this,'Acción')">Acción</button>
-      <button class="mini-chip" onclick="filterMini(this,'Comedia')">Comedia</button>
-      <button class="mini-chip" onclick="filterMini(this,'Suspenso')">Suspenso</button>
+      <button class="mini-chip" onclick="filterMini(this,'Acción')" data-i18n="filter_action">Acción</button>
+      <button class="mini-chip" onclick="filterMini(this,'Comedia')" data-i18n="filter_comedy">Comedia</button>
+      <button class="mini-chip" onclick="filterMini(this,'Suspenso')" data-i18n="filter_suspense">Suspenso</button>
       <button class="mini-chip" onclick="filterMini(this,'Anime')">Anime</button>
     </div>
     <div class="mini-grid" id="miniGrid"></div>
     <div class="mini-empty hidden" id="miniEmpty">
       <i class="fas fa-film"></i>
-      <h3>No hay Mini dramas aún</h3>
-      <p>Próximamente llegará contenido aquí.</p>
+      <h3 data-i18n="mini_empty_title">No hay Mini dramas aún</h3>
+      <p data-i18n="mini_empty_sub">Próximamente llegará contenido aquí.</p>
     </div>
     <button class="mini-fab" id="miniFab" onclick="openMiniUpload()">
       <i class="fas fa-plus"></i>
@@ -5365,33 +5519,96 @@
         <div class="mini-step-dot" id="miniStepDot3">3</div>
       </div>
 
-      <!-- Paso 1: Portada -->
+      <!-- Paso 1: Portadas por idioma -->
       <div class="mini-upload-step" id="miniStep1">
-        <p style="font-size:13px;color:#888;margin-bottom:12px;text-align:center;">Sube la portada de tu serie</p>
-        <div class="mini-cover-picker" id="miniCoverPicker" onclick="document.getElementById('miniCoverInput').click()">
-          <img id="miniCoverPreview" style="display:none;width:100%;height:100%;object-fit:cover;">
-          <div class="mini-cover-placeholder" id="miniCoverPlaceholder">
-            <i class="fas fa-image"></i>
-            <span>Toca para subir portada</span>
+        <p style="font-size:13px;color:#888;margin-bottom:14px;text-align:center;" data-i18n="upload_covers_hint">Sube las portadas de tu serie por idioma</p>
+
+        <!-- Original cover (required) -->
+        <div class="mini-cover-lang-block">
+          <div class="mini-cover-lang-label">
+            <span>🌐</span>
+            <span data-i18n="cover_original">Portada Original</span>
+            <span style="color:#E91E8C;margin-left:2px">*</span>
           </div>
+          <div class="mini-cover-picker mini-cover-sm" id="miniCoverPickerOrig" onclick="document.getElementById('miniCoverInputOrig').click()">
+            <img id="miniCoverPreview_orig" style="display:none;width:100%;height:100%;object-fit:cover;">
+            <div class="mini-cover-placeholder" id="miniCoverPlaceholder_orig">
+              <i class="fas fa-image"></i>
+              <span data-i18n="tap_upload">Toca para subir</span>
+            </div>
+          </div>
+          <input type="file" id="miniCoverInputOrig" accept="image/*" style="display:none;" onchange="handleMiniCoverUpload(this,'orig')">
+          <div class="mini-upload-prog hidden" id="coverUploadProg_orig"><div class="mini-upload-prog-fill" id="coverProgFill_orig"></div></div>
+          <p class="mini-upload-prog-text hidden" id="coverProgText_orig"></p>
         </div>
-        <input type="file" id="miniCoverInput" accept="image/*" style="display:none;" onchange="handleMiniCoverChange(this)">
-        <div class="mini-upload-prog hidden" id="coverUploadProg">
-          <div class="mini-upload-prog-fill" id="coverProgFill"></div>
+
+        <hr class="mini-cover-lang-divider">
+
+        <!-- Spanish cover -->
+        <div class="mini-cover-lang-block">
+          <div class="mini-cover-lang-label">
+            <span>🇪🇸</span>
+            <span data-i18n="cover_es">Portada en Español</span>
+            <span style="color:#666;font-size:11px;margin-left:4px" data-i18n="optional">(opcional)</span>
+          </div>
+          <div class="mini-cover-picker mini-cover-sm" id="miniCoverPickerEs" onclick="document.getElementById('miniCoverInputEs').click()">
+            <img id="miniCoverPreview_es" style="display:none;width:100%;height:100%;object-fit:cover;">
+            <div class="mini-cover-placeholder" id="miniCoverPlaceholder_es">
+              <i class="fas fa-image"></i>
+              <span data-i18n="tap_upload">Toca para subir</span>
+            </div>
+          </div>
+          <input type="file" id="miniCoverInputEs" accept="image/*" style="display:none;" onchange="handleMiniCoverUpload(this,'es')">
+          <div class="mini-upload-prog hidden" id="coverUploadProg_es"><div class="mini-upload-prog-fill" id="coverProgFill_es"></div></div>
+          <p class="mini-upload-prog-text hidden" id="coverProgText_es"></p>
         </div>
-        <p class="mini-upload-prog-text hidden" id="coverProgText">Subiendo imagen...</p>
-        <button class="mini-upload-next-btn" onclick="goToMiniStep(2)" style="margin-top:10px;">Siguiente →</button>
+
+        <hr class="mini-cover-lang-divider">
+
+        <!-- English cover -->
+        <div class="mini-cover-lang-block">
+          <div class="mini-cover-lang-label">
+            <span>🇺🇸</span>
+            <span data-i18n="cover_en">Portada en Inglés</span>
+            <span style="color:#666;font-size:11px;margin-left:4px" data-i18n="optional">(opcional)</span>
+          </div>
+          <div class="mini-cover-picker mini-cover-sm" id="miniCoverPickerEn" onclick="document.getElementById('miniCoverInputEn').click()">
+            <img id="miniCoverPreview_en" style="display:none;width:100%;height:100%;object-fit:cover;">
+            <div class="mini-cover-placeholder" id="miniCoverPlaceholder_en">
+              <i class="fas fa-image"></i>
+              <span data-i18n="tap_upload">Toca para subir</span>
+            </div>
+          </div>
+          <input type="file" id="miniCoverInputEn" accept="image/*" style="display:none;" onchange="handleMiniCoverUpload(this,'en')">
+          <div class="mini-upload-prog hidden" id="coverUploadProg_en"><div class="mini-upload-prog-fill" id="coverProgFill_en"></div></div>
+          <p class="mini-upload-prog-text hidden" id="coverProgText_en"></p>
+        </div>
+
+        <button class="mini-upload-next-btn" onclick="goToMiniStep(2)" style="margin-top:10px;" data-i18n="next_btn">Siguiente →</button>
       </div>
 
       <!-- Paso 2: Detalles -->
       <div class="mini-upload-step hidden" id="miniStep2">
+
+        <!-- Titles section -->
+        <div class="mini-edit-section-label" data-i18n="titles_section">Títulos</div>
         <div class="mini-form-group">
-          <label>Título *</label>
-          <input type="text" id="miniTitleInput" placeholder="Título de la serie">
+          <label data-i18n="title_original">Título Original *</label>
+          <input type="text" id="miniTitleInput" placeholder="Título en idioma original">
         </div>
+        <div class="mini-form-group">
+          <label>🇪🇸 <span data-i18n="title_es">Título en Español</span></label>
+          <input type="text" id="miniTitleEsInput" placeholder="Título en español">
+        </div>
+        <div class="mini-form-group">
+          <label>🇺🇸 <span data-i18n="title_en">Title in English</span></label>
+          <input type="text" id="miniTitleEnInput" placeholder="Title in English">
+        </div>
+
+        <!-- Genre / Year -->
         <div class="mini-form-row">
           <div class="mini-form-group">
-            <label>Género</label>
+            <label data-i18n="genre">Género</label>
             <select id="miniGenreInput">
               <option value="Drama">Drama</option>
               <option value="Romance">Romance</option>
@@ -5403,14 +5620,23 @@
             </select>
           </div>
           <div class="mini-form-group">
-            <label>Año</label>
+            <label data-i18n="year">Año</label>
             <input type="text" id="miniYearInput" value="2026" maxlength="4">
           </div>
         </div>
+
+        <!-- Descriptions section -->
+        <div class="mini-edit-section-label" data-i18n="descriptions_section">Descripción</div>
         <div class="mini-form-group">
-          <label>Descripción</label>
+          <label>🇪🇸 <span data-i18n="desc_es">Descripción en Español</span></label>
           <textarea id="miniDescInput" placeholder="Describe de qué trata la serie..." rows="3"></textarea>
         </div>
+        <div class="mini-form-group">
+          <label>🇺🇸 <span data-i18n="desc_en">Description in English</span></label>
+          <textarea id="miniDescEnInput" placeholder="Describe the series in English..." rows="3"></textarea>
+        </div>
+
+        <!-- Rating / Original Language -->
         <div class="mini-form-group">
           <label>Rating</label>
           <select id="miniRatingInput">
@@ -5421,20 +5647,20 @@
           </select>
         </div>
         <div class="mini-form-group">
-          <label>Idioma original</label>
-          <input type="text" id="miniOriginalLangInput" placeholder="Ej: Chino, Coreano, Inglés...">
+          <label data-i18n="original_lang">Idioma original</label>
+          <input type="text" id="miniOriginalLangInput" placeholder="Ej: Chino, Coreano, Japonés...">
         </div>
         <div class="mini-form-group">
-          <label>Subtítulos disponibles</label>
+          <label data-i18n="available_subs">Subtítulos disponibles</label>
           <div class="mini-lang-checkboxes">
             <label class="mini-lang-check"><input type="checkbox" id="miniSubEs" value="es"> Español</label>
-            <label class="mini-lang-check"><input type="checkbox" id="miniSubEn" value="en"> Inglés</label>
+            <label class="mini-lang-check"><input type="checkbox" id="miniSubEn" value="en"> English</label>
             <label class="mini-lang-check"><input type="checkbox" id="miniSubOrig" value="original"> Original</label>
           </div>
         </div>
         <div class="mini-step-btns">
-          <button class="mini-back-step-btn" onclick="goToMiniStep(1)">← Atrás</button>
-          <button class="mini-upload-next-btn" onclick="goToMiniStep(3)">Siguiente →</button>
+          <button class="mini-back-step-btn" onclick="goToMiniStep(1)" data-i18n="back_btn">← Atrás</button>
+          <button class="mini-upload-next-btn" onclick="goToMiniStep(3)" data-i18n="next_btn">Siguiente →</button>
         </div>
       </div>
 
@@ -5474,23 +5700,23 @@
 
     <!-- Next episode overlay (blur+zoom freeze frame) -->
     <div class="mini-next-overlay" id="miniNextOverlay">
-      <div class="mini-next-label">Siguiente episodio</div>
+      <div class="mini-next-label" data-i18n="next_episode">Siguiente episodio</div>
       <div class="mini-next-title" id="miniNextTitle"></div>
       <button class="mini-next-btn" onclick="_skipToNextMiniEp()">
-        <i class="fas fa-play"></i> Ver ahora
+        <i class="fas fa-play"></i> <span data-i18n="watch_now">Ver ahora</span>
       </button>
-      <div class="mini-next-countdown" id="miniNextCountdown">Iniciando en 5...</div>
+      <div class="mini-next-countdown" id="miniNextCountdown"></div>
     </div>
 
     <!-- Side buttons -->
     <div class="mini-player-side">
       <button class="mini-side-btn" onclick="toggleMiniEpsSheet()">
         <i class="fas fa-list"></i>
-        <span>Episodios</span>
+        <span data-i18n="episodes">Episodios</span>
       </button>
       <button class="mini-side-btn" onclick="toggleMiniInfoSheet()">
         <i class="fas fa-info-circle"></i>
-        <span>Info</span>
+        <span data-i18n="info">Info</span>
       </button>
       <button class="mini-side-btn" id="miniSubBtn" onclick="toggleMiniSubMenu()" style="display:none;">
         <i class="fas fa-closed-captioning"></i>
@@ -5561,12 +5787,133 @@
 
       <!-- Tabs: Sinopsis / Episodios -->
       <div class="mini-sheet-tabs">
-        <button class="mini-sheet-tab" id="miniTabSynopsis" onclick="switchMiniSheetTab('synopsis', this)">Sinopsis</button>
-        <button class="mini-sheet-tab active" id="miniTabEpisodes" onclick="switchMiniSheetTab('episodes', this)">Episodios</button>
+        <button class="mini-sheet-tab" id="miniTabSynopsis" onclick="switchMiniSheetTab('synopsis', this)" data-i18n="synopsis">Sinopsis</button>
+        <button class="mini-sheet-tab active" id="miniTabEpisodes" onclick="switchMiniSheetTab('episodes', this)" data-i18n="episodes">Episodios</button>
       </div>
 
       <!-- Scrollable body -->
       <div class="mini-sheet-body" id="miniSheetBody"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       Mini Edit Modal — Admin only bottom sheet
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="miniEditModal" class="mini-edit-modal">
+    <div class="mini-edit-container">
+      <div class="mini-edit-header">
+        <div class="mini-edit-title" data-i18n="edit_mini">Editar Mini</div>
+        <button class="mini-edit-close" onclick="closeMiniEdit()"><i class="fas fa-times"></i></button>
+      </div>
+
+      <!-- Posters row -->
+      <div class="mini-edit-section-label" data-i18n="posters_section">Portadas</div>
+      <div class="mini-edit-poster-row">
+        <div class="mini-edit-poster-block">
+          <div class="mini-edit-poster-label">🌐 Original</div>
+          <div class="mini-edit-poster-thumb" onclick="document.getElementById('meditCoverOrig').click()">
+            <img id="meditPreviewOrig" src="" alt="">
+            <span class="mini-edit-poster-thumb-empty" id="meditEmptyOrig"><i class="fas fa-image"></i></span>
+          </div>
+          <input type="file" id="meditCoverOrig" accept="image/*" style="display:none;" onchange="handleMiniEditCover(this,'orig')">
+        </div>
+        <div class="mini-edit-poster-block">
+          <div class="mini-edit-poster-label">🇪🇸 ES</div>
+          <div class="mini-edit-poster-thumb" onclick="document.getElementById('meditCoverEs').click()">
+            <img id="meditPreviewEs" src="" alt="">
+            <span class="mini-edit-poster-thumb-empty" id="meditEmptyEs"><i class="fas fa-image"></i></span>
+          </div>
+          <input type="file" id="meditCoverEs" accept="image/*" style="display:none;" onchange="handleMiniEditCover(this,'es')">
+        </div>
+        <div class="mini-edit-poster-block">
+          <div class="mini-edit-poster-label">🇺🇸 EN</div>
+          <div class="mini-edit-poster-thumb" onclick="document.getElementById('meditCoverEn').click()">
+            <img id="meditPreviewEn" src="" alt="">
+            <span class="mini-edit-poster-thumb-empty" id="meditEmptyEn"><i class="fas fa-image"></i></span>
+          </div>
+          <input type="file" id="meditCoverEn" accept="image/*" style="display:none;" onchange="handleMiniEditCover(this,'en')">
+        </div>
+      </div>
+      <div id="meditCoverMsg" style="font-size:12px;color:#888;min-height:16px;margin-bottom:8px;"></div>
+
+      <!-- Titles -->
+      <div class="mini-edit-section-label" data-i18n="titles_section">Títulos</div>
+      <div class="mini-form-group">
+        <label data-i18n="title_original">Título Original *</label>
+        <input type="text" id="meditTitle" placeholder="Título en idioma original">
+      </div>
+      <div class="mini-form-group">
+        <label>🇪🇸 <span data-i18n="title_es">Título en Español</span></label>
+        <input type="text" id="meditTitleEs" placeholder="Título en español">
+      </div>
+      <div class="mini-form-group">
+        <label>🇺🇸 <span data-i18n="title_en">Title in English</span></label>
+        <input type="text" id="meditTitleEn" placeholder="Title in English">
+      </div>
+
+      <!-- Genre / Year -->
+      <div class="mini-form-row">
+        <div class="mini-form-group">
+          <label data-i18n="genre">Género</label>
+          <select id="meditGenre">
+            <option value="Drama">Drama</option>
+            <option value="Romance">Romance</option>
+            <option value="Acción">Acción</option>
+            <option value="Comedia">Comedia</option>
+            <option value="Suspenso">Suspenso</option>
+            <option value="Terror">Terror</option>
+            <option value="Anime">Anime</option>
+          </select>
+        </div>
+        <div class="mini-form-group">
+          <label data-i18n="year">Año</label>
+          <input type="text" id="meditYear" maxlength="4">
+        </div>
+      </div>
+
+      <!-- Descriptions -->
+      <div class="mini-edit-section-label" data-i18n="descriptions_section">Descripción</div>
+      <div class="mini-form-group">
+        <label>🇪🇸 <span data-i18n="desc_es">Descripción en Español</span></label>
+        <textarea id="meditDescEs" rows="3" placeholder="Descripción en español..."></textarea>
+      </div>
+      <div class="mini-form-group">
+        <label>🇺🇸 <span data-i18n="desc_en">Description in English</span></label>
+        <textarea id="meditDescEn" rows="3" placeholder="Description in English..."></textarea>
+      </div>
+
+      <!-- Rating / Language -->
+      <div class="mini-form-group">
+        <label>Rating</label>
+        <select id="meditRating">
+          <option value="G">G</option>
+          <option value="PG">PG</option>
+          <option value="PG-13">PG-13</option>
+          <option value="R">R</option>
+        </select>
+      </div>
+      <div class="mini-form-group">
+        <label data-i18n="original_lang">Idioma original</label>
+        <input type="text" id="meditOrigLang" placeholder="Ej: Chino, Coreano...">
+      </div>
+      <div class="mini-form-group">
+        <label data-i18n="available_subs">Subtítulos disponibles</label>
+        <div class="mini-lang-checkboxes">
+          <label class="mini-lang-check"><input type="checkbox" id="meditSubEs" value="es"> Español</label>
+          <label class="mini-lang-check"><input type="checkbox" id="meditSubEn" value="en"> English</label>
+          <label class="mini-lang-check"><input type="checkbox" id="meditSubOrig" value="original"> Original</label>
+        </div>
+      </div>
+
+      <!-- Featured / Trending toggles -->
+      <div style="display:flex;gap:12px;margin-bottom:12px;">
+        <label class="mini-lang-check"><input type="checkbox" id="meditFeatured"> Featured</label>
+        <label class="mini-lang-check"><input type="checkbox" id="meditTrending"> Trending</label>
+        <label class="mini-lang-check"><input type="checkbox" id="meditLocked"> Locked</label>
+      </div>
+
+      <button class="mini-edit-save-btn" onclick="saveMiniEdit()" data-i18n="save_changes">Guardar cambios</button>
+      <button class="mini-edit-delete-btn" onclick="deleteMini()" data-i18n="delete_mini">Eliminar Mini</button>
     </div>
   </div>
 
@@ -6709,7 +7056,10 @@
 
       document.getElementById('autoplayToggle').checked = settings.autoplay !== false;
       document.getElementById('videoQuality').value = settings.videoQuality || 'auto';
-      document.getElementById('interfaceLanguage').value = settings.language || 'es';
+      const storedLang = settings.language || localStorage.getItem('atenis_language') || 'es';
+      currentLanguage = storedLang;
+      localStorage.setItem('atenis_language', storedLang);
+      document.getElementById('interfaceLanguage').value = storedLang;
       document.getElementById('preferredAudio').value = settings.preferredAudio || 'original';
       document.getElementById('defaultSubtitles').checked = settings.defaultSubtitles || false;
       document.getElementById('releaseNotifications').checked = settings.releaseNotifications !== false;
@@ -7082,18 +7432,22 @@
     function handleLanguageChange(language) {
       localStorage.setItem('atenis_language', language);
       currentLanguage = language;
-      
-      // Usar Google Translate para cambiar el idioma
-      const googleTranslateCombo = document.querySelector('.goog-te-combo');
-      if (googleTranslateCombo) {
-        googleTranslateCombo.value = language;
-        googleTranslateCombo.dispatchEvent(new Event('change'));
-      }
-      
-      showSettingsMessage(`Idioma cambiado a: ${language === 'es' ? 'Español' : language === 'en' ? 'English' : 'Português'}`);
+
+      // Sync the settings selector
+      const sel = document.getElementById('interfaceLanguage');
+      if (sel) sel.value = language;
+
+      // Apply all mini section translations
+      applyMiniTranslations();
+
+      // Re-render mini content with new language
+      renderMiniGrid();
+      renderMiniCarousel();
+
+      showSettingsMessage(language === 'es' ? 'Idioma: Español' : 'Language: English');
     }
 
-    // Traducir interfaz (ahora usa Google Translate automáticamente)
+    // Traducir interfaz
     function translateInterface(language) {
       handleLanguageChange(language);
     }
@@ -7492,6 +7846,8 @@
         buildContinueWatchingSection();
         loadMiniDramas();        // Cargar dramas cortos Mini desde Firebase
         loadDynamicCatalog();   // Cargar catálogo adicional desde Firebase
+        // Apply language on startup
+        setTimeout(() => applyMiniTranslations(), 300);
         
         // Verificar si viene de la página de inicio
         checkIfFromLanding();
@@ -9477,6 +9833,128 @@
     });
 
     // ════════════════════════════════════════════════════════════════════════
+    //  MINI I18N — Traducciones completas para la sección Mini
+    // ════════════════════════════════════════════════════════════════════════
+
+    const MINI_TRANSLATIONS = {
+      es: {
+        mini_subtitle:'Dramas cortos', filter_all:'Todo', filter_action:'Acción',
+        filter_comedy:'Comedia', filter_suspense:'Suspenso',
+        mini_empty_title:'No hay Mini dramas aún', mini_empty_sub:'Próximamente llegará contenido aquí.',
+        upload_covers_hint:'Sube las portadas de tu serie por idioma',
+        cover_original:'Portada Original', cover_es:'Portada en Español', cover_en:'Portada en Inglés',
+        optional:'(opcional)', tap_upload:'Toca para subir',
+        next_btn:'Siguiente →', back_btn:'← Atrás',
+        titles_section:'Títulos', title_original:'Título Original *',
+        title_es:'Título en Español', title_en:'Título en Inglés',
+        genre:'Género', year:'Año',
+        descriptions_section:'Descripción',
+        desc_es:'Descripción en Español', desc_en:'Descripción en Inglés',
+        original_lang:'Idioma original', available_subs:'Subtítulos disponibles',
+        episodes:'Episodios', synopsis:'Sinopsis', info:'Info',
+        next_episode:'Siguiente episodio', watch_now:'Ver ahora',
+        starting_in:'Iniciando en',
+        no_desc:'Sin descripción disponible.', no_episodes:'No hay episodios disponibles.',
+        ep_label:'Episodio', ep_count:'episodios', views:'Vistas',
+        uploading:'Subiendo...', upload_done:'✓ Listo', upload_error:'✗ Error al subir',
+        publish_mini:'Publicar Mini', add_episode:'Agregar episodio',
+        publishing:'Publicando...', publish_success:'✓ Mini publicada exitosamente',
+        see_episodes:'Ver episodios', see_info:'Ver info',
+        edit_mini:'Editar Mini', save_changes:'Guardar cambios',
+        delete_mini:'Eliminar Mini', delete_confirm:'¿Eliminar esta Mini permanentemente?',
+        edit_title:'Editar', posters_section:'Portadas', change_poster:'Cambiar portada',
+        new_mini:'Nueva Mini', publish:'Publicar',
+        sub_title:'Subtítulos', sub_off:'Desactivado',
+        lang_and_subs:'Idioma y Subtítulos',
+      },
+      en: {
+        mini_subtitle:'Short dramas', filter_all:'All', filter_action:'Action',
+        filter_comedy:'Comedy', filter_suspense:'Suspense',
+        mini_empty_title:'No Mini dramas yet', mini_empty_sub:'Content coming soon.',
+        upload_covers_hint:'Upload your series posters by language',
+        cover_original:'Original Poster', cover_es:'Spanish Poster', cover_en:'English Poster',
+        optional:'(optional)', tap_upload:'Tap to upload',
+        next_btn:'Next →', back_btn:'← Back',
+        titles_section:'Titles', title_original:'Original Title *',
+        title_es:'Spanish Title', title_en:'English Title',
+        genre:'Genre', year:'Year',
+        descriptions_section:'Description',
+        desc_es:'Spanish Description', desc_en:'English Description',
+        original_lang:'Original language', available_subs:'Available subtitles',
+        episodes:'Episodes', synopsis:'Synopsis', info:'Info',
+        next_episode:'Next episode', watch_now:'Watch now',
+        starting_in:'Starting in',
+        no_desc:'No description available.', no_episodes:'No episodes available.',
+        ep_label:'Episode', ep_count:'episodes', views:'Views',
+        uploading:'Uploading...', upload_done:'✓ Ready', upload_error:'✗ Upload error',
+        publish_mini:'Publish Mini', add_episode:'Add episode',
+        publishing:'Publishing...', publish_success:'✓ Mini published successfully',
+        see_episodes:'See episodes', see_info:'See info',
+        edit_mini:'Edit Mini', save_changes:'Save changes',
+        delete_mini:'Delete Mini', delete_confirm:'Delete this Mini permanently?',
+        edit_title:'Edit', posters_section:'Posters', change_poster:'Change poster',
+        new_mini:'New Mini', publish:'Publish',
+        sub_title:'Subtitles', sub_off:'Off',
+        lang_and_subs:'Language & Subtitles',
+      }
+    };
+
+    // Translation helper — returns string in currentLanguage
+    function t(key) {
+      const lang = currentLanguage || localStorage.getItem('atenis_language') || 'es';
+      const dict = MINI_TRANSLATIONS[lang] || MINI_TRANSLATIONS['es'];
+      return (dict[key] !== undefined) ? dict[key] : (MINI_TRANSLATIONS['es'][key] || key);
+    }
+
+    // Apply translations to all [data-i18n] elements
+    function applyMiniTranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const text = t(key);
+        if (text) el.textContent = text;
+      });
+      const langVal = document.getElementById('settingsNavLangVal');
+      if (langVal) langVal.textContent = currentLanguage === 'en' ? 'English' : 'Español';
+      const subTitle = document.querySelector('#settingsSubIdioma .settings-sub-topbar-title');
+      if (subTitle) subTitle.textContent = t('lang_and_subs');
+      const ccTitle = document.querySelector('.mini-sub-menu-title');
+      if (ccTitle) ccTitle.textContent = t('sub_title');
+      const addEpBtn = document.querySelector('.mini-add-episode-btn');
+      if (addEpBtn) addEpBtn.innerHTML = `<i class="fas fa-plus"></i> ${t('add_episode')}`;
+    }
+
+    // Localized title (DramaBox auto-detect algorithm)
+    function getLocalizedMiniTitle(mini) {
+      const lang = currentLanguage || localStorage.getItem('atenis_language') || 'es';
+      if (lang === 'en' && mini.titleEn) return mini.titleEn;
+      if (lang === 'es' && mini.titleEs) return mini.titleEs;
+      return mini.spanishTitle || mini.title || '';
+    }
+
+    // Localized poster (DramaBox auto-detect algorithm)
+    function getLocalizedMiniPoster(mini) {
+      const lang = currentLanguage || localStorage.getItem('atenis_language') || 'es';
+      if (lang === 'en' && mini.posterEn) return mini.posterEn;
+      if (lang === 'es' && mini.posterEs) return mini.posterEs;
+      return mini.posterOriginal || mini.poster || '';
+    }
+
+    // Localized description
+    function getLocalizedMiniDesc(mini) {
+      const lang = currentLanguage || localStorage.getItem('atenis_language') || 'es';
+      if (lang === 'en' && mini.descriptionEn) return mini.descriptionEn;
+      if (lang === 'es' && mini.descriptionEs) return mini.descriptionEs;
+      return mini.description || t('no_desc');
+    }
+
+    // Admin check helper
+    function isMiniAdmin() {
+      return currentFirebaseUser &&
+        currentFirebaseUser.email &&
+        currentFirebaseUser.email.toLowerCase() === MINI_ADMIN_EMAIL.toLowerCase();
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
     //  MINI — Dramas cortos (DramaBox style)
     // ════════════════════════════════════════════════════════════════════════
 
@@ -9498,6 +9976,7 @@
       setTopBarMode(true);
       document.getElementById('miniSection').classList.add('active');
       checkMiniAdminAccess();
+      applyMiniTranslations();
       renderMiniGrid();
     }
 
@@ -9511,6 +9990,167 @@
 
     // ── Admin access ────────────────────────────────────────────────────────
 
+    // ── Mini Edit Modal ───────────────────────────────────────────────────────
+
+    let _miniEditId = null;
+    let _miniEditPosters = { orig: null, es: null, en: null };
+
+    async function openMiniEdit(miniId) {
+      if (!isMiniAdmin()) return;
+      _miniEditId = miniId;
+      _miniEditPosters = { orig: null, es: null, en: null };
+
+      const snap = await database.ref('miniDramas/' + miniId).once('value');
+      const m = snap.val();
+      if (!m) return;
+
+      // Populate form
+      document.getElementById('meditTitle').value    = m.title || '';
+      document.getElementById('meditTitleEs').value  = m.titleEs || m.spanishTitle || '';
+      document.getElementById('meditTitleEn').value  = m.titleEn || '';
+      document.getElementById('meditGenre').value    = m.genre || 'Drama';
+      document.getElementById('meditYear').value     = m.year || '2026';
+      document.getElementById('meditDescEs').value   = m.descriptionEs || m.description || '';
+      document.getElementById('meditDescEn').value   = m.descriptionEn || '';
+      document.getElementById('meditRating').value   = m.rating || 'PG-13';
+      document.getElementById('meditOrigLang').value = m.originalLang || '';
+      document.getElementById('meditSubEs').checked  = (m.availableSubs || []).includes('es');
+      document.getElementById('meditSubEn').checked  = (m.availableSubs || []).includes('en');
+      document.getElementById('meditSubOrig').checked= (m.availableSubs || []).includes('original');
+      document.getElementById('meditFeatured').checked = !!m.isFeatured;
+      document.getElementById('meditTrending').checked = !!m.isTrending;
+      document.getElementById('meditLocked').checked   = !!m.isLocked;
+      document.getElementById('meditCoverMsg').textContent = '';
+
+      // Poster previews
+      ['orig','es','en'].forEach(type => {
+        const url = type === 'orig' ? (m.posterOriginal || m.poster || '') :
+                    type === 'es'   ? (m.posterEs || '') :
+                                      (m.posterEn || '');
+        const imgEl   = document.getElementById('meditPreview' + type.charAt(0).toUpperCase() + type.slice(1));
+        const emptyEl = document.getElementById('meditEmpty'   + type.charAt(0).toUpperCase() + type.slice(1));
+        if (imgEl) {
+          if (url) {
+            imgEl.src = url; imgEl.style.display = 'block';
+            if (emptyEl) emptyEl.style.display = 'none';
+          } else {
+            imgEl.style.display = 'none';
+            if (emptyEl) emptyEl.style.display = '';
+          }
+        }
+      });
+
+      document.getElementById('miniEditModal').classList.add('active');
+      applyMiniTranslations();
+    }
+
+    function closeMiniEdit() {
+      document.getElementById('miniEditModal').classList.remove('active');
+      _miniEditId = null;
+    }
+
+    async function handleMiniEditCover(input, type) {
+      const file = input.files[0];
+      if (!file) return;
+      const msg = document.getElementById('meditCoverMsg');
+      if (msg) msg.textContent = t('uploading');
+
+      // Preview
+      const reader = new FileReader();
+      reader.onload = e => {
+        const key = type.charAt(0).toUpperCase() + type.slice(1);
+        const imgEl   = document.getElementById('meditPreview' + key);
+        const emptyEl = document.getElementById('meditEmpty' + key);
+        if (imgEl) { imgEl.src = e.target.result; imgEl.style.display = 'block'; }
+        if (emptyEl) emptyEl.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+
+      try {
+        const url = await uploadToCloudinary(file, () => {});
+        _miniEditPosters[type] = url;
+        if (msg) msg.textContent = t('upload_done');
+      } catch (err) {
+        if (msg) msg.textContent = t('upload_error') + ': ' + err.message;
+      }
+    }
+
+    async function saveMiniEdit() {
+      if (!_miniEditId) return;
+      const btn = document.querySelector('#miniEditModal .mini-edit-save-btn');
+      if (btn) { btn.disabled = true; btn.textContent = t('publishing'); }
+
+      try {
+        const snap = await database.ref('miniDramas/' + _miniEditId).once('value');
+        const old = snap.val() || {};
+
+        const titleEs  = document.getElementById('meditTitleEs').value.trim();
+        const titleEn  = document.getElementById('meditTitleEn').value.trim();
+        const descEs   = document.getElementById('meditDescEs').value.trim();
+        const descEn   = document.getElementById('meditDescEn').value.trim();
+
+        const posterOrig = _miniEditPosters.orig || old.posterOriginal || old.poster || '';
+        const posterEs   = _miniEditPosters.es   || old.posterEs   || posterOrig;
+        const posterEn   = _miniEditPosters.en   || old.posterEn   || posterOrig;
+
+        const availSubs = [];
+        if (document.getElementById('meditSubEs').checked)   availSubs.push('es');
+        if (document.getElementById('meditSubEn').checked)   availSubs.push('en');
+        if (document.getElementById('meditSubOrig').checked) availSubs.push('original');
+
+        const updates = {
+          title:          document.getElementById('meditTitle').value.trim() || old.title,
+          titleEs:        titleEs || old.titleEs || old.spanishTitle || '',
+          titleEn:        titleEn || old.titleEn || '',
+          spanishTitle:   titleEs || old.spanishTitle || '',
+          descriptionEs:  descEs,
+          descriptionEn:  descEn || descEs,
+          description:    descEs || old.description,
+          genre:          document.getElementById('meditGenre').value,
+          year:           document.getElementById('meditYear').value,
+          rating:         document.getElementById('meditRating').value,
+          originalLang:   document.getElementById('meditOrigLang').value.trim(),
+          availableSubs:  availSubs,
+          poster:         posterOrig,
+          posterOriginal: posterOrig,
+          posterEs,
+          posterEn,
+          isFeatured:     document.getElementById('meditFeatured').checked,
+          isTrending:     document.getElementById('meditTrending').checked,
+          isLocked:       document.getElementById('meditLocked').checked,
+          updatedAt:      Date.now(),
+        };
+
+        await database.ref('miniDramas/' + _miniEditId).update(updates);
+        closeMiniEdit();
+        renderMiniGrid();
+        renderMiniCarousel();
+        showMiniToast(t('save_changes') + ' ✓');
+      } catch (err) {
+        console.error('Error saving edit:', err);
+        alert('Error: ' + err.message);
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = t('save_changes'); }
+      }
+    }
+
+    async function deleteMini() {
+      if (!_miniEditId) return;
+      const confirmed = confirm(t('delete_confirm'));
+      if (!confirmed) return;
+
+      try {
+        await database.ref('miniDramas/' + _miniEditId).remove();
+        closeMiniEdit();
+        renderMiniGrid();
+        renderMiniCarousel();
+        showMiniToast(t('delete_mini') + ' ✓');
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+
+    // ── Admin FAB access check ─────────────────────────────────────────────────
     function checkMiniAdminAccess() {
       const fab = document.getElementById('miniFab');
       if (!fab) return;
@@ -9590,28 +10230,33 @@
       }
       empty && empty.classList.add('hidden');
 
+      const isAdmin = isMiniAdmin();
       items.forEach(mini => {
         const card = document.createElement('div');
         card.className = 'mini-card';
+        card.style.position = 'relative';
         card.onclick = () => showMiniPlayer(mini.id, 0);
 
-        const epCount = mini.episodes ? mini.episodes.length : 0;
-        const rating  = mini.rating  ? mini.rating  : '';
-        const genre   = (mini.genre  || '').split(',')[0].trim();
-        const year    = mini.year    ? mini.year    : '';
+        const epCount  = mini.episodes ? mini.episodes.length : 0;
+        const rating   = mini.rating  ? mini.rating  : '';
+        const genre    = (mini.genre  || '').split(',')[0].trim();
+        const year     = mini.year    ? mini.year    : '';
+        const locTitle  = getLocalizedMiniTitle(mini);
+        const locPoster = getLocalizedMiniPoster(mini);
 
         card.innerHTML = `
           <div class="mini-card-poster">
-            <img src="${mini.poster || ''}" alt="${mini.spanishTitle || mini.title}" loading="lazy"
+            <img src="${locPoster}" alt="${locTitle}" loading="lazy"
                  onerror="this.style.background='#1a1a1a';this.src='';">
             <div class="mini-card-ep-badge">MINI</div>
             ${rating ? `<div class="mini-card-rating">★ ${rating}</div>` : ''}
             <div class="mini-card-overlay">
-              ${epCount > 0 ? `<div class="mini-card-ep-text">${epCount} episodios</div>` : ''}
+              ${epCount > 0 ? `<div class="mini-card-ep-text">${epCount} ${t('ep_count')}</div>` : ''}
             </div>
+            ${isAdmin ? `<button class="mini-card-edit-btn" onclick="event.stopPropagation();openMiniEdit('${mini.id}')"><i class="fas fa-pen"></i></button>` : ''}
           </div>
           <div class="mini-card-info">
-            <div class="mini-card-title">${mini.spanishTitle || mini.title}</div>
+            <div class="mini-card-title">${locTitle}</div>
             <div class="mini-card-meta">
               ${year ? `<span>${year}</span>` : ''}
               ${year && genre ? '<span class="mini-card-meta-dot"></span>' : ''}
@@ -9643,12 +10288,13 @@
         const card = document.createElement('div');
         card.className = 'mini-carousel-item';
         card.onclick = () => showMiniPlayer(mini.id, 0);
-        const epCount = mini.episodes ? mini.episodes.length : 0;
+        const locTitle  = getLocalizedMiniTitle(mini);
+        const locPoster = getLocalizedMiniPoster(mini);
         card.innerHTML = `
-          <img src="${mini.poster || ''}" alt="${mini.title}" loading="lazy">
+          <img src="${locPoster}" alt="${locTitle}" loading="lazy">
           <div class="mini-carousel-badge">MINI</div>
           <div class="mini-carousel-item-overlay">
-            <div class="mini-carousel-item-title">${mini.spanishTitle || mini.title}</div>
+            <div class="mini-carousel-item-title">${locTitle}</div>
           </div>
         `;
         carousel.appendChild(card);
@@ -9673,20 +10319,39 @@
     // ── Upload modal ─────────────────────────────────────────────────────────
 
     function openMiniUpload() {
-      miniUploadData = { coverUrl: null, episodes: [] };
+      miniUploadData = { coverUrl: null, coverUrlOrig: null, coverUrlEs: null, coverUrlEn: null, episodes: [] };
       miniEpisodeCounter = 0;
       document.getElementById('miniUploadModal').classList.add('active');
       document.getElementById('miniEpisodesList').innerHTML = '';
-      document.getElementById('miniTitleInput').value = '';
+      ['miniTitleInput','miniTitleEsInput','miniTitleEnInput','miniOriginalLangInput'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.value = '';
+      });
       document.getElementById('miniDescInput').value = '';
+      const descEn = document.getElementById('miniDescEnInput'); if (descEn) descEn.value = '';
       document.getElementById('miniYearInput').value = '2026';
-      document.getElementById('miniOriginalLangInput').value = '';
       document.getElementById('miniSubEs').checked = false;
       document.getElementById('miniSubEn').checked = false;
       document.getElementById('miniSubOrig').checked = false;
-      document.getElementById('miniCoverPreview').style.display = 'none';
-      document.getElementById('miniCoverPlaceholder').style.display = 'flex';
+      // Reset all 3 cover pickers
+      ['orig', 'es', 'en'].forEach(type => {
+        const prev = document.getElementById('miniCoverPreview_' + type);
+        const ph   = document.getElementById('miniCoverPlaceholder_' + type);
+        const pg   = document.getElementById('coverUploadProg_' + type);
+        const pt   = document.getElementById('coverProgText_' + type);
+        const pf   = document.getElementById('coverProgFill_' + type);
+        if (prev) prev.style.display = 'none';
+        if (ph)   ph.style.display = 'flex';
+        if (pg)   pg.classList.add('hidden');
+        if (pt)   { pt.classList.add('hidden'); pt.textContent = ''; }
+        if (pf)   pf.style.width = '0%';
+      });
+      // Update modal text for current language
+      const modalH2 = document.querySelector('#miniUploadModal h2');
+      if (modalH2) modalH2.textContent = t('new_mini');
+      const pubBtn = document.getElementById('miniPublishHeaderBtn');
+      if (pubBtn) pubBtn.textContent = t('publish');
       goToMiniStep(1);
+      applyMiniTranslations();
     }
 
     function closeMiniUpload() {
@@ -9704,41 +10369,46 @@
       });
     }
 
-    // ── Cover upload ──────────────────────────────────────────────────────────
+    // ── Cover upload (multilingual — orig/es/en) ──────────────────────────────
 
-    async function handleMiniCoverChange(input) {
+    async function handleMiniCoverUpload(input, coverType) {
       const file = input.files[0];
       if (!file) return;
 
-      // Show local preview immediately
+      // Show local preview
       const reader = new FileReader();
       reader.onload = e => {
-        const img = document.getElementById('miniCoverPreview');
-        img.src = e.target.result;
-        img.style.display = 'block';
-        document.getElementById('miniCoverPlaceholder').style.display = 'none';
+        const img = document.getElementById('miniCoverPreview_' + coverType);
+        if (img) { img.src = e.target.result; img.style.display = 'block'; }
+        const ph = document.getElementById('miniCoverPlaceholder_' + coverType);
+        if (ph) ph.style.display = 'none';
       };
       reader.readAsDataURL(file);
 
-      // Upload to Cloudinary
-      const progBar  = document.getElementById('coverProgFill');
-      const progWrap = document.getElementById('coverUploadProg');
-      const progText = document.getElementById('coverProgText');
-      progWrap.classList.remove('hidden');
-      progText.classList.remove('hidden');
-      progText.textContent = 'Subiendo portada...';
+      const progWrap = document.getElementById('coverUploadProg_' + coverType);
+      const progFill = document.getElementById('coverProgFill_' + coverType);
+      const progText = document.getElementById('coverProgText_' + coverType);
+      if (progWrap) progWrap.classList.remove('hidden');
+      if (progText) { progText.classList.remove('hidden'); progText.textContent = t('uploading'); }
 
       try {
         const url = await uploadToCloudinary(file, pct => {
-          progBar.style.width = pct + '%';
+          if (progFill) progFill.style.width = pct + '%';
         });
-        miniUploadData.coverUrl = url;
-        progText.textContent = '✓ Portada lista';
-        progBar.style.width = '100%';
+        if (coverType === 'orig') { miniUploadData.coverUrlOrig = url; miniUploadData.coverUrl = url; }
+        else if (coverType === 'es') miniUploadData.coverUrlEs = url;
+        else if (coverType === 'en') miniUploadData.coverUrlEn = url;
+        if (progText) progText.textContent = t('upload_done');
+        if (progFill) progFill.style.width = '100%';
       } catch (err) {
-        progText.textContent = '✗ Error al subir: ' + err.message;
+        if (progText) progText.textContent = t('upload_error') + ': ' + err.message;
         console.error('Cover upload error:', err);
       }
+    }
+
+    // Legacy wrapper (backwards compat)
+    async function handleMiniCoverChange(input) {
+      return handleMiniCoverUpload(input, 'orig');
     }
 
     // ── Episode rows ──────────────────────────────────────────────────────────
@@ -9784,13 +10454,13 @@
       row.id = 'miniEpRow' + idx;
       row.innerHTML = `
         <div class="mini-ep-row-header">
-          <span class="mini-ep-num">Episodio ${idx}</span>
+          <span class="mini-ep-num">${t('ep_label')} ${idx}</span>
           <button class="mini-ep-remove" onclick="removeMiniEpisode(${idx})">
             <i class="fas fa-trash"></i>
           </button>
         </div>
         <input class="mini-ep-title-input" id="miniEpTitle${idx}" type="text"
-               placeholder="Título del episodio ${idx}">
+               placeholder="${t('ep_label')} ${idx}">
         <label class="mini-video-upload-area" id="miniEpVideoArea${idx}" for="miniEpVideoFile${idx}">
           <i class="fas fa-video"></i> Toca para subir video
         </label>
@@ -9944,12 +10614,12 @@
     async function saveMini() {
       const title = document.getElementById('miniTitleInput').value.trim();
       if (!title) {
-        alert('Por favor escribe el título de la serie.');
+        alert(currentLanguage === 'en' ? 'Please enter the series title.' : 'Por favor escribe el título de la serie.');
         goToMiniStep(2);
         return;
       }
-      if (!miniUploadData.coverUrl) {
-        alert('Por favor sube la portada primero.');
+      if (!miniUploadData.coverUrlOrig && !miniUploadData.coverUrl) {
+        alert(currentLanguage === 'en' ? 'Please upload the original poster first.' : 'Por favor sube la portada original primero.');
         goToMiniStep(1);
         return;
       }
@@ -9968,10 +10638,21 @@
 
       try {
         const id = 'mini-' + Date.now();
-        const genre   = document.getElementById('miniGenreInput').value;
-        const year    = document.getElementById('miniYearInput').value;
-        const desc    = document.getElementById('miniDescInput').value.trim();
-        const rating  = document.getElementById('miniRatingInput').value;
+        const genre    = document.getElementById('miniGenreInput').value;
+        const year     = document.getElementById('miniYearInput').value;
+        const descEs   = document.getElementById('miniDescInput').value.trim();
+        const descEnEl = document.getElementById('miniDescEnInput');
+        const descEn   = descEnEl ? descEnEl.value.trim() : '';
+        const rating   = document.getElementById('miniRatingInput').value;
+        const titleEsEl = document.getElementById('miniTitleEsInput');
+        const titleEnEl = document.getElementById('miniTitleEnInput');
+        const titleEs  = (titleEsEl ? titleEsEl.value.trim() : '') || title;
+        const titleEn  = (titleEnEl ? titleEnEl.value.trim() : '') || title;
+
+        // Poster URLs
+        const posterOrig = miniUploadData.coverUrlOrig || miniUploadData.coverUrl || '';
+        const posterEs   = miniUploadData.coverUrlEs   || posterOrig;
+        const posterEn   = miniUploadData.coverUrlEn   || posterOrig;
 
         // Build episodes array from DOM + upload data
         const episodes = miniUploadData.episodes
@@ -9980,9 +10661,9 @@
             const titleEl = document.getElementById('miniEpTitle' + e.id);
             return {
               id:        i + 1,
-              title:     (titleEl ? titleEl.value.trim() : '') || `Episodio ${i + 1}`,
+              title:     (titleEl ? titleEl.value.trim() : '') || `${t('ep_label')} ${i + 1}`,
               videoUrl:  e.videoUrl,
-              thumbnail: miniUploadData.coverUrl,
+              thumbnail: posterOrig,
               subtitles: e.subtitles || {}
             };
           });
@@ -9990,25 +10671,32 @@
         const miniData = {
           id,
           title,
-          spanishTitle: title,
-          searchAliases: [title],
-          type:          'mini',
+          titleEs,
+          titleEn,
+          spanishTitle:   titleEs,
+          searchAliases:  [title, titleEs, titleEn].filter(Boolean),
+          type:           'mini',
           year,
           genre,
-          originalLang:  document.getElementById('miniOriginalLangInput').value.trim(),
-          availableSubs: getMiniSelectedLangs(),
+          originalLang:   document.getElementById('miniOriginalLangInput').value.trim(),
+          availableSubs:  getMiniSelectedLangs(),
           rating,
-          poster:        miniUploadData.coverUrl,
-          trailer:       '',
-          description:   desc,
-          director:      'Atenis',
-          cast:          '',
-          isFeatured:    false,
-          isTrending:    false,
-          isLocked:      false,
+          poster:         posterOrig,
+          posterOriginal: posterOrig,
+          posterEs,
+          posterEn,
+          trailer:        '',
+          description:    descEs,
+          descriptionEs:  descEs,
+          descriptionEn:  descEn || descEs,
+          director:       'Atenis',
+          cast:           '',
+          isFeatured:     false,
+          isTrending:     false,
+          isLocked:       false,
           episodes,
-          createdAt:     Date.now(),
-          createdBy:     currentFirebaseUser ? currentFirebaseUser.email : ''
+          createdAt:      Date.now(),
+          createdBy:      currentFirebaseUser ? currentFirebaseUser.email : ''
         };
 
         await database.ref('miniDramas/' + id).set(miniData);
@@ -10017,7 +10705,7 @@
         // Reload section to show new mini
         renderMiniGrid();
 
-        showMiniToast('✓ Mini publicada exitosamente');
+        showMiniToast(t('publish_success'));
       } catch (err) {
         console.error('Error saving mini:', err);
         alert('Error al publicar: ' + err.message);
@@ -10058,14 +10746,14 @@
       if (epsSheet) epsSheet.classList.remove('open');
       if (infoSheet) infoSheet.classList.remove('open');
 
-      document.getElementById('miniPlayerTitle').textContent = mini.spanishTitle || mini.title;
+      document.getElementById('miniPlayerTitle').textContent = getLocalizedMiniTitle(mini);
       document.getElementById('miniPlayerGenreTag').textContent = mini.genre || '';
 
       const eps = mini.episodes || [];
       if (eps.length > 1) {
-        document.getElementById('miniPlayerEpsBtnLabel').textContent = eps.length + ' episodios';
+        document.getElementById('miniPlayerEpsBtnLabel').textContent = eps.length + ' ' + t('ep_count');
       } else {
-        document.getElementById('miniPlayerEpsBtnLabel').textContent = 'Ver info';
+        document.getElementById('miniPlayerEpsBtnLabel').textContent = t('see_info');
       }
 
       _playMiniEp(_miniPlayerEpIdx);
@@ -10104,7 +10792,7 @@
 
       const total = eps.length;
       document.getElementById('miniPlayerEpLabel').textContent =
-        total > 1 ? ('EP ' + (idx + 1) + ' / ' + total) : (_miniPlayerMini.spanishTitle || _miniPlayerMini.title);
+        total > 1 ? ('EP ' + (idx + 1) + ' / ' + total) : getLocalizedMiniTitle(_miniPlayerMini);
 
       const vid = document.getElementById('miniPlayerVideo');
       const rawUrl = ep.videoUrl || '';
@@ -10140,7 +10828,7 @@
           const countEl = document.getElementById('miniNextCountdown');
           if (overlay) overlay.classList.add('visible');
           let secs = 5;
-          if (countEl) countEl.textContent = 'Iniciando en ' + secs + '...';
+          if (countEl) countEl.textContent = t('starting_in') + ' ' + secs + '...';
           window._miniNextCountdown = setInterval(function() {
             secs--;
             if (secs <= 0) {
@@ -10148,7 +10836,7 @@
               window._miniNextCountdown = null;
               _skipToNextMiniEp();
             } else {
-              if (countEl) countEl.textContent = 'Iniciando en ' + secs + '...';
+              if (countEl) countEl.textContent = t('starting_in') + ' ' + secs + '...';
             }
           }, 1000);
         }
@@ -10228,11 +10916,11 @@
       const menu = document.getElementById('miniSubMenu');
       if (!menu) return;
 
-      const origLabel = (mini && mini.originalLang) ? mini.originalLang : 'Original';
-      const langLabels = { es: 'Español', en: 'Inglés', original: origLabel };
+      const origLabel  = (mini && mini.originalLang) ? mini.originalLang : 'Original';
+      const langLabels = { es: 'Español', en: 'English', original: origLabel };
 
-      let html = `<div class="mini-sub-menu-title">Subtítulos</div>`;
-      html += `<button class="mini-sub-option active" data-lang="off" onclick="setMiniSubtitle('off')">Desactivado</button>`;
+      let html = `<div class="mini-sub-menu-title">${t('sub_title')}</div>`;
+      html += `<button class="mini-sub-option active" data-lang="off" onclick="setMiniSubtitle('off')">${t('sub_off')}</button>`;
       Object.entries(subs).forEach(([lang, url]) => {
         if (!url) return;
         html += `<button class="mini-sub-option" data-lang="${lang}" onclick="setMiniSubtitle('${lang}')">${langLabels[lang] || lang}</button>`;
@@ -10350,12 +11038,13 @@
       const inner = document.getElementById('miniInfoSheetInner');
       if (!inner || !_miniPlayerMini) return;
       const m = _miniPlayerMini;
-      const title = m.spanishTitle || m.title || '';
-      const year = m.year || '';
-      const rating = m.rating ? '★ ' + m.rating : '';
-      const epCount = (m.episodes && m.episodes.length) ? m.episodes.length + ' episodios' : '';
-      const genres = (m.genre || '').split(',').map(g => g.trim()).filter(Boolean);
-      const description = m.description || 'Sin descripción disponible.';
+      const title       = getLocalizedMiniTitle(m);
+      const description = getLocalizedMiniDesc(m);
+      const poster      = getLocalizedMiniPoster(m);
+      const year     = m.year || '';
+      const rating   = m.rating ? '★ ' + m.rating : '';
+      const epCount  = (m.episodes && m.episodes.length) ? m.episodes.length + ' ' + t('ep_count') : '';
+      const genres   = (m.genre || '').split(',').map(g => g.trim()).filter(Boolean);
       const duration = m.duration || '';
 
       const genreChips = genres.map(g => `<span class="mini-info-badge highlight">${g}</span>`).join('');
@@ -10363,7 +11052,7 @@
 
       inner.innerHTML = `
         <div class="mini-info-poster-row">
-          <img class="mini-info-poster" src="${m.poster || ''}" alt="">
+          <img class="mini-info-poster" src="${poster}" alt="">
           <div class="mini-info-meta">
             <div class="mini-info-title">${title}</div>
             ${rating ? `<div class="mini-info-rating">${rating}</div>` : ''}
@@ -10372,7 +11061,7 @@
           </div>
         </div>
         <div class="mini-info-divider"></div>
-        <div class="mini-info-section-label">Sinopsis</div>
+        <div class="mini-info-section-label">${t('synopsis')}</div>
         <div class="mini-info-description">${description}</div>
       `;
     }
@@ -10412,13 +11101,13 @@
       const statsEl  = document.getElementById('miniSheetStats');
       const ratingEl = document.getElementById('miniSheetRating');
 
-      if (posterEl) posterEl.src = m.poster || '';
-      if (titleEl)  titleEl.textContent = m.spanishTitle || m.title;
+      if (posterEl) posterEl.src = getLocalizedMiniPoster(m);
+      if (titleEl)  titleEl.textContent = getLocalizedMiniTitle(m);
       if (statsEl) {
         const parts = [];
-        if (m.views)    parts.push(m.views + ' Vistas');
+        if (m.views)     parts.push(m.views + ' ' + t('views'));
         else if (m.year) parts.push(m.year);
-        if (m.duration) parts.push(m.duration);
+        if (m.duration)  parts.push(m.duration);
         statsEl.textContent = parts.join(' · ');
       }
       if (ratingEl) {
@@ -10452,14 +11141,14 @@
       if (!body || !_miniPlayerMini) return;
 
       if (_miniSheetTab === 'synopsis') {
-        body.innerHTML = `<div class="mini-synopsis-panel">${_miniPlayerMini.description || 'Sin descripción disponible.'}</div>`;
+        body.innerHTML = `<div class="mini-synopsis-panel">${getLocalizedMiniDesc(_miniPlayerMini)}</div>`;
         return;
       }
 
       // Episodes tab — DramaBox numbered grid
       const eps = _miniPlayerMini.episodes || [];
       if (eps.length === 0) {
-        body.innerHTML = '<div class="mini-synopsis-panel" style="color:#5a6480">No hay episodios disponibles.</div>';
+        body.innerHTML = `<div class="mini-synopsis-panel" style="color:#5a6480">${t('no_episodes')}</div>`;
         return;
       }
 
