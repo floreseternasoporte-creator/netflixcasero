@@ -3845,6 +3845,93 @@
       filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
     }
 
+    /* ── Subtitle CC menu ── */
+    .mini-sub-menu {
+      position: absolute;
+      bottom: 160px;
+      right: 60px;
+      background: rgba(13,14,26,0.95);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 8px 0;
+      z-index: 30;
+      min-width: 160px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: none;
+      flex-direction: column;
+    }
+    .mini-sub-menu.open { display: flex; }
+    .mini-sub-menu-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #666;
+      padding: 4px 14px 8px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .mini-sub-option {
+      background: none; border: none;
+      color: #fff; font-size: 14px;
+      padding: 10px 14px;
+      text-align: left; cursor: pointer;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .mini-sub-option:hover { background: rgba(255,255,255,0.06); }
+    .mini-sub-option.active { color: #E91E8C; }
+    .mini-sub-option.active::before {
+      content: '✓';
+      font-size: 12px;
+      font-weight: 700;
+      color: #E91E8C;
+    }
+    .mini-sub-option:not(.active)::before {
+      content: '';
+      display: inline-block;
+      width: 12px;
+    }
+
+    /* ── Subtitle lang checkboxes (admin form) ── */
+    .mini-lang-checkboxes {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px;
+    }
+    .mini-lang-check {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 13px; color: #ccc; cursor: pointer;
+    }
+    .mini-lang-check input[type="checkbox"] { accent-color: #E91E8C; }
+
+    /* ── Subtitle VTT upload per episode ── */
+    .mini-ep-subtitle-section {
+      margin-top: 8px;
+    }
+    .mini-ep-subtitle-label {
+      font-size: 11px; color: #888; margin-bottom: 6px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .mini-ep-sub-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+    }
+    .mini-ep-sub-lang-tag {
+      font-size: 11px; font-weight: 700; color: #E91E8C;
+      background: rgba(233,30,140,0.12);
+      border-radius: 6px; padding: 4px 8px;
+      min-width: 60px; text-align: center;
+    }
+    .mini-ep-sub-upload-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px dashed rgba(255,255,255,0.18);
+      color: #ccc; font-size: 12px;
+      border-radius: 8px; padding: 6px 12px;
+      cursor: pointer; flex: 1;
+    }
+    .mini-ep-sub-upload-btn.done { color: #4CAF50; border-color: #4CAF50; }
+    .mini-ep-sub-upload-btn.error { color: #ff4444; border-color: #ff4444; }
+
     /* ── Navigation arrows (prev/next episode) ── */
     .mini-player-nav {
       position: absolute; right: 14px; top: 50%;
@@ -5333,6 +5420,18 @@
             <option value="R">R</option>
           </select>
         </div>
+        <div class="mini-form-group">
+          <label>Idioma original</label>
+          <input type="text" id="miniOriginalLangInput" placeholder="Ej: Chino, Coreano, Inglés...">
+        </div>
+        <div class="mini-form-group">
+          <label>Subtítulos disponibles</label>
+          <div class="mini-lang-checkboxes">
+            <label class="mini-lang-check"><input type="checkbox" id="miniSubEs" value="es"> Español</label>
+            <label class="mini-lang-check"><input type="checkbox" id="miniSubEn" value="en"> Inglés</label>
+            <label class="mini-lang-check"><input type="checkbox" id="miniSubOrig" value="original"> Original</label>
+          </div>
+        </div>
         <div class="mini-step-btns">
           <button class="mini-back-step-btn" onclick="goToMiniStep(1)">← Atrás</button>
           <button class="mini-upload-next-btn" onclick="goToMiniStep(3)">Siguiente →</button>
@@ -5393,7 +5492,14 @@
         <i class="fas fa-info-circle"></i>
         <span>Info</span>
       </button>
+      <button class="mini-side-btn" id="miniSubBtn" onclick="toggleMiniSubMenu()" style="display:none;">
+        <i class="fas fa-closed-captioning"></i>
+        <span>CC</span>
+      </button>
     </div>
+
+    <!-- Subtitle language menu -->
+    <div class="mini-sub-menu" id="miniSubMenu"></div>
 
     <!-- Navigation arrows -->
     <div class="mini-player-nav">
@@ -9574,6 +9680,10 @@
       document.getElementById('miniTitleInput').value = '';
       document.getElementById('miniDescInput').value = '';
       document.getElementById('miniYearInput').value = '2026';
+      document.getElementById('miniOriginalLangInput').value = '';
+      document.getElementById('miniSubEs').checked = false;
+      document.getElementById('miniSubEn').checked = false;
+      document.getElementById('miniSubOrig').checked = false;
       document.getElementById('miniCoverPreview').style.display = 'none';
       document.getElementById('miniCoverPlaceholder').style.display = 'flex';
       goToMiniStep(1);
@@ -9633,6 +9743,37 @@
 
     // ── Episode rows ──────────────────────────────────────────────────────────
 
+    function getMiniSelectedLangs() {
+      const langs = [];
+      if (document.getElementById('miniSubEs')   && document.getElementById('miniSubEs').checked)   langs.push('es');
+      if (document.getElementById('miniSubEn')   && document.getElementById('miniSubEn').checked)   langs.push('en');
+      if (document.getElementById('miniSubOrig') && document.getElementById('miniSubOrig').checked) langs.push('original');
+      return langs;
+    }
+
+    function _buildSubtitleRows(idx) {
+      const langs = getMiniSelectedLangs();
+      if (!langs.length) return '';
+      const origLang = (document.getElementById('miniOriginalLangInput') || {}).value || 'Original';
+      const labels = { es: 'Español', en: 'Inglés', original: origLang || 'Original' };
+      let html = `<div class="mini-ep-subtitle-section"><div class="mini-ep-subtitle-label">Subtítulos (VTT)</div>`;
+      langs.forEach(lang => {
+        html += `
+          <div class="mini-ep-sub-row">
+            <span class="mini-ep-sub-lang-tag">${labels[lang]}</span>
+            <button type="button" class="mini-ep-sub-upload-btn" id="miniSubBtn_${idx}_${lang}"
+                    onclick="document.getElementById('miniSubFile_${idx}_${lang}').click()">
+              <i class="fas fa-upload"></i> Subir .vtt
+            </button>
+            <input type="file" id="miniSubFile_${idx}_${lang}" accept=".vtt,text/vtt"
+                   style="display:none;"
+                   onchange="handleMiniSubtitleUpload(this, ${idx}, '${lang}')">
+          </div>`;
+      });
+      html += `</div>`;
+      return html;
+    }
+
     function addMiniEpisodeRow() {
       miniEpisodeCounter++;
       const idx = miniEpisodeCounter;
@@ -9661,11 +9802,52 @@
         <div class="mini-ep-video-prog" style="display:none;" id="miniEpProg${idx}">
           <div class="mini-ep-video-prog-fill" id="miniEpProgFill${idx}"></div>
         </div>
+        ${_buildSubtitleRows(idx)}
       `;
       list.appendChild(row);
 
       // Register episode slot
-      miniUploadData.episodes.push({ id: idx, title: '', videoUrl: null, thumbnail: null, duration: '' });
+      miniUploadData.episodes.push({ id: idx, title: '', videoUrl: null, thumbnail: null, subtitles: {} });
+    }
+
+    async function handleMiniSubtitleUpload(input, idx, lang) {
+      const file = input.files[0];
+      if (!file) return;
+      const btn = document.getElementById('miniSubBtn_' + idx + '_' + lang);
+      if (btn) { btn.classList.remove('done', 'error'); btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...'; }
+      try {
+        const url = await uploadVttToCloudinary(file);
+        const ep = miniUploadData.episodes.find(e => e.id === idx);
+        if (ep) {
+          if (!ep.subtitles) ep.subtitles = {};
+          ep.subtitles[lang] = url;
+        }
+        if (btn) { btn.classList.add('done'); btn.innerHTML = '<i class="fas fa-check-circle"></i> ' + file.name; }
+      } catch (err) {
+        if (btn) { btn.classList.add('error'); btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error al subir'; }
+        console.error('Subtitle upload error:', err);
+      }
+    }
+
+    async function uploadVttToCloudinary(file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+      formData.append('folder', 'atenis-mini/subtitles');
+      formData.append('resource_type', 'raw');
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            if (xhr.status === 200 && data.secure_url) resolve(data.secure_url);
+            else reject(new Error(data.error?.message || 'Error Cloudinary'));
+          } catch { reject(new Error('Respuesta inválida')); }
+        };
+        xhr.onerror = () => reject(new Error('Error de red'));
+        xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`);
+        xhr.send(formData);
+      });
     }
 
     function removeMiniEpisode(idx) {
@@ -9801,7 +9983,7 @@
               title:     (titleEl ? titleEl.value.trim() : '') || `Episodio ${i + 1}`,
               videoUrl:  e.videoUrl,
               thumbnail: miniUploadData.coverUrl,
-              duration:  ''
+              subtitles: e.subtitles || {}
             };
           });
 
@@ -9813,7 +9995,8 @@
           type:          'mini',
           year,
           genre,
-          duration:      '5-15 min',
+          originalLang:  document.getElementById('miniOriginalLangInput').value.trim(),
+          availableSubs: getMiniSelectedLangs(),
           rating,
           poster:        miniUploadData.coverUrl,
           trailer:       '',
@@ -9876,8 +10059,7 @@
       if (infoSheet) infoSheet.classList.remove('open');
 
       document.getElementById('miniPlayerTitle').textContent = mini.spanishTitle || mini.title;
-      document.getElementById('miniPlayerGenreTag').textContent =
-        [mini.genre, mini.duration].filter(Boolean).join(' · ');
+      document.getElementById('miniPlayerGenreTag').textContent = mini.genre || '';
 
       const eps = mini.episodes || [];
       if (eps.length > 1) {
@@ -9932,6 +10114,9 @@
         const p = vid.play();
         if (p) p.catch(() => {});
       }
+
+      // Load subtitle tracks for this episode
+      _loadMiniSubtitles(vid, ep, _miniPlayerMini);
 
       // Reset ending state every time a new episode starts
       vid.classList.remove('mini-ending');
@@ -9997,6 +10182,92 @@
       if (_miniPlayerMini && vid.duration && pct >= 1) {
         saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, 'mini');
       }
+    }
+
+    let _miniCurrentSubLang = 'off';
+
+    function _loadMiniSubtitles(vid, ep, mini) {
+      // Remove all existing tracks
+      Array.from(vid.querySelectorAll('track')).forEach(t => t.remove());
+      _miniCurrentSubLang = 'off';
+
+      const subs = (ep && ep.subtitles) ? ep.subtitles : {};
+      const hasSubs = Object.keys(subs).length > 0;
+
+      const subBtn = document.getElementById('miniSubBtn');
+      if (subBtn) subBtn.style.display = hasSubs ? 'flex' : 'none';
+
+      if (!hasSubs) {
+        const menu = document.getElementById('miniSubMenu');
+        if (menu) menu.classList.remove('open');
+        return;
+      }
+
+      const origLabel = (mini && mini.originalLang) ? mini.originalLang : 'Original';
+      const langLabels = { es: 'Español', en: 'Inglés', original: origLabel };
+
+      Object.entries(subs).forEach(([lang, url]) => {
+        if (!url) return;
+        const track = document.createElement('track');
+        track.kind = 'subtitles';
+        track.label = langLabels[lang] || lang;
+        track.srclang = lang === 'original' ? 'orig' : lang;
+        track.src = url;
+        track.default = false;
+        vid.appendChild(track);
+      });
+
+      // Disable all tracks initially
+      Array.from(vid.textTracks).forEach(t => { t.mode = 'disabled'; });
+
+      // Build CC menu
+      _buildMiniSubMenu(subs, mini);
+    }
+
+    function _buildMiniSubMenu(subs, mini) {
+      const menu = document.getElementById('miniSubMenu');
+      if (!menu) return;
+
+      const origLabel = (mini && mini.originalLang) ? mini.originalLang : 'Original';
+      const langLabels = { es: 'Español', en: 'Inglés', original: origLabel };
+
+      let html = `<div class="mini-sub-menu-title">Subtítulos</div>`;
+      html += `<button class="mini-sub-option active" data-lang="off" onclick="setMiniSubtitle('off')">Desactivado</button>`;
+      Object.entries(subs).forEach(([lang, url]) => {
+        if (!url) return;
+        html += `<button class="mini-sub-option" data-lang="${lang}" onclick="setMiniSubtitle('${lang}')">${langLabels[lang] || lang}</button>`;
+      });
+      menu.innerHTML = html;
+    }
+
+    function setMiniSubtitle(lang) {
+      _miniCurrentSubLang = lang;
+      const vid = document.getElementById('miniPlayerVideo');
+      if (!vid) return;
+
+      Array.from(vid.textTracks).forEach(track => {
+        if (lang === 'off') {
+          track.mode = 'disabled';
+        } else {
+          const trackLang = track.srclang === 'orig' ? 'original' : track.srclang;
+          track.mode = (trackLang === lang) ? 'showing' : 'disabled';
+        }
+      });
+
+      // Update active state in menu
+      document.querySelectorAll('#miniSubMenu .mini-sub-option').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+
+      // Close menu after selection
+      const menu = document.getElementById('miniSubMenu');
+      if (menu) menu.classList.remove('open');
+    }
+
+    function toggleMiniSubMenu() {
+      const menu = document.getElementById('miniSubMenu');
+      if (!menu) return;
+      menu.classList.toggle('open');
     }
 
     function _fmtTime(s) {
