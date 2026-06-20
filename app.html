@@ -4009,6 +4009,34 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .mini-subtitle-overlay {
+      position: absolute;
+      left: 50%;
+      bottom: max(188px, calc(env(safe-area-inset-bottom, 0px) + 188px));
+      transform: translateX(-50%);
+      width: min(88%, 430px);
+      z-index: 22;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      pointer-events: none;
+      color: #ffffff;
+      font-size: clamp(16px, 4vw, 22px);
+      font-weight: 700;
+      line-height: 1.28;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.95), 0 0 10px rgba(0,0,0,0.9);
+    }
+    .mini-subtitle-overlay.visible { display: flex; }
+    .mini-subtitle-overlay span {
+      background: rgba(0,0,0,0.68);
+      border-radius: 8px;
+      padding: 5px 10px 6px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+      white-space: pre-line;
+    }
+
     /* ── Side action buttons ── */
     .mini-player-side {
       position: absolute;
@@ -5993,6 +6021,7 @@
            playsinline webkit-playsinline x5-playsinline
            preload="metadata">
     </video>
+    <div class="mini-subtitle-overlay" id="miniSubtitleOverlay" aria-live="polite"></div>
 
     <!-- Top bar -->
     <div class="mini-player-top">
@@ -11290,6 +11319,8 @@
         }
       }
       if (vid) { vid.pause(); vid.src = ''; }
+      _miniSubtitleCuesByLang = {};
+      _clearMiniSubtitleOverlay();
 
       clearInterval(_miniProgressInterval);
       _closeMiniEpsSheet();
@@ -11383,6 +11414,7 @@
       fill.style.width = pct + '%';
       if (tEl) tEl.textContent = _fmtTime(vid.currentTime);
       if (dEl) dEl.textContent = _fmtTime(vid.duration || 0);
+      _updateMiniSubtitleOverlay();
 
       // Guardar progreso en historial cada vez que se actualiza
       if (_miniPlayerMini && vid.duration && pct >= 1) {
@@ -11391,13 +11423,84 @@
     }
 
     let _miniCurrentSubLang = 'off';
+    let _miniSubtitleCuesByLang = {};
+
+    function _normalizeManualSubtitleCues(data) {
+      if (Array.isArray(data)) return data.filter(Boolean);
+      if (data && typeof data === 'object') {
+        return Object.keys(data)
+          .sort((a, b) => Number(a) - Number(b))
+          .map(key => data[key])
+          .filter(Boolean);
+      }
+      return [];
+    }
+
+    function _subtitleTimeToSeconds(value) {
+      const parts = String(value || '').trim().replace(',', '.').split(':').map(Number);
+      if (!parts.length || parts.some(Number.isNaN)) return 0;
+      if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+      if (parts.length === 2) return parts[0] * 60 + parts[1];
+      return parts[0] || 0;
+    }
+
+    function _escapeSubtitleText(text) {
+      const escapeMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' };
+      return String(text || '').replace(/[&<>"]/g, ch => escapeMap[ch] || ch);
+    }
+
+
+    function _clearMiniSubtitleOverlay() {
+      const overlay = document.getElementById('miniSubtitleOverlay');
+      if (!overlay) return;
+      overlay.classList.remove('visible');
+      overlay.innerHTML = '';
+    }
+
+    function _updateMiniSubtitleOverlay() {
+      const overlay = document.getElementById('miniSubtitleOverlay');
+      const vid = document.getElementById('miniPlayerVideo');
+      if (!overlay || !vid || _miniCurrentSubLang === 'off') {
+        _clearMiniSubtitleOverlay();
+        return;
+      }
+      const cues = _miniSubtitleCuesByLang[_miniCurrentSubLang] || [];
+      const now = vid.currentTime || 0;
+      const active = cues.find(cue => now >= cue._startSeconds && now <= cue._endSeconds);
+      if (!active) {
+        _clearMiniSubtitleOverlay();
+        return;
+      }
+      overlay.innerHTML = '<span>' + _escapeSubtitleText(active.text) + '</span>';
+      overlay.classList.add('visible');
+    }
 
     async function _loadMiniSubtitles(vid, ep, mini) {
       // Remove all existing tracks
       Array.from(vid.querySelectorAll('track')).forEach(t => t.remove());
       _miniCurrentSubLang = 'off';
+      _miniSubtitleCuesByLang = {};
+      _clearMiniSubtitleOverlay();
 
-      const subs = (ep && ep.subtitles) ? ep.subtitles : {};
+      const rawSubs = (ep && ep.subtitles) ? ep.subtitles : {};
+      const subs = {};
+      Object.entries(rawSubs).forEach(([lang, data]) => {
+        const cues = _normalizeManualSubtitleCues(data)
+          .map(cue => ({
+            start: cue.start || '',
+            end: cue.end || '',
+            text: cue.text || '',
+            _startSeconds: _subtitleTimeToSeconds(cue.start),
+            _endSeconds: _subtitleTimeToSeconds(cue.end)
+          }))
+          .filter(cue => cue.text && cue._endSeconds > cue._startSeconds);
+        if (cues.length) {
+          _miniSubtitleCuesByLang[lang] = cues;
+          subs[lang] = cues;
+        } else if (typeof data === 'string' && data) {
+          subs[lang] = data;
+        }
+      });
       const hasSubs = Object.keys(subs).length > 0;
 
       const subBtn = document.getElementById('miniSubBtn');
@@ -11406,6 +11509,7 @@
       if (!hasSubs) {
         const menu = document.getElementById('miniSubMenu');
         if (menu) menu.classList.remove('open');
+        _clearMiniSubtitleOverlay();
         return;
       }
 
@@ -11471,6 +11575,7 @@
       document.querySelectorAll('#miniSubMenu .mini-sub-option').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === lang);
       });
+      _updateMiniSubtitleOverlay();
 
       // Close menu after selection
       const menu = document.getElementById('miniSubMenu');
