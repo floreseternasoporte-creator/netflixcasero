@@ -2,6 +2,7 @@
 import hashlib
 import time
 import os
+import io
 import requests
 from flask import Flask, request, jsonify, send_from_directory
 
@@ -10,6 +11,7 @@ app = Flask(__name__)
 CLOUDINARY_API_KEY    = os.environ.get('CLOUDINARY_API_KEY', '238548142884869')
 CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET', 'R9mMGi3x6q6qp2U1hgaT_g1yWNQ')
 CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', 'dubsgko2k')
+ELEVENLABS_API_KEY    = os.environ.get('ELEVENLABS_API_KEY', '')
 
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
@@ -62,6 +64,157 @@ def upload_proxy():
         return resp_obj, code
     result.headers['Access-Control-Allow-Origin'] = '*'
     return result
+
+
+# ── ElevenLabs Dubbing Proxy ──────────────────────────────────────────────────
+
+@app.route('/api/dub', methods=['POST', 'OPTIONS'])
+def start_dubbing():
+    if request.method == 'OPTIONS':
+        resp = jsonify({})
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        resp.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        return resp
+
+    if not ELEVENLABS_API_KEY:
+        return jsonify({'error': 'ElevenLabs API key not configured'}), 500
+
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'JSON body required'}), 400
+
+    source_url  = data.get('source_url')
+    target_lang = data.get('target_lang')
+    source_lang = data.get('source_lang', 'auto')
+
+    if not source_url or not target_lang:
+        return jsonify({'error': 'source_url and target_lang are required'}), 400
+
+    try:
+        el_resp = requests.post(
+            'https://api.elevenlabs.io/v1/dubbing',
+            headers={
+                'xi-api-key': ELEVENLABS_API_KEY,
+                'Content-Type': 'application/json',
+            },
+            json={
+                'source_url': source_url,
+                'target_lang': target_lang,
+                'source_lang': source_lang,
+                'num_speakers': 0,
+                'watermark': False,
+            },
+            timeout=60
+        )
+
+        if el_resp.status_code == 200:
+            result = jsonify(el_resp.json())
+        else:
+            try:
+                err_data = el_resp.json()
+            except Exception:
+                err_data = {'detail': el_resp.text}
+            result = jsonify({'error': err_data.get('detail', f'HTTP {el_resp.status_code}')}), el_resp.status_code
+
+    except Exception as e:
+        result = jsonify({'error': str(e)}), 500
+
+    if isinstance(result, tuple):
+        resp_obj, code = result
+        resp_obj.headers['Access-Control-Allow-Origin'] = '*'
+        return resp_obj, code
+    result.headers['Access-Control-Allow-Origin'] = '*'
+    return result
+
+
+@app.route('/api/dub/<job_id>/status', methods=['GET'])
+def check_dubbing_status(job_id):
+    if not ELEVENLABS_API_KEY:
+        return jsonify({'error': 'ElevenLabs API key not configured'}), 500
+
+    try:
+        el_resp = requests.get(
+            f'https://api.elevenlabs.io/v1/dubbing/{job_id}',
+            headers={'xi-api-key': ELEVENLABS_API_KEY},
+            timeout=30
+        )
+        resp = jsonify(el_resp.json())
+    except Exception as e:
+        resp = jsonify({'error': str(e)}), 500
+
+    if isinstance(resp, tuple):
+        r, c = resp
+        r.headers['Access-Control-Allow-Origin'] = '*'
+        return r, c
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
+
+
+@app.route('/api/dub/<job_id>/audio/<lang>', methods=['GET'])
+def get_dubbed_audio(job_id, lang):
+    """Download dubbed audio from ElevenLabs and upload to Cloudinary."""
+    if not ELEVENLABS_API_KEY:
+        return jsonify({'error': 'ElevenLabs API key not configured'}), 500
+
+    try:
+        # Download audio from ElevenLabs
+        el_resp = requests.get(
+            f'https://api.elevenlabs.io/v1/dubbing/{job_id}/audio/{lang}',
+            headers={'xi-api-key': ELEVENLABS_API_KEY},
+            timeout=120,
+            stream=True
+        )
+
+        if el_resp.status_code != 200:
+            try:
+                err = el_resp.json()
+            except Exception:
+                err = {'detail': el_resp.text}
+            resp = jsonify({'error': err.get('detail', f'HTTP {el_resp.status_code}')}), el_resp.status_code
+            if isinstance(resp, tuple):
+                r, c = resp
+                r.headers['Access-Control-Allow-Origin'] = '*'
+                return r, c
+
+        audio_data = el_resp.content
+        content_type = el_resp.headers.get('Content-Type', 'audio/mpeg')
+
+        # Upload to Cloudinary
+        folder    = 'atenis-dubs'
+        timestamp = int(time.time())
+        public_id = f'{job_id}_{lang}'
+        param_str = f'folder={folder}&public_id={public_id}&timestamp={timestamp}{CLOUDINARY_API_SECRET}'
+        signature = hashlib.sha1(param_str.encode('utf-8')).hexdigest()
+
+        upload_url = f'https://api.cloudinary.com/v1_1/{CLOUDINARY_CLOUD_NAME}/raw/upload'
+
+        cloud_resp = requests.post(upload_url, data={
+            'api_key':   CLOUDINARY_API_KEY,
+            'timestamp': timestamp,
+            'signature': signature,
+            'folder':    folder,
+            'public_id': public_id,
+        }, files={
+            'file': (f'{public_id}.mp3', io.BytesIO(audio_data), content_type)
+        }, timeout=300)
+
+        cloud_data = cloud_resp.json()
+        if cloud_resp.status_code == 200 and cloud_data.get('secure_url'):
+            resp = jsonify({'url': cloud_data['secure_url']})
+        else:
+            msg = cloud_data.get('error', {}).get('message', f'Cloudinary HTTP {cloud_resp.status_code}')
+            resp = jsonify({'error': msg}), cloud_resp.status_code
+
+    except Exception as e:
+        resp = jsonify({'error': str(e)}), 500
+
+    if isinstance(resp, tuple):
+        r, c = resp
+        r.headers['Access-Control-Allow-Origin'] = '*'
+        return r, c
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 
 @app.after_request

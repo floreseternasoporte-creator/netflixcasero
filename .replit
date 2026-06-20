@@ -33,3 +33,8 @@ externalPort = 80
 
 [nix]
 channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+ELEVENLABS_API_KEY = "sk_2583d96fc893964c5afd581997cd66e997c027c60f67ad82"

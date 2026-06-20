@@ -494,7 +494,7 @@
     .carousel-item img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       background: #000000;
     }
 
@@ -1722,7 +1722,7 @@
     .continue-item img {
       width: 100%;
       aspect-ratio: 16/9;
-      object-fit: contain;
+      object-fit: cover;
       object-position: center center;
       background: #000000;
       display: block;
@@ -2731,7 +2731,7 @@
     .search-result-poster img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       background: #000000;
       display: block;
       transition: transform 0.3s ease;
@@ -3376,7 +3376,7 @@
     .history-item-poster img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       background: #000000;
     }
 
@@ -3538,7 +3538,7 @@
     }
 
     .upcoming-card .history-item-poster img {
-      object-fit: contain;
+      object-fit: cover;
       object-position: center center;
       background: #050505;
     }
@@ -3741,7 +3741,7 @@
     }
     .mini-card img {
       width: 100%; height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       background: #000000;
       display: block;
       border-radius: 10px;
@@ -4101,6 +4101,183 @@
       content: '';
       display: inline-block;
       width: 12px;
+    }
+
+    /* ── Mini Tracks Modal (audio + subtitles full-screen within mini player) ── */
+    .mini-tracks-modal {
+      position: absolute;
+      inset: 0;
+      z-index: 120;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      background: rgba(0,0,0,0.82);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+    }
+    .mini-tracks-modal.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition-delay: 0s;
+    }
+    .mini-tracks-panel {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      color: #fff;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.2,0.8,0.2,1);
+      padding: max(24px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom));
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .mini-tracks-modal.active .mini-tracks-panel {
+      transform: translateY(0);
+    }
+    .mini-tracks-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .mini-tracks-title {
+      font-size: clamp(22px, 5vw, 36px);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .mini-tracks-close {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.24);
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .mini-tracks-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      flex: 1;
+      align-content: start;
+    }
+    @media (min-width: 600px) {
+      .mini-tracks-content { grid-template-columns: repeat(2, 1fr); }
+    }
+    .mini-tracks-column-title {
+      color: rgba(255,255,255,0.65);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 14px;
+    }
+    .mini-track-options {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .mini-track-option {
+      width: 100%; border: 0;
+      background: transparent;
+      color: #fff;
+      min-height: 52px;
+      padding: 12px 4px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; text-align: left;
+      cursor: pointer;
+      font-size: clamp(17px, 2.2vw, 24px);
+      font-weight: 650;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      transition: color 0.18s, background 0.18s;
+    }
+    .mini-track-option:hover,
+    .mini-track-option.active { background: rgba(255,255,255,0.08); }
+    .mini-track-option .mto-check {
+      color: #E91E8C;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.18s, transform 0.18s;
+      font-size: 18px;
+    }
+    .mini-track-option.active .mto-check { opacity: 1; transform: scale(1); }
+    .mini-track-empty {
+      min-height: 52px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      display: flex; align-items: center;
+      color: rgba(255,255,255,0.35);
+      font-size: 14px;
+    }
+
+    /* ── Auto-dub section in mini editor ── */
+    .mini-dub-section {
+      background: rgba(233,30,140,0.07);
+      border: 1px solid rgba(233,30,140,0.2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+    .mini-dub-title {
+      font-size: 13px; font-weight: 700;
+      color: #E91E8C; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .mini-dub-langs {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;
+    }
+    .mini-dub-lang-check {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 13px; color: #ccc; cursor: pointer;
+    }
+    .mini-dub-lang-check input[type="checkbox"] { accent-color: #E91E8C; }
+    .mini-dub-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #E91E8C, #c2185b);
+      color: #fff; border: none;
+      border-radius: 10px; padding: 11px;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; display: flex;
+      align-items: center; justify-content: center; gap: 8px;
+    }
+    .mini-dub-btn:disabled { opacity: 0.5; pointer-events: none; }
+    .mini-dub-status {
+      margin-top: 10px;
+      font-size: 12px; color: #aaa; line-height: 1.5;
+    }
+    .mini-dub-ep-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 6px; padding: 6px 10px;
+      background: rgba(0,0,0,0.2); border-radius: 7px;
+    }
+    .mini-dub-ep-label {
+      font-size: 12px; color: #888; min-width: 50px;
+    }
+    .mini-dub-ep-lang {
+      font-size: 11px; font-weight: 700;
+      color: #E91E8C; background: rgba(233,30,140,0.12);
+      border-radius: 5px; padding: 2px 8px;
+    }
+    .mini-dub-ep-state { font-size: 12px; color: #aaa; flex: 1; }
+    .mini-dub-ep-state.done { color: #4caf50; }
+    .mini-dub-ep-state.error { color: #ff5252; }
+    .mini-dub-detect-btn {
+      width: 100%; background: rgba(76,110,245,0.15);
+      border: 1px solid rgba(76,110,245,0.3);
+      color: #74c0fc; border-radius: 10px; padding: 10px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 8px;
     }
 
     /* ── Subtitle lang checkboxes (admin form) ── */
@@ -6052,14 +6229,36 @@
         <i class="fas fa-info-circle"></i>
         <span data-i18n="info">Info</span>
       </button>
-      <button class="mini-side-btn" id="miniSubBtn" onclick="toggleMiniSubMenu()" style="display:none;">
-        <i class="fas fa-closed-captioning"></i>
-        <span>CC</span>
+      <button class="mini-side-btn" id="miniAudioSubBtn" onclick="openMiniTracksModal()" style="display:none;">
+        <i class="fas fa-language"></i>
+        <span>Audio</span>
       </button>
     </div>
 
-    <!-- Subtitle language menu -->
-    <div class="mini-sub-menu" id="miniSubMenu"></div>
+    <!-- Full-screen Audio & Subtitles modal (same style as movie player) -->
+    <div class="mini-tracks-modal" id="miniTracksModal">
+      <div class="mini-tracks-panel">
+        <div class="mini-tracks-header">
+          <h2 class="mini-tracks-title">Audio y subtítulos</h2>
+          <button class="mini-tracks-close" onclick="closeMiniTracksModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="mini-tracks-content">
+          <section>
+            <h3 class="mini-tracks-column-title">Pistas de audio</h3>
+            <div class="mini-track-options" id="miniAudioTrackOptions"></div>
+          </section>
+          <section>
+            <h3 class="mini-tracks-column-title">Subtítulos</h3>
+            <div class="mini-track-options" id="miniSubtitleTrackOptions"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden dubbed audio element (synchronized with video) -->
+    <audio id="miniDubbedAudio" style="display:none;" preload="none"></audio>
 
     <!-- Navigation arrows -->
     <div class="mini-player-nav">
@@ -6252,6 +6451,23 @@
       <button class="medit-ep-add-btn" onclick="addMiniEditEpisode()">
         <i class="fas fa-plus"></i> <span data-i18n="add_episode">Agregar episodio</span>
       </button>
+
+      <!-- Auto-doblaje con ElevenLabs -->
+      <div class="mini-dub-section">
+        <div class="mini-dub-title"><i class="fas fa-microphone-alt"></i> Auto-doblaje IA (ElevenLabs)</div>
+        <div class="mini-dub-langs">
+          <label class="mini-dub-lang-check"><input type="checkbox" id="dubLangEs" value="es" checked> 🇪🇸 Español</label>
+          <label class="mini-dub-lang-check"><input type="checkbox" id="dubLangEn" value="en" checked> 🇺🇸 Inglés</label>
+          <label class="mini-dub-lang-check"><input type="checkbox" id="dubLangPt" value="pt" checked> 🇧🇷 Portugués</label>
+        </div>
+        <button class="mini-dub-btn" id="miniDubBtn" onclick="startMiniAutoDub()">
+          <i class="fas fa-magic"></i> Doblar episodios automáticamente
+        </button>
+        <button class="mini-dub-detect-btn" onclick="autoDetectAndDubMinis()">
+          <i class="fas fa-search"></i> Detectar y doblar minis sin audio
+        </button>
+        <div class="mini-dub-status" id="miniDubStatus"></div>
+      </div>
 
       <button class="mini-edit-save-btn" onclick="saveMiniEdit()" data-i18n="save_changes">Guardar cambios</button>
       <button class="mini-edit-delete-btn" onclick="deleteMini()" data-i18n="delete_mini">Eliminar Mini</button>
@@ -11503,14 +11719,25 @@
       });
       const hasSubs = Object.keys(subs).length > 0;
 
-      const subBtn = document.getElementById('miniSubBtn');
-      if (subBtn) subBtn.style.display = hasSubs ? 'flex' : 'none';
+      // Load dubbed audio URLs for this episode (from mini.dubbedAudio[epIdx])
+      _miniDubbedAudioUrls = {};
+      if (_miniPlayerMini && _miniPlayerMini.dubbedAudio) {
+        const dubMap = _miniPlayerMini.dubbedAudio[_miniPlayerEpIdx] || {};
+        Object.assign(_miniDubbedAudioUrls, dubMap);
+      }
+      _miniCurrentAudioLang = 'original';
+      const dubAudio = document.getElementById('miniDubbedAudio');
+      if (dubAudio) { dubAudio.pause(); dubAudio.src = ''; }
+      const vid2 = document.getElementById('miniPlayerVideo');
+      if (vid2) vid2.muted = false;
+
+      const hasDubs = Object.keys(_miniDubbedAudioUrls).some(k => _miniDubbedAudioUrls[k]);
+      const audioSubBtn = document.getElementById('miniAudioSubBtn');
+      if (audioSubBtn) audioSubBtn.style.display = (hasSubs || hasDubs) ? 'flex' : 'none';
 
       if (!hasSubs) {
-        const menu = document.getElementById('miniSubMenu');
-        if (menu) menu.classList.remove('open');
         _clearMiniSubtitleOverlay();
-        return;
+        if (!hasDubs) return;
       }
 
       const origLabel = (mini && mini.originalLang) ? mini.originalLang : 'Original';
@@ -11541,20 +11768,93 @@
       _buildMiniSubMenu(subs, mini);
     }
 
-    function _buildMiniSubMenu(subs, mini) {
-      const menu = document.getElementById('miniSubMenu');
-      if (!menu) return;
+    // ── Mini Tracks Modal ────────────────────────────────────────────────────
 
-      const origLabel  = (mini && mini.originalLang) ? mini.originalLang : 'Original';
-      const langLabels = { es: 'Español', en: 'English', original: origLabel };
+    let _miniCurrentAudioLang = 'original'; // 'original' | 'es' | 'en' | 'pt'
+    let _miniDubbedAudioUrls  = {};         // { es: url, en: url, pt: url }
 
-      let html = `<div class="mini-sub-menu-title">${t('sub_title')}</div>`;
-      html += `<button class="mini-sub-option active" data-lang="off" onclick="setMiniSubtitle('off')">${t('sub_off')}</button>`;
-      Object.entries(subs).forEach(([lang, url]) => {
-        if (!url) return;
-        html += `<button class="mini-sub-option" data-lang="${lang}" onclick="setMiniSubtitle('${lang}')">${langLabels[lang] || lang}</button>`;
+    function openMiniTracksModal() {
+      _renderMiniTracksModal();
+      const modal = document.getElementById('miniTracksModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeMiniTracksModal() {
+      const modal = document.getElementById('miniTracksModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function _renderMiniTracksModal() {
+      const audioContainer = document.getElementById('miniAudioTrackOptions');
+      const subContainer   = document.getElementById('miniSubtitleTrackOptions');
+      if (!audioContainer || !subContainer) return;
+
+      const audioLabels = { original: 'Original', es: '🇪🇸 Español', en: '🇺🇸 Inglés', pt: '🇧🇷 Português' };
+      const subLabels   = { off: '🚫 Apagado', es: '🇪🇸 Español', en: '🇺🇸 English', original: 'Original' };
+
+      // Audio tracks
+      audioContainer.innerHTML = '';
+      const audioTracks = ['original', ...Object.keys(_miniDubbedAudioUrls).filter(k => _miniDubbedAudioUrls[k])];
+      audioTracks.forEach(lang => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'mini-track-option' + (_miniCurrentAudioLang === lang ? ' active' : '');
+        btn.innerHTML = `<span>${audioLabels[lang] || lang}</span><i class="fas fa-check mto-check"></i>`;
+        btn.onclick = () => { _setMiniAudioTrack(lang); _renderMiniTracksModal(); };
+        audioContainer.appendChild(btn);
       });
-      menu.innerHTML = html;
+      if (audioTracks.length === 0) {
+        audioContainer.innerHTML = '<div class="mini-track-empty">No hay pistas de audio adicionales</div>';
+      }
+
+      // Subtitle tracks
+      subContainer.innerHTML = '';
+      const vid = document.getElementById('miniPlayerVideo');
+      const availSubs = vid ? Array.from(vid.textTracks).filter(t => t.kind === 'subtitles' || t.kind === 'captions') : [];
+      const subOpts = ['off', ...availSubs.map(t => t.srclang === 'orig' ? 'original' : t.srclang)];
+      subOpts.forEach(lang => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'mini-track-option' + (_miniCurrentSubLang === lang ? ' active' : '');
+        const label = subLabels[lang] || lang;
+        btn.innerHTML = `<span>${label}</span><i class="fas fa-check mto-check"></i>`;
+        btn.onclick = () => { setMiniSubtitle(lang); _renderMiniTracksModal(); };
+        subContainer.appendChild(btn);
+      });
+      if (subOpts.length <= 1) {
+        subContainer.innerHTML = '<div class="mini-track-empty">No hay subtítulos disponibles</div>';
+      }
+    }
+
+    function _setMiniAudioTrack(lang) {
+      _miniCurrentAudioLang = lang;
+      const vid = document.getElementById('miniPlayerVideo');
+      const dubAudio = document.getElementById('miniDubbedAudio');
+      if (!vid || !dubAudio) return;
+
+      if (lang === 'original') {
+        dubAudio.pause();
+        dubAudio.src = '';
+        vid.muted = false;
+      } else {
+        const url = _miniDubbedAudioUrls[lang];
+        if (!url) { vid.muted = false; return; }
+        vid.muted = true;
+        dubAudio.src = url;
+        dubAudio.currentTime = vid.currentTime;
+        if (!vid.paused) dubAudio.play().catch(() => {});
+        // Keep audio in sync
+        vid.onplay  = () => { updateMiniPlayBtn(); dubAudio.play().catch(() => {}); };
+        vid.onpause = () => { updateMiniPlayBtn(); dubAudio.pause(); };
+        vid.onseeked = () => { dubAudio.currentTime = vid.currentTime; };
+      }
+      closeMiniTracksModal();
+    }
+
+    function _buildMiniSubMenu(subs, mini) {
+      // Populate subtitle section of the new tracks modal when it opens
+      // (The modal renders dynamically via _renderMiniTracksModal)
+      // Kept for compatibility — shows/hides the Audio button instead
     }
 
     function setMiniSubtitle(lang) {
@@ -11570,23 +11870,11 @@
           track.mode = (trackLang === lang) ? 'showing' : 'disabled';
         }
       });
-
-      // Update active state in menu
-      document.querySelectorAll('#miniSubMenu .mini-sub-option').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
-      });
       _updateMiniSubtitleOverlay();
-
-      // Close menu after selection
-      const menu = document.getElementById('miniSubMenu');
-      if (menu) menu.classList.remove('open');
+      closeMiniTracksModal();
     }
 
-    function toggleMiniSubMenu() {
-      const menu = document.getElementById('miniSubMenu');
-      if (!menu) return;
-      menu.classList.toggle('open');
-    }
+    function toggleMiniSubMenu() { openMiniTracksModal(); }
 
     function _fmtTime(s) {
       if (!s || isNaN(s)) return '0:00';
@@ -11878,6 +12166,145 @@
       const container = document.getElementById('adminSubsList');
       if (!container) return;
       container.innerHTML = '<div style="text-align:center;padding:24px;color:#888;font-size:13px;line-height:1.5;">Edita las líneas de subtítulos manualmente al crear o modificar los episodios.</div>';
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    //  ELEVENLABS AUTO-DUBBING
+    // ════════════════════════════════════════════════════════════════════════
+
+    async function startMiniAutoDub() {
+      if (!_miniEditId) { alert('Abre un mini primero para doblar.'); return; }
+      const mini = miniDatabase[_miniEditId] || seriesDatabase[_miniEditId];
+      if (!mini || !mini.episodes) { alert('Mini no encontrado.'); return; }
+
+      const langs = ['es','en','pt'].filter(l => {
+        const el = document.getElementById('dubLang' + l.charAt(0).toUpperCase() + l.slice(1));
+        return el && el.checked;
+      });
+      if (!langs.length) { alert('Selecciona al menos un idioma para doblar.'); return; }
+
+      const btn = document.getElementById('miniDubBtn');
+      if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando...'; }
+
+      const statusEl = document.getElementById('miniDubStatus');
+      if (statusEl) statusEl.innerHTML = '';
+
+      const eps = mini.episodes.filter(e => e.videoUrl);
+      let total = eps.length * langs.length;
+      let done  = 0;
+
+      for (let i = 0; i < eps.length; i++) {
+        const ep = eps[i];
+        for (const lang of langs) {
+          // Skip if already dubbed
+          const existing = (mini.dubbedAudio && mini.dubbedAudio[i] && mini.dubbedAudio[i][lang]);
+          if (existing) { done++; _updateDubStatus(statusEl, `EP${i+1} ${lang.toUpperCase()}`, 'done', 'Ya doblado'); continue; }
+
+          _updateDubStatus(statusEl, `EP${i+1} ${lang.toUpperCase()}`, 'processing', 'Enviando a ElevenLabs...');
+          try {
+            const url = await _dubEpisode(ep.videoUrl, lang, _miniEditId, i, mini.originalLang);
+            await _saveDubbedAudio(_miniEditId, i, lang, url);
+            done++;
+            _updateDubStatus(statusEl, `EP${i+1} ${lang.toUpperCase()}`, 'done', '✓ Listo');
+          } catch(err) {
+            done++;
+            _updateDubStatus(statusEl, `EP${i+1} ${lang.toUpperCase()}`, 'error', '✗ ' + err.message);
+          }
+        }
+      }
+
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-magic"></i> Doblar episodios automáticamente'; }
+      showMiniToast('Doblaje completado: ' + done + '/' + total);
+    }
+
+    function _updateDubStatus(container, label, state, msg) {
+      if (!container) return;
+      let row = container.querySelector(`[data-dub="${label}"]`);
+      if (!row) {
+        row = document.createElement('div');
+        row.className = 'mini-dub-ep-row';
+        row.setAttribute('data-dub', label);
+        row.innerHTML = `<span class="mini-dub-ep-label">${label}</span><span class="mini-dub-ep-state"></span>`;
+        container.appendChild(row);
+      }
+      const stateEl = row.querySelector('.mini-dub-ep-state');
+      if (stateEl) { stateEl.className = 'mini-dub-ep-state ' + state; stateEl.textContent = msg; }
+    }
+
+    async function _dubEpisode(videoUrl, targetLang, miniId, epIdx, srcLang) {
+      const resp = await fetch('/api/dub', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source_url: videoUrl,
+          target_lang: targetLang,
+          source_lang: srcLang || 'auto'
+        })
+      });
+      const data = await resp.json();
+      if (!resp.ok || data.error) throw new Error(data.error || 'Error al iniciar doblaje');
+      const jobId = data.dubbing_id;
+      if (!jobId) throw new Error('No se recibió ID de trabajo');
+
+      // Poll for completion (max 15 min)
+      const maxWait = 15 * 60 * 1000;
+      const start   = Date.now();
+      while (Date.now() - start < maxWait) {
+        await new Promise(r => setTimeout(r, 8000));
+        const statusResp = await fetch(`/api/dub/${jobId}/status`);
+        const statusData = await statusResp.json();
+        if (statusData.status === 'dubbed') break;
+        if (statusData.status === 'failed') throw new Error('Doblaje fallido en ElevenLabs');
+      }
+
+      // Download audio + upload to Cloudinary via server
+      const audioResp = await fetch(`/api/dub/${jobId}/audio/${targetLang}`);
+      const audioData = await audioResp.json();
+      if (!audioResp.ok || audioData.error) throw new Error(audioData.error || 'Error descargando audio');
+      return audioData.url;
+    }
+
+    async function _saveDubbedAudio(miniId, epIdx, lang, url) {
+      if (typeof database === 'undefined') return;
+      await database.ref(`miniDramas/${miniId}/dubbedAudio/${epIdx}/${lang}`).set(url);
+      // Update local cache
+      if (miniDatabase[miniId]) {
+        if (!miniDatabase[miniId].dubbedAudio) miniDatabase[miniId].dubbedAudio = {};
+        if (!miniDatabase[miniId].dubbedAudio[epIdx]) miniDatabase[miniId].dubbedAudio[epIdx] = {};
+        miniDatabase[miniId].dubbedAudio[epIdx][lang] = url;
+      }
+    }
+
+    async function autoDetectAndDubMinis() {
+      if (typeof miniDatabase === 'undefined') { alert('Base de datos no disponible.'); return; }
+      const allMinis = Object.values(miniDatabase);
+      const undubbed = [];
+      for (const mini of allMinis) {
+        if (!mini.episodes) continue;
+        for (let i = 0; i < mini.episodes.length; i++) {
+          const ep = mini.episodes[i];
+          if (!ep.videoUrl) continue;
+          const dubs = (mini.dubbedAudio && mini.dubbedAudio[i]) || {};
+          ['es','en','pt'].forEach(lang => {
+            if (!dubs[lang]) undubbed.push({ mini, epIdx: i, lang });
+          });
+        }
+      }
+      if (!undubbed.length) { showMiniToast('Todos los minis ya tienen doblajes.'); return; }
+
+      const msg = `Se detectaron ${undubbed.length} episodio/idioma sin doblar. ¿Iniciar doblaje automático?`;
+      if (!confirm(msg)) return;
+
+      for (const { mini, epIdx, lang } of undubbed.slice(0, 10)) { // Limit to 10 at a time
+        try {
+          showMiniToast(`Doblando ${mini.title} EP${epIdx+1} → ${lang.toUpperCase()}...`);
+          const url = await _dubEpisode(mini.episodes[epIdx].videoUrl, lang, mini.id, epIdx, mini.originalLang);
+          await _saveDubbedAudio(mini.id, epIdx, lang, url);
+        } catch(err) {
+          console.warn('Auto-dub error:', mini.title, epIdx, lang, err.message);
+        }
+      }
+      showMiniToast('Detección y doblaje completado.');
     }
 
     // ── Toast notification ────────────────────────────────────────────────────
