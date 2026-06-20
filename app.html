@@ -261,8 +261,8 @@
     .featured-hero-bg {
       position: absolute;
       inset: 0;
-      background-size: cover;
-      background-position: center 20%;
+      background-size: contain;
+      background-position: center center;
       background-repeat: no-repeat;
       background-color: #080808;
     }
@@ -496,6 +496,20 @@
       height: 100%;
       object-fit: contain;
       background: #000000;
+    }
+
+
+    .carousel-item img,
+    .search-result-poster img,
+    .history-item-poster img,
+    .similar-item img,
+    .mini-card img,
+    .mini-carousel-item img,
+    .mini-info-poster,
+    .mini-sheet-poster,
+    .mini-cover-picker img,
+    .mini-edit-poster-thumb img {
+      object-position: center center;
     }
 
     .carousel-item-overlay {
@@ -818,9 +832,10 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-size: cover;
-      background-position: center;
+      background-size: contain;
+      background-position: center center;
       background-repeat: no-repeat;
+      background-color: #050505;
       z-index: 0;
       filter: blur(1px);
     }
@@ -1081,7 +1096,9 @@
     .episode-thumbnail img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      object-position: center center;
+      background: #000000;
     }
 
     .episode-play-overlay {
@@ -1705,7 +1722,9 @@
     .continue-item img {
       width: 100%;
       aspect-ratio: 16/9;
-      object-fit: cover;
+      object-fit: contain;
+      object-position: center center;
+      background: #000000;
       display: block;
     }
 
@@ -3510,9 +3529,18 @@
     }
 
     .upcoming-card .history-item-poster {
-      height: clamp(260px, 48vw, 430px);
+      height: auto;
+      aspect-ratio: 16 / 9;
+      max-height: min(430px, 52vh);
       border-bottom: 1px solid #151515;
       cursor: pointer;
+      background: #050505;
+    }
+
+    .upcoming-card .history-item-poster img {
+      object-fit: contain;
+      object-position: center center;
+      background: #050505;
     }
 
     .upcoming-card .history-item-poster::after {
@@ -4061,7 +4089,7 @@
     }
     .mini-lang-check input[type="checkbox"] { accent-color: #E91E8C; }
 
-    /* ── Subtitle VTT upload per episode ── */
+    /* ── Manual subtitle editor per episode ── */
     .mini-ep-subtitle-section {
       margin-top: 8px;
     }
@@ -4087,6 +4115,44 @@
     }
     .mini-ep-sub-upload-btn.done { color: #4CAF50; border-color: #4CAF50; }
     .mini-ep-sub-upload-btn.error { color: #ff4444; border-color: #ff4444; }
+    .manual-sub-editor {
+      background: rgba(0,0,0,0.22);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 8px;
+      margin: 0 0 10px;
+    }
+    .manual-sub-hint, .manual-sub-duration {
+      color: #8f95a8;
+      font-size: 11px;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+    .manual-sub-duration { color: #4c6ef5; font-weight: 700; }
+    .manual-sub-cue {
+      display: grid;
+      grid-template-columns: 56px 56px 1fr 28px;
+      gap: 6px;
+      align-items: start;
+      margin-top: 6px;
+    }
+    .manual-sub-time, .manual-sub-text {
+      background: #0d0e1a;
+      border: 1px solid #252941;
+      border-radius: 7px;
+      color: #fff;
+      font-size: 12px;
+      padding: 7px;
+    }
+    .manual-sub-text { resize: vertical; min-height: 32px; }
+    .manual-sub-remove {
+      background: #241016;
+      border: 1px solid #51202a;
+      color: #ff6b7d;
+      border-radius: 7px;
+      min-height: 32px;
+      cursor: pointer;
+    }
 
     /* ── Navigation arrows (prev/next episode) ── */
     .mini-player-nav {
@@ -4565,7 +4631,6 @@
       width: 100%;
       aspect-ratio: 2/3;
       border-radius: 8px;
-      object-fit: cover;
       background: #13141f;
       border: 1px dashed #2d2f4a;
       cursor: pointer;
@@ -5389,7 +5454,7 @@
         </div>
         <div class="settings-nav-row" id="adminSubsNavRow" style="display:none;" onclick="openSettingsSub('subtitulos')">
           <div class="settings-nav-icon" style="background:#1a2530"><i class="fas fa-closed-captioning" style="color:#4c6ef5"></i></div>
-          <span class="settings-nav-label">Admin — Subtítulos VTT</span>
+          <span class="settings-nav-label">Admin — Subtítulos</span>
           <i class="fas fa-chevron-right settings-nav-arrow"></i>
         </div>
       </div>
@@ -5634,15 +5699,15 @@
       </div>
     </div>
 
-    <!-- ── Sub: Admin Subtítulos VTT ── -->
+    <!-- ── Sub: Admin Subtítulos ── -->
     <div class="settings-sub" id="settingsSubSubtitulos">
       <div class="settings-sub-topbar">
         <button class="settings-sub-back" onclick="closeSettingsSub('subtitulos')"><i class="fas fa-chevron-left"></i></button>
-        <span class="settings-sub-topbar-title">Subtítulos VTT</span>
+        <span class="settings-sub-topbar-title">Subtítulos</span>
       </div>
       <div class="settings-sub-body">
         <div class="settings-sub-group">
-          <p style="font-size:12px;color:#888;padding:0 4px 8px;">Aquí aparecen todos los archivos VTT subidos a Firebase. Puedes eliminarlos individualmente.</p>
+          <p style="font-size:12px;color:#888;padding:0 4px 8px;">Los subtítulos ahora se editan manualmente dentro de cada episodio; no se suben archivos.</p>
           <div id="adminSubsList" style="display:flex;flex-direction:column;gap:8px;">
             <div style="text-align:center;padding:24px;color:#555;font-size:13px;">
               <i class="fas fa-spinner fa-spin"></i> Cargando...
@@ -5771,7 +5836,7 @@
             <span style="color:#E91E8C;margin-left:2px">*</span>
           </div>
           <div class="mini-cover-picker mini-cover-sm" id="miniCoverPickerOrig" onclick="document.getElementById('miniCoverInputOrig').click()">
-            <img id="miniCoverPreview_orig" style="display:none;width:100%;height:100%;object-fit:cover;">
+            <img id="miniCoverPreview_orig" style="display:none;width:100%;height:100%;object-fit:contain;background:#000;">
             <div class="mini-cover-placeholder" id="miniCoverPlaceholder_orig">
               <i class="fas fa-image"></i>
               <span data-i18n="tap_upload">Toca para subir</span>
@@ -5792,7 +5857,7 @@
             <span style="color:#666;font-size:11px;margin-left:4px" data-i18n="optional">(opcional)</span>
           </div>
           <div class="mini-cover-picker mini-cover-sm" id="miniCoverPickerEs" onclick="document.getElementById('miniCoverInputEs').click()">
-            <img id="miniCoverPreview_es" style="display:none;width:100%;height:100%;object-fit:cover;">
+            <img id="miniCoverPreview_es" style="display:none;width:100%;height:100%;object-fit:contain;background:#000;">
             <div class="mini-cover-placeholder" id="miniCoverPlaceholder_es">
               <i class="fas fa-image"></i>
               <span data-i18n="tap_upload">Toca para subir</span>
@@ -5813,7 +5878,7 @@
             <span style="color:#666;font-size:11px;margin-left:4px" data-i18n="optional">(opcional)</span>
           </div>
           <div class="mini-cover-picker mini-cover-sm" id="miniCoverPickerEn" onclick="document.getElementById('miniCoverInputEn').click()">
-            <img id="miniCoverPreview_en" style="display:none;width:100%;height:100%;object-fit:cover;">
+            <img id="miniCoverPreview_en" style="display:none;width:100%;height:100%;object-fit:contain;background:#000;">
             <div class="mini-cover-placeholder" id="miniCoverPlaceholder_en">
               <i class="fas fa-image"></i>
               <span data-i18n="tap_upload">Toca para subir</span>
@@ -6139,9 +6204,9 @@
       <div class="mini-form-group">
         <label data-i18n="available_subs">Subtítulos disponibles</label>
         <div class="mini-lang-checkboxes">
-          <label class="mini-lang-check"><input type="checkbox" id="meditSubEs" value="es"> Español</label>
-          <label class="mini-lang-check"><input type="checkbox" id="meditSubEn" value="en"> English</label>
-          <label class="mini-lang-check"><input type="checkbox" id="meditSubOrig" value="original"> Original</label>
+          <label class="mini-lang-check"><input type="checkbox" id="meditSubEs" value="es" onchange="renderMiniEditEpisodes()"> Español</label>
+          <label class="mini-lang-check"><input type="checkbox" id="meditSubEn" value="en" onchange="renderMiniEditEpisodes()"> English</label>
+          <label class="mini-lang-check"><input type="checkbox" id="meditSubOrig" value="original" onchange="renderMiniEditEpisodes()"> Original</label>
         </div>
       </div>
 
@@ -10277,6 +10342,71 @@
 
     // ── Episode list render ──────────────────────────────────────────────────
 
+    function getMiniEditSelectedLangs() {
+      const langs = [];
+      if (document.getElementById('meditSubEs')?.checked) langs.push('es');
+      if (document.getElementById('meditSubEn')?.checked) langs.push('en');
+      if (document.getElementById('meditSubOrig')?.checked) langs.push('original');
+      return langs;
+    }
+
+    function _buildMiniEditSubtitleRows(idx, ep) {
+      const langs = getMiniEditSelectedLangs();
+      if (!langs.length) return '';
+      const origLang = document.getElementById('meditOrigLang')?.value || 'Original';
+      const labels = { es: 'Español', en: 'Inglés', original: origLang || 'Original' };
+      let html = `<div class="mini-ep-subtitle-section"><div class="mini-ep-subtitle-label">Subtítulos manuales</div>`;
+      langs.forEach(lang => {
+        const cues = Array.isArray(ep?.subtitles?.[lang]) ? ep.subtitles[lang] : [];
+        html += `
+          <div class="mini-ep-sub-row manual-sub-row">
+            <span class="mini-ep-sub-lang-tag">${labels[lang]}</span>
+            <button type="button" class="mini-ep-sub-upload-btn" onclick="addMiniEditSubtitleCue(${idx}, '${lang}')">
+              <i class="fas fa-plus"></i> Agregar línea
+            </button>
+          </div>
+          <div class="manual-sub-editor" id="meditSubEditor_${idx}_${lang}" data-lang="${lang}">
+            <div class="manual-sub-hint">Edita inicio, fin y texto de cada línea.</div>
+            <div class="manual-sub-cues" id="meditSubCues_${idx}_${lang}">
+              ${cues.map(cue => _manualSubtitleCueHtml(cue)).join('')}
+            </div>
+          </div>`;
+      });
+      return html + `</div>`;
+    }
+
+    function _manualSubtitleCueHtml(cue = {}) {
+      return `
+        <div class="manual-sub-cue">
+          <input class="manual-sub-time" type="text" placeholder="0:00" value="${cue.start || ''}" aria-label="Inicio">
+          <input class="manual-sub-time" type="text" placeholder="0:03" value="${cue.end || ''}" aria-label="Fin">
+          <textarea class="manual-sub-text" rows="1" placeholder="Texto del subtítulo">${cue.text || ''}</textarea>
+          <button type="button" class="manual-sub-remove" onclick="this.closest('.manual-sub-cue').remove()"><i class="fas fa-times"></i></button>
+        </div>`;
+    }
+
+    function addMiniEditSubtitleCue(idx, lang, cue = {}) {
+      const list = document.getElementById('meditSubCues_' + idx + '_' + lang);
+      if (list) list.insertAdjacentHTML('beforeend', _manualSubtitleCueHtml(cue));
+    }
+
+    function collectMiniEditSubtitles(idx) {
+      const subtitles = {};
+      document.querySelectorAll(`[id^="meditSubEditor_${idx}_"]`).forEach(editor => {
+        const lang = editor.dataset.lang;
+        const cues = [];
+        editor.querySelectorAll('.manual-sub-cue').forEach(row => {
+          const times = row.querySelectorAll('.manual-sub-time');
+          const start = times[0]?.value.trim();
+          const end = times[1]?.value.trim();
+          const text = row.querySelector('.manual-sub-text')?.value.trim();
+          if (start && end && text) cues.push({ start, end, text });
+        });
+        if (cues.length) subtitles[lang] = cues;
+      });
+      return subtitles;
+    }
+
     function renderMiniEditEpisodes() {
       const list = document.getElementById('meditEpisodesList');
       if (!list) return;
@@ -10306,13 +10436,14 @@
             <div class="mini-upload-prog hidden" id="meditEpProg_${i}">
               <div class="mini-upload-prog-fill" id="meditEpProgFill_${i}"></div>
             </div>
+            ${_buildMiniEditSubtitleRows(i, ep)}
           </div>
         `;
       }).join('');
     }
 
     function addMiniEditEpisode() {
-      _miniEditEpisodes.push({ id: _miniEditEpisodes.length + 1, title: '', videoUrl: '', thumbnail: '' });
+      _miniEditEpisodes.push({ id: _miniEditEpisodes.length + 1, title: '', videoUrl: '', thumbnail: '', subtitles: {} });
       renderMiniEditEpisodes();
       // Scroll to new episode
       const container = document.querySelector('.mini-edit-container');
@@ -10462,6 +10593,7 @@
           const titleEl = document.getElementById('meditEpTitle_' + i);
           if (titleEl) ep.title = titleEl.value.trim() || (t('ep_label') + ' ' + (i + 1));
           ep.id = i + 1;
+          ep.subtitles = collectMiniEditSubtitles(i);
           // Keep thumbnail as poster if not set
           if (!ep.thumbnail) ep.thumbnail = posterOrig;
         });
@@ -10795,18 +10927,19 @@
       if (!langs.length) return '';
       const origLang = (document.getElementById('miniOriginalLangInput') || {}).value || 'Original';
       const labels = { es: 'Español', en: 'Inglés', original: origLang || 'Original' };
-      let html = `<div class="mini-ep-subtitle-section"><div class="mini-ep-subtitle-label">Subtítulos (VTT)</div>`;
+      let html = `<div class="mini-ep-subtitle-section"><div class="mini-ep-subtitle-label">Subtítulos manuales</div>`;
       langs.forEach(lang => {
         html += `
-          <div class="mini-ep-sub-row">
+          <div class="mini-ep-sub-row manual-sub-row">
             <span class="mini-ep-sub-lang-tag">${labels[lang]}</span>
-            <button type="button" class="mini-ep-sub-upload-btn" id="miniSubBtn_${idx}_${lang}"
-                    onclick="document.getElementById('miniSubFile_${idx}_${lang}').click()">
-              <i class="fas fa-upload"></i> Subir .vtt
+            <button type="button" class="mini-ep-sub-upload-btn" onclick="addManualSubtitleCue(${idx}, '${lang}')">
+              <i class="fas fa-plus"></i> Agregar línea
             </button>
-            <input type="file" id="miniSubFile_${idx}_${lang}" accept=".vtt,text/vtt"
-                   style="display:none;"
-                   onchange="handleMiniSubtitleUpload(this, ${idx}, '${lang}')">
+          </div>
+          <div class="manual-sub-editor" id="manualSubEditor_${idx}_${lang}" data-lang="${lang}">
+            <div class="manual-sub-hint">Escribe inicio, fin y texto. La duración del video aparece al cargarlo.</div>
+            <div class="manual-sub-duration" id="manualSubDuration_${idx}_${lang}">Duración: --:--</div>
+            <div class="manual-sub-cues" id="manualSubCues_${idx}_${lang}"></div>
           </div>`;
       });
       html += `</div>`;
@@ -10849,49 +10982,56 @@
       miniUploadData.episodes.push({ id: idx, title: '', videoUrl: null, thumbnail: null, subtitles: {} });
     }
 
-    async function handleMiniSubtitleUpload(input, idx, lang) {
-      const file = input.files[0];
-      if (!file) return;
-      const btn = document.getElementById('miniSubBtn_' + idx + '_' + lang);
-      if (btn) { btn.classList.remove('done', 'error'); btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...'; }
-      try {
-        const url = await uploadVttToFirebase(file, lang);
-        const ep = miniUploadData.episodes.find(e => e.id === idx);
-        if (ep) {
-          if (!ep.subtitles) ep.subtitles = {};
-          ep.subtitles[lang] = url;
-        }
-        if (btn) { btn.classList.add('done'); btn.innerHTML = '<i class="fas fa-check-circle"></i> ' + file.name; }
-      } catch (err) {
-        if (btn) { btn.classList.add('error'); btn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error al subir'; }
-        console.error('Subtitle upload error:', err);
-      }
+    function addManualSubtitleCue(idx, lang, cue = {}) {
+      const list = document.getElementById('manualSubCues_' + idx + '_' + lang);
+      if (!list) return;
+      const row = document.createElement('div');
+      row.className = 'manual-sub-cue';
+      row.innerHTML = `
+        <input class="manual-sub-time" type="text" placeholder="0:00" value="${cue.start || ''}" aria-label="Inicio">
+        <input class="manual-sub-time" type="text" placeholder="0:03" value="${cue.end || ''}" aria-label="Fin">
+        <textarea class="manual-sub-text" rows="1" placeholder="Texto del subtítulo">${cue.text || ''}</textarea>
+        <button type="button" class="manual-sub-remove" onclick="this.closest('.manual-sub-cue').remove()"><i class="fas fa-times"></i></button>
+      `;
+      list.appendChild(row);
     }
 
-    async function uploadVttToFirebase(file, lang) {
-      const timestamp = Date.now();
-      const text = await file.text();
-      const dbPath = 'subtitles/' + lang + '/' + timestamp;
-      await database.ref(dbPath).set({
-        content: text,
-        filename: file.name,
-        uploadedAt: timestamp
+    function collectManualSubtitles(idx) {
+      const subtitles = {};
+      document.querySelectorAll(`[id^="manualSubEditor_${idx}_"]`).forEach(editor => {
+        const lang = editor.dataset.lang;
+        const cues = [];
+        editor.querySelectorAll('.manual-sub-cue').forEach(row => {
+          const start = row.querySelectorAll('.manual-sub-time')[0]?.value.trim();
+          const end = row.querySelectorAll('.manual-sub-time')[1]?.value.trim();
+          const text = row.querySelector('.manual-sub-text')?.value.trim();
+          if (start && end && text) cues.push({ start, end, text });
+        });
+        if (cues.length) subtitles[lang] = cues;
       });
-      return 'firebase-db:' + dbPath;
+      return subtitles;
     }
 
-    async function resolveSubtitleUrl(url) {
-      if (url && url.startsWith('firebase-db:')) {
-        const path = url.replace('firebase-db:', '');
-        const snap = await database.ref(path).once('value');
-        const data = snap.val();
-        if (data && data.content) {
-          const blob = new Blob([data.content], { type: 'text/vtt' });
-          return URL.createObjectURL(blob);
-        }
-        return null;
-      }
-      return url;
+    function updateManualSubtitleDurations(idx, duration) {
+      document.querySelectorAll(`[id^="manualSubDuration_${idx}_"]`).forEach(el => {
+        el.textContent = 'Duración: ' + _fmtTime(duration || 0);
+      });
+    }
+
+    function manualCuesToTextTrack(cues) {
+      const toSeconds = value => {
+        const parts = String(value || '').trim().split(':').map(Number);
+        if (parts.some(Number.isNaN)) return 0;
+        if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+        if (parts.length === 2) return parts[0] * 60 + parts[1];
+        return parts[0] || 0;
+      };
+      const fmt = sec => {
+        sec = Math.max(0, Number(sec) || 0);
+        const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = Math.floor(sec % 60), ms = Math.round((sec % 1) * 1000);
+        return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0') + '.' + String(ms).padStart(3,'0');
+      };
+      return 'WEB' + 'VTT\n\n' + (cues || []).map((cue, i) => `${i + 1}\n${fmt(toSeconds(cue.start))} --> ${fmt(toSeconds(cue.end))}\n${cue.text || ''}\n`).join('\n');
     }
 
     function removeMiniEpisode(idx) {
@@ -10931,6 +11071,10 @@
 
         const ep = miniUploadData.episodes.find(e => e.id === idx);
         if (ep) ep.videoUrl = url;
+        const probe = document.createElement('video');
+        probe.preload = 'metadata';
+        probe.onloadedmetadata = () => updateManualSubtitleDurations(idx, probe.duration);
+        probe.src = url;
 
         area.classList.remove('uploading');
         area.classList.add('done');
@@ -11038,7 +11182,7 @@
               title:     (titleEl ? titleEl.value.trim() : '') || `${t('ep_label')} ${i + 1}`,
               videoUrl:  e.videoUrl,
               thumbnail: posterOrig,
-              subtitles: e.subtitles || {}
+              subtitles: Object.assign({}, e.subtitles || {}, collectManualSubtitles(e.id))
             };
           });
 
@@ -11268,15 +11412,20 @@
       const origLabel = (mini && mini.originalLang) ? mini.originalLang : 'Original';
       const langLabels = { es: 'Español', en: 'Inglés', original: origLabel };
 
-      await Promise.all(Object.entries(subs).map(async ([lang, url]) => {
-        if (!url) return;
-        const resolvedUrl = await resolveSubtitleUrl(url);
-        if (!resolvedUrl) return;
+      await Promise.all(Object.entries(subs).map(async ([lang, data]) => {
+        if (!data) return;
+        let trackUrl = null;
+        if (Array.isArray(data)) {
+          trackUrl = URL.createObjectURL(new Blob([manualCuesToTextTrack(data)], { type: 'text/' + 'vtt' }));
+        } else if (typeof data === 'string') {
+          trackUrl = data;
+        }
+        if (!trackUrl) return;
         const track = document.createElement('track');
         track.kind = 'subtitles';
         track.label = langLabels[lang] || lang;
         track.srclang = lang === 'original' ? 'orig' : lang;
-        track.src = resolvedUrl;
+        track.src = trackUrl;
         track.default = false;
         vid.appendChild(track);
       }));
@@ -11620,53 +11769,10 @@
       if (row) row.style.display = isMiniAdmin() ? 'flex' : 'none';
     }
 
-    async function loadAdminSubtitles() {
+    function loadAdminSubtitles() {
       const container = document.getElementById('adminSubsList');
       if (!container) return;
-      container.innerHTML = '<div style="text-align:center;padding:24px;color:#555;font-size:13px;"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
-      try {
-        const snap = await database.ref('subtitles').once('value');
-        const data = snap.val();
-        if (!data) {
-          container.innerHTML = '<div style="text-align:center;padding:24px;color:#555;font-size:13px;">No hay subtítulos subidos aún.</div>';
-          return;
-        }
-        let html = '';
-        Object.entries(data).forEach(([lang, entries]) => {
-          Object.entries(entries).forEach(([ts, entry]) => {
-            const date = new Date(entry.uploadedAt || parseInt(ts)).toLocaleString('es', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-            const langLabel = { es:'Español', en:'Inglés', original:'Original' }[lang] || lang;
-            html += `
-              <div style="background:#0d0e1a;border:1px solid #1c1e30;border-radius:10px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
-                <div style="flex:1;min-width:0;">
-                  <div style="font-size:13px;font-weight:600;color:#fff;display:flex;align-items:center;gap:6px;">
-                    <span style="background:#1a2540;color:#4c6ef5;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;">${langLabel}</span>
-                    <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${entry.filename || ts + '.vtt'}</span>
-                  </div>
-                  <div style="font-size:11px;color:#555;margin-top:3px;">${date}</div>
-                </div>
-                <button onclick="deleteAdminSubtitle('${lang}','${ts}')"
-                  style="background:#2a1010;border:1px solid #5a2020;color:#e55555;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;flex-shrink:0;white-space:nowrap;">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>`;
-          });
-        });
-        container.innerHTML = html || '<div style="text-align:center;padding:24px;color:#555;font-size:13px;">No hay subtítulos subidos aún.</div>';
-      } catch (err) {
-        container.innerHTML = '<div style="text-align:center;padding:24px;color:#e55555;font-size:13px;">Error al cargar subtítulos.</div>';
-        console.error(err);
-      }
-    }
-
-    async function deleteAdminSubtitle(lang, ts) {
-      if (!confirm('¿Eliminar este archivo VTT de Firebase?')) return;
-      try {
-        await database.ref('subtitles/' + lang + '/' + ts).remove();
-        await loadAdminSubtitles();
-      } catch (err) {
-        alert('Error al eliminar: ' + err.message);
-      }
+      container.innerHTML = '<div style="text-align:center;padding:24px;color:#888;font-size:13px;line-height:1.5;">Edita las líneas de subtítulos manualmente al crear o modificar los episodios.</div>';
     }
 
     // ── Toast notification ────────────────────────────────────────────────────
