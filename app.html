@@ -12256,35 +12256,72 @@
       if (stateEl) { stateEl.className = 'mini-dub-ep-state ' + state; stateEl.textContent = msg; }
     }
 
+    async function _parseDubJsonResponse(resp, fallbackMessage) {
+      const text = await resp.text();
+      try {
+        return text ? JSON.parse(text) : {};
+      } catch (error) {
+        const snippet = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
+        throw new Error(snippet || fallbackMessage || 'Respuesta inválida del servidor de doblaje');
+      }
+    }
+
+    function _normalizeMiniDubSourceUrl(url) {
+      if (!url) return '';
+      try {
+        return normalizeMediaUrl(url);
+      } catch (error) {
+        return url;
+      }
+    }
+
+    function _normalizeDubLanguageCode(value) {
+      const aliases = {
+        '': 'auto', original: 'auto', auto: 'auto',
+        español: 'es', espanol: 'es', spanish: 'es', castellano: 'es', es: 'es',
+        inglés: 'en', ingles: 'en', english: 'en', en: 'en',
+        portugués: 'pt', portugues: 'pt', portuguese: 'pt', pt: 'pt',
+        japonés: 'ja', japones: 'ja', japanese: 'ja', ja: 'ja', jpn: 'ja',
+        coreano: 'ko', korean: 'ko', ko: 'ko',
+        chino: 'zh', chinese: 'zh', zh: 'zh'
+      };
+      const key = String(value || '').trim().toLowerCase();
+      return aliases[key] || (/^[a-z]{2,3}$/.test(key) ? key : 'auto');
+    }
+
     async function _dubEpisode(videoUrl, targetLang, miniId, epIdx, srcLang) {
       const resp = await fetch('/api/dub', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          source_url: videoUrl,
-          target_lang: targetLang,
-          source_lang: srcLang || 'auto'
+          source_url: _normalizeMiniDubSourceUrl(videoUrl),
+          target_lang: _normalizeDubLanguageCode(targetLang),
+          source_lang: _normalizeDubLanguageCode(srcLang || 'auto')
         })
       });
-      const data = await resp.json();
+      const data = await _parseDubJsonResponse(resp, 'Error al iniciar doblaje');
       if (!resp.ok || data.error) throw new Error(data.error || 'Error al iniciar doblaje');
       const jobId = data.dubbing_id;
       if (!jobId) throw new Error('No se recibió ID de trabajo');
+      const safeJobId = encodeURIComponent(jobId);
 
       // Poll for completion (max 15 min)
       const maxWait = 15 * 60 * 1000;
       const start   = Date.now();
+      let isDubbed = false;
       while (Date.now() - start < maxWait) {
         await new Promise(r => setTimeout(r, 8000));
-        const statusResp = await fetch(`/api/dub/${jobId}/status`);
-        const statusData = await statusResp.json();
-        if (statusData.status === 'dubbed') break;
+        const statusResp = await fetch(`/api/dub/${safeJobId}/status`);
+        const statusData = await _parseDubJsonResponse(statusResp, 'Error consultando estado del doblaje');
+        if (!statusResp.ok || statusData.error) throw new Error(statusData.error || 'Error consultando estado del doblaje');
+        if (statusData.status === 'dubbed') { isDubbed = true; break; }
         if (statusData.status === 'failed') throw new Error('Doblaje fallido en ElevenLabs');
       }
+      if (!isDubbed) throw new Error('El doblaje tardó demasiado. Intenta de nuevo en unos minutos.');
 
       // Download audio + upload to Cloudinary via server
-      const audioResp = await fetch(`/api/dub/${jobId}/audio/${targetLang}`);
-      const audioData = await audioResp.json();
+      const audioResp = await fetch(`/api/dub/${safeJobId}/audio/${encodeURIComponent(_normalizeDubLanguageCode(targetLang))}`);
+      const audioData = await _parseDubJsonResponse(audioResp, 'Error descargando audio');
       if (!audioResp.ok || audioData.error) throw new Error(audioData.error || 'Error descargando audio');
       return audioData.url;
     }

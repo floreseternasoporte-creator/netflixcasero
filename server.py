@@ -4,6 +4,7 @@ import time
 import os
 import io
 import requests
+from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__)
@@ -14,6 +15,81 @@ CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', 'dubsgko2k')
 ELEVENLABS_API_KEY    = os.environ.get('ELEVENLABS_API_KEY', '')
 
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+
+LANGUAGE_CODE_ALIASES = {
+    'auto': 'auto',
+    'automatic': 'auto',
+    'original': 'auto',
+    '': 'auto',
+    'es': 'es',
+    'spa': 'es',
+    'spanish': 'es',
+    'español': 'es',
+    'espanol': 'es',
+    'castellano': 'es',
+    'en': 'en',
+    'eng': 'en',
+    'english': 'en',
+    'inglés': 'en',
+    'ingles': 'en',
+    'pt': 'pt',
+    'por': 'pt',
+    'portuguese': 'pt',
+    'portugués': 'pt',
+    'portugues': 'pt',
+    'ja': 'ja',
+    'jpn': 'ja',
+    'japanese': 'ja',
+    'japonés': 'ja',
+    'japones': 'ja',
+    '日本語': 'ja',
+    'ko': 'ko',
+    'kor': 'ko',
+    'korean': 'ko',
+    'coreano': 'ko',
+    'zh': 'zh',
+    'zho': 'zh',
+    'chi': 'zh',
+    'chinese': 'zh',
+    'chino': 'zh',
+}
+
+
+def normalize_language_code(value):
+    """Return an ElevenLabs-compatible language code or auto."""
+    if value is None:
+        return 'auto'
+    key = str(value).strip().lower()
+    return LANGUAGE_CODE_ALIASES.get(key, key if 2 <= len(key) <= 3 and key.isalpha() else 'auto')
+
+
+def normalize_source_url(source_url):
+    """Normalize user-facing media URLs before passing them to ElevenLabs."""
+    if not source_url:
+        return ''
+    source_url = str(source_url).strip()
+    parsed = urlparse(source_url)
+    if not parsed.scheme or not parsed.netloc:
+        return source_url
+
+    host = parsed.netloc.lower()
+    query = dict(parse_qsl(parsed.query, keep_blank_values=True))
+    if host in ('dropbox.com', 'www.dropbox.com'):
+        query.pop('dl', None)
+        return urlunparse((
+            parsed.scheme,
+            'dl.dropboxusercontent.com',
+            parsed.path,
+            parsed.params,
+            urlencode(query),
+            parsed.fragment,
+        ))
+
+    if host == 'dl.dropboxusercontent.com':
+        query.pop('dl', None)
+        return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, urlencode(query), parsed.fragment))
+
+    return source_url
 
 
 @app.route('/api/upload', methods=['POST', 'OPTIONS'])
@@ -84,25 +160,28 @@ def start_dubbing():
     if not data:
         return jsonify({'error': 'JSON body required'}), 400
 
-    source_url  = data.get('source_url')
-    target_lang = data.get('target_lang')
-    source_lang = data.get('source_lang', 'auto')
+    source_url  = normalize_source_url(data.get('source_url'))
+    target_lang = normalize_language_code(data.get('target_lang'))
+    source_lang = normalize_language_code(data.get('source_lang', 'auto'))
 
     if not source_url or not target_lang:
         return jsonify({'error': 'source_url and target_lang are required'}), 400
 
     try:
+        form_data = {
+            'source_url': source_url,
+            'target_lang': target_lang,
+            'num_speakers': '0',
+            'watermark': 'false',
+        }
+        if source_lang != 'auto':
+            form_data['source_lang'] = source_lang
+
         # ElevenLabs dubbing API requires multipart/form-data, NOT JSON
         el_resp = requests.post(
             'https://api.elevenlabs.io/v1/dubbing',
             headers={'xi-api-key': ELEVENLABS_API_KEY},
-            data={
-                'source_url': source_url,
-                'target_lang': target_lang,
-                'source_lang': source_lang,
-                'num_speakers': '0',
-                'watermark': 'false',
-            },
+            data=form_data,
             timeout=60
         )
 
