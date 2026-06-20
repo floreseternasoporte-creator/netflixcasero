@@ -494,7 +494,8 @@
     .carousel-item img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      background: #000000;
     }
 
     .carousel-item-overlay {
@@ -2192,7 +2193,8 @@
     .similar-item img {
       width: 100%;
       height: 200px;
-      object-fit: cover;
+      object-fit: contain;
+      background: #000000;
     }
 
     .similar-item-title {
@@ -2710,7 +2712,8 @@
     .search-result-poster img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      background: #000000;
       display: block;
       transition: transform 0.3s ease;
     }
@@ -3354,7 +3357,8 @@
     .history-item-poster img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      background: #000000;
     }
 
     .history-progress-overlay {
@@ -3556,25 +3560,25 @@
     }
 
     .upcoming-card .history-item-title {
-      font-size: clamp(26px, 5vw, 42px);
-      line-height: 0.95;
-      font-weight: 900;
+      font-size: clamp(20px, 4vw, 28px);
+      line-height: 1.08;
+      font-weight: 850;
       letter-spacing: -1px;
       margin-bottom: 14px;
     }
 
     .upcoming-card .history-item-time {
       color: #f4f4f4;
-      font-size: 18px;
+      font-size: 14px;
       font-weight: 500;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .upcoming-description {
       color: #b7b7b7;
-      font-size: 16px;
-      line-height: 1.45;
-      margin: 0 0 22px;
+      font-size: 14px;
+      line-height: 1.42;
+      margin: 0 0 18px;
     }
 
     .upcoming-notify-btn {
@@ -3582,8 +3586,8 @@
       border-radius: 8px;
       background: #ffffff;
       color: #000000;
-      padding: 14px 22px;
-      font-size: 18px;
+      padding: 11px 18px;
+      font-size: 15px;
       font-weight: 800;
       display: inline-flex;
       align-items: center;
@@ -3709,7 +3713,8 @@
     }
     .mini-card img {
       width: 100%; height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      background: #000000;
       display: block;
       border-radius: 10px;
     }
@@ -4137,8 +4142,8 @@
     }
     .mini-info-poster {
       width: 72px; height: 102px;
-      object-fit: cover; border-radius: 10px;
-      background: #1c1e2e; flex-shrink: 0;
+      object-fit: contain; border-radius: 10px;
+      background: #000000; flex-shrink: 0;
       box-shadow: 0 4px 16px rgba(0,0,0,0.5);
     }
     .mini-info-meta { flex: 1; min-width: 0; padding-top: 2px; }
@@ -4213,7 +4218,7 @@
     }
     .mini-sheet-poster {
       width: 46px; height: 62px; border-radius: 8px;
-      object-fit: cover; background: #1c1e2e; flex-shrink: 0;
+      object-fit: contain; background: #000000; flex-shrink: 0;
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
     .mini-sheet-info { flex: 1; min-width: 0; }
@@ -4456,7 +4461,8 @@
     }
     .mini-cover-picker img {
       width: 100%; height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      background: #000000;
     }
     .mini-cover-placeholder {
       text-align: center;
@@ -4571,7 +4577,8 @@
     .mini-edit-poster-thumb img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      background: #000000;
     }
     .mini-edit-poster-thumb-empty {
       color: #444;
@@ -4898,7 +4905,8 @@
     .mini-carousel-item:active { transform: scale(0.95); }
     .mini-carousel-item img {
       width: 100%; height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      background: #000000;
     }
     .mini-carousel-item-overlay {
       position: absolute;
@@ -4985,7 +4993,6 @@
       <div class="section">
         <div class="section-header">
           <h2 class="section-title">Películas</h2>
-          <span class="section-see-all">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
         </div>
         <div class="carousel-container">
           <div class="carousel" id="moviesCarousel"></div>
@@ -4996,7 +5003,6 @@
       <div class="section">
         <div class="section-header">
           <h2 class="section-title">Series</h2>
-          <span class="section-see-all">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
         </div>
         <div class="carousel-container">
           <div class="carousel" id="seriesCarousel"></div>
@@ -5007,7 +5013,6 @@
       <div class="section">
         <div class="section-header">
           <h2 class="section-title">Tendencias</h2>
-          <span class="section-see-all">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
         </div>
         <div class="carousel-container">
           <div class="carousel" id="trendingCarousel"></div>
@@ -5018,7 +5023,6 @@
       <div class="section">
         <div class="section-header">
           <h2 class="section-title">Anime</h2>
-          <span class="section-see-all">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
         </div>
         <div class="carousel-container">
           <div class="carousel" id="animeCarousel"></div>
@@ -5029,7 +5033,6 @@
       <div class="section">
         <div class="section-header">
           <h2 class="section-title">Terror</h2>
-          <span class="section-see-all">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
         </div>
         <div class="carousel-container">
           <div class="carousel" id="terrorCarousel"></div>
@@ -5041,9 +5044,7 @@
         <div class="section-header">
           <h2 class="section-title" style="padding-left:11px;">
             <span style="background:linear-gradient(135deg,#E91E8C,#FF6B35);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:900;">MINI</span>
-            <span style="font-size:11px;color:#8b9ab0;font-weight:500;text-transform:uppercase;letter-spacing:1px;margin-left:6px;">Dramas cortos</span>
           </h2>
-          <span class="section-see-all" style="color:#4c6ef5;cursor:pointer;" onclick="showMiniSection()">Ver todo <i class="fas fa-chevron-right" style="font-size:10px;"></i></span>
         </div>
         <div class="carousel-container">
           <div class="carousel" id="miniCarousel"></div>
@@ -5718,7 +5719,6 @@
       </button>
       <div>
         <div class="mini-logo-text">MINI</div>
-        <div class="mini-logo-sub" data-i18n="mini_subtitle">Dramas cortos</div>
       </div>
     </div>
     <div class="mini-filters" id="miniFilters">
