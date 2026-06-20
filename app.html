@@ -6456,9 +6456,9 @@
       <div class="mini-dub-section">
         <div class="mini-dub-title"><i class="fas fa-microphone-alt"></i> Auto-doblaje IA (ElevenLabs)</div>
         <div class="mini-dub-langs">
-          <label class="mini-dub-lang-check"><input type="checkbox" id="dubLangEs" value="es" checked> 🇪🇸 Español</label>
-          <label class="mini-dub-lang-check"><input type="checkbox" id="dubLangEn" value="en" checked> 🇺🇸 Inglés</label>
-          <label class="mini-dub-lang-check"><input type="checkbox" id="dubLangPt" value="pt" checked> 🇧🇷 Portugués</label>
+          <label class="mini-dub-lang-check"><input type="checkbox" id="dubLangEs" value="es" checked> Español</label>
+          <label class="mini-dub-lang-check"><input type="checkbox" id="dubLangEn" value="en" checked> Inglés</label>
+          <label class="mini-dub-lang-check"><input type="checkbox" id="dubLangPt" value="pt" checked> Portugués</label>
         </div>
         <button class="mini-dub-btn" id="miniDubBtn" onclick="startMiniAutoDub()">
           <i class="fas fa-magic"></i> Doblar episodios automáticamente
@@ -11696,6 +11696,7 @@
       Array.from(vid.querySelectorAll('track')).forEach(t => t.remove());
       _miniCurrentSubLang = 'off';
       _miniSubtitleCuesByLang = {};
+      _miniAvailableSubs = {};
       _clearMiniSubtitleOverlay();
 
       const rawSubs = (ep && ep.subtitles) ? ep.subtitles : {};
@@ -11764,7 +11765,15 @@
       // Disable all tracks initially
       Array.from(vid.textTracks).forEach(t => { t.mode = 'disabled'; });
 
-      // Build CC menu
+      // ── Store available subs in global so the tracks modal can read them ──
+      const origLabel2 = (mini && mini.originalLang) ? mini.originalLang : 'Original';
+      _miniAvailableSubs = {};
+      Object.keys(subs).forEach(lang => {
+        const labels = { es: 'Español', en: 'English', original: origLabel2 };
+        _miniAvailableSubs[lang] = labels[lang] || lang;
+      });
+
+      // Build CC menu (now a no-op — modal uses _miniAvailableSubs)
       _buildMiniSubMenu(subs, mini);
     }
 
@@ -11772,6 +11781,7 @@
 
     let _miniCurrentAudioLang = 'original'; // 'original' | 'es' | 'en' | 'pt'
     let _miniDubbedAudioUrls  = {};         // { es: url, en: url, pt: url }
+    let _miniAvailableSubs    = {};         // { es: 'Español', en: 'English', original: 'Korean' } — set by _loadMiniSubtitles
 
     function openMiniTracksModal() {
       _renderMiniTracksModal();
@@ -11789,12 +11799,12 @@
       const subContainer   = document.getElementById('miniSubtitleTrackOptions');
       if (!audioContainer || !subContainer) return;
 
-      const audioLabels = { original: 'Original', es: '🇪🇸 Español', en: '🇺🇸 Inglés', pt: '🇧🇷 Português' };
-      const subLabels   = { off: '🚫 Apagado', es: '🇪🇸 Español', en: '🇺🇸 English', original: 'Original' };
+      const audioLabels = { original: 'Original', es: 'Español', en: 'Inglés', pt: 'Portugués' };
 
-      // Audio tracks
+      // ── Audio tracks ──
       audioContainer.innerHTML = '';
-      const audioTracks = ['original', ...Object.keys(_miniDubbedAudioUrls).filter(k => _miniDubbedAudioUrls[k])];
+      const dubLangs = Object.keys(_miniDubbedAudioUrls).filter(k => _miniDubbedAudioUrls[k]);
+      const audioTracks = ['original', ...dubLangs];
       audioTracks.forEach(lang => {
         const btn = document.createElement('button');
         btn.type = 'button';
@@ -11803,26 +11813,41 @@
         btn.onclick = () => { _setMiniAudioTrack(lang); _renderMiniTracksModal(); };
         audioContainer.appendChild(btn);
       });
-      if (audioTracks.length === 0) {
-        audioContainer.innerHTML = '<div class="mini-track-empty">No hay pistas de audio adicionales</div>';
+      if (audioTracks.length <= 1 && dubLangs.length === 0) {
+        // Only original — show it but note no dubs
+        const note = document.createElement('div');
+        note.className = 'mini-track-empty';
+        note.textContent = 'Sin pistas de doblaje adicionales';
+        audioContainer.appendChild(note);
       }
 
-      // Subtitle tracks
+      // ── Subtitle tracks — uses _miniAvailableSubs set during load ──
       subContainer.innerHTML = '';
-      const vid = document.getElementById('miniPlayerVideo');
-      const availSubs = vid ? Array.from(vid.textTracks).filter(t => t.kind === 'subtitles' || t.kind === 'captions') : [];
-      const subOpts = ['off', ...availSubs.map(t => t.srclang === 'orig' ? 'original' : t.srclang)];
-      subOpts.forEach(lang => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'mini-track-option' + (_miniCurrentSubLang === lang ? ' active' : '');
-        const label = subLabels[lang] || lang;
-        btn.innerHTML = `<span>${label}</span><i class="fas fa-check mto-check"></i>`;
-        btn.onclick = () => { setMiniSubtitle(lang); _renderMiniTracksModal(); };
-        subContainer.appendChild(btn);
-      });
-      if (subOpts.length <= 1) {
-        subContainer.innerHTML = '<div class="mini-track-empty">No hay subtítulos disponibles</div>';
+      const availSubLangs = Object.keys(_miniAvailableSubs);
+
+      // Always add "Off" option
+      const offBtn = document.createElement('button');
+      offBtn.type = 'button';
+      offBtn.className = 'mini-track-option' + (_miniCurrentSubLang === 'off' ? ' active' : '');
+      offBtn.innerHTML = '<span>Apagado</span><i class="fas fa-check mto-check"></i>';
+      offBtn.onclick = () => { setMiniSubtitle('off'); _renderMiniTracksModal(); };
+      subContainer.appendChild(offBtn);
+
+      if (availSubLangs.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'mini-track-empty';
+        empty.textContent = 'Sin subtítulos disponibles';
+        subContainer.appendChild(empty);
+      } else {
+        availSubLangs.forEach(lang => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'mini-track-option' + (_miniCurrentSubLang === lang ? ' active' : '');
+          const label = _miniAvailableSubs[lang] || lang;
+          btn.innerHTML = `<span>${label}</span><i class="fas fa-check mto-check"></i>`;
+          btn.onclick = () => { setMiniSubtitle(lang); _renderMiniTracksModal(); };
+          subContainer.appendChild(btn);
+        });
       }
     }
 

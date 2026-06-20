@@ -92,18 +92,16 @@ def start_dubbing():
         return jsonify({'error': 'source_url and target_lang are required'}), 400
 
     try:
+        # ElevenLabs dubbing API requires multipart/form-data, NOT JSON
         el_resp = requests.post(
             'https://api.elevenlabs.io/v1/dubbing',
-            headers={
-                'xi-api-key': ELEVENLABS_API_KEY,
-                'Content-Type': 'application/json',
-            },
-            json={
+            headers={'xi-api-key': ELEVENLABS_API_KEY},
+            data={
                 'source_url': source_url,
                 'target_lang': target_lang,
                 'source_lang': source_lang,
-                'num_speakers': 0,
-                'watermark': False,
+                'num_speakers': '0',
+                'watermark': 'false',
             },
             timeout=60
         )
