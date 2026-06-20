@@ -261,8 +261,8 @@
     .featured-hero-bg {
       position: absolute;
       inset: 0;
-      background-size: cover;
-      background-position: center 20%;
+      background-size: contain;
+      background-position: center center;
       background-repeat: no-repeat;
       background-color: #080808;
     }
@@ -496,6 +496,20 @@
       height: 100%;
       object-fit: contain;
       background: #000000;
+    }
+
+
+    .carousel-item img,
+    .search-result-poster img,
+    .history-item-poster img,
+    .similar-item img,
+    .mini-card img,
+    .mini-carousel-item img,
+    .mini-info-poster,
+    .mini-sheet-poster,
+    .mini-cover-picker img,
+    .mini-edit-poster-thumb img {
+      object-position: center center;
     }
 
     .carousel-item-overlay {
@@ -818,9 +832,10 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-size: cover;
-      background-position: center;
+      background-size: contain;
+      background-position: center center;
       background-repeat: no-repeat;
+      background-color: #050505;
       z-index: 0;
       filter: blur(1px);
     }
@@ -1081,7 +1096,9 @@
     .episode-thumbnail img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      object-position: center center;
+      background: #000000;
     }
 
     .episode-play-overlay {
@@ -1705,7 +1722,9 @@
     .continue-item img {
       width: 100%;
       aspect-ratio: 16/9;
-      object-fit: cover;
+      object-fit: contain;
+      object-position: center center;
+      background: #000000;
       display: block;
     }
 
@@ -3519,8 +3538,9 @@
     }
 
     .upcoming-card .history-item-poster img {
-      object-fit: cover;
+      object-fit: contain;
       object-position: center center;
+      background: #050505;
     }
 
     .upcoming-card .history-item-poster::after {
@@ -4611,7 +4631,6 @@
       width: 100%;
       aspect-ratio: 2/3;
       border-radius: 8px;
-      object-fit: cover;
       background: #13141f;
       border: 1px dashed #2d2f4a;
       cursor: pointer;
@@ -5817,7 +5836,7 @@
             <span style="color:#E91E8C;margin-left:2px">*</span>
           </div>
           <div class="mini-cover-picker mini-cover-sm" id="miniCoverPickerOrig" onclick="document.getElementById('miniCoverInputOrig').click()">
-            <img id="miniCoverPreview_orig" style="display:none;width:100%;height:100%;object-fit:cover;">
+            <img id="miniCoverPreview_orig" style="display:none;width:100%;height:100%;object-fit:contain;background:#000;">
             <div class="mini-cover-placeholder" id="miniCoverPlaceholder_orig">
               <i class="fas fa-image"></i>
               <span data-i18n="tap_upload">Toca para subir</span>
@@ -5838,7 +5857,7 @@
             <span style="color:#666;font-size:11px;margin-left:4px" data-i18n="optional">(opcional)</span>
           </div>
           <div class="mini-cover-picker mini-cover-sm" id="miniCoverPickerEs" onclick="document.getElementById('miniCoverInputEs').click()">
-            <img id="miniCoverPreview_es" style="display:none;width:100%;height:100%;object-fit:cover;">
+            <img id="miniCoverPreview_es" style="display:none;width:100%;height:100%;object-fit:contain;background:#000;">
             <div class="mini-cover-placeholder" id="miniCoverPlaceholder_es">
               <i class="fas fa-image"></i>
               <span data-i18n="tap_upload">Toca para subir</span>
@@ -5859,7 +5878,7 @@
             <span style="color:#666;font-size:11px;margin-left:4px" data-i18n="optional">(opcional)</span>
           </div>
           <div class="mini-cover-picker mini-cover-sm" id="miniCoverPickerEn" onclick="document.getElementById('miniCoverInputEn').click()">
-            <img id="miniCoverPreview_en" style="display:none;width:100%;height:100%;object-fit:cover;">
+            <img id="miniCoverPreview_en" style="display:none;width:100%;height:100%;object-fit:contain;background:#000;">
             <div class="mini-cover-placeholder" id="miniCoverPlaceholder_en">
               <i class="fas fa-image"></i>
               <span data-i18n="tap_upload">Toca para subir</span>
