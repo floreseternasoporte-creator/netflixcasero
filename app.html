@@ -2472,6 +2472,20 @@
       }
     }
 
+
+    /* Mi Lista y ajustes DeepSeek uniformes */
+    .my-list-section { background:#0a0b14 !important; }
+    .my-list-item { position:relative; padding-right:58px; }
+    .my-list-remove-btn { position:absolute; right:14px; top:50%; transform:translateY(-50%); width:38px; height:38px; border-radius:50%; border:1px solid #1c2240; background:#111322; color:#8b9ab0; display:flex; align-items:center; justify-content:center; }
+    .my-list-remove-btn:active { background:#1c2240; color:#fff; }
+    .settings-profile-card, .settings-nav-row, .settings-sub-group { background:#0d0e1a !important; border:1px solid #1c1e2e !important; }
+    .settings-section, .settings-sub, .settings-sub-topbar { background:#0a0b14 !important; }
+    .settings-nav-icon { background:rgba(76,110,245,0.14) !important; }
+    .settings-nav-icon i, .settings-sub-back i, .settings-nav-arrow { color:#4c6ef5 !important; }
+    .setting-name, .settings-nav-label, .settings-sub-topbar-title { color:#ffffff !important; }
+    .setting-description, .settings-nav-value, .settings-profile-email, .settings-profile-plan { color:#8b9ab0 !important; }
+    .setting-name[style*="color"], .settings-sub i[style*="color"] { color:#4c6ef5 !important; }
+
     .hidden {
       display: none;
     }
@@ -5289,6 +5303,17 @@
         </div>
       </div>
 
+      <!-- Mi Lista -->
+      <div id="myListHomeSection" class="section" style="display:none;">
+        <div class="section-header">
+          <h2 class="section-title">Mi Lista</h2>
+          <span class="section-see-all" onclick="showMyListSection()">Ver todo <i class="fas fa-chevron-right"></i></span>
+        </div>
+        <div class="carousel-container">
+          <div class="carousel" id="myListCarousel"></div>
+        </div>
+      </div>
+
       <!-- Películas -->
       <div class="section">
         <div class="section-header">
@@ -5395,10 +5420,6 @@
       <button class="series-btn primary" id="playButton" onclick="playEpisode(1, 1)">
         <i class="fas fa-play"></i>
         Reproducir
-      </button>
-      <button class="series-btn secondary" onclick="playTrailer()">
-        <i class="fas fa-film"></i>
-        Trailer
       </button>
       <button class="series-btn secondary" onclick="addToMyList()">
         <i class="fas fa-plus"></i>
@@ -5952,6 +5973,26 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Sección de Mi Lista -->
+  <div id="myListSection" class="history-section my-list-section">
+    <div class="upcoming-topbar">
+      <button class="upcoming-back-btn" onclick="closeMyListSection()" aria-label="Volver">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <h2 class="upcoming-title">Mi Lista</h2>
+    </div>
+
+    <div id="myListContent" class="history-content">
+      <!-- Mi Lista se cargará aquí -->
+    </div>
+
+    <div id="myListEmpty" class="history-empty hidden">
+      <i class="fas fa-bookmark"></i>
+      <h3>Tu lista está vacía</h3>
+      <p>Agrega películas o series y aparecerán aquí al instante.</p>
+    </div>
   </div>
 
   <!-- Sección de Historial -->
@@ -6518,6 +6559,10 @@
       <i class="fas fa-play-circle"></i>
       <span>Mini</span>
     </button>
+    <button id="navMyList">
+      <i class="fas fa-bookmark"></i>
+      <span>Mi Lista</span>
+    </button>
     <button id="navProfile">
       <i class="fas fa-user-circle"></i>
       <span>Perfil</span>
@@ -6808,6 +6853,8 @@
             showSearchSection();
           } else if (buttonId === 'navMini') {
             showMiniSection();
+          } else if (buttonId === 'navMyList') {
+            showMyListSection();
           } else if (buttonId === 'navProfile') {
             showSettingsSection();
           }
@@ -6846,6 +6893,7 @@
       document.getElementById('topBar').classList.add('top-bar--solid');
       document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
       document.getElementById('navProfile') && document.getElementById('navProfile').classList.add('active');
+      loadCurrentSettings();
     }
 
     // Make top bar transparent on home, solid elsewhere
@@ -6864,6 +6912,7 @@
         document.getElementById('settingsSection'),
         document.getElementById('historySection'),
         document.getElementById('calendarSection'),
+        document.getElementById('myListSection'),
         document.getElementById('seriesDetail')
       ].filter(Boolean);
 
@@ -6943,6 +6992,9 @@
       document.getElementById('historySection').classList.remove('active');
       document.getElementById('calendarSection').classList.remove('active');
       document.getElementById('miniSection').classList.remove('active');
+      const myListSection = document.getElementById('myListSection');
+      if (myListSection) myListSection.classList.remove('active');
+      closeAllSettingsSubs();
     }
 
     // Cerrar sección de búsqueda
@@ -6978,6 +7030,7 @@
 
     // Cerrar sección de ajustes
     function closeSettingsSection() {
+      closeAllSettingsSubs();
       document.getElementById('settingsSection').classList.remove('active');
       showHomeSection();
       document.querySelectorAll('.bottom-nav button').forEach(btn => btn.classList.remove('active'));
@@ -7270,6 +7323,7 @@
         `;
       }
 
+      refreshMyListViews();
       document.body.appendChild(notification);
 
       // Remover después de la animación
@@ -7442,6 +7496,85 @@
       // Activar botón home
       document.querySelectorAll('.bottom-nav button').forEach(btn => btn.classList.remove('active'));
       document.getElementById('navHome').classList.add('active');
+    }
+
+
+    function getMyListItems() {
+      const stored = JSON.parse(localStorage.getItem('atenis_my_list') || '[]');
+      return stored
+        .map(item => ({ ...item, series: seriesDatabase[item.id] }))
+        .filter(item => item.series)
+        .sort((a, b) => new Date(b.addedAt || 0) - new Date(a.addedAt || 0));
+    }
+
+    function refreshMyListViews() {
+      renderMyListCarousel();
+      if (document.getElementById('myListSection')?.classList.contains('active')) {
+        renderMyListSection();
+      }
+      renderUpcomingReleases();
+    }
+
+    function renderMyListCarousel() {
+      const section = document.getElementById('myListHomeSection');
+      const carousel = document.getElementById('myListCarousel');
+      if (!section || !carousel) return;
+      const items = getMyListItems();
+      section.style.display = items.length ? 'block' : 'none';
+      carousel.innerHTML = '';
+      items.slice(0, 12).forEach(item => carousel.appendChild(createContentCard(item.series)));
+    }
+
+    function showMyListSection() {
+      hideAllSections();
+      showBottomNav();
+      setTopBarMode(true);
+      const section = document.getElementById('myListSection');
+      if (section) section.classList.add('active');
+      document.querySelectorAll('.bottom-nav button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('navMyList')?.classList.add('active');
+      renderMyListSection();
+    }
+
+    function closeMyListSection() {
+      document.getElementById('myListSection')?.classList.remove('active');
+      showHomeSection();
+      document.querySelectorAll('.bottom-nav button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('navHome')?.classList.add('active');
+    }
+
+    function removeFromMyList(seriesId) {
+      const filtered = JSON.parse(localStorage.getItem('atenis_my_list') || '[]').filter(item => item.id !== seriesId);
+      localStorage.setItem('atenis_my_list', JSON.stringify(filtered));
+      refreshMyListViews();
+      showSettingsMessage('Eliminado de Mi Lista');
+    }
+
+    function renderMyListSection() {
+      const content = document.getElementById('myListContent');
+      const empty = document.getElementById('myListEmpty');
+      if (!content || !empty) return;
+      const items = getMyListItems();
+      content.innerHTML = '';
+      empty.classList.toggle('hidden', items.length > 0);
+      items.forEach(({ series, addedAt }) => {
+        const row = document.createElement('div');
+        row.className = 'history-item my-list-item';
+        row.innerHTML = `
+          <div class="history-item-poster" onclick="showSeriesDetail('${series.id}')">
+            <img src="${series.poster}" alt="${series.spanishTitle || series.title}">
+          </div>
+          <div class="history-item-content" onclick="showSeriesDetail('${series.id}')">
+            <div class="history-item-title">${series.spanishTitle || series.title}</div>
+            <div class="history-item-meta">${series.year} • ${getContentTypeLabel(series)} • ${(series.genre || '').split(',')[0]}</div>
+            <div class="history-item-time"><i class="fas fa-bookmark"></i> Agregado ${getTimeAgo(new Date(addedAt || Date.now()))}</div>
+          </div>
+          <button class="my-list-remove-btn" onclick="event.stopPropagation(); removeFromMyList('${series.id}')" aria-label="Quitar de Mi Lista">
+            <i class="fas fa-trash"></i>
+          </button>
+        `;
+        content.appendChild(row);
+      });
     }
 
     // Cargar contenido del historial
@@ -8654,6 +8787,7 @@
 
         items.forEach(series => carousel.appendChild(createContentCard(series)));
       });
+      renderMyListCarousel();
     }
 
     function formatReleaseDate(releaseDateValue) {
@@ -8968,86 +9102,28 @@
       const videoEl = document.getElementById('seriesDetailVideo');
       const playBtn = document.getElementById('netflixPlayBtn');
       const soundBtn = document.getElementById('soundToggle');
-      const trailerUrl = series.preview || series.trailer;
 
-      // Limpiar estado anterior para que el preview del nuevo estreno no herede eventos o fuentes viejas.
-      videoEl.onloadeddata = null;
-      videoEl.oncanplay = null;
-      videoEl.onerror = null;
-      videoEl.pause();
-      videoEl.removeAttribute('src');
-      videoEl.load();
-      videoEl.classList.remove('loaded');
-      videoEl.style.opacity = '0';
-      playBtn.classList.remove('loading');
-      playBtn.innerHTML = '<i class="fas fa-play"></i>';
-      playBtn.style.display = 'flex';
-      soundBtn.style.display = 'none';
-      soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-
-      if (!trailerUrl) {
-        videoEl.style.display = 'none';
-        return;
-      }
-
-      const showPreview = () => {
-        videoEl.style.opacity = '1';
-        videoEl.classList.add('loaded');
-        playBtn.classList.remove('loading');
-        playBtn.style.display = 'none';
-        soundBtn.style.display = 'flex';
-      };
-
-      const showPosterFallback = () => {
-        console.log('Error loading trailer preview, using poster only');
+      // Preview desactivado: en Películas y Series se muestra solo el póster.
+      if (videoEl) {
+        videoEl.onloadeddata = null;
+        videoEl.oncanplay = null;
+        videoEl.onerror = null;
         videoEl.pause();
-        videoEl.style.display = 'none';
+        videoEl.removeAttribute('src');
+        videoEl.load();
         videoEl.classList.remove('loaded');
+        videoEl.style.display = 'none';
+        videoEl.style.opacity = '0';
+      }
+      if (playBtn) {
         playBtn.classList.remove('loading');
+        playBtn.innerHTML = '<i class="fas fa-play"></i>';
         playBtn.style.display = 'flex';
+      }
+      if (soundBtn) {
         soundBtn.style.display = 'none';
-      };
-
-      // Configurar video con atributos correctos para preview móvil y enlaces de Dropbox.
-      videoEl.style.display = 'block';
-      videoEl.poster = series.poster || '';
-      videoEl.muted = true;
-      videoEl.defaultMuted = true;
-      videoEl.loop = true;
-      videoEl.autoplay = true;
-      videoEl.playsInline = true;
-      videoEl.preload = 'auto';
-      videoEl.removeAttribute('crossorigin');
-      videoEl.setAttribute('muted', '');
-      videoEl.setAttribute('playsinline', 'true');
-      videoEl.setAttribute('webkit-playsinline', 'true');
-      videoEl.setAttribute('x5-playsinline', 'true');
-
-      videoEl.onloadeddata = () => {
-        showPreview();
-        videoEl.currentTime = 0;
-        const playPromise = videoEl.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(error => {
-            console.log('Trailer preview autoplay prevented:', error);
-            playBtn.style.display = 'flex';
-          });
-        }
-      };
-
-      videoEl.oncanplay = () => {
-        if (videoEl.readyState >= 3) {
-          showPreview();
-        }
-      };
-
-      videoEl.onerror = showPosterFallback;
-
-      // Usar la pista de audio actual si existe, de lo contrario la URL por defecto
-      const currentTrackUrl = (series.audioTracks && series.currentAudioTrack) ? series.audioTracks[series.currentAudioTrack] : trailerUrl;
-      
-      videoEl.src = normalizeMediaUrl(currentTrackUrl);
-      videoEl.load();
+        soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+      }
     }
 
     // Función para alternar sonido del trailer o cambiar pista de audio
@@ -12163,6 +12239,10 @@
     // ════════════════════════════════════════════════════════════════════════
     //  SETTINGS — Netflix-style sub-section navigation
     // ════════════════════════════════════════════════════════════════════════
+
+    function closeAllSettingsSubs() {
+      document.querySelectorAll('.settings-sub.open').forEach(el => el.classList.remove('open'));
+    }
 
     function openSettingsSub(name) {
       const idMap = {
