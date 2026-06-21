@@ -12,7 +12,7 @@ app = Flask(__name__)
 CLOUDINARY_API_KEY    = os.environ.get('CLOUDINARY_API_KEY', '238548142884869')
 CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET', 'R9mMGi3x6q6qp2U1hgaT_g1yWNQ')
 CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', 'dubsgko2k')
-ELEVENLABS_API_KEY    = os.environ.get('ELEVENLABS_API_KEY', '')
+ELEVENLABS_API_KEY    = os.environ.get('ELEVENLABS_API_KEY', 'sk_af98fc8a245c838e59bafa08800599de0f2e4442d96b23b8')
 
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
