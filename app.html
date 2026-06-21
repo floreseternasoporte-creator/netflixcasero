@@ -796,7 +796,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       object-position: center;
       z-index: 1;
       opacity: 0;
@@ -1723,7 +1723,7 @@
     .continue-item img {
       width: 100%;
       aspect-ratio: 16/9;
-      object-fit: cover;
+      object-fit: contain;
       object-position: center center;
       background: #000000;
       display: block;
@@ -3377,7 +3377,7 @@
     .history-item-poster img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       background: #000000;
     }
 
@@ -3539,7 +3539,7 @@
     }
 
     .upcoming-card .history-item-poster img {
-      object-fit: cover;
+      object-fit: contain;
       object-position: center center;
       background: #050505;
     }
@@ -3846,7 +3846,7 @@
     .mini-player-video {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       transition: filter 0.8s ease, transform 0.8s ease;
     }
     .mini-player-video.mini-ending {
@@ -12291,40 +12291,93 @@
     }
 
     async function _dubEpisode(videoUrl, targetLang, miniId, epIdx, srcLang) {
-      const resp = await fetch('/api/dub', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          source_url: _normalizeMiniDubSourceUrl(videoUrl),
-          target_lang: _normalizeDubLanguageCode(targetLang),
-          source_lang: _normalizeDubLanguageCode(srcLang || 'auto')
-        })
-      });
-      const data = await _parseDubJsonResponse(resp, 'Error al iniciar doblaje');
-      if (!resp.ok || data.error) throw new Error(data.error || 'Error al iniciar doblaje');
-      const jobId = data.dubbing_id;
-      if (!jobId) throw new Error('No se recibió ID de trabajo');
-      const safeJobId = encodeURIComponent(jobId);
+      // API Key de ElevenLabs
+      const ELEVENLABS_API_KEY = 'sk_af98fc8a245c838e59bafa08800599de0f2e4442d96b23b8';
+      
+      // Normalizar URL del video
+      const sourceUrl = _normalizeMiniDubSourceUrl(videoUrl);
+      const targetLangCode = _normalizeDubLanguageCode(targetLang);
+      const sourceLangCode = _normalizeDubLanguageCode(srcLang || 'auto');
 
-      // Poll for completion (max 15 min)
+      // Iniciar doblaje en ElevenLabs
+      const formData = new FormData();
+      formData.append('source_url', sourceUrl);
+      formData.append('target_lang', targetLangCode);
+      formData.append('num_speakers', '0');
+      formData.append('watermark', 'false');
+      if (sourceLangCode !== 'auto') {
+        formData.append('source_lang', sourceLangCode);
+      }
+
+      const dubResp = await fetch('https://api.elevenlabs.io/v1/dubbing', {
+        method: 'POST',
+        headers: { 'xi-api-key': ELEVENLABS_API_KEY },
+        body: formData
+      });
+
+      const dubData = await dubResp.json();
+      if (!dubResp.ok || dubData.error) {
+        throw new Error(dubData.detail || dubData.error || 'Error al iniciar doblaje');
+      }
+      
+      const jobId = dubData.dubbing_id;
+      if (!jobId) throw new Error('No se recibió ID de trabajo');
+
+      // Esperar a que el doblaje esté listo (max 15 min)
       const maxWait = 15 * 60 * 1000;
-      const start   = Date.now();
+      const start = Date.now();
       let isDubbed = false;
+      
       while (Date.now() - start < maxWait) {
         await new Promise(r => setTimeout(r, 8000));
-        const statusResp = await fetch(`/api/dub/${safeJobId}/status`);
-        const statusData = await _parseDubJsonResponse(statusResp, 'Error consultando estado del doblaje');
-        if (!statusResp.ok || statusData.error) throw new Error(statusData.error || 'Error consultando estado del doblaje');
-        if (statusData.status === 'dubbed') { isDubbed = true; break; }
-        if (statusData.status === 'failed') throw new Error('Doblaje fallido en ElevenLabs');
+        
+        const statusResp = await fetch(`https://api.elevenlabs.io/v1/dubbing/${jobId}`, {
+          headers: { 'xi-api-key': ELEVENLABS_API_KEY }
+        });
+        
+        const statusData = await statusResp.json();
+        if (!statusResp.ok) throw new Error('Error consultando estado del doblaje');
+        
+        if (statusData.status === 'dubbed') {
+          isDubbed = true;
+          break;
+        }
+        if (statusData.status === 'failed') {
+          throw new Error('Doblaje fallido en ElevenLabs');
+        }
       }
-      if (!isDubbed) throw new Error('El doblaje tardó demasiado. Intenta de nuevo en unos minutos.');
+      
+      if (!isDubbed) {
+        throw new Error('El doblaje tardó demasiado. Intenta de nuevo en unos minutos.');
+      }
 
-      // Download audio + upload to Cloudinary via server
-      const audioResp = await fetch(`/api/dub/${safeJobId}/audio/${encodeURIComponent(_normalizeDubLanguageCode(targetLang))}`);
-      const audioData = await _parseDubJsonResponse(audioResp, 'Error descargando audio');
-      if (!audioResp.ok || audioData.error) throw new Error(audioData.error || 'Error descargando audio');
-      return audioData.url;
+      // Descargar el audio doblado
+      const audioResp = await fetch(`https://api.elevenlabs.io/v1/dubbing/${jobId}/audio/${targetLangCode}`, {
+        headers: { 'xi-api-key': ELEVENLABS_API_KEY }
+      });
+
+      if (!audioResp.ok) throw new Error('Error descargando audio doblado');
+
+      // Convertir a blob y subir a Cloudinary
+      const audioBlob = await audioResp.blob();
+      const audioFile = new File([audioBlob], `${miniId}_ep${epIdx}_${targetLangCode}.mp3`, { type: 'audio/mpeg' });
+
+      // Subir a Cloudinary usando el endpoint existente
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', audioFile);
+      uploadFormData.append('folder', 'atenis-dubs');
+
+      const uploadResp = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadFormData
+      });
+
+      const uploadData = await uploadResp.json();
+      if (!uploadResp.ok || uploadData.error) {
+        throw new Error(uploadData.error || 'Error subiendo audio a Cloudinary');
+      }
+
+      return uploadData.url;
     }
 
     async function _saveDubbedAudio(miniId, epIdx, lang, url) {
