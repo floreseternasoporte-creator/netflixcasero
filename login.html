@@ -7,7 +7,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;750;800&display=swap" rel="stylesheet">
 
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -15,485 +15,328 @@
 
   <style>
     :root {
-      --bg:        #F5F4ED;
-      --bg-panel:  #FBFAF6;
-      --ink:       #1F1B16;
-      --ink-soft:  rgba(31,27,22,0.62);
-      --ink-faint: rgba(31,27,22,0.38);
-      --line:      rgba(31,27,22,0.10);
-      --line-soft: rgba(31,27,22,0.07);
-      --accent:    #C2603D;
-      --accent-hov:#AD5232;
-      --accent-soft: rgba(194,96,61,0.10);
-      --accent-soft-line: rgba(194,96,61,0.28);
-      --good:      #4B7B5C;
-      --good-soft: rgba(75,123,92,0.12);
-      --bad:       #B3492F;
-      --bad-soft:  rgba(179,73,47,0.10);
-      --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --font-serif: 'Source Serif 4', Georgia, serif;
+      --bg: #050505;
+      --panel: #0c0c0a;
+      --panel-soft: #11110f;
+      --card: rgba(255,255,255,0.06);
+      --ink: #f7f4ea;
+      --ink-soft: rgba(247,244,234,0.68);
+      --ink-faint: rgba(247,244,234,0.42);
+      --line: rgba(247,244,234,0.12);
+      --line-soft: rgba(247,244,234,0.08);
+      --accent: #d7ff6f;
+      --accent-hov: #c8f05f;
+      --accent-ink: #101207;
+      --good: #b8f46c;
+      --good-soft: rgba(184,244,108,0.12);
+      --bad: #ff7a66;
+      --bad-soft: rgba(255,122,102,0.12);
+      --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
-      height: 100%;
+      min-height: 100%;
       background: var(--bg);
       font-family: var(--font-sans);
       color: var(--ink);
       overflow-x: hidden;
     }
 
-    /* ─── Background subtle warm glow ─── */
     body::before {
       content: '';
-      position: fixed; inset: 0;
+      position: fixed;
+      inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(194,96,61,0.07) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(194,96,61,0.05) 0%, transparent 55%);
+        radial-gradient(circle at 18% 12%, rgba(215,255,111,0.16), transparent 28%),
+        radial-gradient(circle at 86% 18%, rgba(255,255,255,0.10), transparent 22%),
+        linear-gradient(135deg, #050505 0%, #0a0a08 55%, #12140c 100%);
       pointer-events: none;
       z-index: 0;
     }
 
-    /* ─── Main layout ─── */
     .auth-root {
       min-height: 100vh;
-      display: flex;
-      align-items: stretch;
+      display: grid;
+      grid-template-columns: minmax(360px, 0.92fr) minmax(360px, 1fr);
       position: relative;
       z-index: 1;
     }
 
-    /* ─── Left panel: brand ─── */
     .auth-brand {
-      flex: 0 0 44%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      padding: 64px 56px;
-      border-right: 1px solid var(--line);
-      background: var(--bg-panel);
+      justify-content: space-between;
+      padding: clamp(32px, 5vw, 72px);
+      border-right: 1px solid var(--line-soft);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.015)),
+        var(--panel);
       position: relative;
       overflow: hidden;
     }
-    .auth-brand::after {
+
+    .auth-brand::before {
       content: '';
       position: absolute;
-      bottom: -60px; right: -60px;
-      width: 280px; height: 280px;
-      background: radial-gradient(circle, rgba(194,96,61,0.10) 0%, transparent 70%);
-      pointer-events: none;
+      left: clamp(28px, 5vw, 72px);
+      right: clamp(28px, 5vw, 72px);
+      bottom: clamp(36px, 6vw, 86px);
+      height: 220px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background:
+        linear-gradient(90deg, rgba(215,255,111,0.22), transparent 42%),
+        repeating-linear-gradient(90deg, rgba(247,244,234,0.18) 0 2px, transparent 2px 18px);
+      mask-image: linear-gradient(to top, black 0%, transparent 92%);
+      opacity: 0.82;
     }
 
     .brand-logo {
-      font-family: var(--font-serif);
-      font-size: clamp(48px, 6.5vw, 84px);
-      font-weight: 600;
-      letter-spacing: -2px;
-      line-height: 0.96;
-      color: var(--ink);
-      margin-bottom: 24px;
-    }
-    .brand-tagline {
-      font-size: clamp(16px, 1.6vw, 22px);
-      color: var(--ink-soft);
-      line-height: 1.5;
-      max-width: 340px;
-      font-weight: 400;
-    }
-    .brand-features {
-      margin-top: 48px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .brand-feature {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 12px;
-      font-size: 14px;
-      color: var(--ink-soft);
-    }
-    .brand-feature .feature-icon {
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      background: var(--accent-soft);
-      border: 1px solid var(--accent-soft-line);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-    .brand-feature .feature-icon svg {
-      width: 16px; height: 16px;
-      stroke: var(--accent);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--ink);
+      margin-bottom: 0;
     }
 
-    /* ─── Right panel: form ─── */
+    .brand-logo::before {
+      content: '';
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--ink) 0 46%, var(--accent) 46% 100%);
+      box-shadow: 0 0 34px rgba(215,255,111,0.24);
+    }
+
+    .brand-tagline {
+      max-width: 560px;
+      font-size: clamp(42px, 6.6vw, 88px);
+      line-height: 0.9;
+      letter-spacing: -0.075em;
+      font-weight: 700;
+      color: var(--ink);
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-tagline em {
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    .brand-features { display: none; }
+
     .auth-panel {
-      flex: 1;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      padding: clamp(28px, 6vw, 80px) clamp(24px, 5vw, 72px);
+      justify-content: center;
+      padding: clamp(28px, 6vw, 84px) clamp(20px, 5vw, 72px);
       overflow-y: auto;
     }
 
     .auth-form-wrap {
       width: 100%;
-      max-width: 420px;
+      max-width: 430px;
+      padding: clamp(22px, 4vw, 34px);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(10,10,8,0.72);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.06);
+      backdrop-filter: blur(18px);
     }
 
-    /* ─── View screens (login / register / forgot) ─── */
-    .auth-view {
-      display: none;
-      animation: authFadeIn 0.28s ease;
-    }
+    .auth-view { display: none; animation: authFadeIn 0.22s ease; }
     .auth-view.active { display: block; }
+    @keyframes authFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    @keyframes authFadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ─── Tab switcher ─── */
     .auth-tabs {
-      display: flex;
-      background: rgba(31,27,22,0.04);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 6px;
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 4px;
-      margin-bottom: 32px;
-    }
-    .auth-tab {
-      flex: 1;
-      background: none;
-      border: none;
-      color: var(--ink-faint);
-      padding: 11px;
-      border-radius: 9px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: var(--font-sans);
-    }
-    .auth-tab.active {
-      background: var(--bg-panel);
-      color: var(--ink);
-      border: 1px solid var(--line);
-      box-shadow: 0 1px 2px rgba(31,27,22,0.06);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.045);
+      margin-bottom: 28px;
     }
 
-    /* ─── Screen heading ─── */
-    .auth-view-title {
-      font-family: var(--font-serif);
-      font-size: 26px;
-      font-weight: 600;
-      color: var(--ink);
-      margin-bottom: 6px;
-      letter-spacing: -0.3px;
+    .auth-tab {
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 12px;
+      background: transparent;
+      color: var(--ink-faint);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
     }
+
+    .auth-tab.active { background: var(--ink); color: #080808; }
+
+    .auth-view-title {
+      font-size: clamp(30px, 4vw, 44px);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+      font-weight: 720;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
     .auth-view-sub {
       font-size: 14px;
-      color: var(--ink-faint);
-      margin-bottom: 28px;
+      color: var(--ink-soft);
+      margin-bottom: 24px;
       line-height: 1.5;
     }
 
-    /* ─── Form elements ─── */
-    .form-group {
-      margin-bottom: 18px;
-    }
+    .form-group { margin-bottom: 16px; }
     .form-label {
       display: block;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 650;
       color: var(--ink-soft);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 7px;
+      margin-bottom: 8px;
     }
-    .form-input-wrap {
-      position: relative;
-    }
+    .form-input-wrap { position: relative; }
     .form-input-icon {
       position: absolute;
-      left: 14px; top: 50%;
+      left: 15px;
+      top: 50%;
       transform: translateY(-50%);
       color: var(--ink-faint);
-      pointer-events: none;
       display: flex;
-      line-height: 0;
+      pointer-events: none;
     }
-    .form-input-icon svg {
-      width: 16px; height: 16px;
-      stroke: currentColor;
-      flex-shrink: 0;
-    }
+    .form-input-icon svg, .form-input-toggle svg { width: 17px; height: 17px; stroke: currentColor; }
     .form-input {
       width: 100%;
-      padding: 14px 44px 14px 42px;
-      background: rgba(31,27,22,0.025);
+      padding: 15px 46px 15px 44px;
       border: 1px solid var(--line);
-      border-radius: 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.055);
       color: var(--ink);
-      font-size: 15px;
-      font-weight: 400;
       font-family: var(--font-sans);
-      transition: border-color 0.2s, background 0.2s;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
       -webkit-appearance: none;
     }
     .form-input:focus {
-      outline: none;
-      border-color: var(--accent);
-      background: var(--accent-soft);
+      border-color: rgba(215,255,111,0.7);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 0 0 4px rgba(215,255,111,0.12);
     }
     .form-input::placeholder { color: var(--ink-faint); }
 
     .form-input-toggle {
       position: absolute;
-      right: 12px; top: 50%;
+      right: 12px;
+      top: 50%;
       transform: translateY(-50%);
-      background: none; border: none;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
       color: var(--ink-faint);
+      padding: 7px;
       cursor: pointer;
-      padding: 4px;
-      display: flex;
-      line-height: 0;
-      border-radius: 6px;
-      transition: color 0.15s, background 0.15s;
     }
-    .form-input-toggle:hover {
-      color: var(--ink-soft);
-      background: rgba(31,27,22,0.05);
-    }
-    .form-input-toggle svg {
-      width: 16px; height: 16px;
-      stroke: currentColor;
-    }
+    .form-input-toggle:hover { color: var(--ink); background: rgba(255,255,255,0.07); }
 
-    /* ─── Primary button ─── */
     .auth-btn-primary {
       width: 100%;
-      padding: 15px;
+      min-height: 50px;
+      border: 0;
+      border-radius: 999px;
       background: var(--accent);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 600;
+      color: var(--accent-ink);
       font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 750;
       cursor: pointer;
-      transition: background 0.2s, transform 0.15s;
-      margin-top: 8px;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
-    .auth-btn-primary:hover { background: var(--accent-hov); }
-    .auth-btn-primary:active { transform: scale(0.98); }
-    .auth-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-    .auth-btn-primary .btn-spinner {
-      display: none;
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,0.35);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-    .auth-btn-primary .btn-text {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
+      margin-top: 8px;
+      transition: transform 0.16s, background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 14px 38px rgba(215,255,111,0.16);
     }
+    .auth-btn-primary:hover { background: var(--accent-hov); transform: translateY(-1px); }
+    .auth-btn-primary:active { transform: translateY(0) scale(0.99); }
+    .auth-btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+    .auth-btn-primary .btn-spinner { display: none; width: 16px; height: 16px; border: 2px solid rgba(16,18,7,0.28); border-top-color: var(--accent-ink); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    .auth-btn-primary .btn-text { display: flex; align-items: center; gap: 8px; }
     .auth-btn-primary.loading .btn-spinner { display: block; }
     .auth-btn-primary.loading .btn-text { display: none; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ─── Divider ─── */
-    .auth-divider {
-      display: flex; align-items: center; gap: 12px;
-      margin: 20px 0;
-      color: var(--ink-faint);
-      font-size: 12px;
-    }
-    .auth-divider::before,
-    .auth-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--line);
-    }
-
-    /* ─── Footer links ─── */
-    .auth-footer {
-      margin-top: 22px;
-      text-align: center;
-    }
-    .auth-footer-link {
-      background: none;
-      border: none;
+    .auth-footer-link, .auth-switch-text button {
+      border: 0;
+      background: transparent;
       color: var(--accent);
-      font-size: 14px;
-      font-weight: 500;
       font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 650;
       cursor: pointer;
-      text-decoration: none;
-      padding: 0;
-      transition: color 0.15s;
     }
-    .auth-footer-link:hover { color: var(--accent-hov); }
+    .auth-footer-link:hover, .auth-switch-text button:hover { color: var(--accent-hov); }
+    .auth-switch-text { color: var(--ink-faint); font-size: 14px; }
 
-    .auth-switch-text {
-      font-size: 14px;
-      color: var(--ink-faint);
-      margin-top: 12px;
-    }
-    .auth-switch-text button {
-      background: none; border: none;
-      color: var(--accent); font-size: 14px;
-      font-weight: 600; cursor: pointer;
-      padding: 0;
-      font-family: var(--font-sans);
-    }
-    .auth-switch-text button:hover { color: var(--accent-hov); }
-
-    /* ─── Alert messages ─── */
     #authMessage {
-      padding: 12px 16px;
-      border-radius: 10px;
-      margin-bottom: 18px;
-      font-size: 14px;
-      font-weight: 500;
       display: none;
       align-items: center;
       gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      font-size: 14px;
       line-height: 1.4;
     }
-    #authMessage svg {
-      width: 16px; height: 16px;
-      stroke: currentColor;
-      flex-shrink: 0;
-    }
-    #authMessage.error {
-      background: var(--bad-soft);
-      border: 1px solid rgba(179,73,47,0.28);
-      color: var(--bad);
-    }
-    #authMessage.success {
-      background: var(--good-soft);
-      border: 1px solid rgba(75,123,92,0.28);
-      color: var(--good);
-    }
+    #authMessage svg { width: 16px; height: 16px; stroke: currentColor; flex-shrink: 0; }
+    #authMessage.error { background: var(--bad-soft); border: 1px solid rgba(255,122,102,0.28); color: var(--bad); }
+    #authMessage.success { background: var(--good-soft); border: 1px solid rgba(184,244,108,0.28); color: var(--good); }
 
-    /* ─── Forgot password back button ─── */
     .auth-back-btn {
-      display: flex; align-items: center; gap: 8px;
-      background: none; border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 0;
+      background: transparent;
       color: var(--ink-soft);
-      font-size: 14px; cursor: pointer;
-      margin-bottom: 28px; padding: 0;
       font-family: var(--font-sans);
-      transition: color 0.15s;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 24px;
     }
     .auth-back-btn:hover { color: var(--ink); }
     .auth-back-btn svg { width: 15px; height: 15px; stroke: currentColor; }
 
-    /* ─── Password strength ─── */
-    .pwd-strength {
-      height: 3px;
-      border-radius: 3px;
-      margin-top: 6px;
-      background: rgba(31,27,22,0.08);
-      overflow: hidden;
-    }
-    .pwd-strength-fill {
-      height: 100%;
-      border-radius: 3px;
-      width: 0;
-      transition: width 0.3s, background 0.3s;
-    }
+    .pwd-strength { height: 3px; margin-top: 8px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+    .pwd-strength-fill { height: 100%; border-radius: 999px; width: 0; transition: width 0.3s, background 0.3s; }
+    .mobile-brand-header { display: none; }
 
-    /* ─── Mobile header (only visible on small screens) ─── */
-    .mobile-brand-header {
-      display: none;
-    }
-
-    /* ─── Mobile: stack vertically ─── */
-    @media (max-width: 720px) {
-      .auth-root { flex-direction: column; align-items: stretch; }
-
-      /* Hide the full desktop brand panel on mobile */
+    @media (max-width: 760px) {
+      .auth-root { display: flex; flex-direction: column; }
       .auth-brand { display: none; }
-
-      /* Show slim mobile header with just the name */
       .mobile-brand-header {
         display: flex;
         justify-content: center;
-        align-items: center;
-        padding: 36px 24px 20px;
-        border-bottom: 1px solid var(--line-soft);
-        background: var(--bg-panel);
+        padding: 28px 20px 10px;
       }
-      .mobile-brand-header .brand-logo {
-        font-size: 36px;
-        letter-spacing: -1.5px;
-        margin-bottom: 0;
-      }
-
-      /* Form panel fills remaining space */
-      .auth-panel {
-        flex: 1;
-        padding: 20px 20px 48px;
-        justify-content: flex-start;
-      }
-
-      .auth-form-wrap {
-        max-width: 100%;
-      }
-
-      /* Tabs: bigger tap targets */
-      .auth-tabs {
-        margin-bottom: 24px;
-      }
-      .auth-tab {
-        padding: 13px 8px;
-        font-size: 15px;
-      }
-
-      /* Inputs: larger for touch */
-      .form-input {
-        font-size: 16px; /* prevents iOS zoom */
-        padding: 15px 44px 15px 42px;
-      }
-      .form-input-toggle {
-        right: 14px;
-        padding: 8px;
-        font-size: 16px;
-      }
-      .form-input-icon {
-        font-size: 15px;
-        left: 15px;
-      }
-
-      /* Button */
-      .auth-btn-primary {
-        padding: 16px;
-        font-size: 16px;
-        margin-top: 12px;
-      }
-
-      /* Headings */
-      .auth-view-title { font-size: 20px; }
-      .auth-view-sub { font-size: 14px; margin-bottom: 22px; }
-
-      /* Forgot password link row */
-      .forgot-link-row {
-        margin-top: -4px;
-        margin-bottom: 18px;
-      }
-
-      /* Switch text */
-      .auth-switch-text { font-size: 15px; margin-top: 18px; }
+      .mobile-brand-header .brand-logo { font-size: 19px; }
+      .auth-panel { padding: 18px 16px 42px; align-items: flex-start; }
+      .auth-form-wrap { max-width: 100%; border-radius: 24px; }
+      .auth-view-title { font-size: 32px; }
+      .form-input { font-size: 16px; }
+      .auth-btn-primary { min-height: 52px; }
     }
   </style>
 </head>
@@ -508,33 +351,8 @@
     <!-- ── Left: brand panel (desktop only) ── -->
     <div class="auth-brand">
       <div class="brand-logo">Atenis</div>
-      <p class="brand-tagline">Tu plataforma de streaming favorita. Dramas, series y minis en un solo lugar.</p>
-      <div class="brand-features">
-        <div class="brand-feature">
-          <span class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
-          </span>
-          <span>Contenido exclusivo en español</span>
-        </div>
-        <div class="brand-feature">
-          <span class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"></rect><path d="M7 3v18M17 3v18M2 9h5M2 15h5M17 9h5M17 15h5"></path></svg>
-          </span>
-          <span>Mini dramas y series originales</span>
-        </div>
-        <div class="brand-feature">
-          <span class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-          </span>
-          <span>Sin anuncios en plan premium</span>
-        </div>
-        <div class="brand-feature">
-          <span class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          </span>
-          <span>Descarga y ve sin conexión</span>
-        </div>
-      </div>
+      <p class="brand-tagline">Streaming simple. <em>Entra y mira.</em></p>
+      <div class="brand-features" aria-hidden="true"></div>
     </div>
 
     <!-- ── Right: form panel ── -->
@@ -555,8 +373,8 @@
 
           <!-- LOGIN FORM -->
           <form id="loginForm" class="auth-view active" onsubmit="handleLogin(event)">
-            <h2 class="auth-view-title">Bienvenido de vuelta</h2>
-            <p class="auth-view-sub">Ingresa tus datos para continuar</p>
+            <h2 class="auth-view-title">Entrar</h2>
+            <p class="auth-view-sub">Accede a tu cuenta.</p>
 
             <div class="form-group">
               <label class="form-label">Correo electrónico</label>
@@ -593,15 +411,14 @@
             </button>
 
             <div class="auth-switch-text" style="margin-top:20px;text-align:center;">
-              ¿No tienes cuenta?
-              <button type="button" onclick="switchTab('register')">Crear cuenta gratis</button>
+              <button type="button" onclick="switchTab('register')">Crear cuenta</button>
             </div>
           </form>
 
           <!-- REGISTER FORM -->
           <form id="registerForm" class="auth-view" onsubmit="handleRegister(event)">
-            <h2 class="auth-view-title">Crea tu cuenta</h2>
-            <p class="auth-view-sub">Únete a Atenis y empieza a disfrutar</p>
+            <h2 class="auth-view-title">Crear cuenta</h2>
+            <p class="auth-view-sub">Solo lo necesario para empezar.</p>
 
             <div class="form-group">
               <label class="form-label">Nombre completo</label>
@@ -644,7 +461,7 @@
                 <span class="form-input-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                 </span>
-                <input type="password" class="form-input" id="confirmPassword" placeholder="Repite tu contraseña"
+                <input type="password" class="form-input" id="confirmPassword" placeholder="Repite contraseña"
                        autocomplete="new-password" required>
                 <button type="button" class="form-input-toggle" onclick="togglePwd('confirmPassword',this)" aria-label="Mostrar contraseña">
                   <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -658,7 +475,6 @@
             </button>
 
             <div class="auth-switch-text" style="margin-top:20px;text-align:center;">
-              ¿Ya tienes cuenta?
               <button type="button" onclick="switchTab('login')">Iniciar sesión</button>
             </div>
           </form>
@@ -671,8 +487,8 @@
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             Volver
           </button>
-          <h2 class="auth-view-title">Restablecer contraseña</h2>
-          <p class="auth-view-sub">Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
+          <h2 class="auth-view-title">Recuperar acceso</h2>
+          <p class="auth-view-sub">Te enviaremos un enlace.</p>
 
           <form onsubmit="handleForgot(event)">
             <div class="form-group">
@@ -700,10 +516,10 @@
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px;stroke:var(--good);"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </div>
             <p style="font-size:15px;color:var(--ink-soft);line-height:1.5;">
-              Revisa tu correo.<br>Te enviamos el enlace de restablecimiento.
+              Revisa tu correo.
             </p>
             <button type="button" class="auth-btn-primary" style="margin-top:24px;" onclick="showView('viewMain')">
-              <span class="btn-text">Volver al inicio de sesión</span>
+              <span class="btn-text">Volver</span>
             </button>
           </div>
 
@@ -779,7 +595,7 @@
       hideMessage();
       try {
         const cred = await auth.signInWithEmailAndPassword(email, password);
-        showMessage('¡Bienvenido de vuelta!', 'success');
+        showMessage('Listo', 'success');
         setTimeout(() => checkUserSubscription(cred.user), 900);
       } catch(err) {
         showMessage(getErrMsg(err.code));
