@@ -5,30 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Atenis — Acceso</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
 
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <style>
+    :root {
+      --bg:        #F5F4ED;
+      --bg-panel:  #FBFAF6;
+      --ink:       #1F1B16;
+      --ink-soft:  rgba(31,27,22,0.62);
+      --ink-faint: rgba(31,27,22,0.38);
+      --line:      rgba(31,27,22,0.10);
+      --line-soft: rgba(31,27,22,0.07);
+      --accent:    #C2603D;
+      --accent-hov:#AD5232;
+      --accent-soft: rgba(194,96,61,0.10);
+      --accent-soft-line: rgba(194,96,61,0.28);
+      --good:      #4B7B5C;
+      --good-soft: rgba(75,123,92,0.12);
+      --bad:       #B3492F;
+      --bad-soft:  rgba(179,73,47,0.10);
+      --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-serif: 'Source Serif 4', Georgia, serif;
+    }
+
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
       height: 100%;
-      background: #07080f;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-      color: #fff;
+      background: var(--bg);
+      font-family: var(--font-sans);
+      color: var(--ink);
       overflow-x: hidden;
     }
 
-    /* ─── Background subtle grid pattern ─── */
+    /* ─── Background subtle warm glow ─── */
     body::before {
       content: '';
       position: fixed; inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(76,110,245,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(76,110,245,0.07) 0%, transparent 55%);
+        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(194,96,61,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(194,96,61,0.05) 0%, transparent 55%);
       pointer-events: none;
       z-index: 0;
     }
@@ -49,8 +71,8 @@
       flex-direction: column;
       justify-content: center;
       padding: 64px 56px;
-      border-right: 1px solid rgba(255,255,255,0.06);
-      background: rgba(255,255,255,0.015);
+      border-right: 1px solid var(--line);
+      background: var(--bg-panel);
       position: relative;
       overflow: hidden;
     }
@@ -59,25 +81,23 @@
       position: absolute;
       bottom: -60px; right: -60px;
       width: 280px; height: 280px;
-      background: radial-gradient(circle, rgba(76,110,245,0.12) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(194,96,61,0.10) 0%, transparent 70%);
       pointer-events: none;
     }
 
     .brand-logo {
-      font-size: clamp(52px, 7vw, 96px);
-      font-weight: 900;
-      letter-spacing: -4px;
-      line-height: 0.92;
-      background: linear-gradient(135deg, #fff 30%, #a0b4ff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-family: var(--font-serif);
+      font-size: clamp(48px, 6.5vw, 84px);
+      font-weight: 600;
+      letter-spacing: -2px;
+      line-height: 0.96;
+      color: var(--ink);
       margin-bottom: 24px;
     }
     .brand-tagline {
       font-size: clamp(16px, 1.6vw, 22px);
-      color: rgba(255,255,255,0.55);
-      line-height: 1.4;
+      color: var(--ink-soft);
+      line-height: 1.5;
       max-width: 340px;
       font-weight: 400;
     }
@@ -92,16 +112,20 @@
       align-items: center;
       gap: 12px;
       font-size: 14px;
-      color: rgba(255,255,255,0.45);
+      color: var(--ink-soft);
     }
-    .brand-feature i {
+    .brand-feature .feature-icon {
       width: 32px; height: 32px;
       border-radius: 8px;
-      background: rgba(76,110,245,0.15);
-      border: 1px solid rgba(76,110,245,0.2);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-soft-line);
       display: flex; align-items: center; justify-content: center;
-      font-size: 13px; color: #7090ff;
+      color: var(--accent);
       flex-shrink: 0;
+    }
+    .brand-feature .feature-icon svg {
+      width: 16px; height: 16px;
+      stroke: var(--accent);
     }
 
     /* ─── Right panel: form ─── */
@@ -135,8 +159,8 @@
     /* ─── Tab switcher ─── */
     .auth-tabs {
       display: flex;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(31,27,22,0.04);
+      border: 1px solid var(--line);
       border-radius: 12px;
       padding: 4px;
       margin-bottom: 32px;
@@ -145,33 +169,36 @@
       flex: 1;
       background: none;
       border: none;
-      color: rgba(255,255,255,0.45);
+      color: var(--ink-faint);
       padding: 11px;
       border-radius: 9px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
+      font-family: var(--font-sans);
     }
     .auth-tab.active {
-      background: rgba(76,110,245,0.2);
-      color: #fff;
-      border: 1px solid rgba(76,110,245,0.35);
+      background: var(--bg-panel);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      box-shadow: 0 1px 2px rgba(31,27,22,0.06);
     }
 
     /* ─── Screen heading ─── */
     .auth-view-title {
-      font-size: 22px;
-      font-weight: 800;
-      color: #fff;
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--ink);
       margin-bottom: 6px;
-      letter-spacing: -0.4px;
+      letter-spacing: -0.3px;
     }
     .auth-view-sub {
       font-size: 14px;
-      color: rgba(255,255,255,0.4);
+      color: var(--ink-faint);
       margin-bottom: 28px;
-      line-height: 1.45;
+      line-height: 1.5;
     }
 
     /* ─── Form elements ─── */
@@ -182,7 +209,7 @@
       display: block;
       font-size: 12px;
       font-weight: 600;
-      color: rgba(255,255,255,0.5);
+      color: var(--ink-soft);
       text-transform: uppercase;
       letter-spacing: 0.8px;
       margin-bottom: 7px;
@@ -194,64 +221,89 @@
       position: absolute;
       left: 14px; top: 50%;
       transform: translateY(-50%);
-      color: rgba(255,255,255,0.25);
-      font-size: 14px;
+      color: var(--ink-faint);
       pointer-events: none;
+      display: flex;
+      line-height: 0;
+    }
+    .form-input-icon svg {
+      width: 16px; height: 16px;
+      stroke: currentColor;
+      flex-shrink: 0;
     }
     .form-input {
       width: 100%;
-      padding: 14px 14px 14px 40px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      padding: 14px 44px 14px 42px;
+      background: rgba(31,27,22,0.025);
+      border: 1px solid var(--line);
       border-radius: 10px;
-      color: #fff;
+      color: var(--ink);
       font-size: 15px;
       font-weight: 400;
+      font-family: var(--font-sans);
       transition: border-color 0.2s, background 0.2s;
       -webkit-appearance: none;
     }
     .form-input:focus {
       outline: none;
-      border-color: rgba(76,110,245,0.6);
-      background: rgba(76,110,245,0.06);
+      border-color: var(--accent);
+      background: var(--accent-soft);
     }
-    .form-input::placeholder { color: rgba(255,255,255,0.2); }
+    .form-input::placeholder { color: var(--ink-faint); }
 
     .form-input-toggle {
       position: absolute;
-      right: 13px; top: 50%;
+      right: 12px; top: 50%;
       transform: translateY(-50%);
       background: none; border: none;
-      color: rgba(255,255,255,0.3);
-      cursor: pointer; font-size: 14px;
+      color: var(--ink-faint);
+      cursor: pointer;
       padding: 4px;
+      display: flex;
+      line-height: 0;
+      border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .form-input-toggle:hover {
+      color: var(--ink-soft);
+      background: rgba(31,27,22,0.05);
+    }
+    .form-input-toggle svg {
+      width: 16px; height: 16px;
+      stroke: currentColor;
     }
 
     /* ─── Primary button ─── */
     .auth-btn-primary {
       width: 100%;
       padding: 15px;
-      background: #4c6ef5;
+      background: var(--accent);
       border: none;
       border-radius: 10px;
       color: #fff;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 600;
+      font-family: var(--font-sans);
       cursor: pointer;
       transition: background 0.2s, transform 0.15s;
       margin-top: 8px;
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .auth-btn-primary:hover { background: #5c7ef8; }
+    .auth-btn-primary:hover { background: var(--accent-hov); }
     .auth-btn-primary:active { transform: scale(0.98); }
     .auth-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
     .auth-btn-primary .btn-spinner {
       display: none;
       width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,0.3);
+      border: 2px solid rgba(255,255,255,0.35);
       border-top-color: #fff;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
+    }
+    .auth-btn-primary .btn-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .auth-btn-primary.loading .btn-spinner { display: block; }
     .auth-btn-primary.loading .btn-text { display: none; }
@@ -261,7 +313,7 @@
     .auth-divider {
       display: flex; align-items: center; gap: 12px;
       margin: 20px 0;
-      color: rgba(255,255,255,0.2);
+      color: var(--ink-faint);
       font-size: 12px;
     }
     .auth-divider::before,
@@ -269,7 +321,7 @@
       content: '';
       flex: 1;
       height: 1px;
-      background: rgba(255,255,255,0.08);
+      background: var(--line);
     }
 
     /* ─── Footer links ─── */
@@ -280,27 +332,30 @@
     .auth-footer-link {
       background: none;
       border: none;
-      color: #7090ff;
+      color: var(--accent);
       font-size: 14px;
       font-weight: 500;
+      font-family: var(--font-sans);
       cursor: pointer;
       text-decoration: none;
       padding: 0;
       transition: color 0.15s;
     }
-    .auth-footer-link:hover { color: #a0b4ff; }
+    .auth-footer-link:hover { color: var(--accent-hov); }
 
     .auth-switch-text {
       font-size: 14px;
-      color: rgba(255,255,255,0.35);
+      color: var(--ink-faint);
       margin-top: 12px;
     }
     .auth-switch-text button {
       background: none; border: none;
-      color: #7090ff; font-size: 14px;
+      color: var(--accent); font-size: 14px;
       font-weight: 600; cursor: pointer;
       padding: 0;
+      font-family: var(--font-sans);
     }
+    .auth-switch-text button:hover { color: var(--accent-hov); }
 
     /* ─── Alert messages ─── */
     #authMessage {
@@ -310,36 +365,45 @@
       font-size: 14px;
       font-weight: 500;
       display: none;
+      align-items: center;
+      gap: 10px;
       line-height: 1.4;
     }
+    #authMessage svg {
+      width: 16px; height: 16px;
+      stroke: currentColor;
+      flex-shrink: 0;
+    }
     #authMessage.error {
-      background: rgba(220,53,53,0.15);
-      border: 1px solid rgba(220,53,53,0.3);
-      color: #ff9090;
+      background: var(--bad-soft);
+      border: 1px solid rgba(179,73,47,0.28);
+      color: var(--bad);
     }
     #authMessage.success {
-      background: rgba(52,199,89,0.12);
-      border: 1px solid rgba(52,199,89,0.3);
-      color: #7aeaa0;
+      background: var(--good-soft);
+      border: 1px solid rgba(75,123,92,0.28);
+      color: var(--good);
     }
 
     /* ─── Forgot password back button ─── */
     .auth-back-btn {
       display: flex; align-items: center; gap: 8px;
       background: none; border: none;
-      color: rgba(255,255,255,0.45);
+      color: var(--ink-soft);
       font-size: 14px; cursor: pointer;
       margin-bottom: 28px; padding: 0;
+      font-family: var(--font-sans);
       transition: color 0.15s;
     }
-    .auth-back-btn:hover { color: #fff; }
+    .auth-back-btn:hover { color: var(--ink); }
+    .auth-back-btn svg { width: 15px; height: 15px; stroke: currentColor; }
 
     /* ─── Password strength ─── */
     .pwd-strength {
       height: 3px;
       border-radius: 3px;
       margin-top: 6px;
-      background: rgba(255,255,255,0.08);
+      background: rgba(31,27,22,0.08);
       overflow: hidden;
     }
     .pwd-strength-fill {
@@ -367,10 +431,12 @@
         justify-content: center;
         align-items: center;
         padding: 36px 24px 20px;
+        border-bottom: 1px solid var(--line-soft);
+        background: var(--bg-panel);
       }
       .mobile-brand-header .brand-logo {
-        font-size: 42px;
-        letter-spacing: -2px;
+        font-size: 36px;
+        letter-spacing: -1.5px;
         margin-bottom: 0;
       }
 
@@ -445,19 +511,27 @@
       <p class="brand-tagline">Tu plataforma de streaming favorita. Dramas, series y minis en un solo lugar.</p>
       <div class="brand-features">
         <div class="brand-feature">
-          <i class="fas fa-play"></i>
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
+          </span>
           <span>Contenido exclusivo en español</span>
         </div>
         <div class="brand-feature">
-          <i class="fas fa-film"></i>
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"></rect><path d="M7 3v18M17 3v18M2 9h5M2 15h5M17 9h5M17 15h5"></path></svg>
+          </span>
           <span>Mini dramas y series originales</span>
         </div>
         <div class="brand-feature">
-          <i class="fas fa-star"></i>
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </span>
           <span>Sin anuncios en plan premium</span>
         </div>
         <div class="brand-feature">
-          <i class="fas fa-download"></i>
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          </span>
           <span>Descarga y ve sin conexión</span>
         </div>
       </div>
@@ -487,7 +561,9 @@
             <div class="form-group">
               <label class="form-label">Correo electrónico</label>
               <div class="form-input-wrap">
-                <i class="fas fa-envelope form-input-icon"></i>
+                <span class="form-input-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </span>
                 <input type="email" class="form-input" id="loginEmail" placeholder="tu@email.com" autocomplete="email" required>
               </div>
             </div>
@@ -495,10 +571,12 @@
             <div class="form-group">
               <label class="form-label">Contraseña</label>
               <div class="form-input-wrap">
-                <i class="fas fa-lock form-input-icon"></i>
+                <span class="form-input-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </span>
                 <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
-                <button type="button" class="form-input-toggle" onclick="togglePwd('loginPassword',this)">
-                  <i class="fas fa-eye"></i>
+                <button type="button" class="form-input-toggle" onclick="togglePwd('loginPassword',this)" aria-label="Mostrar contraseña">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 </button>
               </div>
             </div>
@@ -528,7 +606,9 @@
             <div class="form-group">
               <label class="form-label">Nombre completo</label>
               <div class="form-input-wrap">
-                <i class="fas fa-user form-input-icon"></i>
+                <span class="form-input-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </span>
                 <input type="text" class="form-input" id="registerName" placeholder="Tu nombre" autocomplete="name" required>
               </div>
             </div>
@@ -536,7 +616,9 @@
             <div class="form-group">
               <label class="form-label">Correo electrónico</label>
               <div class="form-input-wrap">
-                <i class="fas fa-envelope form-input-icon"></i>
+                <span class="form-input-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </span>
                 <input type="email" class="form-input" id="registerEmail" placeholder="tu@email.com" autocomplete="email" required>
               </div>
             </div>
@@ -544,11 +626,13 @@
             <div class="form-group">
               <label class="form-label">Contraseña</label>
               <div class="form-input-wrap">
-                <i class="fas fa-lock form-input-icon"></i>
+                <span class="form-input-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </span>
                 <input type="password" class="form-input" id="registerPassword" placeholder="Mínimo 6 caracteres"
                        autocomplete="new-password" required oninput="checkPwdStrength(this.value)">
-                <button type="button" class="form-input-toggle" onclick="togglePwd('registerPassword',this)">
-                  <i class="fas fa-eye"></i>
+                <button type="button" class="form-input-toggle" onclick="togglePwd('registerPassword',this)" aria-label="Mostrar contraseña">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 </button>
               </div>
               <div class="pwd-strength"><div class="pwd-strength-fill" id="pwdStrengthFill"></div></div>
@@ -557,11 +641,13 @@
             <div class="form-group">
               <label class="form-label">Confirmar contraseña</label>
               <div class="form-input-wrap">
-                <i class="fas fa-lock form-input-icon"></i>
+                <span class="form-input-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </span>
                 <input type="password" class="form-input" id="confirmPassword" placeholder="Repite tu contraseña"
                        autocomplete="new-password" required>
-                <button type="button" class="form-input-toggle" onclick="togglePwd('confirmPassword',this)">
-                  <i class="fas fa-eye"></i>
+                <button type="button" class="form-input-toggle" onclick="togglePwd('confirmPassword',this)" aria-label="Mostrar contraseña">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 </button>
               </div>
             </div>
@@ -582,7 +668,8 @@
         <!-- ── VIEW: Forgot password ── -->
         <div class="auth-view" id="viewForgot">
           <button type="button" class="auth-back-btn" onclick="showView('viewMain')">
-            <i class="fas fa-arrow-left"></i> Volver
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Volver
           </button>
           <h2 class="auth-view-title">Restablecer contraseña</h2>
           <p class="auth-view-sub">Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
@@ -591,23 +678,28 @@
             <div class="form-group">
               <label class="form-label">Correo electrónico</label>
               <div class="form-input-wrap">
-                <i class="fas fa-envelope form-input-icon"></i>
+                <span class="form-input-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </span>
                 <input type="email" class="form-input" id="forgotEmail" placeholder="tu@email.com" autocomplete="email" required>
               </div>
             </div>
 
             <button type="submit" class="auth-btn-primary" id="forgotBtn">
               <span class="btn-spinner"></span>
-              <span class="btn-text"><i class="fas fa-paper-plane" style="margin-right:6px;"></i>Enviar enlace</span>
+              <span class="btn-text">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                Enviar enlace
+              </span>
             </button>
           </form>
 
           <!-- Success state (shown after sending) -->
           <div id="forgotSuccess" style="display:none;text-align:center;margin-top:32px;">
-            <div style="width:64px;height:64px;border-radius:50%;background:rgba(76,110,245,0.15);border:1px solid rgba(76,110,245,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-              <i class="fas fa-check" style="font-size:24px;color:#7090ff;"></i>
+            <div style="width:64px;height:64px;border-radius:50%;background:var(--good-soft);border:1px solid rgba(75,123,92,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px;stroke:var(--good);"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </div>
-            <p style="font-size:15px;color:rgba(255,255,255,0.7);line-height:1.5;">
+            <p style="font-size:15px;color:var(--ink-soft);line-height:1.5;">
               Revisa tu correo.<br>Te enviamos el enlace de restablecimiento.
             </p>
             <button type="button" class="auth-btn-primary" style="margin-top:24px;" onclick="showView('viewMain')">
@@ -661,11 +753,14 @@
 
     // ── Messages ─────────────────────────────────────────────────────────────
 
+    const ICON_ERROR   = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+    const ICON_SUCCESS  = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+
     function showMessage(text, type = 'error') {
       const el = document.getElementById('authMessage');
-      el.textContent = text;
+      el.innerHTML = (type === 'success' ? ICON_SUCCESS : ICON_ERROR) + '<span>' + text + '</span>';
       el.className = type;
-      el.style.display = 'block';
+      el.style.display = 'flex';
     }
 
     function hideMessage() {
@@ -760,15 +855,19 @@
       btn.classList.toggle('loading', loading);
     }
 
+    const EYE_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+    const EYE_OFF  = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+
     function togglePwd(inputId, btn) {
       const input = document.getElementById(inputId);
-      const icon  = btn.querySelector('i');
       if (input.type === 'password') {
         input.type = 'text';
-        icon.className = 'fas fa-eye-slash';
+        btn.innerHTML = EYE_OFF;
+        btn.setAttribute('aria-label', 'Ocultar contraseña');
       } else {
         input.type = 'password';
-        icon.className = 'fas fa-eye';
+        btn.innerHTML = EYE_OPEN;
+        btn.setAttribute('aria-label', 'Mostrar contraseña');
       }
     }
 
@@ -783,11 +882,11 @@
       if (/[^A-Za-z0-9]/.test(pwd)) score++;
       const map = [
         { w: '0%',   bg: 'transparent' },
-        { w: '25%',  bg: '#e55555' },
-        { w: '50%',  bg: '#f5a623' },
-        { w: '75%',  bg: '#4c6ef5' },
-        { w: '90%',  bg: '#4c6ef5' },
-        { w: '100%', bg: '#34c759' },
+        { w: '25%',  bg: '#B3492F' },
+        { w: '50%',  bg: '#C2603D' },
+        { w: '75%',  bg: '#C49A3A' },
+        { w: '90%',  bg: '#C49A3A' },
+        { w: '100%', bg: '#4B7B5C' },
       ];
       const s = map[score] || map[0];
       fill.style.width = s.w;
@@ -836,6 +935,7 @@
         'auth/email-already-in-use':     'Ya existe una cuenta con este correo',
         'auth/weak-password':            'La contraseña debe tener al menos 6 caracteres',
         'auth/invalid-email':            'Correo electrónico inválido',
+        'auth/missing-email':            'Ingresa tu correo electrónico',
         'auth/user-disabled':            'Esta cuenta ha sido deshabilitada',
         'auth/too-many-requests':        'Demasiados intentos. Intenta más tarde',
         'auth/network-request-failed':   'Error de conexión. Verifica tu internet',
