@@ -351,6 +351,12 @@
       backdrop-filter: blur(10px);
     }
 
+    /* ── Skeleton shimmer ── */
+    @keyframes skelShimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
     /* ── New Release badge ── */
     .nr-badge {
       position: absolute;
@@ -8618,13 +8624,26 @@
       return card;
     }
 
+    function makeSkeleton(cls, count) {
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = cls + ' skel-card';
+        el.style.cssText = 'background:linear-gradient(90deg,#1a1b2e 25%,#23253a 50%,#1a1b2e 75%);background-size:200% 100%;animation:skelShimmer 1.4s infinite;pointer-events:none;';
+        frag.appendChild(el);
+      }
+      return frag;
+    }
+
     function renderNewReleaseSection() {
       const container = document.getElementById('newReleaseCarousel');
-      const section = document.getElementById('newReleaseSection');
       if (!container) return;
       const items = Object.values(seriesDatabase).slice(0, 10);
       container.innerHTML = '';
-      if (items.length === 0) { if (section) section.style.display = 'none'; return; }
+      if (items.length === 0) {
+        container.appendChild(makeSkeleton('nr-card', 5));
+        return;
+      }
       items.forEach((series, i) => {
         const card = createContentCard(series, { newRelease: true, forceNew: i < 4 });
         container.appendChild(card);
@@ -8639,7 +8658,10 @@
         .filter(s => s.isFeatured || s.isTrending)
         .slice(0, 6);
       container.innerHTML = '';
-      if (items.length === 0) { if (section) section.style.display = 'none'; return; }
+      if (items.length === 0) {
+        if (section) section.style.display = 'none';
+        return;
+      }
       items.forEach((series, i) => {
         const displayTitle = series.spanishTitle || series.title;
         const item = document.createElement('div');
@@ -8666,7 +8688,11 @@
       if (!container) return;
       const items = Object.values(seriesDatabase).slice(0, 9);
       container.innerHTML = '';
-      if (items.length === 0) { if (section) section.style.display = 'none'; return; }
+      if (items.length === 0) {
+        if (section) section.style.display = 'none';
+        return;
+      }
+      if (section) section.style.display = '';
       items.forEach((series, i) => {
         const card = createContentCard(series, { flavor: true, forceNew: i === 1 });
         container.appendChild(card);

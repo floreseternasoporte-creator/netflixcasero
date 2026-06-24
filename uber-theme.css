@@ -865,7 +865,7 @@ body[style*="linear-gradient"] {
   width: 100% !important;
   transform: none !important;
   display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
+  grid-template-columns: repeat(5, 1fr) !important;
   gap: 0 !important;
   padding: 8px 0 !important;
   padding-bottom: max(8px, env(safe-area-inset-bottom, 0px)) !important;
@@ -893,6 +893,12 @@ body[style*="linear-gradient"] {
   border: 0 !important;
 }
 
+.bottom-nav button span,
+.bottom-nav button.active span,
+.bottom-nav button:hover span {
+  display: none !important;
+}
+
 .bottom-nav button i,
 .bottom-nav button.active i,
 .bottom-nav button:hover i {
@@ -903,10 +909,6 @@ body[style*="linear-gradient"] {
 .bottom-nav button.active {
   color: var(--uber-green) !important;
   background: transparent !important;
-}
-
-.bottom-nav button.active span {
-  color: var(--uber-green) !important;
 }
 
 @media (max-width: 480px) {
