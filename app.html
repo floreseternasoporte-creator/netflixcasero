@@ -5533,7 +5533,7 @@
       </div>
 
       <!-- Anime -->
-      <div class="section" id="animeSection" style="display:none;">
+      <div class="section" id="animeSection">
         <div class="section-header">
           <h2 class="section-title">Anime</h2>
         </div>
@@ -5543,7 +5543,7 @@
       </div>
 
       <!-- Quizás te guste -->
-      <div class="section" id="flavorsSection" style="display:none;">
+      <div class="section" id="flavorsSection">
         <div class="section-header">
           <h2 class="section-title">Quizás te guste</h2>
         </div>
@@ -5551,7 +5551,7 @@
       </div>
 
       <!-- Terror -->
-      <div class="section" id="terrorSection" style="display:none;">
+      <div class="section" id="terrorSection">
         <div class="section-header">
           <h2 class="section-title">Terror</h2>
         </div>
@@ -8658,8 +8658,22 @@
         .filter(s => s.isFeatured || s.isTrending)
         .slice(0, 6);
       container.innerHTML = '';
+      if (section) section.style.display = '';
       if (items.length === 0) {
-        if (section) section.style.display = 'none';
+        for (let i = 0; i < 6; i++) {
+          const skRow = document.createElement('div');
+          skRow.className = 'tn-item';
+          skRow.style.cssText = 'pointer-events:none;';
+          skRow.innerHTML = `
+            <div class="tn-rank" style="color:rgba(255,255,255,0.06);">${i+1}</div>
+            <div class="tn-poster" style="background:linear-gradient(90deg,#1a1b2e 25%,#23253a 50%,#1a1b2e 75%);background-size:200% 100%;animation:skelShimmer 1.4s infinite;"></div>
+            <div class="tn-info">
+              <div style="height:12px;border-radius:6px;background:linear-gradient(90deg,#1a1b2e 25%,#23253a 50%,#1a1b2e 75%);background-size:200% 100%;animation:skelShimmer 1.4s infinite;margin-bottom:6px;width:80%;"></div>
+              <div style="height:10px;border-radius:6px;background:linear-gradient(90deg,#1a1b2e 25%,#23253a 50%,#1a1b2e 75%);background-size:200% 100%;animation:skelShimmer 1.4s infinite;width:55%;"></div>
+            </div>
+          `;
+          container.appendChild(skRow);
+        }
         return;
       }
       items.forEach((series, i) => {
@@ -8688,11 +8702,11 @@
       if (!container) return;
       const items = Object.values(seriesDatabase).slice(0, 9);
       container.innerHTML = '';
+      if (section) section.style.display = '';
       if (items.length === 0) {
-        if (section) section.style.display = 'none';
+        container.appendChild(makeSkeleton('flavor-card', 9));
         return;
       }
-      if (section) section.style.display = '';
       items.forEach((series, i) => {
         const card = createContentCard(series, { flavor: true, forceNew: i === 1 });
         container.appendChild(card);
@@ -8727,12 +8741,13 @@
         const items = getCatalogItemsForSection(sectionConfig);
         const sectionEl = document.getElementById(sectionIds[sectionConfig.carouselId]);
 
+        if (sectionEl) sectionEl.style.display = '';
+
         if (items.length === 0) {
-          if (sectionEl) sectionEl.style.display = 'none';
+          carousel.appendChild(makeSkeleton('carousel-item', 6));
           return;
         }
 
-        if (sectionEl) sectionEl.style.display = '';
         items.forEach(series => carousel.appendChild(createContentCard(series)));
       });
       renderNewReleaseSection();
