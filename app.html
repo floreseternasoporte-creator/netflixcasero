@@ -14,7 +14,7 @@
   <title>Atenis</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=Long+Cang&family=Zhi+Mang+Xing&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Cinzel:wght@700;900&family=Bebas+Neue&family=Dancing+Script:wght@700&family=Pacifico&display=swap">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
@@ -689,8 +689,6 @@
     .search-result-poster img,
     .history-item-poster img,
     .similar-item img,
-    .mini-card img,
-    .mini-carousel-item img,
     .mini-info-poster,
     .mini-sheet-poster,
     .mini-cover-picker img,
@@ -698,28 +696,33 @@
       object-fit: contain;
       object-position: center center;
     }
+    .mini-card img,
+    .mini-carousel-item img {
+      object-fit: cover;
+      object-position: center top;
+    }
 
-    .carousel-item-overlay {
-      display: none !important;
+    .carousel-item-overlay { display: none !important; }
+
+    /* ── Título debajo de cada tarjeta de carrusel ── */
+    .card-title-overlay {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(transparent, rgba(0, 32, 64, 0.9));
-      padding: 16px;
-      color: #ffffff;
-      backdrop-filter: blur(8px);
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.5) 55%, transparent 100%);
+      padding: 22px 6px 6px;
+      border-radius: 0 0 10px 10px;
+      pointer-events: none;
     }
-
-    .carousel-item-title {
-      font-size: 16px;
+    .card-title-text {
+      font-size: 10px;
       font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .carousel-item-info {
-      font-size: 12px;
-      color: #71767b;
+      color: #fff;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.3;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
     }
 
     .catalog-empty-state {
@@ -3960,40 +3963,46 @@
       border-radius: 10px;
     }
 
-    /* Bottom gradient + title overlay on poster (Netflix-style) */
+    /* Full-card overlay centered (titulo en el centro del poster) */
     .mini-card-overlay {
-      display: block !important;
+      display: flex !important;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       position: absolute;
-      bottom: 0; left: 0; right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 40%, transparent 72%);
-      padding: 36px 8px 8px;
-      border-radius: 0 0 10px 10px;
+      inset: 0;
+      background: linear-gradient(160deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.88) 100%);
+      padding: 10px;
+      border-radius: 10px;
     }
     .mini-card-ep-text {
       font-size: 10px;
       font-weight: 700;
       color: rgba(255,255,255,0.75);
-      margin-bottom: 2px;
+      margin-bottom: 4px;
+      text-align: center;
     }
-    /* Title text overlaid on poster */
+    /* Título centrado en el poster */
     .mini-card-title-overlay {
       color: #fff;
       font-size: 13px;
       font-weight: 700;
-      line-height: 1.25;
-      text-shadow: 0 1px 6px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7);
+      line-height: 1.3;
+      text-align: center;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.95), 0 0 24px rgba(0,0,0,0.8);
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 4;
       -webkit-box-orient: vertical;
       overflow: hidden;
       word-break: break-word;
+      max-width: 100%;
     }
     /* ── Font style classes ─────────────────────────────────── */
-    .mini-card-title-overlay.mf-elegant  { font-family: 'Noto Serif SC', serif; font-weight: 700; letter-spacing: 0.03em; }
-    .mini-card-title-overlay.mf-drama    { font-family: 'Ma Shan Zheng', cursive; font-size: 15px; letter-spacing: 0.05em; }
-    .mini-card-title-overlay.mf-modern   { font-family: 'ZCOOL XiaoWei', serif; font-size: 14px; letter-spacing: 0.04em; }
-    .mini-card-title-overlay.mf-brush    { font-family: 'Long Cang', cursive; font-size: 16px; letter-spacing: 0.03em; }
-    .mini-card-title-overlay.mf-artistic { font-family: 'Zhi Mang Xing', cursive; font-size: 17px; letter-spacing: 0.03em; }
+    .mini-card-title-overlay.mf-elegant  { font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 0.02em; }
+    .mini-card-title-overlay.mf-drama    { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .mini-card-title-overlay.mf-modern   { font-family: 'Bebas Neue', cursive; font-size: 16px; letter-spacing: 0.08em; }
+    .mini-card-title-overlay.mf-brush    { font-family: 'Dancing Script', cursive; font-size: 15px; letter-spacing: 0.01em; }
+    .mini-card-title-overlay.mf-artistic { font-family: 'Pacifico', cursive; font-size: 14px; letter-spacing: 0.01em; }
 
     /* ── Font style selector (admin form) ───────────────────── */
     .mini-font-selector {
@@ -4025,11 +4034,11 @@
       line-height: 1.2;
       text-shadow: 0 1px 4px rgba(0,0,0,0.6);
     }
-    .mini-font-option-preview.mf-elegant  { font-family: 'Noto Serif SC', serif; font-weight: 700; }
-    .mini-font-option-preview.mf-drama    { font-family: 'Ma Shan Zheng', cursive; font-size: 17px; }
-    .mini-font-option-preview.mf-modern   { font-family: 'ZCOOL XiaoWei', serif; font-size: 16px; }
-    .mini-font-option-preview.mf-brush    { font-family: 'Long Cang', cursive; font-size: 18px; }
-    .mini-font-option-preview.mf-artistic { font-family: 'Zhi Mang Xing', cursive; font-size: 19px; }
+    .mini-font-option-preview.mf-elegant  { font-family: 'Playfair Display', serif; font-weight: 700; }
+    .mini-font-option-preview.mf-drama    { font-family: 'Cinzel', serif; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .mini-font-option-preview.mf-modern   { font-family: 'Bebas Neue', cursive; font-size: 19px; letter-spacing: 0.08em; }
+    .mini-font-option-preview.mf-brush    { font-family: 'Dancing Script', cursive; font-size: 17px; }
+    .mini-font-option-preview.mf-artistic { font-family: 'Pacifico', cursive; font-size: 15px; }
     .mini-font-option-label {
       font-size: 9px;
       color: #888;
@@ -5423,7 +5432,8 @@
     .mini-carousel-item:active { transform: scale(0.95); }
     .mini-carousel-item img {
       width: 100%; height: 100%;
-      object-fit: contain;
+      object-fit: cover;
+      object-position: center top;
       background: #000000;
     }
     .mini-carousel-item-overlay {
@@ -5461,11 +5471,6 @@
   <!-- Top Bar fijo -->
   <div class="top-bar" id="topBar">
     <span class="top-bar-logo">Atenis</span>
-    <div class="top-bar-actions">
-      <button class="top-bar-btn" id="topBarSettingsBtn" onclick="topBarSettings()" title="Ajustes">
-        <i class="fas fa-cog"></i>
-      </button>
-    </div>
   </div>
 
   <!-- Sección principal -->
@@ -8620,6 +8625,9 @@
             <div class="locked-icon"><i class="fas fa-lock"></i></div>
           </div>
         ` : ''}
+        <div class="card-title-overlay">
+          <div class="card-title-text">${displayTitle}</div>
+        </div>
       `;
       return card;
     }
