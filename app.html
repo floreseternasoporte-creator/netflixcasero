@@ -14,6 +14,7 @@
   <title>Atenis</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=Long+Cang&family=Zhi+Mang+Xing&display=swap">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
@@ -3789,19 +3790,116 @@
       border-radius: 10px;
     }
 
-    /* Bottom-left gradient + episode count on poster */
+    /* Bottom gradient + title overlay on poster (Netflix-style) */
     .mini-card-overlay {
-      display: none !important;
+      display: block !important;
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, transparent 55%);
-      padding: 28px 8px 7px;
+      background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 40%, transparent 72%);
+      padding: 36px 8px 8px;
       border-radius: 0 0 10px 10px;
     }
     .mini-card-ep-text {
       font-size: 10px;
       font-weight: 700;
       color: rgba(255,255,255,0.75);
+      margin-bottom: 2px;
+    }
+    /* Title text overlaid on poster */
+    .mini-card-title-overlay {
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.25;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
+    }
+    /* ── Font style classes ─────────────────────────────────── */
+    .mini-card-title-overlay.mf-elegant  { font-family: 'Noto Serif SC', serif; font-weight: 700; letter-spacing: 0.03em; }
+    .mini-card-title-overlay.mf-drama    { font-family: 'Ma Shan Zheng', cursive; font-size: 15px; letter-spacing: 0.05em; }
+    .mini-card-title-overlay.mf-modern   { font-family: 'ZCOOL XiaoWei', serif; font-size: 14px; letter-spacing: 0.04em; }
+    .mini-card-title-overlay.mf-brush    { font-family: 'Long Cang', cursive; font-size: 16px; letter-spacing: 0.03em; }
+    .mini-card-title-overlay.mf-artistic { font-family: 'Zhi Mang Xing', cursive; font-size: 17px; letter-spacing: 0.03em; }
+
+    /* ── Font style selector (admin form) ───────────────────── */
+    .mini-font-selector {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .mini-font-option {
+      flex: 1;
+      min-width: 72px;
+      background: rgba(255,255,255,0.05);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: 10px 6px 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.18s, background 0.18s;
+    }
+    .mini-font-option.active {
+      border-color: #4c6ef5;
+      background: rgba(76,110,245,0.12);
+    }
+    .mini-font-option:active { transform: scale(0.96); }
+    .mini-font-option-preview {
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 4px;
+      line-height: 1.2;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+    .mini-font-option-preview.mf-elegant  { font-family: 'Noto Serif SC', serif; font-weight: 700; }
+    .mini-font-option-preview.mf-drama    { font-family: 'Ma Shan Zheng', cursive; font-size: 17px; }
+    .mini-font-option-preview.mf-modern   { font-family: 'ZCOOL XiaoWei', serif; font-size: 16px; }
+    .mini-font-option-preview.mf-brush    { font-family: 'Long Cang', cursive; font-size: 18px; }
+    .mini-font-option-preview.mf-artistic { font-family: 'Zhi Mang Xing', cursive; font-size: 19px; }
+    .mini-font-option-label {
+      font-size: 9px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .mini-font-option.active .mini-font-option-label { color: #7b99ff; }
+
+    /* ── Live preview of title on poster ────────────────────── */
+    .mini-title-preview-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 2/3;
+      max-width: 140px;
+      margin: 10px auto 0;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #111;
+      display: none;
+    }
+    .mini-title-preview-wrap.has-poster { display: block; }
+    .mini-title-preview-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .mini-title-preview-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 40%, transparent 72%);
+      padding: 28px 7px 7px;
+      border-radius: 0 0 10px 10px;
+    }
+    .mini-title-preview-text {
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.25;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+      word-break: break-word;
     }
 
     /* MINI badge top-left */
@@ -5999,7 +6097,7 @@
         <div class="mini-edit-section-label" data-i18n="titles_section">Títulos</div>
         <div class="mini-form-group">
           <label data-i18n="title_original">Título Original *</label>
-          <input type="text" id="miniTitleInput" placeholder="Título en idioma original">
+          <input type="text" id="miniTitleInput" placeholder="Título en idioma original" oninput="updateMiniTitlePreview('new')">
         </div>
         <div class="mini-form-group">
           <label>🇪🇸 <span data-i18n="title_es">Título en Español</span></label>
@@ -6008,6 +6106,40 @@
         <div class="mini-form-group">
           <label>🇺🇸 <span data-i18n="title_en">Title in English</span></label>
           <input type="text" id="miniTitleEnInput" placeholder="Title in English">
+        </div>
+
+        <!-- Title font style selector -->
+        <div class="mini-form-group" style="margin-top:14px;">
+          <label style="font-size:13px;font-weight:600;color:#aab;">Tipo de Texto en Portada</label>
+          <div class="mini-font-selector" id="miniFontSelectorNew">
+            <div class="mini-font-option active" data-font="elegant" onclick="selectMiniFont('new','elegant')">
+              <div class="mini-font-option-preview mf-elegant">Aa</div>
+              <div class="mini-font-option-label">Clásico</div>
+            </div>
+            <div class="mini-font-option" data-font="drama" onclick="selectMiniFont('new','drama')">
+              <div class="mini-font-option-preview mf-drama">Aa</div>
+              <div class="mini-font-option-label">Caligrafía</div>
+            </div>
+            <div class="mini-font-option" data-font="modern" onclick="selectMiniFont('new','modern')">
+              <div class="mini-font-option-preview mf-modern">Aa</div>
+              <div class="mini-font-option-label">Moderno</div>
+            </div>
+            <div class="mini-font-option" data-font="brush" onclick="selectMiniFont('new','brush')">
+              <div class="mini-font-option-preview mf-brush">Aa</div>
+              <div class="mini-font-option-label">Pincel</div>
+            </div>
+            <div class="mini-font-option" data-font="artistic" onclick="selectMiniFont('new','artistic')">
+              <div class="mini-font-option-preview mf-artistic">Aa</div>
+              <div class="mini-font-option-label">Artístico</div>
+            </div>
+          </div>
+          <!-- Live preview of title on poster -->
+          <div class="mini-title-preview-wrap" id="miniTitlePreviewNew">
+            <img id="miniTitlePreviewImgNew" src="" alt="">
+            <div class="mini-title-preview-overlay">
+              <div class="mini-title-preview-text mf-elegant" id="miniTitlePreviewTextNew"></div>
+            </div>
+          </div>
         </div>
 
         <!-- Genre / Year -->
@@ -6268,7 +6400,7 @@
       <div class="mini-edit-section-label" data-i18n="titles_section">Títulos</div>
       <div class="mini-form-group">
         <label data-i18n="title_original">Título Original *</label>
-        <input type="text" id="meditTitle" placeholder="Título en idioma original">
+        <input type="text" id="meditTitle" placeholder="Título en idioma original" oninput="updateMiniTitlePreview('edit')">
       </div>
       <div class="mini-form-group">
         <label>🇪🇸 <span data-i18n="title_es">Título en Español</span></label>
@@ -6277,6 +6409,40 @@
       <div class="mini-form-group">
         <label>🇺🇸 <span data-i18n="title_en">Title in English</span></label>
         <input type="text" id="meditTitleEn" placeholder="Title in English">
+      </div>
+
+      <!-- Title font style selector (edit form) -->
+      <div class="mini-form-group" style="margin-top:14px;">
+        <label style="font-size:13px;font-weight:600;color:#aab;">Tipo de Texto en Portada</label>
+        <div class="mini-font-selector" id="miniFontSelectorEdit">
+          <div class="mini-font-option active" data-font="elegant" onclick="selectMiniFont('edit','elegant')">
+            <div class="mini-font-option-preview mf-elegant">Aa</div>
+            <div class="mini-font-option-label">Clásico</div>
+          </div>
+          <div class="mini-font-option" data-font="drama" onclick="selectMiniFont('edit','drama')">
+            <div class="mini-font-option-preview mf-drama">Aa</div>
+            <div class="mini-font-option-label">Caligrafía</div>
+          </div>
+          <div class="mini-font-option" data-font="modern" onclick="selectMiniFont('edit','modern')">
+            <div class="mini-font-option-preview mf-modern">Aa</div>
+            <div class="mini-font-option-label">Moderno</div>
+          </div>
+          <div class="mini-font-option" data-font="brush" onclick="selectMiniFont('edit','brush')">
+            <div class="mini-font-option-preview mf-brush">Aa</div>
+            <div class="mini-font-option-label">Pincel</div>
+          </div>
+          <div class="mini-font-option" data-font="artistic" onclick="selectMiniFont('edit','artistic')">
+            <div class="mini-font-option-preview mf-artistic">Aa</div>
+            <div class="mini-font-option-label">Artístico</div>
+          </div>
+        </div>
+        <!-- Live preview -->
+        <div class="mini-title-preview-wrap" id="miniTitlePreviewEdit">
+          <img id="miniTitlePreviewImgEdit" src="" alt="">
+          <div class="mini-title-preview-overlay">
+            <div class="mini-title-preview-text mf-elegant" id="miniTitlePreviewTextEdit"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Genre / Year -->
@@ -10250,6 +10416,9 @@
       document.getElementById('meditLocked').checked   = !!m.isLocked;
       document.getElementById('meditCoverMsg').textContent = '';
 
+      // Load saved font style
+      selectMiniFont('edit', m.titleFont || 'elegant');
+
       // Poster previews
       ['orig','es','en'].forEach(type => {
         const url = type === 'orig' ? (m.posterOriginal || m.poster || '') :
@@ -10340,6 +10509,9 @@
           if (!ep.thumbnail) ep.thumbnail = posterOrig;
         });
 
+        const selFontEdit = document.querySelector('#miniFontSelectorEdit .mini-font-option.active');
+        const titleFont = selFontEdit ? selFontEdit.getAttribute('data-font') : (old.titleFont || 'elegant');
+
         const updates = {
           title:          document.getElementById('meditTitle').value.trim() || old.title,
           titleEs:        titleEs || old.titleEs || old.spanishTitle || '',
@@ -10360,6 +10532,7 @@
           isFeatured:     document.getElementById('meditFeatured').checked,
           isTrending:     document.getElementById('meditTrending').checked,
           isLocked:       document.getElementById('meditLocked').checked,
+          titleFont,
           episodes:       _miniEditEpisodes,
           updatedAt:      Date.now(),
         };
@@ -10487,6 +10660,7 @@
         const locTitle  = getLocalizedMiniTitle(mini);
         const locPoster = getLocalizedMiniPoster(mini);
 
+        const fontClass = mini.titleFont ? 'mf-' + mini.titleFont : 'mf-elegant';
         card.innerHTML = `
           <div class="mini-card-poster">
             <img src="${locPoster}" alt="${locTitle}" loading="lazy"
@@ -10495,16 +10669,9 @@
             ${rating ? `<div class="mini-card-rating">★ ${rating}</div>` : ''}
             <div class="mini-card-overlay">
               ${epCount > 0 ? `<div class="mini-card-ep-text">${epCount} ${t('ep_count')}</div>` : ''}
+              <div class="mini-card-title-overlay ${fontClass}">${locTitle}</div>
             </div>
             ${isAdmin ? `<button class="mini-card-edit-btn" onclick="event.stopPropagation();openMiniEdit('${mini.id}')"><i class="fas fa-pen"></i></button>` : ''}
-          </div>
-          <div class="mini-card-info">
-            <div class="mini-card-title">${locTitle}</div>
-            <div class="mini-card-meta">
-              ${year ? `<span>${year}</span>` : ''}
-              ${year && genre ? '<span class="mini-card-meta-dot"></span>' : ''}
-              ${genre ? `<span>${genre}</span>` : ''}
-            </div>
           </div>
         `;
         grid.appendChild(card);
@@ -10928,6 +11095,9 @@
             };
           });
 
+        const selFontNew = document.querySelector('#miniFontSelectorNew .mini-font-option.active');
+        const titleFont = selFontNew ? selFontNew.getAttribute('data-font') : 'elegant';
+
         const miniData = {
           id,
           title,
@@ -10954,6 +11124,7 @@
           isFeatured:     false,
           isTrending:     false,
           isLocked:       false,
+          titleFont,
           episodes,
           createdAt:      Date.now(),
           createdBy:      currentFirebaseUser ? currentFirebaseUser.email : ''
@@ -11701,6 +11872,66 @@
     function startMiniAutoDub() { }
     function autoDetectAndDubMinis() { }
     function _updateDubStatus() { }
+
+    // ── Title font selector ───────────────────────────────────────────────────
+
+    function selectMiniFont(formKey, fontId) {
+      const selectorId = formKey === 'new' ? 'miniFontSelectorNew' : 'miniFontSelectorEdit';
+      const previewId  = formKey === 'new' ? 'miniTitlePreviewNew'  : 'miniTitlePreviewEdit';
+      const textId     = formKey === 'new' ? 'miniTitlePreviewTextNew' : 'miniTitlePreviewTextEdit';
+
+      const selector = document.getElementById(selectorId);
+      if (!selector) return;
+
+      selector.querySelectorAll('.mini-font-option').forEach(opt => {
+        opt.classList.toggle('active', opt.getAttribute('data-font') === fontId);
+      });
+
+      const textEl = document.getElementById(textId);
+      if (textEl) {
+        textEl.className = 'mini-title-preview-text mf-' + fontId;
+      }
+
+      updateMiniTitlePreview(formKey);
+    }
+
+    function updateMiniTitlePreview(formKey) {
+      const titleInputId  = formKey === 'new' ? 'miniTitleInput'       : 'meditTitle';
+      const previewWrapId = formKey === 'new' ? 'miniTitlePreviewNew'   : 'miniTitlePreviewEdit';
+      const previewImgId  = formKey === 'new' ? 'miniTitlePreviewImgNew': 'miniTitlePreviewImgEdit';
+      const previewTxtId  = formKey === 'new' ? 'miniTitlePreviewTextNew':'miniTitlePreviewTextEdit';
+
+      const titleInput = document.getElementById(titleInputId);
+      const wrap       = document.getElementById(previewWrapId);
+      const imgEl      = document.getElementById(previewImgId);
+      const txtEl      = document.getElementById(previewTxtId);
+      if (!wrap || !txtEl) return;
+
+      const title = titleInput ? titleInput.value.trim() : '';
+      txtEl.textContent = title;
+
+      // Try to find poster image
+      let posterSrc = '';
+      if (formKey === 'new') {
+        const prevImg = document.getElementById('miniCoverPreview_orig');
+        posterSrc = prevImg && prevImg.style.display !== 'none' ? prevImg.src : '';
+      } else {
+        const prevImg = document.getElementById('meditPreviewOrig');
+        posterSrc = prevImg && prevImg.style.display !== 'none' ? prevImg.src : '';
+      }
+
+      if (posterSrc && title) {
+        if (imgEl) imgEl.src = posterSrc;
+        wrap.classList.add('has-poster');
+      } else if (title && !posterSrc) {
+        // Show with gradient only
+        if (imgEl) imgEl.src = '';
+        wrap.classList.add('has-poster');
+        wrap.style.background = '#1a1a2e';
+      } else {
+        wrap.classList.remove('has-poster');
+      }
+    }
 
     // ── Toast notification ────────────────────────────────────────────────────
 
