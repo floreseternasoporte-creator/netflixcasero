@@ -7,9 +7,9 @@ from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__)
 
-CLOUDINARY_API_KEY    = os.environ.get('CLOUDINARY_API_KEY', '238548142884869')
-CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET', 'R9mMGi3x6q6qp2U1hgaT_g1yWNQ')
-CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', 'dubsgko2k')
+CLOUDINARY_API_KEY    = os.environ.get('CLOUDINARY_API_KEY', '')
+CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET', '')
+CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', '')
 
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
