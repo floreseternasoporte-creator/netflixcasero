@@ -1851,15 +1851,15 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      font-size: 10px;
-      font-weight: 500;
+      gap: 0;
       cursor: pointer;
-      padding: 4px 0;
+      padding: 8px 0;
       flex: 1;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      letter-spacing: 0.3px;
+      min-width: 0;
       transition: color 0.15s;
+    }
+    .bottom-nav button span {
+      display: none;
     }
 
     .bottom-nav button.active {
@@ -2438,14 +2438,12 @@
       }
 
       .bottom-nav button {
-        padding: 6px 4px;
+        padding: 8px 0;
         min-width: 0;
-        font-size: 10px;
       }
 
       .bottom-nav button i {
-        font-size: 20px;
-        margin-bottom: 2px;
+        font-size: 22px;
       }
 
       /* Carruseles móvil */
@@ -5503,7 +5501,7 @@
       <!-- Nuevo Lanzamiento ⚡ -->
       <div class="section" id="newReleaseSection">
         <div class="section-header">
-          <h2 class="section-title">Nuevo Lanzamiento ⚡</h2>
+          <h2 class="section-title">Nuevo Lanzamiento</h2>
           <span class="section-see-all" onclick="showSearchSection()">Ver todo <i class="fas fa-chevron-right"></i></span>
         </div>
         <div class="new-release-scroll" id="newReleaseCarousel"></div>
@@ -5523,13 +5521,13 @@
       <!-- Tendencias — lista numerada -->
       <div class="section" id="trendingNumberedSection">
         <div class="section-header">
-          <h2 class="section-title">Tendencias 🔥</h2>
+          <h2 class="section-title">Tendencias</h2>
         </div>
         <div class="trending-numbered" id="trendingNumbered"></div>
       </div>
 
       <!-- Anime -->
-      <div class="section" id="animeSection">
+      <div class="section" id="animeSection" style="display:none;">
         <div class="section-header">
           <h2 class="section-title">Anime</h2>
         </div>
@@ -5539,7 +5537,7 @@
       </div>
 
       <!-- Quizás te guste -->
-      <div class="section" id="flavorsSection">
+      <div class="section" id="flavorsSection" style="display:none;">
         <div class="section-header">
           <h2 class="section-title">Quizás te guste</h2>
         </div>
@@ -5547,7 +5545,7 @@
       </div>
 
       <!-- Terror -->
-      <div class="section" id="terrorSection">
+      <div class="section" id="terrorSection" style="display:none;">
         <div class="section-header">
           <h2 class="section-title">Terror</h2>
         </div>
@@ -8694,18 +8692,21 @@
     }
 
     function renderCatalogSections() {
+      const sectionIds = { animeCarousel: 'animeSection', terrorCarousel: 'terrorSection' };
       contentSections.forEach(sectionConfig => {
         const carousel = document.getElementById(sectionConfig.carouselId);
         if (!carousel) return;
 
         carousel.innerHTML = '';
         const items = getCatalogItemsForSection(sectionConfig);
+        const sectionEl = document.getElementById(sectionIds[sectionConfig.carouselId]);
 
         if (items.length === 0) {
-          carousel.appendChild(createCatalogEmptyState());
+          if (sectionEl) sectionEl.style.display = 'none';
           return;
         }
 
+        if (sectionEl) sectionEl.style.display = '';
         items.forEach(series => carousel.appendChild(createContentCard(series)));
       });
       renderNewReleaseSection();
