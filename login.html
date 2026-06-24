@@ -7,7 +7,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;750;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -15,519 +15,503 @@
 
   <style>
     :root {
-      --bg: #050505;
-      --panel: #0c0c0a;
-      --panel-soft: #11110f;
-      --card: rgba(255,255,255,0.06);
-      --ink: #f7f4ea;
-      --ink-soft: rgba(247,244,234,0.68);
-      --ink-faint: rgba(247,244,234,0.42);
-      --line: rgba(247,244,234,0.12);
-      --line-soft: rgba(247,244,234,0.08);
-      --accent: #d7ff6f;
-      --accent-hov: #c8f05f;
-      --accent-ink: #101207;
-      --good: #b8f46c;
-      --good-soft: rgba(184,244,108,0.12);
-      --bad: #ff7a66;
-      --bad-soft: rgba(255,122,102,0.12);
-      --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --bg:          #0a0b14;
+      --surface:     #0d0e1a;
+      --surface-el:  #111322;
+      --border:      #1c1e2e;
+      --border-str:  #252848;
+      --text:        #f5f5f5;
+      --muted:       #8b9ab0;
+      --subtle:      #4d5a70;
+      --accent:      #4c6ef5;
+      --accent-hov:  #3b5fd4;
+      --accent-glow: rgba(76,110,245,0.22);
+      --danger:      #ef4444;
+      --danger-soft: rgba(239,68,68,0.12);
+      --good:        #22c55e;
+      --good-soft:   rgba(34,197,94,0.12);
+      --font:        Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --radius:      16px;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
-      min-height: 100%;
+      height: 100%;
       background: var(--bg);
-      font-family: var(--font-sans);
-      color: var(--ink);
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(circle at 18% 12%, rgba(215,255,111,0.16), transparent 28%),
-        radial-gradient(circle at 86% 18%, rgba(255,255,255,0.10), transparent 22%),
-        linear-gradient(135deg, #050505 0%, #0a0a08 55%, #12140c 100%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .auth-root {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: minmax(360px, 0.92fr) minmax(360px, 1fr);
-      position: relative;
-      z-index: 1;
-    }
-
-    .auth-brand {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: clamp(32px, 5vw, 72px);
-      border-right: 1px solid var(--line-soft);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.015)),
-        var(--panel);
-      position: relative;
+      font-family: var(--font);
+      color: var(--text);
       overflow: hidden;
     }
 
-    .auth-brand::before {
-      content: '';
-      position: absolute;
-      left: clamp(28px, 5vw, 72px);
-      right: clamp(28px, 5vw, 72px);
-      bottom: clamp(36px, 6vw, 86px);
-      height: 220px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
+    /* Full-screen background */
+    .auth-bg {
+      position: fixed;
+      inset: 0;
       background:
-        linear-gradient(90deg, rgba(215,255,111,0.22), transparent 42%),
-        repeating-linear-gradient(90deg, rgba(247,244,234,0.18) 0 2px, transparent 2px 18px);
-      mask-image: linear-gradient(to top, black 0%, transparent 92%);
-      opacity: 0.82;
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(76,110,245,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 90% 90%, rgba(76,110,245,0.08) 0%, transparent 50%),
+        var(--bg);
+      z-index: 0;
+    }
+    .auth-bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(76,110,245,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(76,110,245,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      z-index: 0;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
     }
 
-    .brand-logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 1;
-      color: var(--ink);
-      margin-bottom: 0;
-    }
-
-    .brand-logo::before {
-      content: '';
-      width: 24px;
-      height: 24px;
-      border-radius: 7px;
-      background: linear-gradient(135deg, var(--ink) 0 46%, var(--accent) 46% 100%);
-      box-shadow: 0 0 34px rgba(215,255,111,0.24);
-    }
-
-    .brand-tagline {
-      max-width: 560px;
-      font-size: clamp(42px, 6.6vw, 88px);
-      line-height: 0.9;
-      letter-spacing: -0.075em;
-      font-weight: 700;
-      color: var(--ink);
+    /* Full-screen centered layout */
+    .auth-root {
       position: relative;
       z-index: 1;
-    }
-
-    .brand-tagline em {
-      color: var(--accent);
-      font-style: normal;
-    }
-
-    .brand-features { display: none; }
-
-    .auth-panel {
+      min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: clamp(28px, 6vw, 84px) clamp(20px, 5vw, 72px);
+      padding: 24px 20px;
       overflow-y: auto;
     }
 
-    .auth-form-wrap {
-      width: 100%;
-      max-width: 430px;
-      padding: clamp(22px, 4vw, 34px);
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: rgba(10,10,8,0.72);
-      box-shadow: 0 24px 80px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.06);
-      backdrop-filter: blur(18px);
+    /* Logo at top */
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      margin-bottom: 32px;
+      text-decoration: none;
+    }
+    .auth-logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);
+      box-shadow: 0 0 24px rgba(76,110,245,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-logo-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: #fff;
     }
 
-    .auth-view { display: none; animation: authFadeIn 0.22s ease; }
-    .auth-view.active { display: block; }
-    @keyframes authFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    /* Card */
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(13,14,26,0.85);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px 28px 28px;
+      box-shadow:
+        0 0 0 1px rgba(76,110,245,0.08),
+        0 32px 80px rgba(0,0,0,0.55),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+    }
 
+    /* Tabs */
     .auth-tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      padding: 6px;
-      border: 1px solid var(--line);
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--border);
       border-radius: 999px;
-      background: rgba(255,255,255,0.045);
+      background: rgba(255,255,255,0.03);
       margin-bottom: 28px;
     }
-
     .auth-tab {
       border: 0;
       border-radius: 999px;
-      padding: 11px 12px;
+      padding: 10px 12px;
       background: transparent;
-      color: var(--ink-faint);
-      font-family: var(--font-sans);
+      color: var(--muted);
+      font-family: var(--font);
       font-size: 14px;
-      font-weight: 650;
+      font-weight: 600;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
     }
-
-    .auth-tab.active { background: var(--ink); color: #080808; }
-
-    .auth-view-title {
-      font-size: clamp(30px, 4vw, 44px);
-      line-height: 0.95;
-      letter-spacing: -0.06em;
-      font-weight: 720;
-      color: var(--ink);
-      margin-bottom: 10px;
+    .auth-tab.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(76,110,245,0.35);
     }
 
-    .auth-view-sub {
+    /* View anim */
+    .auth-view { display: none; animation: fadeUp 0.22s ease; }
+    .auth-view.active { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .auth-title {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .auth-sub {
       font-size: 14px;
-      color: var(--ink-soft);
+      color: var(--muted);
       margin-bottom: 24px;
-      line-height: 1.5;
     }
 
-    .form-group { margin-bottom: 16px; }
+    /* Form */
+    .form-group { margin-bottom: 14px; }
     .form-label {
       display: block;
-      font-size: 13px;
-      font-weight: 650;
-      color: var(--ink-soft);
-      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
     .form-input-wrap { position: relative; }
     .form-input-icon {
       position: absolute;
-      left: 15px;
+      left: 14px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--ink-faint);
+      color: var(--subtle);
       display: flex;
       pointer-events: none;
     }
-    .form-input-icon svg, .form-input-toggle svg { width: 17px; height: 17px; stroke: currentColor; }
+    .form-input-icon svg { width: 16px; height: 16px; stroke: currentColor; }
     .form-input {
       width: 100%;
-      padding: 15px 46px 15px 44px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: rgba(255,255,255,0.055);
-      color: var(--ink);
-      font-family: var(--font-sans);
+      padding: 13px 44px 13px 42px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-family: var(--font);
       font-size: 15px;
       outline: none;
       transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
       -webkit-appearance: none;
     }
     .form-input:focus {
-      border-color: rgba(215,255,111,0.7);
-      background: rgba(255,255,255,0.08);
-      box-shadow: 0 0 0 4px rgba(215,255,111,0.12);
+      border-color: var(--accent);
+      background: rgba(76,110,245,0.06);
+      box-shadow: 0 0 0 3px rgba(76,110,245,0.15);
     }
-    .form-input::placeholder { color: var(--ink-faint); }
-
+    .form-input::placeholder { color: var(--subtle); }
     .form-input-toggle {
       position: absolute;
-      right: 12px;
+      right: 10px;
       top: 50%;
       transform: translateY(-50%);
       border: 0;
-      border-radius: 10px;
+      border-radius: 8px;
       background: transparent;
-      color: var(--ink-faint);
-      padding: 7px;
+      color: var(--subtle);
+      padding: 6px;
       cursor: pointer;
+      transition: color 0.15s;
     }
-    .form-input-toggle:hover { color: var(--ink); background: rgba(255,255,255,0.07); }
+    .form-input-toggle:hover { color: var(--text); }
+    .form-input-toggle svg { width: 16px; height: 16px; stroke: currentColor; display: block; }
 
-    .auth-btn-primary {
-      width: 100%;
-      min-height: 50px;
+    .forgot-row {
+      text-align: right;
+      margin: -4px 0 18px;
+    }
+    .auth-link {
       border: 0;
-      border-radius: 999px;
+      background: transparent;
+      color: var(--accent);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .auth-link:hover { color: var(--accent-hov); }
+
+    /* Primary button */
+    .auth-btn {
+      width: 100%;
+      min-height: 48px;
+      border: 0;
+      border-radius: 12px;
       background: var(--accent);
-      color: var(--accent-ink);
-      font-family: var(--font-sans);
+      color: #fff;
+      font-family: var(--font);
       font-size: 15px;
-      font-weight: 750;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      margin-top: 8px;
-      transition: transform 0.16s, background 0.2s, box-shadow 0.2s;
-      box-shadow: 0 14px 38px rgba(215,255,111,0.16);
+      margin-top: 6px;
+      transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
+      box-shadow: 0 8px 24px rgba(76,110,245,0.28);
     }
-    .auth-btn-primary:hover { background: var(--accent-hov); transform: translateY(-1px); }
-    .auth-btn-primary:active { transform: translateY(0) scale(0.99); }
-    .auth-btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
-    .auth-btn-primary .btn-spinner { display: none; width: 16px; height: 16px; border: 2px solid rgba(16,18,7,0.28); border-top-color: var(--accent-ink); border-radius: 50%; animation: spin 0.7s linear infinite; }
-    .auth-btn-primary .btn-text { display: flex; align-items: center; gap: 8px; }
-    .auth-btn-primary.loading .btn-spinner { display: block; }
-    .auth-btn-primary.loading .btn-text { display: none; }
+    .auth-btn:hover { background: var(--accent-hov); transform: translateY(-1px); box-shadow: 0 12px 32px rgba(76,110,245,0.35); }
+    .auth-btn:active { transform: translateY(0) scale(0.99); }
+    .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .auth-btn .btn-spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .auth-btn.loading .btn-spinner { display: block; }
+    .auth-btn.loading .btn-text { display: none; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .auth-footer-link, .auth-switch-text button {
+    .auth-switch {
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 18px;
+    }
+    .auth-switch button {
       border: 0;
       background: transparent;
       color: var(--accent);
-      font-family: var(--font-sans);
+      font-family: var(--font);
       font-size: 14px;
-      font-weight: 650;
+      font-weight: 600;
       cursor: pointer;
+      margin-left: 4px;
     }
-    .auth-footer-link:hover, .auth-switch-text button:hover { color: var(--accent-hov); }
-    .auth-switch-text { color: var(--ink-faint); font-size: 14px; }
+    .auth-switch button:hover { color: var(--accent-hov); }
 
+    /* Message */
     #authMessage {
       display: none;
       align-items: center;
       gap: 10px;
       padding: 12px 14px;
-      border-radius: 14px;
+      border-radius: 12px;
       margin-bottom: 16px;
       font-size: 14px;
-      line-height: 1.4;
     }
-    #authMessage svg { width: 16px; height: 16px; stroke: currentColor; flex-shrink: 0; }
-    #authMessage.error { background: var(--bad-soft); border: 1px solid rgba(255,122,102,0.28); color: var(--bad); }
-    #authMessage.success { background: var(--good-soft); border: 1px solid rgba(184,244,108,0.28); color: var(--good); }
+    #authMessage svg { width: 15px; height: 15px; stroke: currentColor; flex-shrink: 0; }
+    #authMessage.error   { background: var(--danger-soft); border: 1px solid rgba(239,68,68,0.25); color: var(--danger); }
+    #authMessage.success { background: var(--good-soft);   border: 1px solid rgba(34,197,94,0.25);  color: var(--good); }
 
-    .auth-back-btn {
+    /* Back btn */
+    .auth-back {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       border: 0;
       background: transparent;
-      color: var(--ink-soft);
-      font-family: var(--font-sans);
+      color: var(--muted);
+      font-family: var(--font);
       font-size: 14px;
       cursor: pointer;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
+      transition: color 0.15s;
     }
-    .auth-back-btn:hover { color: var(--ink); }
-    .auth-back-btn svg { width: 15px; height: 15px; stroke: currentColor; }
+    .auth-back:hover { color: var(--text); }
+    .auth-back svg { width: 14px; height: 14px; stroke: currentColor; }
 
-    .pwd-strength { height: 3px; margin-top: 8px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
-    .pwd-strength-fill { height: 100%; border-radius: 999px; width: 0; transition: width 0.3s, background 0.3s; }
-    .mobile-brand-header { display: none; }
+    /* Password strength */
+    .pwd-strength { height: 3px; margin-top: 7px; border-radius: 99px; background: var(--border); overflow: hidden; }
+    .pwd-strength-fill { height: 100%; border-radius: 99px; width: 0; transition: width 0.3s, background 0.3s; }
 
-    @media (max-width: 760px) {
-      .auth-root { display: flex; flex-direction: column; }
-      .auth-brand { display: none; }
-      .mobile-brand-header {
-        display: flex;
-        justify-content: center;
-        padding: 28px 20px 10px;
-      }
-      .mobile-brand-header .brand-logo { font-size: 19px; }
-      .auth-panel { padding: 18px 16px 42px; align-items: flex-start; }
-      .auth-form-wrap { max-width: 100%; border-radius: 24px; }
-      .auth-view-title { font-size: 32px; }
-      .form-input { font-size: 16px; }
-      .auth-btn-primary { min-height: 52px; }
+    @media (max-width: 480px) {
+      .auth-card { padding: 24px 18px 22px; border-radius: 20px; }
+      .auth-logo { margin-bottom: 24px; }
+      .auth-title { font-size: 22px; }
     }
   </style>
 </head>
 <body>
+  <div class="auth-bg"></div>
+  <div class="auth-bg-grid"></div>
+
   <div class="auth-root">
 
-    <!-- ── Mobile-only top header (just the name) ── -->
-    <div class="mobile-brand-header">
-      <div class="brand-logo">Atenis</div>
+    <!-- Logo -->
+    <div class="auth-logo">
+      <div class="auth-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+      </div>
+      Atenis
     </div>
 
-    <!-- ── Left: brand panel (desktop only) ── -->
-    <div class="auth-brand">
-      <div class="brand-logo">Atenis</div>
-      <p class="brand-tagline">Streaming simple. <em>Entra y mira.</em></p>
-      <div class="brand-features" aria-hidden="true"></div>
-    </div>
+    <!-- Card -->
+    <div class="auth-card">
+      <div id="authMessage"></div>
 
-    <!-- ── Right: form panel ── -->
-    <div class="auth-panel">
-      <div class="auth-form-wrap">
+      <!-- Main view: login + register tabs -->
+      <div class="auth-view active" id="viewMain">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Iniciar sesión</button>
+          <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Registrarse</button>
+        </div>
 
-        <!-- Global message -->
-        <div id="authMessage"></div>
+        <!-- LOGIN -->
+        <form id="loginForm" class="auth-view active" onsubmit="handleLogin(event)">
+          <h2 class="auth-title">Bienvenido</h2>
+          <p class="auth-sub">Inicia sesión para continuar.</p>
 
-        <!-- ── VIEW: Login / Register tabs ── -->
-        <div class="auth-view active" id="viewMain">
-
-          <!-- Tab switcher -->
-          <div class="auth-tabs">
-            <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Iniciar sesión</button>
-            <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Registrarse</button>
+          <div class="form-group">
+            <label class="form-label">Correo electrónico</label>
+            <div class="form-input-wrap">
+              <span class="form-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </span>
+              <input type="email" class="form-input" id="loginEmail" placeholder="tu@email.com" autocomplete="email" required>
+            </div>
           </div>
 
-          <!-- LOGIN FORM -->
-          <form id="loginForm" class="auth-view active" onsubmit="handleLogin(event)">
-            <h2 class="auth-view-title">Entrar</h2>
-            <p class="auth-view-sub">Accede a tu cuenta.</p>
-
-            <div class="form-group">
-              <label class="form-label">Correo electrónico</label>
-              <div class="form-input-wrap">
-                <span class="form-input-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                </span>
-                <input type="email" class="form-input" id="loginEmail" placeholder="tu@email.com" autocomplete="email" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Contraseña</label>
-              <div class="form-input-wrap">
-                <span class="form-input-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                </span>
-                <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
-                <button type="button" class="form-input-toggle" onclick="togglePwd('loginPassword',this)" aria-label="Mostrar contraseña">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                </button>
-              </div>
-            </div>
-
-            <div class="forgot-link-row" style="text-align:right;margin-top:-8px;margin-bottom:20px;">
-              <button type="button" class="auth-footer-link" onclick="showView('viewForgot')">
-                ¿Olvidaste tu contraseña?
+          <div class="form-group">
+            <label class="form-label">Contraseña</label>
+            <div class="form-input-wrap">
+              <span class="form-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
+              <button type="button" class="form-input-toggle" onclick="togglePwd('loginPassword',this)" aria-label="Mostrar contraseña">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
               </button>
             </div>
-
-            <button type="submit" class="auth-btn-primary" id="loginBtn">
-              <span class="btn-spinner"></span>
-              <span class="btn-text">Iniciar sesión</span>
-            </button>
-
-            <div class="auth-switch-text" style="margin-top:20px;text-align:center;">
-              <button type="button" onclick="switchTab('register')">Crear cuenta</button>
-            </div>
-          </form>
-
-          <!-- REGISTER FORM -->
-          <form id="registerForm" class="auth-view" onsubmit="handleRegister(event)">
-            <h2 class="auth-view-title">Crear cuenta</h2>
-            <p class="auth-view-sub">Solo lo necesario para empezar.</p>
-
-            <div class="form-group">
-              <label class="form-label">Nombre completo</label>
-              <div class="form-input-wrap">
-                <span class="form-input-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                </span>
-                <input type="text" class="form-input" id="registerName" placeholder="Tu nombre" autocomplete="name" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Correo electrónico</label>
-              <div class="form-input-wrap">
-                <span class="form-input-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                </span>
-                <input type="email" class="form-input" id="registerEmail" placeholder="tu@email.com" autocomplete="email" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Contraseña</label>
-              <div class="form-input-wrap">
-                <span class="form-input-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                </span>
-                <input type="password" class="form-input" id="registerPassword" placeholder="Mínimo 6 caracteres"
-                       autocomplete="new-password" required oninput="checkPwdStrength(this.value)">
-                <button type="button" class="form-input-toggle" onclick="togglePwd('registerPassword',this)" aria-label="Mostrar contraseña">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                </button>
-              </div>
-              <div class="pwd-strength"><div class="pwd-strength-fill" id="pwdStrengthFill"></div></div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Confirmar contraseña</label>
-              <div class="form-input-wrap">
-                <span class="form-input-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                </span>
-                <input type="password" class="form-input" id="confirmPassword" placeholder="Repite contraseña"
-                       autocomplete="new-password" required>
-                <button type="button" class="form-input-toggle" onclick="togglePwd('confirmPassword',this)" aria-label="Mostrar contraseña">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                </button>
-              </div>
-            </div>
-
-            <button type="submit" class="auth-btn-primary" id="registerBtn">
-              <span class="btn-spinner"></span>
-              <span class="btn-text">Crear cuenta</span>
-            </button>
-
-            <div class="auth-switch-text" style="margin-top:20px;text-align:center;">
-              <button type="button" onclick="switchTab('login')">Iniciar sesión</button>
-            </div>
-          </form>
-
-        </div><!-- /viewMain -->
-
-        <!-- ── VIEW: Forgot password ── -->
-        <div class="auth-view" id="viewForgot">
-          <button type="button" class="auth-back-btn" onclick="showView('viewMain')">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            Volver
-          </button>
-          <h2 class="auth-view-title">Recuperar acceso</h2>
-          <p class="auth-view-sub">Te enviaremos un enlace.</p>
-
-          <form onsubmit="handleForgot(event)">
-            <div class="form-group">
-              <label class="form-label">Correo electrónico</label>
-              <div class="form-input-wrap">
-                <span class="form-input-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                </span>
-                <input type="email" class="form-input" id="forgotEmail" placeholder="tu@email.com" autocomplete="email" required>
-              </div>
-            </div>
-
-            <button type="submit" class="auth-btn-primary" id="forgotBtn">
-              <span class="btn-spinner"></span>
-              <span class="btn-text">
-                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                Enviar enlace
-              </span>
-            </button>
-          </form>
-
-          <!-- Success state (shown after sending) -->
-          <div id="forgotSuccess" style="display:none;text-align:center;margin-top:32px;">
-            <div style="width:64px;height:64px;border-radius:50%;background:var(--good-soft);border:1px solid rgba(75,123,92,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px;stroke:var(--good);"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </div>
-            <p style="font-size:15px;color:var(--ink-soft);line-height:1.5;">
-              Revisa tu correo.
-            </p>
-            <button type="button" class="auth-btn-primary" style="margin-top:24px;" onclick="showView('viewMain')">
-              <span class="btn-text">Volver</span>
-            </button>
           </div>
 
-        </div><!-- /viewForgot -->
+          <div class="forgot-row">
+            <button type="button" class="auth-link" onclick="showView('viewForgot')">¿Olvidaste tu contraseña?</button>
+          </div>
+
+          <button type="submit" class="auth-btn" id="loginBtn">
+            <span class="btn-spinner"></span>
+            <span class="btn-text">Iniciar sesión</span>
+          </button>
+
+          <div class="auth-switch">
+            ¿No tienes cuenta?
+            <button type="button" onclick="switchTab('register')">Crear cuenta</button>
+          </div>
+        </form>
+
+        <!-- REGISTER -->
+        <form id="registerForm" class="auth-view" onsubmit="handleRegister(event)">
+          <h2 class="auth-title">Crear cuenta</h2>
+          <p class="auth-sub">Empieza a ver minis ahora.</p>
+
+          <div class="form-group">
+            <label class="form-label">Nombre completo</label>
+            <div class="form-input-wrap">
+              <span class="form-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              <input type="text" class="form-input" id="registerName" placeholder="Tu nombre" autocomplete="name" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Correo electrónico</label>
+            <div class="form-input-wrap">
+              <span class="form-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </span>
+              <input type="email" class="form-input" id="registerEmail" placeholder="tu@email.com" autocomplete="email" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Contraseña</label>
+            <div class="form-input-wrap">
+              <span class="form-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              <input type="password" class="form-input" id="registerPassword" placeholder="Mínimo 6 caracteres"
+                     autocomplete="new-password" required oninput="checkPwdStrength(this.value)">
+              <button type="button" class="form-input-toggle" onclick="togglePwd('registerPassword',this)" aria-label="Mostrar contraseña">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <div class="pwd-strength"><div class="pwd-strength-fill" id="pwdStrengthFill"></div></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Confirmar contraseña</label>
+            <div class="form-input-wrap">
+              <span class="form-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              <input type="password" class="form-input" id="confirmPassword" placeholder="Repite contraseña"
+                     autocomplete="new-password" required>
+              <button type="button" class="form-input-toggle" onclick="togglePwd('confirmPassword',this)" aria-label="Mostrar contraseña">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="auth-btn" id="registerBtn">
+            <span class="btn-spinner"></span>
+            <span class="btn-text">Crear cuenta</span>
+          </button>
+
+          <div class="auth-switch">
+            ¿Ya tienes cuenta?
+            <button type="button" onclick="switchTab('login')">Iniciar sesión</button>
+          </div>
+        </form>
 
       </div>
-    </div>
 
+      <!-- Forgot password view -->
+      <div class="auth-view" id="viewForgot">
+        <button type="button" class="auth-back" onclick="showView('viewMain')">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Volver
+        </button>
+        <h2 class="auth-title">Recuperar acceso</h2>
+        <p class="auth-sub">Te enviaremos un enlace de recuperación.</p>
+
+        <form onsubmit="handleForgot(event)">
+          <div class="form-group">
+            <label class="form-label">Correo electrónico</label>
+            <div class="form-input-wrap">
+              <span class="form-input-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </span>
+              <input type="email" class="form-input" id="forgotEmail" placeholder="tu@email.com" autocomplete="email" required>
+            </div>
+          </div>
+          <button type="submit" class="auth-btn" id="forgotBtn">
+            <span class="btn-spinner"></span>
+            <span class="btn-text">Enviar enlace</span>
+          </button>
+        </form>
+
+        <div id="forgotSuccess" style="display:none;text-align:center;margin-top:32px;">
+          <div style="width:56px;height:56px;border-radius:50%;background:var(--good-soft);border:1px solid rgba(34,197,94,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;stroke:var(--good);"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p style="font-size:15px;color:var(--muted);line-height:1.5;">Revisa tu correo electrónico.</p>
+          <button type="button" class="auth-btn" style="margin-top:24px;" onclick="showView('viewMain')">
+            <span class="btn-text">Volver al inicio</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <script>
@@ -542,13 +526,10 @@
       measurementId: "G-P29ME5Z3S1"
     };
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    const auth     = firebase.auth();
     const database = firebase.database();
 
-    // Auto-redirect if already authenticated
     auth.onAuthStateChanged(user => { if (user) checkUserSubscription(user); });
-
-    // ── View switching ───────────────────────────────────────────────────────
 
     function showView(id) {
       document.querySelectorAll('.auth-view[id^="view"]').forEach(v => v.classList.remove('active'));
@@ -559,32 +540,24 @@
     function switchTab(tab) {
       document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
       document.getElementById(tab === 'login' ? 'tabLogin' : 'tabRegister').classList.add('active');
-
       document.getElementById('loginForm').classList.remove('active');
       document.getElementById('registerForm').classList.remove('active');
       document.getElementById(tab === 'login' ? 'loginForm' : 'registerForm').classList.add('active');
-
       hideMessage();
     }
 
-    // ── Messages ─────────────────────────────────────────────────────────────
+    const ICON_ERR = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+    const ICON_OK  = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
 
-    const ICON_ERROR   = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
-    const ICON_SUCCESS  = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
-
-    function showMessage(text, type = 'error') {
+    function showMessage(text, type='error') {
       const el = document.getElementById('authMessage');
-      el.innerHTML = (type === 'success' ? ICON_SUCCESS : ICON_ERROR) + '<span>' + text + '</span>';
+      el.innerHTML = (type === 'success' ? ICON_OK : ICON_ERR) + '<span>' + text + '</span>';
       el.className = type;
       el.style.display = 'flex';
     }
-
     function hideMessage() {
-      const el = document.getElementById('authMessage');
-      el.style.display = 'none';
+      document.getElementById('authMessage').style.display = 'none';
     }
-
-    // ── Login ─────────────────────────────────────────────────────────────────
 
     async function handleLogin(e) {
       e.preventDefault();
@@ -603,8 +576,6 @@
         setBtnLoading(btn, false);
       }
     }
-
-    // ── Register ─────────────────────────────────────────────────────────────
 
     async function handleRegister(e) {
       e.preventDefault();
@@ -645,8 +616,6 @@
       }
     }
 
-    // ── Forgot password ──────────────────────────────────────────────────────
-
     async function handleForgot(e) {
       e.preventDefault();
       const email = document.getElementById('forgotEmail').value.trim();
@@ -664,15 +633,13 @@
       }
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
-
     function setBtnLoading(btn, loading) {
       btn.disabled = loading;
       btn.classList.toggle('loading', loading);
     }
 
-    const EYE_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
-    const EYE_OFF  = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+    const EYE_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    const EYE_OFF  = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
 
     function togglePwd(inputId, btn) {
       const input = document.getElementById(inputId);
@@ -698,11 +665,11 @@
       if (/[^A-Za-z0-9]/.test(pwd)) score++;
       const map = [
         { w: '0%',   bg: 'transparent' },
-        { w: '25%',  bg: '#B3492F' },
-        { w: '50%',  bg: '#C2603D' },
-        { w: '75%',  bg: '#C49A3A' },
-        { w: '90%',  bg: '#C49A3A' },
-        { w: '100%', bg: '#4B7B5C' },
+        { w: '25%',  bg: '#ef4444' },
+        { w: '50%',  bg: '#f97316' },
+        { w: '75%',  bg: '#eab308' },
+        { w: '90%',  bg: '#84cc16' },
+        { w: '100%', bg: '#22c55e' },
       ];
       const s = map[score] || map[0];
       fill.style.width = s.w;
@@ -744,17 +711,17 @@
 
     function getErrMsg(code) {
       const msgs = {
-        'auth/user-not-found':           'No existe una cuenta con este correo',
-        'auth/wrong-password':           'Contraseña incorrecta',
-        'auth/invalid-login-credentials':'Correo o contraseña incorrectos',
-        'auth/invalid-credential':       'Credenciales inválidas',
-        'auth/email-already-in-use':     'Ya existe una cuenta con este correo',
-        'auth/weak-password':            'La contraseña debe tener al menos 6 caracteres',
-        'auth/invalid-email':            'Correo electrónico inválido',
-        'auth/missing-email':            'Ingresa tu correo electrónico',
-        'auth/user-disabled':            'Esta cuenta ha sido deshabilitada',
-        'auth/too-many-requests':        'Demasiados intentos. Intenta más tarde',
-        'auth/network-request-failed':   'Error de conexión. Verifica tu internet',
+        'auth/user-not-found':            'No existe una cuenta con este correo',
+        'auth/wrong-password':            'Contraseña incorrecta',
+        'auth/invalid-login-credentials': 'Correo o contraseña incorrectos',
+        'auth/invalid-credential':        'Credenciales inválidas',
+        'auth/email-already-in-use':      'Ya existe una cuenta con este correo',
+        'auth/weak-password':             'La contraseña debe tener al menos 6 caracteres',
+        'auth/invalid-email':             'Correo electrónico inválido',
+        'auth/missing-email':             'Ingresa tu correo electrónico',
+        'auth/user-disabled':             'Esta cuenta ha sido deshabilitada',
+        'auth/too-many-requests':         'Demasiados intentos. Intenta más tarde',
+        'auth/network-request-failed':    'Error de conexión. Verifica tu internet',
       };
       return msgs[code] || 'Ha ocurrido un error. Intenta nuevamente';
     }

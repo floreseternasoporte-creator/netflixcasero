@@ -35,13 +35,6 @@
 // ║    Sube el video a Dropbox y copia el enlace "Compartir".            ║
 // ║    La plataforma convierte el enlace automáticamente.                ║
 // ║                                                                      ║
-// ║  AUDIO DOBLADO (audioTracks):                                        ║
-// ║    Si el admin sube un audio doblado, se agrega aquí:                ║
-// ║    audioTracks: {                                                    ║
-// ║      'original': 'https://...',   ← video/audio en idioma original  ║
-// ║      'es': 'https://...'          ← audio doblado al español        ║
-// ║    }                                                                 ║
-// ║                                                                      ║
 // ╚══════════════════════════════════════════════════════════════════════╝
 
 
@@ -68,12 +61,7 @@
   isTrending: true,                           // ← true = aparece en Tendencias
   isLocked: false,                            // ← false = disponible ya · true = bloqueado
   releaseDate: '2026-12-25T00:00:00-05:00',   // ← fecha de estreno (solo si isLocked: true)
-  // OPCIONAL — si tiene audio doblado subido por el administrador:
-  audioTracks: {
-    'original': 'https://dropbox.com/...',    // ← audio/video en idioma original
-    'es': 'https://dropbox.com/...'           // ← audio doblado al español
-  },
-  currentAudioTrack: 'original',
+  titleFont: 'elegant',                       // ← 'elegant' · 'drama' · 'modern' · 'brush' · 'artistic'
   episodes: [
     {
       id: 1,
@@ -94,84 +82,7 @@
 
 const seriesDatabase = {
 
-  'kikyo-no-kioku': {
-    id: 'kikyo-no-kioku',
-    title: '桔梗の記憶',
-    spanishTitle: 'El recuerdo de Kikyo',
-    searchAliases: ['El recuerdo de Kikyo', 'Kikyo no Kioku', 'Kikyō no Kioku', '桔梗の記憶'],
-    type: 'mini',
-    year: '2026',
-    genre: 'Aventura',
-    duration: '6 min',
-    rating: 'PG',
-    poster: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
-    description: 'Kikyo es una sacerdotisa serena y valiente marcada por sus recuerdos, su deber espiritual y una aventura breve que revela la fuerza tranquila que guarda en su corazón.',
-    director: 'Atenis',
-    cast: 'Kikyo',
-    isFeatured: true,
-    isTrending: true,
-    isLocked: false,
-    audioTracks: {
-      'original': 'https://www.dropbox.com/scl/fi/1oaobidv1634c7p4dn4ji/copy_43FDE436-0897-424D-8609-CA358390FBC2.MOV?rlkey=vdyfek1upqr9l30rygn1o2061&st=iqe64xh7&dl=0',
-      'es': 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663203786467/tduZKVzDpXhovFOU.mp4'
-    },
-    currentAudioTrack: 'original',
-    episodes: [
-      {
-        id: 1,
-        title: '桔梗の記憶',
-        duration: '6 min',
-        description: 'Un mini drama de aventura sobre Kikyo, sus recuerdos y la calma fortaleza que la acompaña.',
-        thumbnail: 'https://i.ibb.co/sv5zLgLz/86A43203-D12D-47A9-92C1-136C77FFE5B9.jpg',
-        videoUrl: 'https://www.dropbox.com/scl/fi/1oaobidv1634c7p4dn4ji/copy_43FDE436-0897-424D-8609-CA358390FBC2.MOV?rlkey=vdyfek1upqr9l30rygn1o2061&st=iqe64xh7&dl=0'
-      }
-    ]
-  },
-
-  'los-gemelos': {
-    id: 'los-gemelos',
-    title: 'Los Gemelos',
-    spanishTitle: 'Los Gemelos',
-    searchAliases: ['Los Gemelos', 'Los gemelos', 'gemelos'],
-    type: 'mini',
-    year: '2026',
-    genre: 'Suspenso',
-    duration: '6 min',
-    rating: 'PG-13',
-    poster: 'https://i.ibb.co/36Vqmn4/IMG-2939.jpg',
-    description: 'Una mini serie de suspenso que te mantendrá al borde de tu asiento. Dos hermanos, un secreto que cambiará todo.',
-    director: 'Atenis',
-    cast: 'Darel Narayan',
-    isFeatured: true,
-    isTrending: true,
-    isLocked: true,
-    releaseDate: '2026-08-17T00:00:00-05:00',
-    episodes: [
-      {
-        id: 1,
-        title: 'Episodio 1',
-        duration: '6 min',
-        description: 'Primer episodio de Los Gemelos.',
-        thumbnail: 'https://i.ibb.co/36Vqmn4/IMG-2939.jpg',
-        videoUrl: ''
-      },
-      {
-        id: 2,
-        title: 'Episodio 2',
-        duration: '6 min',
-        description: 'Segundo episodio de Los Gemelos.',
-        thumbnail: 'https://i.ibb.co/36Vqmn4/IMG-2939.jpg',
-        videoUrl: ''
-      },
-      {
-        id: 3,
-        title: 'Episodio 3',
-        duration: '6 min',
-        description: 'Tercer episodio de Los Gemelos.',
-        thumbnail: 'https://i.ibb.co/36Vqmn4/IMG-2939.jpg',
-        videoUrl: ''
-      }
-    ]
-  }
+  // El contenido se administra desde Firebase (panel admin).
+  // Este archivo solo se usa como fallback o para contenido estático.
 
 };

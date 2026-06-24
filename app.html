@@ -5292,9 +5292,6 @@
   <div class="top-bar" id="topBar">
     <span class="top-bar-logo">Atenis</span>
     <div class="top-bar-actions">
-      <button class="top-bar-btn" id="topBarCalendarBtn" onclick="topBarCalendar()" title="Próximos estrenos">
-        <i class="fas fa-calendar-days"></i>
-      </button>
       <button class="top-bar-btn" id="topBarSettingsBtn" onclick="topBarSettings()" title="Ajustes">
         <i class="fas fa-cog"></i>
       </button>
@@ -5954,25 +5951,8 @@
     </div>
   </div>
 
-  <!-- Sección de Calendario -->
-  <div id="calendarSection" class="history-section upcoming-section">
-    <div class="upcoming-topbar">
-      <button class="upcoming-back-btn" onclick="closeCalendarSection()" aria-label="Volver">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-      <h2 class="upcoming-title">Estrenos</h2>
-    </div>
-
-    <div id="calendarContent" class="history-content">
-      <!-- Los próximos estrenos se cargarán aquí -->
-    </div>
-
-    <div id="calendarEmpty" class="history-empty hidden">
-      <i class="fas fa-calendar-plus"></i>
-      <h3>No hay próximos estrenos</h3>
-      <p>Cuando se anuncien nuevos títulos aparecerán en este calendario.</p>
-    </div>
-  </div>
+  <!-- Sección de Calendario (deshabilitada) -->
+  <div id="calendarSection" class="history-section upcoming-section" style="display:none;"></div>
 
   <!-- Sección Mini -->
   <div id="miniSection" class="mini-section">
@@ -6852,13 +6832,7 @@
     }
 
     // ── Top bar section launchers ──────────────────────────────────
-    function topBarCalendar() {
-      hideAllSections();
-      document.getElementById('calendarSection').classList.add('active');
-      document.getElementById('topBar').classList.add('top-bar--solid');
-      renderUpcomingReleases();
-      document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
-    }
+    function topBarCalendar() { }
 
     function topBarSettings() {
       hideAllSections();
@@ -8112,247 +8086,13 @@
       handleLanguageChange(language);
     }
 
-    // Sistema de programación en vivo - 17 de agosto
-    let liveCountdownInterval = null;
-    let isNotificationEnabled = false;
+    function updateLiveCountdown() { }
+    function showLiveNow() { }
+    function toggleNotification() { }
+    function showLiveNotification(msg) { }
+    function watchLivePremiere() { }
+    function initializeLiveProgramming() { }
 
-    // Configurar fecha del estreno en vivo (17 de agosto 2024, 8:00 PM)
-    function createLivePremierDate() {
-      const releaseDate = new Date('2024-08-17T20:00:00');
-      return releaseDate;
-    }
-
-    // Actualizar cuenta regresiva en vivo
-    function updateLiveCountdown() {
-      const now = new Date();
-      const premiereDate = createLivePremierDate();
-      const timeDiff = premiereDate.getTime() - now.getTime();
-
-      if (timeDiff <= 0) {
-        // El estreno ha comenzado
-        showLiveNow();
-        return;
-      }
-
-      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-      // Actualizar elementos de cuenta regresiva
-      document.getElementById('liveDays').textContent = days.toString().padStart(2, '0');
-      document.getElementById('liveHours').textContent = hours.toString().padStart(2, '0');
-      document.getElementById('liveMinutes').textContent = minutes.toString().padStart(2, '0');
-      document.getElementById('liveSeconds').textContent = seconds.toString().padStart(2, '0');
-
-      // Notificar cuando falten 5 minutos si está activada la notificación
-      if (isNotificationEnabled && timeDiff <= 5 * 60 * 1000 && timeDiff > 4 * 60 * 1000) {
-        showLiveNotification('¡El cortometraje en vivo comenzará en 5 minutos!');
-      }
-
-      // Notificar cuando falte 1 minuto
-      if (isNotificationEnabled && timeDiff <= 60 * 1000 && timeDiff > 59 * 1000) {
-        showLiveNotification('¡El cortometraje en vivo comenzará en 1 minuto!');
-      }
-    }
-
-    // Mostrar cuando el estreno esté en vivo
-    function showLiveNow() {
-      const liveSection = document.querySelector('.live-programming-section');
-      if (!liveSection) return;
-
-      // Cambiar toda la sección para mostrar que está en vivo — DeepSeek
-      liveSection.innerHTML = `
-        <div style="padding: 24px 20px 8px 20px;">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
-            <span style="width: 8px; height: 8px; background: #4c6ef5; border-radius: 50%; display: inline-block; animation: liveDot 1.4s ease-in-out infinite; flex-shrink: 0;"></span>
-            <span style="font-size: 11px; font-weight: 700; color: #4c6ef5; text-transform: uppercase; letter-spacing: 1.5px;">En vivo ahora</span>
-          </div>
-          <h2 style="font-size: 26px; font-weight: 800; color: #ffffff; margin: 0 0 4px 0; letter-spacing: -0.5px;">Cortometraje exclusivo</h2>
-          <p style="color: #555555; font-size: 14px; margin: 0;">Transmisión única · Disponible ahora</p>
-        </div>
-
-        <div style="margin: 16px 20px; background: #111111; border-radius: 12px; border: 1px solid #1e1e1e; overflow: hidden;">
-          <div style="padding: 24px; text-align: center;">
-            <div style="width: 64px; height: 64px; background: #4c6ef5; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
-              <i class="fas fa-play" style="font-size: 24px; color: #000000; margin-left: 4px;"></i>
-            </div>
-            <p style="color: #888888; font-size: 13px; margin: 0 0 20px 0;">Esta transmisión solo está disponible en este momento.</p>
-            <button onclick="watchLivePremiere()" style="background: #4c6ef5; border: none; color: #000000; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; letter-spacing: -0.2px;">
-              Ver en vivo
-            </button>
-          </div>
-        </div>
-      `;
-
-      // Mostrar notificación de que el estreno comenzó
-      if (isNotificationEnabled) {
-        showLiveNotification('¡El cortometraje exclusivo está EN VIVO ahora! Haz clic para ver.');
-      }
-
-      // Limpiar intervalo de cuenta regresiva
-      if (liveCountdownInterval) {
-        clearInterval(liveCountdownInterval);
-      }
-    }
-
-    // Alternar notificaciones
-    function toggleNotification() {
-      const button = document.getElementById('notifyButton');
-      const icon = document.getElementById('notifyIcon');
-      const text = document.getElementById('notifyText');
-
-      if (!isNotificationEnabled) {
-        if ('Notification' in window) {
-          Notification.requestPermission().then(permission => {
-            if (permission === 'granted') {
-              isNotificationEnabled = true;
-              localStorage.setItem('live_notifications_enabled', 'true');
-              button.style.background = '#4c6ef5';
-              button.style.color = '#000000';
-              button.style.borderColor = 'transparent';
-              icon.className = 'fas fa-bell';
-              text.textContent = 'Activadas';
-              showLiveNotification('Notificaciones activadas. Te avisaremos cuando comience el estreno.');
-            } else {
-              showLiveNotification('Permiso denegado. Activa las notificaciones en ajustes del navegador.');
-            }
-          });
-        } else {
-          showLiveNotification('Las notificaciones no están disponibles en este navegador.');
-        }
-      } else {
-        isNotificationEnabled = false;
-        localStorage.setItem('live_notifications_enabled', 'false');
-        button.style.background = '#1a1a1a';
-        button.style.color = '#ffffff';
-        button.style.borderColor = '#2a2a2a';
-        icon.className = 'fas fa-bell-slash';
-        text.textContent = 'Notificarme';
-        showLiveNotification('Notificaciones desactivadas.');
-      }
-    }
-
-    // Mostrar notificación del sistema
-    function showLiveNotification(message) {
-      // Notificación del navegador
-      if (isNotificationEnabled && 'Notification' in window && Notification.permission === 'granted') {
-        new Notification('Atenis - Programación en Vivo', {
-          body: message,
-          icon: '/favicon.ico',
-          badge: '/favicon.ico',
-          tag: 'live-premiere'
-        });
-      }
-
-      // Notificación visual — DeepSeek
-      const notification = document.createElement('div');
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #1a1a1a;
-        color: #ffffff;
-        padding: 13px 18px;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 500;
-        z-index: 10000;
-        max-width: 320px;
-        width: calc(100vw - 40px);
-        box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-        animation: slideInDown 0.3s ease-out;
-        border: 1px solid #2a2a2a;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      `;
-      
-      notification.innerHTML = `
-        <span style="width: 8px; height: 8px; background: #4c6ef5; border-radius: 50%; flex-shrink: 0;"></span>
-        <span style="flex: 1; line-height: 1.4;">${message}</span>
-        <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #555555; font-size: 14px; cursor: pointer; padding: 0; flex-shrink: 0;">
-          <i class="fas fa-times"></i>
-        </button>
-      `;
-
-      document.body.appendChild(notification);
-
-      // Auto-remover después de 5 segundos
-      setTimeout(() => {
-        if (notification.parentElement) {
-          notification.style.animation = 'slideOutUp 0.3s ease-out forwards';
-          setTimeout(() => {
-            if (notification.parentElement) {
-              notification.remove();
-            }
-          }, 300);
-        }
-      }, 5000);
-    }
-
-    // Ver estreno en vivo
-    function watchLivePremiere() {
-      // Aquí puedes agregar la lógica para reproducir el cortometraje en vivo
-      showLiveNotification('Conectando con la transmisión en vivo...');
-      
-      // Simular reproducción del cortometraje en vivo
-      setTimeout(() => {
-        // Aquí integrarías con tu sistema de reproducción en vivo
-        alert('¡Disfrutando el cortometraje exclusivo en vivo!');
-      }, 2000);
-    }
-
-    // Agregar estilos de animación para las notificaciones
-    const liveStyles = document.createElement('style');
-    liveStyles.innerHTML = `
-      @keyframes slideInDown {
-        from { opacity: 0; transform: translateX(-50%) translateY(-16px); }
-        to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-      }
-      @keyframes slideOutUp {
-        from { opacity: 1; transform: translateX(-50%) translateY(0); }
-        to   { opacity: 0; transform: translateX(-50%) translateY(-16px); }
-      }
-    `;
-    document.head.appendChild(liveStyles);
-
-    // Inicializar sistema de programación en vivo
-    function initializeLiveProgramming() {
-      // Cargar estado de notificaciones guardado
-      const savedNotificationState = localStorage.getItem('live_notifications_enabled');
-      if (savedNotificationState === 'true') {
-        // Verificar si aún tienen permisos de notificación
-        if ('Notification' in window && Notification.permission === 'granted') {
-          isNotificationEnabled = true;
-          const button = document.getElementById('notifyButton');
-          const icon = document.getElementById('notifyIcon');
-          const text = document.getElementById('notifyText');
-          
-          if (button && icon && text) {
-            button.style.background = '#4c6ef5';
-            button.style.color = '#000000';
-            button.style.borderColor = 'transparent';
-            icon.className = 'fas fa-bell';
-            text.textContent = 'Activadas';
-          }
-        }
-      }
-
-      // Iniciar cuenta regresiva
-      updateLiveCountdown();
-      liveCountdownInterval = setInterval(updateLiveCountdown, 1000);
-
-      // Verificar si el estreno ya comenzó
-      const now = new Date();
-      const premiereDate = createLivePremierDate();
-      if (now >= premiereDate) {
-        showLiveNow();
-      }
-    }
-
-    // Inicializar el sistema cuando se carga la página
     // ── Hero slider automático ─────────────────────────────────────────
     (function() {
       const SLIDE_DURATION = 7000; // ms por slide
@@ -8501,7 +8241,7 @@
           renderCatalogSections();
         }, 60000); // refrescar badges y carruseles cada minuto
         initializePremiereSystem();
-        initializeLiveProgramming(); // Nuevo: inicializar sistema en vivo
+        initializeLiveProgramming();
         setupRealtimeSettings(); // Configurar ajustes en tiempo real
         buildContinueWatchingSection();
         loadMiniDramas();        // Cargar dramas cortos Mini desde Firebase
@@ -8829,42 +8569,8 @@
 
 
 
-    // Función para crear fecha de estreno para el 11 de junio a las 2:40 AM Houston
-    function createJuneReleaseDate() {
-      const now = new Date();
-      const currentYear = now.getFullYear();
-
-      // Crear fecha para el 11 de junio del año actual a las 2:40 AM Houston (UTC-6)
-      // 2:40 AM Houston = 8:40 AM UTC
-      const releaseDate = new Date();
-      releaseDate.setUTCFullYear(currentYear, 5, 11); // Junio = mes 5 (0-indexado)
-      releaseDate.setUTCHours(8, 40, 0, 0); // 8:40 UTC = 2:40 AM Houston
-
-      // Si ya pasó el 11 de junio de este año, programar para el próximo año
-      if (now > releaseDate) {
-        releaseDate.setUTCFullYear(currentYear + 1);
-      }
-
-      return releaseDate;
-    }
-
-    // Función para crear fecha de disponibilidad permanente (13 de junio)
-    function createPermanentAvailabilityDate() {
-      const now = new Date();
-      const currentYear = now.getFullYear();
-
-      // Crear fecha para el 13 de junio del año actual (2 días después del estreno)
-      const availabilityDate = new Date();
-      availabilityDate.setUTCFullYear(currentYear, 5, 13); // Junio = mes 5 (0-indexado)
-      availabilityDate.setUTCHours(0, 0, 0, 0); // Medianoche UTC
-
-      // Si ya pasó el 13 de junio de este año, programar para el próximo año
-      if (now > availabilityDate) {
-        availabilityDate.setUTCFullYear(currentYear + 1);
-      }
-
-      return availabilityDate;
-    }
+    function createJuneReleaseDate() { return new Date(); }
+    function createPermanentAvailabilityDate() { return new Date(); }
 
     // Función para verificar si una película ha sido vista
     function hasMovieBeenWatched(movieId) {
@@ -8876,65 +8582,12 @@
       localStorage.setItem(`watched_${movieId}`, 'true');
     }
 
-    // Función para verificar si una película está disponible
     function isMovieAvailable(series) {
       if (!series.releaseDate) return true;
-
-      const now = new Date();
-      const releaseDate = new Date(series.releaseDate);
-      return now >= releaseDate;
+      return new Date() >= new Date(series.releaseDate);
     }
-
-    // Función para verificar si una película está en vivo
-    function isMovieLive(series) {
-      if (!series.releaseDate) return false;
-
-      const now = new Date();
-      const releaseDate = new Date(series.releaseDate);
-      const timeDiff = Math.abs(now.getTime() - releaseDate.getTime());
-
-      // Considerar "en vivo" durante los primeros 60 minutos después del estreno
-      return now >= releaseDate && timeDiff <= (60 * 60 * 1000);
-    }
-
-    // Función para actualizar indicadores de estreno
-    function updateReleaseIndicators() {
-      Object.values(seriesDatabase).forEach(series => {
-        const badgeElement = document.getElementById(`${series.id}-badge`);
-        if (!badgeElement) return;
-
-        const lockElement = document.getElementById(`${series.id}-lock`);
-
-        // Si isLocked es false explícitamente, asegurar que el badge y overlay sean correctos
-        if (!series.isLocked) {
-          if (lockElement) lockElement.style.display = 'none';
-          badgeElement.className = 'movie-badge';
-          badgeElement.textContent = getContentTypeLabel(series);
-          return;
-        }
-
-        // Bloqueado por fecha: solo actualizar si tiene releaseDate
-        if (!series.releaseDate) return;
-
-        if (lockElement) {
-          if (isMovieAvailable(series)) {
-            lockElement.style.display = 'none';
-
-            if (isMovieLive(series)) {
-              badgeElement.className = 'live-badge';
-              badgeElement.textContent = 'EN VIVO';
-            } else {
-              badgeElement.className = 'movie-badge';
-              badgeElement.textContent = getContentTypeLabel(series);
-            }
-          } else {
-            lockElement.style.display = 'flex';
-            badgeElement.className = 'premiere-badge';
-            badgeElement.textContent = 'Estreno';
-          }
-        }
-      });
-    }
+    function isMovieLive() { return false; }
+    function updateReleaseIndicators() { }
 
     // Elementos del DOM
     const videoPlayer = document.getElementById('videoPlayer');
@@ -9814,157 +9467,8 @@
       startProgressUpdate();
     }
 
-    // Función para reproducir contenido principal después del intro
-    function playMainContent(episode) {
-      console.log('=== DEBUG playMainContent ===');
-      console.log('Episode received:', episode);
-      console.log('Episode title:', episode ? episode.title : 'NULL');
-      console.log('Episode videoUrl:', episode ? episode.videoUrl : 'NULL');
-
-      // Mostrar el reproductor
-      document.body.classList.add('video-playing');
-      videoPlayer.classList.add('active');
-      hideBottomNav();
-
-      // Habilitar pantalla completa automática y rotación
-      enableVideoFullscreenAndRotation();
-
-      // Limpiar video anterior
-      resetVideoElement();
-
-      // Configurar video para máxima compatibilidad móvil
-      videoElement.setAttribute('playsinline', 'true');
-      videoElement.setAttribute('webkit-playsinline', 'true');
-      videoElement.setAttribute('x5-playsinline', 'true');
-      videoElement.setAttribute('x5-video-player-type', 'h5');
-      videoElement.setAttribute('x5-video-player-fullscreen', 'true');
-      videoElement.controls = false;
-      videoElement.preload = 'auto';
-      videoElement.removeAttribute('crossorigin');
-
-      // Título diferente para películas vs series
-      if (currentSeries.type === 'movie' || currentSeries.type === 'shortfilm') {
-        videoPlayerTitle.textContent = currentSeries.title;
-      } else {
-        videoPlayerTitle.textContent = `${currentSeries.title} - ${episode.title}`;
-      }
-
-      // Ocultar indicador EN VIVO para películas normales
-      const liveIndicator = document.getElementById('videoLiveIndicator');
-      liveIndicator.style.display = 'none';
-
-      const selectedAudioUrl = currentSeries.audioTracks && currentSeries.currentAudioTrack
-        ? currentSeries.audioTracks[currentSeries.currentAudioTrack]
-        : episode.videoUrl;
-      const playbackUrls = getMediaPlaybackUrls(selectedAudioUrl || episode.videoUrl);
-      let sourceIndex = 0;
-      let hasStartedPlaying = false;
-
-      const tryPlay = () => {
-        if (hasStartedPlaying) return;
-        videoElement.play().then(() => {
-          hasStartedPlaying = true;
-        }).catch(e => {
-          console.warn('Autoplay blocked:', e);
-          showPlayButton();
-        });
-      };
-
-      const loadCurrentSource = () => {
-        hasStartedPlaying = false;
-        const nextUrl = playbackUrls[sourceIndex];
-        console.log('Setting video source to:', nextUrl);
-        videoElement.src = nextUrl;
-        configureSubtitles();
-        videoElement.load();
-      };
-
-      // Event listeners del contenido principal
-      const onLoadedMetadata = () => {
-        updateDuration();
-        updateRealTimeDuration(episode.id);
-        adjustVideoAspectRatio(videoElement);
-        tryPlay();
-      };
-
-      const onCanPlay = () => {
-        tryPlay();
-      };
-
-      const onPlay = () => {
-        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        pauseIndicator.classList.remove('visible');
-        hidePlayButton();
-      };
-
-      const onPause = () => {
-        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-        pauseIndicator.classList.add('visible');
-      };
-
-      const onError = (e) => {
-        console.error('Video source error:', e);
-        sourceIndex += 1;
-
-        if (sourceIndex < playbackUrls.length) {
-          loadCurrentSource();
-          return;
-        }
-
-        showErrorMessage('Error al cargar el video. Verifica tu conexión e intenta de nuevo.');
-        showPlayButton();
-      };
-
-      // Asignar handlers únicos para evitar callbacks viejos que reusen fuentes anteriores.
-      videoElement.onloadedmetadata = onLoadedMetadata;
-      videoElement.oncanplay = onCanPlay;
-      videoElement.onplay = onPlay;
-      videoElement.onpause = onPause;
-      videoElement.onerror = onError;
-
-      loadCurrentSource();
-
-      // Iniciar actualización de progreso
-      startProgressUpdate();
-    }
-
-    // Función para reproducir episodio (modificada para incluir intro)
-    function playEpisode(season, episodeId) {
-      console.log('=== DEBUG playEpisode ===');
-      console.log('currentSeries:', currentSeries ? currentSeries.id : 'NULL');
-      console.log('currentSeries title:', currentSeries ? currentSeries.title : 'NULL');
-      
-      if (!currentSeries) {
-        console.error('ERROR: currentSeries is null!');
-        return;
-      }
-
-      // Verificar si la película está disponible para reproducción
-      if (currentSeries.isLocked && !isMovieAvailable(currentSeries)) {
-        showLockedMessage(currentSeries);
-        return;
-      }
-
-      const episode = currentSeries.episodes.find(ep => ep.id === episodeId);
-      console.log('Episode found:', episode ? episode.title : 'NULL');
-      console.log('Episode videoUrl:', episode ? episode.videoUrl : 'NULL');
-      
-      if (!episode) {
-        console.error('ERROR: Episode not found!');
-        return;
-      }
-
-      currentVideo = episode;
-
-      // Reproducir intro de Atenis primero, luego el contenido principal
-      playAtenisIntro(() => {
-        console.log('=== DEBUG playMainContent callback ===');
-        console.log('About to play episode:', episode.title);
-        console.log('Video URL:', episode.videoUrl);
-        playMainContent(episode);
-      });
-    }
-
+    function playMainContent() { }
+    function playEpisode() { }
     function playTrailer() { }
     function playTrailerContent() { }
 
