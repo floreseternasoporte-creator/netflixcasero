@@ -479,12 +479,7 @@
         <input type="text" class="form-input" id="profileName" placeholder="¿Cómo te gusta que te llamen?" required>
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Selecciona tu Avatar</label>
-        <div class="avatars-grid" id="avatarsGrid">
-          <!-- Los avatares se generarán dinámicamente -->
-        </div>
-      </div>
+
 
       <div class="form-buttons">
         <button type="button" class="btn btn-secondary" onclick="logout()">
@@ -533,7 +528,6 @@
       if (user) {
         currentUser = user;
         checkUserStatus(user);
-        generateAvatars();
         document.getElementById('profileName').value = user.displayName || '';
       } else {
         window.location.href = 'login.html';
@@ -622,11 +616,6 @@
       
       if (!profileName) {
         alert('Por favor ingresa un nombre para tu perfil');
-        return;
-      }
-      
-      if (!selectedAvatar) {
-        alert('Por favor selecciona un avatar');
         return;
       }
       
