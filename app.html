@@ -6861,11 +6861,26 @@
       measurementId: "G-P29ME5Z3S1"
     };
 
-    // Inicializar Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const database = firebase.database();
-    const storage = firebase.storage();
+    // Inicializar Firebase sin romper toda la app si el SDK externo no cargó.
+    const firebaseReady = typeof window.firebase !== 'undefined' && window.firebase.apps !== undefined;
+    if (firebaseReady && !firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+
+    const createOfflineDatabase = () => ({
+      ref: () => ({
+        once: () => Promise.resolve({ val: () => null }),
+        on: () => {},
+        set: () => Promise.reject(new Error('Firebase no está disponible')),
+        update: () => Promise.reject(new Error('Firebase no está disponible')),
+        push: () => ({ key: `offline_${Date.now()}`, set: () => Promise.reject(new Error('Firebase no está disponible')) }),
+        child: () => ({ once: () => Promise.resolve({ val: () => null }) })
+      })
+    });
+
+    const auth = firebaseReady ? firebase.auth() : null;
+    const database = firebaseReady ? firebase.database() : createOfflineDatabase();
+    const storage = firebaseReady ? firebase.storage() : null;
 
     let currentFirebaseUser = null;
     let userProfile = null;
@@ -6873,7 +6888,21 @@
     // Función para verificar autenticación con Firebase
     function checkAuthentication() {
       return new Promise((resolve) => {
+        if (!auth) {
+          console.error('Firebase Auth no está disponible. Redirigiendo a login para evitar una pantalla bloqueada.');
+          window.location.href = 'login.html';
+          resolve(false);
+          return;
+        }
+
+        const authTimeout = setTimeout(() => {
+          console.error('Firebase Auth tardó demasiado. Redirigiendo a login para evitar carga infinita.');
+          window.location.href = 'login.html';
+          resolve(false);
+        }, 10000);
+
         auth.onAuthStateChanged(async (user) => {
+          clearTimeout(authTimeout);
           if (user) {
             currentFirebaseUser = user;
 
@@ -8422,6 +8451,15 @@
     document.addEventListener('DOMContentLoaded', async function() {
       const authenticated = await checkAuthentication();
       if (authenticated) {
+        renderInitialCatalogState();
+        const remoteCatalogLoads = [
+          loadMiniDramas(),        // Cargar dramas cortos Mini desde Firebase
+          loadDynamicCatalog()     // Cargar catálogo adicional desde Firebase
+        ];
+        const hasStaticCatalog = Object.keys(seriesDatabase).length > 0;
+        if (!hasStaticCatalog) {
+          await Promise.allSettled(remoteCatalogLoads);
+        }
         buildFeaturedHero();
         renderCatalogSections();
         renderUpcomingReleases();
@@ -8434,8 +8472,6 @@
         initializeLiveProgramming();
         setupRealtimeSettings(); // Configurar ajustes en tiempo real
         buildContinueWatchingSection();
-        loadMiniDramas();        // Cargar dramas cortos Mini desde Firebase
-        loadDynamicCatalog();   // Cargar catálogo adicional desde Firebase
         // Apply language on startup
         setTimeout(() => applyMiniTranslations(), 300);
         
@@ -8643,13 +8679,33 @@
       return frag;
     }
 
-    function renderNewReleaseSection() {
+    function renderInitialCatalogState() {
+      // El esqueleto solo se muestra durante la primera consulta a Firebase.
+      renderNewReleaseSection({ loading: true });
+      renderTrendingNumbered({ loading: true });
+      renderFlavorsGrid({ loading: true });
+      contentSections.forEach(sectionConfig => {
+        const carousel = document.getElementById(sectionConfig.carouselId);
+        const sectionEl = document.getElementById({ animeCarousel: 'animeSection', terrorCarousel: 'terrorSection' }[sectionConfig.carouselId]);
+        if (sectionEl) sectionEl.style.display = '';
+        if (carousel) {
+          carousel.innerHTML = '';
+          carousel.appendChild(makeSkeleton('carousel-item', 6));
+        }
+      });
+    }
+
+    function renderNewReleaseSection(options = {}) {
       const container = document.getElementById('newReleaseCarousel');
       if (!container) return;
       const items = Object.values(seriesDatabase).slice(0, 10);
       container.innerHTML = '';
       if (items.length === 0) {
-        container.appendChild(makeSkeleton('nr-card', 5));
+        if (options.loading) {
+          container.appendChild(makeSkeleton('nr-card', 5));
+        } else {
+          container.appendChild(createCatalogEmptyState('Todavía no hay lanzamientos publicados.'));
+        }
         return;
       }
       items.forEach((series, i) => {
@@ -8658,7 +8714,7 @@
       });
     }
 
-    function renderTrendingNumbered() {
+    function renderTrendingNumbered(options = {}) {
       const container = document.getElementById('trendingNumbered');
       const section = document.getElementById('trendingNumberedSection');
       if (!container) return;
@@ -8668,6 +8724,10 @@
       container.innerHTML = '';
       if (section) section.style.display = '';
       if (items.length === 0) {
+        if (!options.loading) {
+          if (section) section.style.display = 'none';
+          return;
+        }
         for (let i = 0; i < 6; i++) {
           const skRow = document.createElement('div');
           skRow.className = 'tn-item';
@@ -8704,7 +8764,7 @@
       });
     }
 
-    function renderFlavorsGrid() {
+    function renderFlavorsGrid(options = {}) {
       const container = document.getElementById('flavorsGrid');
       const section = document.getElementById('flavorsSection');
       if (!container) return;
@@ -8712,7 +8772,11 @@
       container.innerHTML = '';
       if (section) section.style.display = '';
       if (items.length === 0) {
-        container.appendChild(makeSkeleton('flavor-card', 9));
+        if (options.loading) {
+          container.appendChild(makeSkeleton('flavor-card', 9));
+        } else if (section) {
+          section.style.display = 'none';
+        }
         return;
       }
       items.forEach((series, i) => {
@@ -8752,7 +8816,7 @@
         if (sectionEl) sectionEl.style.display = '';
 
         if (items.length === 0) {
-          carousel.appendChild(makeSkeleton('carousel-item', 6));
+          if (sectionEl) sectionEl.style.display = 'none';
           return;
         }
 
@@ -10386,45 +10450,68 @@
     // Carga dinámica del catálogo desde Firebase.
     // Agrega en Firebase > catalog/<id> un objeto con la misma estructura
     // que las entradas de seriesDatabase (catalog.js) y aparecerán automáticamente.
-    function loadDynamicCatalog() {
-      database.ref('catalog').on('value', snapshot => {
-        const val = snapshot.val();
-        if (!val) return;
+    function withFirebaseTimeout(promise, label, ms = 8000) {
+      let timer;
+      const timeout = new Promise(resolve => {
+        timer = setTimeout(() => {
+          console.warn(`${label} tardó demasiado; se continúa sin dejar esqueletos infinitos.`);
+          resolve(null);
+        }, ms);
+      });
+      return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+    }
 
+    function normalizeFirebaseCollection(val) {
+      if (!val) return [];
+      return Object.values(val).filter(item => item && item.id);
+    }
+
+    async function loadDynamicCatalog() {
+      const catalogRef = database.ref('catalog');
+      const applySnapshot = snapshot => {
         let changed = false;
-        Object.values(val).forEach(item => {
-          if (item && item.id) {
-            const existing = seriesDatabase[item.id];
-            // Inyectar o actualizar entrada
-            seriesDatabase[item.id] = { ...item };
-            changed = true;
-          }
+        normalizeFirebaseCollection(snapshot && snapshot.val()).forEach(item => {
+          seriesDatabase[item.id] = { ...item };
+          changed = true;
         });
 
         if (changed) {
-          // Reconstruir hero y carruseles con el nuevo contenido
           if (typeof buildFeaturedHero === 'function') buildFeaturedHero();
           renderCatalogSections();
           renderUpcomingReleases();
           updateReleaseIndicators();
         }
-      });
+      };
+
+      try {
+        const firstSnapshot = await withFirebaseTimeout(catalogRef.once('value'), 'catalog');
+        applySnapshot(firstSnapshot);
+        catalogRef.on('value', applySnapshot, error => console.error('Error escuchando catálogo:', error));
+      } catch (error) {
+        console.error('Error cargando catálogo:', error);
+      }
     }
 
-    function loadMiniDramas() {
-      database.ref('miniDramas').on('value', snapshot => {
+    async function loadMiniDramas() {
+      const miniRef = database.ref('miniDramas');
+      const applySnapshot = snapshot => {
         miniDatabase = {};
-        const val = snapshot.val();
-        if (val) {
-          Object.values(val).forEach(item => {
-            if (item && item.id) {
-              miniDatabase[item.id] = { ...item, type: 'mini' };
-            }
-          });
-        }
+        normalizeFirebaseCollection(snapshot && snapshot.val()).forEach(item => {
+          miniDatabase[item.id] = { ...item, type: 'mini' };
+        });
         renderMiniGrid();
         renderMiniCarousel();
-      });
+      };
+
+      try {
+        const firstSnapshot = await withFirebaseTimeout(miniRef.once('value'), 'miniDramas');
+        applySnapshot(firstSnapshot);
+        miniRef.on('value', applySnapshot, error => console.error('Error escuchando minis:', error));
+      } catch (error) {
+        console.error('Error cargando minis:', error);
+        renderMiniGrid();
+        renderMiniCarousel();
+      }
     }
 
     // ── Render mini grid (DramaBox style) ──────────────────────────────────
