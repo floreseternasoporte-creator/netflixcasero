@@ -5772,20 +5772,27 @@
     <div class="settings-content">
 
       <!-- Tarjeta de perfil -->
-      <div class="settings-profile-card" style="margin:0 16px 20px;">
+      <div class="settings-profile-card settings-profile-card--hero" style="margin:0 16px 20px;">
         <div id="userAvatar" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:22px;flex-shrink:0;"></div>
         <div class="settings-profile-info">
           <div class="settings-profile-name" id="currentProfileName">Cargando...</div>
           <div class="settings-profile-email" id="userEmail">Cargando...</div>
           <div class="settings-profile-plan" id="currentPlan">Cargando...</div>
         </div>
-        <button class="settings-btn secondary" onclick="editProfile()" style="width:auto;padding:8px 16px;font-size:13px;flex-shrink:0;">
-          <i class="fas fa-edit"></i> Editar
+        <button class="settings-profile-edit-btn" onclick="editProfile()" aria-label="Editar perfil">
+          <i class="fas fa-pen"></i>
+          <span>Editar perfil</span>
         </button>
       </div>
 
       <!-- Nav list — Netflix style rows -->
       <div class="settings-nav-list">
+        <div class="settings-nav-row settings-nav-row--coins" onclick="openSettingsSub('monedas')">
+          <div class="settings-nav-icon" style="background:#2b2410"><i class="fas fa-coins" style="color:#f5c451"></i></div>
+          <span class="settings-nav-label">Monedas</span>
+          <span class="settings-nav-value" id="settingsCoinsValue">100</span>
+          <i class="fas fa-chevron-right settings-nav-arrow"></i>
+        </div>
         <div class="settings-nav-row" onclick="openSettingsSub('cuenta')">
           <div class="settings-nav-icon" style="background:#1a2540"><i class="fas fa-user-circle" style="color:#4c6ef5"></i></div>
           <span class="settings-nav-label">Cuenta</span>
@@ -5824,6 +5831,41 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- ── Sub: Monedas y recompensas ── -->
+    <div class="settings-sub" id="settingsSubMonedas">
+      <div class="settings-sub-topbar">
+        <button class="settings-sub-back" onclick="closeSettingsSub('monedas')"><i class="fas fa-chevron-left"></i></button>
+        <span class="settings-sub-topbar-title">Monedas y recompensas</span>
+      </div>
+      <div class="settings-sub-body">
+        <div class="coin-wallet-card">
+          <div class="coin-wallet-icon"><i class="fas fa-coins"></i></div>
+          <div>
+            <div class="coin-wallet-label">Saldo disponible</div>
+            <div class="coin-wallet-balance"><span id="settingsCoinsBalance">100</span> <span class="coin-wallet-unit">monedas</span></div>
+          </div>
+        </div>
+        <div class="settings-sub-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-name">Recompensa diaria</div>
+              <div class="setting-description" id="dailyRewardDescription">Recibe 25 monedas cada día</div>
+            </div>
+            <button class="settings-btn primary coin-reward-btn" id="dailyRewardBtn" onclick="claimDailyReward()">
+              <i class="fas fa-gift"></i> Reclamar
+            </button>
+          </div>
+        </div>
+        <div class="coin-how-it-works">
+          <i class="fas fa-lock-open"></i>
+          <div>
+            <strong>Desbloquea episodios</strong>
+            <p>Usa tus monedas para abrir los episodios bloqueados y continuar la historia.</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ── Sub: Cuenta ── -->
@@ -6523,6 +6565,33 @@
 
       <!-- Scrollable body -->
       <div class="mini-sheet-body" id="miniSheetBody"></div>
+    </div>
+  </div>
+
+  <!-- Desbloqueo de episodios con monedas -->
+  <div class="coin-unlock-modal" id="coinUnlockModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="coinUnlockTitle">
+    <div class="coin-unlock-card">
+      <button class="coin-unlock-close" type="button" onclick="closeCoinUnlockModal()" aria-label="Cerrar">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="coin-unlock-icon"><i class="fas fa-lock"></i></div>
+      <div class="coin-unlock-episode" id="coinUnlockEpisode">Episodio 2</div>
+      <h2 id="coinUnlockTitle">Desbloquear episodio</h2>
+      <p>Usa monedas para continuar viendo esta historia.</p>
+      <div class="coin-unlock-summary">
+        <span>Precio</span>
+        <strong><i class="fas fa-coins"></i> <span id="coinUnlockCost">10</span></strong>
+      </div>
+      <div class="coin-unlock-summary coin-unlock-balance-row">
+        <span>Tu saldo</span>
+        <strong><i class="fas fa-coins"></i> <span id="coinUnlockBalance">100</span></strong>
+      </div>
+      <button class="coin-unlock-confirm" type="button" onclick="unlockPendingEpisode()">
+        <i class="fas fa-unlock"></i> Desbloquear episodio
+      </button>
+      <button class="coin-unlock-reward" type="button" onclick="claimDailyReward()">
+        <i class="fas fa-gift"></i> Reclamar recompensa diaria
+      </button>
     </div>
   </div>
 
@@ -7510,32 +7579,40 @@
 
         if (userData) {
           // Nombre completo
-          document.getElementById('userFullName').textContent = userData.name || userData.profile?.name || 'No especificado';
+      const fullName = userData.name || userData.profile?.name || 'No especificado';
+      const fullNameEl = document.getElementById('userFullName');
+      if (fullNameEl) fullNameEl.textContent = fullName;
           
           // Correo electrónico
-          document.getElementById('userEmail').textContent = currentFirebaseUser.email || 'No especificado';
+          const emailEl = document.getElementById('userEmail');
+          if (emailEl) emailEl.textContent = currentFirebaseUser.email || 'No especificado';
           
           // ID de usuario
-          document.getElementById('userId').textContent = currentFirebaseUser.uid;
+          const userIdEl = document.getElementById('userId');
+          if (userIdEl) userIdEl.textContent = currentFirebaseUser.uid;
           
           // Plan actual
           if (userData.subscription) {
             const planName = userData.subscription.name || 'Plan ' + userData.subscription.plan;
-            document.getElementById('currentPlan').textContent = planName + ' - ' + userData.subscription.price;
+            const planEl = document.getElementById('currentPlan');
+            if (planEl) planEl.textContent = planName + ' - ' + userData.subscription.price;
           } else {
-            document.getElementById('currentPlan').textContent = 'Sin plan activo';
+            const planEl = document.getElementById('currentPlan');
+            if (planEl) planEl.textContent = 'Sin plan activo';
           }
           
           // Fecha de registro
           if (currentFirebaseUser.metadata && currentFirebaseUser.metadata.creationTime) {
             const creationDate = new Date(currentFirebaseUser.metadata.creationTime);
-            document.getElementById('registrationDate').textContent = creationDate.toLocaleDateString('es-ES', {
+            const registrationEl = document.getElementById('registrationDate');
+            if (registrationEl) registrationEl.textContent = creationDate.toLocaleDateString('es-ES', {
               year: 'numeric',
               month: 'long',
               day: 'numeric'
             });
           } else {
-            document.getElementById('registrationDate').textContent = 'No disponible';
+            const registrationEl = document.getElementById('registrationDate');
+            if (registrationEl) registrationEl.textContent = 'No disponible';
           }
         }
 
@@ -7544,12 +7621,14 @@
           const updatedData = snapshot.val();
           if (updatedData) {
             // Actualizar nombre
-            document.getElementById('userFullName').textContent = updatedData.name || updatedData.profile?.name || 'No especificado';
+            const updatedNameEl = document.getElementById('userFullName');
+            if (updatedNameEl) updatedNameEl.textContent = updatedData.name || updatedData.profile?.name || 'No especificado';
             
             // Actualizar plan
             if (updatedData.subscription) {
               const planName = updatedData.subscription.name || 'Plan ' + updatedData.subscription.plan;
-              document.getElementById('currentPlan').textContent = planName + ' - ' + updatedData.subscription.price;
+              const updatedPlanEl = document.getElementById('currentPlan');
+              if (updatedPlanEl) updatedPlanEl.textContent = planName + ' - ' + updatedData.subscription.price;
             }
           }
         });
@@ -7561,9 +7640,8 @@
 
     // Editar perfil
     function editProfile() {
-      if (confirm('¿Deseas editar tu perfil? Serás redirigido a la configuración de perfil.')) {
-        window.location.href = 'profile-setup.html';
-      }
+      localStorage.setItem('atenis_editing_profile', 'true');
+      window.location.href = 'profile-setup.html?edit=1';
     }
 
     // Ver historial - Abrir sección
@@ -7898,7 +7976,11 @@
     function loadCurrentSettings() {
       // Cargar perfil del usuario
       if (userProfile) {
-        document.getElementById('currentProfileName').textContent = userProfile.name || 'Usuario';
+        const profileName = userProfile.name || 'Usuario';
+        const profileNameEl = document.getElementById('currentProfileName');
+        const navNameEl = document.getElementById('settingsNavNameVal');
+        if (profileNameEl) profileNameEl.textContent = profileName;
+        if (navNameEl) navNameEl.textContent = profileName;
       }
 
       // Cargar información de privacidad en tiempo real
@@ -7907,24 +7989,33 @@
       // Cargar configuraciones guardadas
       const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
 
-      document.getElementById('autoplayToggle').checked = settings.autoplay !== false;
-      document.getElementById('videoQuality').value = settings.videoQuality || 'auto';
+      const setChecked = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.checked = value;
+      };
+      const setValue = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.value = value;
+      };
+
+      setChecked('autoplayToggle', settings.autoplay !== false);
+      setValue('videoQuality', settings.videoQuality || 'auto');
       const storedLang = settings.language || localStorage.getItem('atenis_language') || 'es';
       currentLanguage = storedLang;
       localStorage.setItem('atenis_language', storedLang);
-      document.getElementById('interfaceLanguage').value = storedLang;
-      document.getElementById('preferredAudio').value = settings.preferredAudio || 'original';
-      document.getElementById('defaultSubtitles').checked = settings.defaultSubtitles || false;
-      document.getElementById('releaseNotifications').checked = settings.releaseNotifications !== false;
-      document.getElementById('reminderNotifications').checked = settings.reminderNotifications !== false;
-      document.getElementById('parentalControl').value = settings.parentalControl || 'all';
+      setValue('interfaceLanguage', storedLang);
+      setValue('preferredAudio', settings.preferredAudio || 'original');
+      setChecked('defaultSubtitles', settings.defaultSubtitles || false);
+      setChecked('releaseNotifications', settings.releaseNotifications !== false);
+      setChecked('reminderNotifications', settings.reminderNotifications !== false);
+      setValue('parentalControl', settings.parentalControl || 'all');
       
       // Cargar nuevas configuraciones
 
-      document.getElementById('themeSelect').value = settings.theme || 'default';
-      document.getElementById('textSize').value = settings.textSize || 'medium';
-      document.getElementById('wifiOnlyToggle').checked = settings.wifiOnly || false;
-      document.getElementById('dataSaverToggle').checked = settings.dataSaver || false;
+      setValue('themeSelect', settings.theme || 'default');
+      setValue('textSize', settings.textSize || 'medium');
+      setChecked('wifiOnlyToggle', settings.wifiOnly || false);
+      setChecked('dataSaverToggle', settings.dataSaver || false);
 
       // Aplicar configuraciones actuales
       applyTheme(settings.theme || 'default');
@@ -7937,23 +8028,32 @@
 
       // Cargar estados de notificaciones
       loadNotificationStates();
+      updateCoinUI();
     }
 
     // Guardar ajustes
     function saveSettings() {
+      const readValue = (id, fallback) => {
+        const el = document.getElementById(id);
+        return el ? el.value : fallback;
+      };
+      const readChecked = (id, fallback) => {
+        const el = document.getElementById(id);
+        return el ? el.checked : fallback;
+      };
       const settings = {
-        autoplay: document.getElementById('autoplayToggle').checked,
-        videoQuality: document.getElementById('videoQuality').value,
-        language: document.getElementById('interfaceLanguage').value,
-        preferredAudio: document.getElementById('preferredAudio').value,
-        defaultSubtitles: document.getElementById('defaultSubtitles').checked,
-        releaseNotifications: document.getElementById('releaseNotifications').checked,
-        reminderNotifications: document.getElementById('reminderNotifications').checked,
-        parentalControl: document.getElementById('parentalControl').value,
-        theme: document.getElementById('themeSelect').value,
-        textSize: document.getElementById('textSize').value,
-        wifiOnly: document.getElementById('wifiOnlyToggle').checked,
-        dataSaver: document.getElementById('dataSaverToggle').checked
+        autoplay: readChecked('autoplayToggle', true),
+        videoQuality: readValue('videoQuality', 'auto'),
+        language: readValue('interfaceLanguage', 'es'),
+        preferredAudio: readValue('preferredAudio', 'original'),
+        defaultSubtitles: readChecked('defaultSubtitles', false),
+        releaseNotifications: readChecked('releaseNotifications', true),
+        reminderNotifications: readChecked('reminderNotifications', true),
+        parentalControl: readValue('parentalControl', 'all'),
+        theme: readValue('themeSelect', 'default'),
+        textSize: readValue('textSize', 'medium'),
+        wifiOnly: readChecked('wifiOnlyToggle', false),
+        dataSaver: readChecked('dataSaverToggle', false)
       };
 
       localStorage.setItem('atenis_settings', JSON.stringify(settings));
@@ -11053,6 +11153,7 @@
 
       _miniPlayerMini = mini;
       _miniPlayerEpIdx = epIdx || 0;
+      getCoins();
 
       const player = document.getElementById('miniPlayer');
       if (!player) return;
@@ -11110,6 +11211,11 @@
       const eps = _miniPlayerMini.episodes || [];
       if (idx < 0 || idx >= eps.length) return;
 
+      if (isMiniEpisodeLocked(_miniPlayerMini, idx, eps[idx])) {
+        openCoinUnlockModal(_miniPlayerMini.id, idx);
+        return;
+      }
+
       _miniPlayerEpIdx = idx;
       const ep = eps[idx];
 
@@ -11142,9 +11248,14 @@
       vid.onpause = updateMiniPlayBtn;
       vid.onended = function() {
         if (_miniPlayerEpIdx < eps.length - 1) {
+          const nextIdx = _miniPlayerEpIdx + 1;
+          if (isMiniEpisodeLocked(_miniPlayerMini, nextIdx, eps[nextIdx])) {
+            openCoinUnlockModal(_miniPlayerMini.id, nextIdx);
+            return;
+          }
           // Blur + zoom freeze-frame effect then countdown
           vid.classList.add('mini-ending');
-          const nextEp = eps[_miniPlayerEpIdx + 1];
+          const nextEp = eps[nextIdx];
           const titleEl = document.getElementById('miniNextTitle');
           if (titleEl) titleEl.textContent = nextEp.title || ('Episodio ' + (_miniPlayerEpIdx + 2));
           const overlay = document.getElementById('miniNextOverlay');
@@ -11591,6 +11702,141 @@
     let _miniSheetTab = 'episodes';
     let _miniSheetRange = 0;
 
+    // ════════════════════════════════════════════════════════════════════════
+    //  MONEDAS — saldo local por usuario y desbloqueo de episodios
+    // ════════════════════════════════════════════════════════════════════════
+
+    let _pendingCoinUnlock = null;
+
+    function getCoinStorageKey() {
+      return 'atenis_coins_' + (currentFirebaseUser && currentFirebaseUser.uid ? currentFirebaseUser.uid : 'guest');
+    }
+
+    function getCoins() {
+      const key = getCoinStorageKey();
+      const stored = Number(localStorage.getItem(key));
+      if (!Number.isFinite(stored) || stored < 0) {
+        localStorage.setItem(key, '100');
+        return 100;
+      }
+      return Math.floor(stored);
+    }
+
+    function setCoins(amount) {
+      const safeAmount = Math.max(0, Math.floor(Number(amount) || 0));
+      localStorage.setItem(getCoinStorageKey(), String(safeAmount));
+      updateCoinUI();
+      return safeAmount;
+    }
+
+    function updateCoinUI() {
+      const balance = getCoins();
+      ['settingsCoinsValue', 'settingsCoinsBalance', 'coinUnlockBalance'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = balance;
+      });
+
+      const rewardBtn = document.getElementById('dailyRewardBtn');
+      const rewardDescription = document.getElementById('dailyRewardDescription');
+      const rewardKey = 'atenis_daily_reward_' + (currentFirebaseUser && currentFirebaseUser.uid ? currentFirebaseUser.uid : 'guest');
+      const claimedToday = localStorage.getItem(rewardKey) === new Date().toISOString().slice(0, 10);
+      if (rewardBtn) {
+        rewardBtn.disabled = claimedToday;
+        rewardBtn.innerHTML = claimedToday
+          ? '<i class="fas fa-check"></i> Reclamada'
+          : '<i class="fas fa-gift"></i> Reclamar';
+      }
+      if (rewardDescription) {
+        rewardDescription.textContent = claimedToday
+          ? 'Vuelve mañana por 25 monedas'
+          : 'Recibe 25 monedas cada día';
+      }
+    }
+
+    function claimDailyReward() {
+      const rewardKey = 'atenis_daily_reward_' + (currentFirebaseUser && currentFirebaseUser.uid ? currentFirebaseUser.uid : 'guest');
+      const today = new Date().toISOString().slice(0, 10);
+      if (localStorage.getItem(rewardKey) === today) {
+        updateCoinUI();
+        return;
+      }
+      localStorage.setItem(rewardKey, today);
+      setCoins(getCoins() + 25);
+      showSettingsMessage('¡Recompensa recibida! +25 monedas');
+    }
+
+    function getEpisodeUnlockKey(miniId, episodeId) {
+      return 'atenis_unlocked_episode_' + String(miniId) + '_' + String(episodeId);
+    }
+
+    function isEpisodeUnlocked(miniId, episodeId) {
+      return localStorage.getItem(getEpisodeUnlockKey(miniId, episodeId)) === 'true';
+    }
+
+    function isMiniEpisodeLocked(mini, idx, ep) {
+      if (!mini || !ep) return false;
+      if (isEpisodeUnlocked(mini.id, ep.id || idx + 1)) return false;
+      return ep.isLocked === true || ((mini.episodes || []).length > 1 && idx > 0);
+    }
+
+    function getEpisodeUnlockCost(ep) {
+      const configuredCost = Number(ep && ep.unlockCost);
+      return Number.isFinite(configuredCost) && configuredCost > 0 ? Math.floor(configuredCost) : 10;
+    }
+
+    function openCoinUnlockModal(miniId, episodeIdx) {
+      const mini = miniDatabase[miniId] || seriesDatabase[miniId];
+      const ep = mini && mini.episodes ? mini.episodes[episodeIdx] : null;
+      if (!mini || !ep) return;
+      _pendingCoinUnlock = { miniId, episodeIdx, episodeId: ep.id || episodeIdx + 1 };
+      const titleEl = document.getElementById('coinUnlockTitle');
+      const numberEl = document.getElementById('coinUnlockEpisode');
+      const costEl = document.getElementById('coinUnlockCost');
+      if (titleEl) titleEl.textContent = getLocalizedMiniTitle(mini);
+      if (numberEl) numberEl.textContent = 'Episodio ' + (episodeIdx + 1);
+      if (costEl) costEl.textContent = getEpisodeUnlockCost(ep);
+      updateCoinUI();
+      const modal = document.getElementById('coinUnlockModal');
+      if (modal) {
+        modal.classList.add('active');
+        modal.setAttribute('aria-hidden', 'false');
+      }
+    }
+
+    function closeCoinUnlockModal() {
+      const modal = document.getElementById('coinUnlockModal');
+      if (modal) {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+      _pendingCoinUnlock = null;
+    }
+
+    function unlockPendingEpisode() {
+      if (!_pendingCoinUnlock) return;
+      const pending = _pendingCoinUnlock;
+      const mini = miniDatabase[pending.miniId] || seriesDatabase[pending.miniId];
+      const ep = mini && mini.episodes ? mini.episodes[pending.episodeIdx] : null;
+      if (!mini || !ep) {
+        closeCoinUnlockModal();
+        return;
+      }
+      const cost = getEpisodeUnlockCost(ep);
+      const balance = getCoins();
+      if (balance < cost) {
+        showSettingsMessage('Necesitas ' + cost + ' monedas. Reclama tu recompensa diaria.');
+        return;
+      }
+      setCoins(balance - cost);
+      localStorage.setItem(getEpisodeUnlockKey(pending.miniId, pending.episodeId), 'true');
+      closeCoinUnlockModal();
+      if (_miniPlayerMini && _miniPlayerMini.id === pending.miniId) {
+        _renderMiniSheetBody();
+        _playMiniEp(pending.episodeIdx);
+      }
+      showSettingsMessage('Episodio desbloqueado por ' + cost + ' monedas');
+    }
+
     function _renderMiniEpsList() {
       if (!_miniPlayerMini) return;
 
@@ -11676,15 +11922,16 @@
       const gridItems = visibleEps.map((ep, localIdx) => {
         const globalIdx = range.start + localIdx;
         const isPlaying = globalIdx === _miniPlayerEpIdx;
-        const isLocked  = ep.isLocked || false;
+        const isLocked  = isMiniEpisodeLocked(_miniPlayerMini, globalIdx, ep);
         const cls = ['mini-ep-box', isPlaying ? 'ep-playing' : '', isLocked ? 'ep-locked' : ''].filter(Boolean).join(' ');
         const icon = isPlaying
           ? '<i class="fas fa-chart-bar mini-ep-box-icon"></i>'
           : isLocked
-            ? '<i class="fas fa-lock mini-ep-box-icon"></i>'
+            ? `<span class="mini-ep-lock-meta"><i class="fas fa-lock mini-ep-box-icon"></i><small>${getEpisodeUnlockCost(ep)}</small></span>`
             : '';
+        const safeMiniId = String(_miniPlayerMini.id).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
         const onclick = isLocked
-          ? ''
+          ? `onclick="openCoinUnlockModal('${safeMiniId}', ${globalIdx})"`
           : `onclick="_playMiniEp(${globalIdx}); _closeMiniEpsSheet();"`;
         return `<div class="${cls}" ${onclick}>${globalIdx + 1}${icon}</div>`;
       }).join('');
@@ -11709,6 +11956,7 @@
         notificaciones: 'settingsSubNotificaciones',
         ayuda:          'settingsSubAyuda',
         subtitulos:     'settingsSubSubtitulos',
+        monedas:        'settingsSubMonedas',
       };
       const id = idMap[name];
       if (!id) return;
@@ -11732,6 +11980,7 @@
         notificaciones: 'settingsSubNotificaciones',
         ayuda:          'settingsSubAyuda',
         subtitulos:     'settingsSubSubtitulos',
+        monedas:        'settingsSubMonedas',
       };
       const id = idMap[name];
       if (!id) return;

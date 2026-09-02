@@ -460,8 +460,8 @@
   <div class="profile-container">
     <!-- Header -->
     <div class="profile-header">
-      <h1 class="profile-title">Configurar Perfil</h1>
-      <p class="profile-subtitle">Personaliza tu experiencia en Atenis</p>
+      <h1 class="profile-title" id="profilePageTitle">Configurar Perfil</h1>
+      <p class="profile-subtitle" id="profilePageSubtitle">Personaliza tu experiencia en Atenis</p>
     </div>
 
     <!-- Indicador de pasos -->
@@ -487,7 +487,7 @@
         </button>
         <button type="submit" class="btn btn-primary">
           <i class="fas fa-spinner spinner"></i>
-          Crear Perfil
+          <span id="profileSubmitLabel">Crear Perfil</span>
         </button>
       </div>
     </form>
@@ -527,8 +527,8 @@
     auth.onAuthStateChanged((user) => {
       if (user) {
         currentUser = user;
-        checkUserStatus(user);
         document.getElementById('profileName').value = user.displayName || '';
+        checkUserStatus(user);
       } else {
         window.location.href = 'login.html';
       }
@@ -544,9 +544,15 @@
         if (!userData || !userData.subscription) {
           // No tiene suscripción, redirigir
           window.location.href = 'subscription.html';
-        } else if (userData.profile) {
+        } else if (userData.profile && localStorage.getItem('atenis_editing_profile') !== 'true') {
           // Ya tiene perfil, ir a la plataforma
           window.location.href = 'index.html';
+        } else if (userData.profile) {
+          const existingName = userData.profile.name || user.displayName || '';
+          document.getElementById('profileName').value = existingName;
+          document.getElementById('profilePageTitle').textContent = 'Editar Perfil';
+          document.getElementById('profilePageSubtitle').textContent = 'Actualiza tu información de perfil';
+          document.getElementById('profileSubmitLabel').textContent = 'Guardar cambios';
         }
       } catch (error) {
         console.error('Error verificando estado:', error);
@@ -622,15 +628,21 @@
       setButtonLoading(submitButton, true);
 
       try {
-        // Crear objeto de perfil
+        const editingProfile = localStorage.getItem('atenis_editing_profile') === 'true';
+        const existingSnapshot = await database.ref('users/' + currentUser.uid + '/profile').once('value');
+        const existingProfile = existingSnapshot.val() || {};
+
+        // Crear o actualizar el perfil sin borrar sus preferencias actuales
         const profile = {
+          ...existingProfile,
           name: profileName,
-          avatar: selectedAvatar,
-          createdAt: firebase.database.ServerValue.TIMESTAMP,
+          avatar: selectedAvatar || existingProfile.avatar || null,
+          createdAt: existingProfile.createdAt || firebase.database.ServerValue.TIMESTAMP,
           preferences: {
-            language: 'es',
-            autoplay: true,
-            notifications: true
+            ...(existingProfile.preferences || {}),
+            language: existingProfile.preferences?.language || 'es',
+            autoplay: existingProfile.preferences?.autoplay !== false,
+            notifications: existingProfile.preferences?.notifications !== false
           }
         };
 
@@ -638,7 +650,9 @@
         await database.ref('users/' + currentUser.uid + '/profile').set(profile);
 
         // Mostrar animación de éxito
-        showSuccessAnimation();
+         localStorage.removeItem('atenis_editing_profile');
+         showSuccessAnimation(editingProfile);
+         document.getElementById('profileSubmitLabel').textContent = editingProfile ? 'Guardado' : 'Creado';
 
         // Redirigir a la plataforma después de 3 segundos
         setTimeout(() => {
@@ -654,8 +668,10 @@
     });
 
     // Mostrar animación de éxito
-    function showSuccessAnimation() {
+    function showSuccessAnimation(editing = false) {
       const successAnimation = document.getElementById('successAnimation');
+      const title = successAnimation.querySelector('div:nth-of-type(2)');
+      if (title) title.textContent = editing ? '¡Perfil actualizado exitosamente!' : '¡Perfil creado exitosamente!';
       successAnimation.style.display = 'block';
       
       setTimeout(() => {

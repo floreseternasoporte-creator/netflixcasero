@@ -917,3 +917,293 @@ body[style*="linear-gradient"] {
     font-size: 10px !important;
   }
 }
+
+/* Perfil y billetera de monedas */
+.settings-profile-card--hero {
+  padding: 20px !important;
+  gap: 14px !important;
+  background: linear-gradient(135deg, #111a33 0%, #0d0e1a 62%) !important;
+  border: 1px solid #28345b !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,.2) !important;
+}
+
+.settings-profile-card--hero #userAvatar {
+  width: 64px !important;
+  height: 64px !important;
+  border: 2px solid rgba(255,255,255,.22) !important;
+  box-shadow: 0 6px 16px rgba(0,0,0,.3);
+}
+
+.settings-profile-edit-btn {
+  min-height: 44px !important;
+  padding: 0 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  flex-shrink: 0 !important;
+  border-radius: 10px !important;
+  background: var(--uber-white) !important;
+  color: var(--uber-black) !important;
+  border: 1px solid var(--uber-white) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+}
+
+.settings-profile-edit-btn:hover {
+  background: #e7e7e7 !important;
+  border-color: #e7e7e7 !important;
+}
+
+.settings-nav-row--coins {
+  border-color: rgba(245,196,81,.3) !important;
+  background: linear-gradient(90deg, rgba(245,196,81,.08), #0d0e1a 42%) !important;
+}
+
+.settings-nav-row--coins .settings-nav-value {
+  color: #f5c451 !important;
+  font-weight: 700 !important;
+}
+
+.coin-wallet-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: 20px;
+  border: 1px solid rgba(245,196,81,.28);
+  border-radius: 16px;
+  background: linear-gradient(135deg, #29200d, #171522);
+}
+
+.coin-wallet-icon,
+.coin-unlock-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border-radius: 14px;
+  color: #16120a;
+  background: #f5c451;
+  font-size: 22px;
+}
+
+.coin-wallet-label {
+  color: #a89b7a;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.coin-wallet-balance {
+  color: #fff;
+  font-size: 25px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.coin-wallet-unit {
+  color: #f5c451;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.coin-reward-btn {
+  min-height: 40px !important;
+  padding: 8px 13px !important;
+  font-size: 12px !important;
+  white-space: nowrap;
+}
+
+.coin-reward-btn:disabled {
+  opacity: .55 !important;
+  cursor: default !important;
+}
+
+.coin-how-it-works {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  color: #f5c451;
+  border: 1px solid #252848;
+  border-radius: 14px;
+  background: #111322;
+}
+
+.coin-how-it-works > i {
+  margin-top: 2px;
+}
+
+.coin-how-it-works strong {
+  display: block;
+  color: #f5f5f5;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.coin-how-it-works p {
+  color: #8b9ab0;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.mini-ep-lock-meta {
+  position: absolute;
+  right: 5px;
+  bottom: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #f5c451;
+}
+
+.mini-ep-lock-meta small {
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.mini-ep-box.ep-locked {
+  border-color: #302b1b !important;
+  background: #171820 !important;
+  color: #7b8295 !important;
+  cursor: pointer !important;
+}
+
+.coin-unlock-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 6000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(3,4,10,.74);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.coin-unlock-modal.active {
+  display: flex;
+}
+
+.coin-unlock-card {
+  position: relative;
+  width: min(100%, 390px);
+  padding: 26px 22px 20px;
+  text-align: center;
+  border: 1px solid #2c355b;
+  border-radius: 22px;
+  background: #111322;
+  box-shadow: 0 20px 60px rgba(0,0,0,.55);
+}
+
+.coin-unlock-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: 0 !important;
+  border-radius: 50% !important;
+  color: #8b9ab0 !important;
+  background: rgba(255,255,255,.07) !important;
+  cursor: pointer;
+}
+
+.coin-unlock-card .coin-unlock-icon {
+  margin: 2px auto 12px;
+  width: 54px;
+  height: 54px;
+  color: #16120a;
+  border-radius: 17px;
+  font-size: 21px;
+}
+
+.coin-unlock-episode {
+  color: #f5c451;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.coin-unlock-card h2 {
+  margin: 6px 0 8px;
+  color: #fff;
+  font-size: 21px;
+}
+
+.coin-unlock-card > p {
+  margin: 0 0 18px;
+  color: #8b9ab0;
+  font-size: 13px;
+}
+
+.coin-unlock-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 13px;
+  margin-top: 7px;
+  border-radius: 10px;
+  background: #171a2b;
+  color: #8b9ab0;
+  font-size: 13px;
+}
+
+.coin-unlock-summary strong {
+  color: #f5c451;
+  font-size: 15px;
+}
+
+.coin-unlock-balance-row {
+  margin-bottom: 16px;
+}
+
+.coin-unlock-confirm,
+.coin-unlock-reward {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  cursor: pointer;
+}
+
+.coin-unlock-confirm {
+  border: 1px solid var(--uber-green) !important;
+  background: var(--uber-green) !important;
+  color: var(--uber-black) !important;
+  font-weight: 700 !important;
+}
+
+.coin-unlock-reward {
+  margin-top: 8px;
+  border: 1px solid #2a3151 !important;
+  background: transparent !important;
+  color: #b8c4ed !important;
+}
+
+@media (max-width: 480px) {
+  .settings-profile-card--hero {
+    align-items: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+
+  .settings-profile-card--hero .settings-profile-info {
+    min-width: calc(100% - 94px);
+  }
+
+  .settings-profile-edit-btn {
+    width: 100% !important;
+    min-height: 48px !important;
+  }
+
+  .coin-unlock-modal {
+    padding: 12px;
+  }
+}

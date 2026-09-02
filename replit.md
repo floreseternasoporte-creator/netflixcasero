@@ -32,6 +32,7 @@ El servidor se ejecuta automaticamente en el puerto 5000:
 ```
 python server.py
 ```
+En Replit, el flujo `Start application` usa este mismo comando y expone el puerto 5000 para la vista previa.
 
 ## User Preferences
 (No preferences recorded yet)
