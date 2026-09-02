@@ -7125,6 +7125,7 @@
     function topBarSettings() {
       hideAllSections();
       document.getElementById('settingsSection').classList.add('active');
+      document.body.classList.add('settings-open');
       document.getElementById('topBar').classList.add('top-bar--solid');
       document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
       document.getElementById('navProfile') && document.getElementById('navProfile').classList.add('active');
@@ -7145,6 +7146,7 @@
         document.getElementById('searchSection'),
         document.querySelector('.search-content-area'),
         document.getElementById('settingsSection'),
+        document.querySelector('#settingsSection > .settings-content'),
         document.getElementById('historySection'),
         document.getElementById('calendarSection'),
         document.getElementById('myListSection'),
@@ -7187,6 +7189,7 @@
       hideAllSections();
       showBottomNav();
       setTopBarMode(false);
+      document.body.classList.remove('settings-open');
       document.getElementById('homeSection').style.display = 'block';
     }
 
@@ -7214,11 +7217,13 @@
       showBottomNav();
       setTopBarMode(true);
       document.getElementById('settingsSection').classList.add('active');
+      document.body.classList.add('settings-open');
       loadCurrentSettings();
     }
 
     // Ocultar todas las secciones
     function hideAllSections() {
+      document.body.classList.remove('settings-open');
       document.getElementById('homeSection').style.display = 'none';
       const searchSection = document.getElementById('searchSection');
       searchSection.classList.remove('active');
@@ -7267,6 +7272,7 @@
     function closeSettingsSection() {
       closeAllSettingsSubs();
       document.getElementById('settingsSection').classList.remove('active');
+      document.body.classList.remove('settings-open');
       showHomeSection();
       document.querySelectorAll('.bottom-nav button').forEach(btn => btn.classList.remove('active'));
       document.getElementById('navHome').classList.add('active');
