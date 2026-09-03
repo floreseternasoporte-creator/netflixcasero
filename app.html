@@ -5709,8 +5709,47 @@
       </div>
     </div>
 
+    <div class="search-discovery-bar">
+      <div>
+        <div class="search-discovery-kicker">ATENIS / EXPLORAR</div>
+        <h1 class="search-discovery-title">Encuentra tu próxima historia</h1>
+      </div>
+      <button class="search-discovery-reset" type="button" onclick="resetBrowseFilters()" aria-label="Restablecer filtros">
+        <i class="fas fa-rotate-left"></i>
+      </button>
+    </div>
+
+    <div class="search-category-chips" id="searchCategoryChips" aria-label="Filtrar catálogo">
+      <button class="search-chip active" type="button" data-browse-status="all" onclick="setBrowseStatus(this,'all')">Todo</button>
+      <button class="search-chip" type="button" data-browse-status="new" onclick="setBrowseStatus(this,'new')">Nuevos</button>
+      <button class="search-chip" type="button" data-browse-status="popular" onclick="setBrowseStatus(this,'popular')">Populares</button>
+      <button class="search-chip" type="button" data-browse-status="completed" onclick="setBrowseStatus(this,'completed')">Completos</button>
+      <button class="search-chip" type="button" data-browse-status="free" onclick="setBrowseStatus(this,'free')">Gratis</button>
+    </div>
+
+    <div class="search-browse-toolbar">
+      <div class="search-genre-chips" id="searchGenreChips" aria-label="Filtrar por género">
+        <button class="search-genre-chip active" type="button" data-browse-genre="" onclick="setBrowseGenre(this,'')">Todos los géneros</button>
+        <button class="search-genre-chip" type="button" data-browse-genre="Drama" onclick="setBrowseGenre(this,'Drama')">Drama</button>
+        <button class="search-genre-chip" type="button" data-browse-genre="Romance" onclick="setBrowseGenre(this,'Romance')">Romance</button>
+        <button class="search-genre-chip" type="button" data-browse-genre="Acción" onclick="setBrowseGenre(this,'Acción')">Acción</button>
+        <button class="search-genre-chip" type="button" data-browse-genre="Comedia" onclick="setBrowseGenre(this,'Comedia')">Comedia</button>
+        <button class="search-genre-chip" type="button" data-browse-genre="Terror" onclick="setBrowseGenre(this,'Terror')">Terror</button>
+        <button class="search-genre-chip" type="button" data-browse-genre="Anime" onclick="setBrowseGenre(this,'Anime')">Anime</button>
+      </div>
+      <label class="search-sort-control">
+        <span>Ordenar</span>
+        <select id="searchSortSelect" onchange="setBrowseSort(this.value)" aria-label="Ordenar resultados">
+          <option value="recent">Más recientes</option>
+          <option value="popular">Más populares</option>
+          <option value="az">A — Z</option>
+        </select>
+      </label>
+    </div>
+
     <!-- Área de resultados con scroll -->
     <div class="search-content-area">
+      <div id="searchResultsMeta" class="search-results-meta" aria-live="polite"></div>
       <div id="searchLoading" class="search-loading hidden">
         <div class="search-loading-spinner"></div>
         <div class="search-loading-text">Buscando...</div>
@@ -7225,7 +7264,7 @@
       document.getElementById('searchSectionInput').value = '';
 
       showSearchSuggestions();
-      activeChipGenre = '';
+      resetBrowseFilters();
       document.getElementById('searchSectionInput').focus();
     }
 
@@ -7322,8 +7361,13 @@
         });
         searchSectionInput.addEventListener('input', function() {
           if (this.value.trim() === '') {
-            showSearchSuggestions();
-            document.getElementById('searchNoResults').classList.add('hidden');
+            if (browseState.status !== 'all' || browseState.genre) {
+              renderBrowseCatalog();
+            } else {
+              showSearchSuggestions();
+              document.getElementById('searchNoResults').classList.add('hidden');
+              document.getElementById('searchResultsMeta').textContent = '';
+            }
           } else {
             performSearchFromSection();
           }
@@ -7437,10 +7481,14 @@
 
       if (results.length === 0) {
         noResults.classList.remove('hidden');
+        const meta = document.getElementById('searchResultsMeta');
+        if (meta) meta.textContent = '0 resultados';
         return;
       }
 
       noResults.classList.add('hidden');
+      const meta = document.getElementById('searchResultsMeta');
+      if (meta) meta.textContent = `${results.length} resultado${results.length === 1 ? '' : 's'}`;
 
       results.forEach(series => {
         const resultItem = document.createElement('div');
@@ -10021,24 +10069,132 @@
       }
 
 
-    // ── Chips de búsqueda ──────────────────────────────────────────
+    // ── Explorador y chips de búsqueda ─────────────────────────────
     let activeChipGenre = '';
+    const browseState = { status: 'all', genre: '', sort: 'recent' };
 
-    function filterSearchByChip(btn, genre) {
-      document.querySelectorAll('.search-chip').forEach(c => c.classList.remove('active'));
-      btn.classList.add('active');
-      activeChipGenre = genre;
-      const query = document.getElementById('searchSectionInput').value.trim();
+    function getBrowseItems() {
+      const items = [];
+      const seen = new Set();
+      Object.values(seriesDatabase || {}).forEach(item => {
+        if (item && item.id && !seen.has(item.id)) {
+          seen.add(item.id);
+          items.push({ ...item, _isMini: false });
+        }
+      });
+      if (typeof miniDatabase !== 'undefined') {
+        Object.values(miniDatabase || {}).forEach(item => {
+          if (item && item.id && !seen.has(item.id)) {
+            seen.add(item.id);
+            items.push({ ...item, _isMini: true });
+          }
+        });
+      }
+      return items;
+    }
 
-      if (query || genre) {
-        performSearchFromSection();
-        return;
+    function isBrowseItemNew(item) {
+      if (item.isNew === true || item.isFeatured === true) return true;
+      if (!item.createdAt) return false;
+      const createdAt = new Date(item.createdAt).getTime();
+      return Number.isFinite(createdAt) && Date.now() - createdAt <= 1000 * 60 * 60 * 24 * 30;
+    }
+
+    function isBrowseItemCompleted(item) {
+      return item.isComplete === true ||
+        item.completed === true ||
+        ['completed', 'complete', 'finalizada', 'finalizado'].includes(String(item.status || '').toLowerCase());
+    }
+
+    function getBrowsePopularity(item) {
+      const views = Number(String(item.views || 0).replace(/[^0-9.]/g, '')) || 0;
+      const rating = Number(item.rating) || 0;
+      return (item.isTrending ? 1000000 : 0) + (item.isFeatured ? 500000 : 0) + views + rating * 1000;
+    }
+
+    function getBrowseResults() {
+      let items = getBrowseItems();
+      if (browseState.genre) {
+        const genre = browseState.genre.toLowerCase();
+        items = items.filter(item => String(item.genre || item.genres || '').toLowerCase().includes(genre));
+      }
+      if (browseState.status === 'new') {
+        items = items.filter(isBrowseItemNew);
+      } else if (browseState.status === 'popular') {
+        items = items.filter(item => item.isTrending || item.isFeatured || Number(item.views) > 0);
+      } else if (browseState.status === 'completed') {
+        items = items.filter(isBrowseItemCompleted);
+      } else if (browseState.status === 'free') {
+        items = items.filter(item => !item.isLocked && item.isPremium !== true);
       }
 
-      document.getElementById('searchLoading').classList.add('hidden');
-      document.getElementById('searchNoResults').classList.add('hidden');
-      document.getElementById('searchResultsGrid').innerHTML = '';
+      const titleOf = item => String(item.spanishTitle || item.title || '').toLocaleLowerCase('es');
+      if (browseState.sort === 'az') {
+        items.sort((a, b) => titleOf(a).localeCompare(titleOf(b), 'es'));
+      } else if (browseState.sort === 'popular' || browseState.status === 'popular') {
+        items.sort((a, b) => getBrowsePopularity(b) - getBrowsePopularity(a));
+      } else {
+        items.sort((a, b) => {
+          const dateA = Number(new Date(a.createdAt || a.releaseDate || 0)) || 0;
+          const dateB = Number(new Date(b.createdAt || b.releaseDate || 0)) || 0;
+          return dateB - dateA || titleOf(a).localeCompare(titleOf(b), 'es');
+        });
+      }
+      return items;
+    }
+
+    function renderBrowseCatalog() {
+      const query = document.getElementById('searchSectionInput')?.value.trim() || '';
+      if (query) {
+        let results = searchContent(query);
+        if (browseState.genre) {
+          results = results.filter(item => String(item.genre || item.genres || '').toLowerCase().includes(browseState.genre.toLowerCase()));
+        }
+        displaySearchResults(results, query);
+      } else {
+        displaySearchResults(getBrowseResults(), 'Explorar');
+      }
+      document.getElementById('searchResultsMeta').textContent =
+        `${document.querySelectorAll('#searchResultsGrid .search-result-item').length} resultados`;
+    }
+
+    function setBrowseStatus(btn, status) {
+      browseState.status = status;
+      document.querySelectorAll('[data-browse-status]').forEach(item => item.classList.toggle('active', item === btn));
+      renderBrowseCatalog();
+    }
+
+    function setBrowseGenre(btn, genre) {
+      browseState.genre = genre;
+      activeChipGenre = genre;
+      document.querySelectorAll('[data-browse-genre]').forEach(item => item.classList.toggle('active', item === btn));
+      renderBrowseCatalog();
+    }
+
+    function setBrowseSort(sort) {
+      browseState.sort = sort || 'recent';
+      renderBrowseCatalog();
+    }
+
+    function resetBrowseFilters() {
+      browseState.status = 'all';
+      browseState.genre = '';
+      browseState.sort = 'recent';
+      activeChipGenre = '';
+      const input = document.getElementById('searchSectionInput');
+      if (input) input.value = '';
+      const select = document.getElementById('searchSortSelect');
+      if (select) select.value = 'recent';
+      document.querySelectorAll('[data-browse-status]').forEach(item => item.classList.toggle('active', item.dataset.browseStatus === 'all'));
+      document.querySelectorAll('[data-browse-genre]').forEach(item => item.classList.toggle('active', item.dataset.browseGenre === ''));
       showSearchSuggestions();
+      const meta = document.getElementById('searchResultsMeta');
+      if (meta) meta.textContent = '';
+      document.getElementById('searchNoResults').classList.add('hidden');
+    }
+
+    function filterSearchByChip(btn, genre) {
+      setBrowseGenre(btn, genre);
     }
 
     function doSuggestedSearch(term) {
