@@ -7216,6 +7216,9 @@
       document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
       document.getElementById('navProfile') && document.getElementById('navProfile').classList.add('active');
       loadCurrentSettings();
+      if (currentFirebaseUser && currentFirebaseUser.uid) {
+        void initializeCoinWallet(currentFirebaseUser.uid);
+      }
     }
 
     // Make top bar transparent on home, solid elsewhere
@@ -7305,6 +7308,9 @@
       document.getElementById('settingsSection').classList.add('active');
       document.body.classList.add('settings-open');
       loadCurrentSettings();
+      if (currentFirebaseUser && currentFirebaseUser.uid) {
+        void initializeCoinWallet(currentFirebaseUser.uid);
+      }
     }
 
     // Ocultar todas las secciones
@@ -12003,6 +12009,13 @@
       }
     }
 
+    function hasLocalCoinWallet(ownerId) {
+      return Boolean(
+        localStorage.getItem(getCoinWalletStorageKey(ownerId)) ||
+        localStorage.getItem(getCoinStorageKey(ownerId))
+      );
+    }
+
     function getCoins() {
       if (_coinWallet.ownerId === getCoinOwnerId() && Number.isFinite(_coinWallet.balance)) {
         return Math.max(0, Math.floor(_coinWallet.balance));
@@ -12054,8 +12067,14 @@
         if (remote && typeof remote === 'object' && Number.isFinite(Number(remote.balance))) {
           _coinWallet = { ...normalizeCoinWallet(remote, requestOwner), ready: true, syncing: false };
         } else {
+          // Si se reclamó antes de que Firebase terminara de identificar al usuario,
+          // migrar el monedero guest al UID en vez de devolverlo a 100.
+          const guestWallet = readCoinWalletLocally('guest');
+          const shouldMigrateGuest = !hasLocalCoinWallet(requestOwner) &&
+            (guestWallet.balance !== 100 || guestWallet.transactions.length > 0);
+          const sourceWallet = shouldMigrateGuest ? guestWallet : cached;
           // Migrar el saldo que existía en el navegador a la cuenta Firebase.
-          _coinWallet = { ...cached, ready: true, syncing: false };
+          _coinWallet = { ...sourceWallet, ownerId: requestOwner, ready: true, syncing: false };
           await getCoinWalletRef(requestOwner).set({
             balance: _coinWallet.balance,
             dailyRewardDate: _coinWallet.dailyRewardDate || '',

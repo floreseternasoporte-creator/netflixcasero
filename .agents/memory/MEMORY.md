@@ -5,3 +5,4 @@
 - [Settings accordion](settings-accordion.md) — grupos en cards con .settings-group-toggle; uber-theme.css NO debe tener overrides para .settings-group.
 - [Lock mode Netflix style](lock-mode.md) — locked-overlay es badge rojo ESTRENO en esquina, sin blur, no heavy overlay.
 - [Mini multilingual system](mini-i18n.md) — Mini sección tiene sistema i18n completo ES/EN con MINI_TRANSLATIONS, t(), getLocalizedMini*(), applyMiniTranslations().
+- [Coin wallet persistence](coin-wallet-persistence.md) — saldo compartido por UID con respaldo local; nunca limpiar localStorage completo al cerrar sesión.
