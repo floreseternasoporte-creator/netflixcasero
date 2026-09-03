@@ -2441,7 +2441,8 @@ button:focus-visible,
   display: none;
   align-items: center;
   justify-content: center;
-  padding: 18px;
+  padding: 0;
+  background: #000;
 }
 
 .reward-ad-modal.active {
@@ -2451,28 +2452,46 @@ button:focus-visible,
 .reward-ad-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(2,4,10,.86);
-  backdrop-filter: blur(8px);
+  background: #000;
 }
 
 .reward-ad-card {
   position: relative;
   z-index: 1;
-  width: min(100%, 390px);
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
-  border: 1px solid var(--atenis-line);
-  border-radius: 20px;
-  background: #0e1526;
-  box-shadow: 0 20px 70px rgba(0,0,0,.55);
+  border: 0;
+  border-radius: 0;
+  background: #000;
 }
 
 .reward-ad-header,
 .reward-ad-footer {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 14px 16px;
+}
+
+.reward-ad-header {
+  top: 0;
+  padding-top: max(14px, env(safe-area-inset-top));
+  background: linear-gradient(180deg, rgba(0,0,0,.8), transparent);
+}
+
+.reward-ad-footer {
+  bottom: 0;
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
+  background: linear-gradient(0deg, rgba(0,0,0,.86), transparent);
 }
 
 .reward-ad-kicker {
@@ -2503,15 +2522,19 @@ button:focus-visible,
 }
 
 .reward-ad-video-wrap {
-  position: relative;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #000;
 }
 
 #rewardAdVideo {
   display: block;
-  width: 100%;
-  max-height: 64vh;
-  aspect-ratio: 9 / 16;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
   object-fit: contain;
   background: #000;
 }
