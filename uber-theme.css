@@ -2521,6 +2521,10 @@ button:focus-visible,
   cursor: pointer;
 }
 
+.reward-ad-close[hidden] {
+  display: none !important;
+}
+
 .reward-ad-video-wrap {
   position: absolute;
   inset: 0;
