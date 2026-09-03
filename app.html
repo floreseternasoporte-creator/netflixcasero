@@ -5899,9 +5899,10 @@
       <div class="settings-sub-body">
         <div class="coin-wallet-card">
           <div class="coin-wallet-icon"><i class="fas fa-coins"></i></div>
-          <div>
+          <div class="coin-wallet-main">
             <div class="coin-wallet-label">Saldo disponible</div>
             <div class="coin-wallet-balance"><span id="settingsCoinsBalance">100</span> <span class="coin-wallet-unit">monedas</span></div>
+            <div class="coin-wallet-sync" id="coinWalletSyncStatus"><i class="fas fa-cloud"></i> Sincronizando tu saldo…</div>
           </div>
         </div>
         <div class="settings-sub-group">
@@ -5913,6 +5914,29 @@
             <button class="settings-btn primary coin-reward-btn" id="dailyRewardBtn" onclick="claimDailyReward()">
               <i class="fas fa-gift"></i> Reclamar
             </button>
+          </div>
+        </div>
+        <div class="coin-wallet-stats">
+          <div class="coin-wallet-stat">
+            <strong id="coinRewardStreak">0</strong>
+            <span>días seguidos</span>
+          </div>
+          <div class="coin-wallet-stat">
+            <strong id="coinTotalEarned">0</strong>
+            <span>ganadas</span>
+          </div>
+          <div class="coin-wallet-stat">
+            <strong id="coinTotalSpent">0</strong>
+            <span>gastadas</span>
+          </div>
+        </div>
+        <button class="coin-history-toggle" type="button" onclick="toggleCoinHistory()" aria-expanded="false" aria-controls="coinHistoryPanel">
+          <span><i class="fas fa-receipt"></i> Historial de movimientos</span>
+          <i class="fas fa-chevron-down coin-history-toggle-icon"></i>
+        </button>
+        <div class="coin-history-panel hidden" id="coinHistoryPanel">
+          <div class="coin-history-list" id="coinHistoryList">
+            <div class="coin-history-empty">Todavía no hay movimientos.</div>
           </div>
         </div>
         <div class="coin-how-it-works">
@@ -7049,8 +7073,9 @@
               }
 
               // Usuario completo, cargar datos
-              userProfile = userData.profile;
-              updateUserInterface();
+               userProfile = userData.profile;
+               updateUserInterface();
+               initializeCoinWallet(user.uid);
               resolve(true);
 
             } catch (error) {
@@ -7087,7 +7112,11 @@
     // Función para cerrar sesión de Firebase
     function logoutFirebase() {
       auth.signOut().then(() => {
-        localStorage.clear();
+        // No borrar el historial, ajustes ni monedas locales al cerrar sesión.
+        // El saldo sincronizado vive además en users/{uid}/coinWallet.
+        ['atenis_user_profile', 'atenis_subscription', 'atenis_editing_profile', 'atenis_changing_plan'].forEach(key => {
+          localStorage.removeItem(key);
+        });
         window.location.href = 'login.html';
       }).catch((error) => {
         console.error('Error cerrando sesión:', error);
@@ -11883,29 +11912,199 @@
     let _miniSheetRange = 0;
 
     // ════════════════════════════════════════════════════════════════════════
-    //  MONEDAS — saldo local por usuario y desbloqueo de episodios
+    //  MONEDAS — monedero por cuenta, respaldo local y desbloqueo de episodios
     // ════════════════════════════════════════════════════════════════════════
 
     let _pendingCoinUnlock = null;
+    let _coinWallet = {
+      ownerId: null,
+      balance: null,
+      dailyRewardDate: '',
+      streak: 0,
+      totalEarned: 0,
+      totalSpent: 0,
+      transactions: [],
+      ready: false,
+      syncing: false,
+      syncError: false
+    };
 
-    function getCoinStorageKey() {
-      return 'atenis_coins_' + (currentFirebaseUser && currentFirebaseUser.uid ? currentFirebaseUser.uid : 'guest');
+    function getCoinOwnerId() {
+      return currentFirebaseUser && currentFirebaseUser.uid ? currentFirebaseUser.uid : 'guest';
+    }
+
+    function getCoinStorageKey(ownerId = getCoinOwnerId()) {
+      return 'atenis_coins_' + ownerId;
+    }
+
+    function getCoinWalletStorageKey(ownerId = getCoinOwnerId()) {
+      return 'atenis_coin_wallet_' + ownerId;
+    }
+
+    function getDailyRewardStorageKey(ownerId = getCoinOwnerId()) {
+      return 'atenis_daily_reward_' + ownerId;
+    }
+
+    function getLocalDateKey(date = new Date()) {
+      const pad = value => String(value).padStart(2, '0');
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    }
+
+    function getPreviousDateKey(dateKey) {
+      const date = new Date(`${dateKey}T12:00:00`);
+      date.setDate(date.getDate() - 1);
+      return getLocalDateKey(date);
+    }
+
+    function normalizeCoinWallet(raw, ownerId) {
+      const data = raw && typeof raw === 'object' ? raw : {};
+      const cachedBalance = Number(localStorage.getItem(getCoinStorageKey(ownerId)));
+      const balance = Number(data.balance);
+      return {
+        ownerId,
+        balance: Number.isFinite(balance) && balance >= 0
+          ? Math.floor(balance)
+          : Number.isFinite(cachedBalance) && cachedBalance >= 0
+            ? Math.floor(cachedBalance)
+            : 100,
+        dailyRewardDate: String(data.dailyRewardDate || localStorage.getItem(getDailyRewardStorageKey(ownerId)) || ''),
+        streak: Math.max(0, Math.floor(Number(data.streak) || 0)),
+        totalEarned: Math.max(0, Math.floor(Number(data.totalEarned) || 0)),
+        totalSpent: Math.max(0, Math.floor(Number(data.totalSpent) || 0)),
+        transactions: Array.isArray(data.transactions) ? data.transactions.slice(0, 30) : [],
+        ready: false,
+        syncing: false,
+        syncError: false
+      };
+    }
+
+    function saveCoinWalletLocally(wallet = _coinWallet) {
+      if (!wallet || !wallet.ownerId) return;
+      localStorage.setItem(getCoinStorageKey(wallet.ownerId), String(Math.max(0, Math.floor(Number(wallet.balance) || 0))));
+      localStorage.setItem(getCoinWalletStorageKey(wallet.ownerId), JSON.stringify({
+        balance: wallet.balance,
+        dailyRewardDate: wallet.dailyRewardDate || '',
+        streak: wallet.streak || 0,
+        totalEarned: wallet.totalEarned || 0,
+        totalSpent: wallet.totalSpent || 0,
+        transactions: Array.isArray(wallet.transactions) ? wallet.transactions.slice(0, 30) : []
+      }));
+      if (wallet.dailyRewardDate) {
+        localStorage.setItem(getDailyRewardStorageKey(wallet.ownerId), wallet.dailyRewardDate);
+      }
+    }
+
+    function readCoinWalletLocally(ownerId = getCoinOwnerId()) {
+      try {
+        const cached = JSON.parse(localStorage.getItem(getCoinWalletStorageKey(ownerId)) || '{}');
+        return normalizeCoinWallet(cached, ownerId);
+      } catch (error) {
+        return normalizeCoinWallet(null, ownerId);
+      }
     }
 
     function getCoins() {
-      const key = getCoinStorageKey();
-      const stored = Number(localStorage.getItem(key));
-      if (!Number.isFinite(stored) || stored < 0) {
-        localStorage.setItem(key, '100');
-        return 100;
+      if (_coinWallet.ownerId === getCoinOwnerId() && Number.isFinite(_coinWallet.balance)) {
+        return Math.max(0, Math.floor(_coinWallet.balance));
       }
-      return Math.floor(stored);
+      return readCoinWalletLocally(getCoinOwnerId()).balance;
+    }
+
+    function getCoinWalletRef(ownerId = getCoinOwnerId()) {
+      return database.ref('users/' + ownerId + '/coinWallet');
+    }
+
+    function getCoinMovementLabel(type) {
+      return type === 'daily_reward' ? 'Recompensa diaria'
+        : type === 'unlock' ? 'Episodio desbloqueado'
+          : type === 'initial' ? 'Saldo inicial'
+            : 'Movimiento de monedas';
+    }
+
+    function addCoinMovement(wallet, amount, type, label) {
+      const movement = {
+        amount: Math.floor(Number(amount) || 0),
+        type: type || 'other',
+        label: label || getCoinMovementLabel(type),
+        date: getLocalDateKey()
+      };
+      wallet.transactions = [movement, ...(wallet.transactions || [])].slice(0, 30);
+      if (movement.amount > 0) wallet.totalEarned = (wallet.totalEarned || 0) + movement.amount;
+      if (movement.amount < 0) wallet.totalSpent = (wallet.totalSpent || 0) + Math.abs(movement.amount);
+      return wallet;
+    }
+
+    async function initializeCoinWallet(ownerId = getCoinOwnerId()) {
+      const requestOwner = ownerId || 'guest';
+      const cached = readCoinWalletLocally(requestOwner);
+      _coinWallet = { ...cached, ownerId: requestOwner, ready: false, syncing: requestOwner !== 'guest', syncError: false };
+      updateCoinUI();
+
+      if (requestOwner === 'guest' || !firebaseReady) {
+        _coinWallet.ready = true;
+        _coinWallet.syncing = false;
+        updateCoinUI();
+        return;
+      }
+
+      try {
+        const snapshot = await getCoinWalletRef(requestOwner).once('value');
+        if (getCoinOwnerId() !== requestOwner) return;
+        const remote = snapshot.val();
+        if (remote && typeof remote === 'object' && Number.isFinite(Number(remote.balance))) {
+          _coinWallet = { ...normalizeCoinWallet(remote, requestOwner), ready: true, syncing: false };
+        } else {
+          // Migrar el saldo que existía en el navegador a la cuenta Firebase.
+          _coinWallet = { ...cached, ready: true, syncing: false };
+          await getCoinWalletRef(requestOwner).set({
+            balance: _coinWallet.balance,
+            dailyRewardDate: _coinWallet.dailyRewardDate || '',
+            streak: _coinWallet.streak || 0,
+            totalEarned: _coinWallet.totalEarned || 0,
+            totalSpent: _coinWallet.totalSpent || 0,
+            transactions: _coinWallet.transactions || [],
+            updatedAt: firebase.database.ServerValue.TIMESTAMP
+          });
+        }
+        saveCoinWalletLocally();
+        updateCoinUI();
+      } catch (error) {
+        console.error('No se pudo sincronizar el monedero:', error);
+        _coinWallet.ready = true;
+        _coinWallet.syncing = false;
+        _coinWallet.syncError = true;
+        saveCoinWalletLocally();
+        updateCoinUI();
+      }
+    }
+
+    async function persistCoinWallet() {
+      if (!_coinWallet.ownerId || _coinWallet.ownerId === 'guest' || !firebaseReady) return;
+      try {
+        await getCoinWalletRef(_coinWallet.ownerId).update({
+          balance: _coinWallet.balance,
+          dailyRewardDate: _coinWallet.dailyRewardDate || '',
+          streak: _coinWallet.streak || 0,
+          totalEarned: _coinWallet.totalEarned || 0,
+          totalSpent: _coinWallet.totalSpent || 0,
+          transactions: (_coinWallet.transactions || []).slice(0, 30),
+          updatedAt: firebase.database.ServerValue.TIMESTAMP
+        });
+      } catch (error) {
+        _coinWallet.syncError = true;
+        console.error('No se pudo guardar el monedero:', error);
+      }
     }
 
     function setCoins(amount) {
       const safeAmount = Math.max(0, Math.floor(Number(amount) || 0));
-      localStorage.setItem(getCoinStorageKey(), String(safeAmount));
+      if (_coinWallet.ownerId !== getCoinOwnerId()) {
+        _coinWallet = { ...readCoinWalletLocally(), ownerId: getCoinOwnerId() };
+      }
+      _coinWallet.balance = safeAmount;
+      saveCoinWalletLocally();
       updateCoinUI();
+      void persistCoinWallet();
       return safeAmount;
     }
 
@@ -11918,31 +12117,178 @@
 
       const rewardBtn = document.getElementById('dailyRewardBtn');
       const rewardDescription = document.getElementById('dailyRewardDescription');
-      const rewardKey = 'atenis_daily_reward_' + (currentFirebaseUser && currentFirebaseUser.uid ? currentFirebaseUser.uid : 'guest');
-      const claimedToday = localStorage.getItem(rewardKey) === new Date().toISOString().slice(0, 10);
+      const today = getLocalDateKey();
+      const claimedToday = (_coinWallet.ownerId === getCoinOwnerId() && _coinWallet.dailyRewardDate === today) ||
+        localStorage.getItem(getDailyRewardStorageKey()) === today;
       if (rewardBtn) {
-        rewardBtn.disabled = claimedToday;
-        rewardBtn.innerHTML = claimedToday
-          ? '<i class="fas fa-check"></i> Reclamada'
-          : '<i class="fas fa-gift"></i> Reclamar';
+        rewardBtn.disabled = claimedToday || !_coinWallet.ready;
+        rewardBtn.innerHTML = !_coinWallet.ready
+          ? '<i class="fas fa-spinner fa-spin"></i> Cargando'
+          : claimedToday
+            ? '<i class="fas fa-check"></i> Reclamada'
+            : '<i class="fas fa-gift"></i> Reclamar';
       }
       if (rewardDescription) {
-        rewardDescription.textContent = claimedToday
-          ? 'Vuelve mañana por 25 monedas'
-          : 'Recibe 25 monedas cada día';
+        rewardDescription.textContent = !_coinWallet.ready
+          ? 'Estamos comprobando tu saldo…'
+          : claimedToday
+            ? 'Vuelve mañana por 25 monedas'
+            : 'Recibe 25 monedas cada día';
+      }
+
+      const syncStatus = document.getElementById('coinWalletSyncStatus');
+      if (syncStatus) {
+        syncStatus.className = 'coin-wallet-sync ' + (_coinWallet.syncError ? 'is-error' : _coinWallet.ready ? 'is-ready' : 'is-loading');
+        syncStatus.innerHTML = _coinWallet.syncError
+          ? '<i class="fas fa-triangle-exclamation"></i> Guardado localmente; se reintentará al conectar'
+          : _coinWallet.ready && _coinWallet.ownerId !== 'guest'
+            ? '<i class="fas fa-cloud-check"></i> Sincronizado con tu cuenta'
+            : _coinWallet.ready
+              ? '<i class="fas fa-mobile-screen"></i> Guardado en este dispositivo'
+              : '<i class="fas fa-cloud-arrow-down"></i> Sincronizando tu saldo…';
+      }
+
+      ['coinRewardStreak', 'coinTotalEarned', 'coinTotalSpent'].forEach((id, index) => {
+        const values = [_coinWallet.streak || 0, _coinWallet.totalEarned || 0, _coinWallet.totalSpent || 0];
+        const el = document.getElementById(id);
+        if (el) el.textContent = values[index];
+      });
+      if (!document.getElementById('coinHistoryPanel')?.classList.contains('hidden')) {
+        renderCoinHistory();
       }
     }
 
-    function claimDailyReward() {
-      const rewardKey = 'atenis_daily_reward_' + (currentFirebaseUser && currentFirebaseUser.uid ? currentFirebaseUser.uid : 'guest');
-      const today = new Date().toISOString().slice(0, 10);
-      if (localStorage.getItem(rewardKey) === today) {
-        updateCoinUI();
+    function renderCoinHistory() {
+      const list = document.getElementById('coinHistoryList');
+      if (!list) return;
+      const movements = Array.isArray(_coinWallet.transactions) ? _coinWallet.transactions : [];
+      if (!movements.length) {
+        list.innerHTML = '<div class="coin-history-empty">Todavía no hay movimientos.</div>';
         return;
       }
-      localStorage.setItem(rewardKey, today);
-      setCoins(getCoins() + 25);
+      list.innerHTML = movements.slice(0, 12).map(movement => {
+        const amount = Number(movement.amount) || 0;
+        const positive = amount >= 0;
+        const label = String(movement.label || getCoinMovementLabel(movement.type));
+        return `<div class="coin-history-row">
+          <span class="coin-history-icon ${positive ? 'is-positive' : 'is-negative'}"><i class="fas ${positive ? 'fa-arrow-down' : 'fa-arrow-up'}"></i></span>
+          <span class="coin-history-copy"><strong>${label}</strong><small>${movement.date || ''}</small></span>
+          <strong class="coin-history-amount ${positive ? 'is-positive' : 'is-negative'}">${positive ? '+' : ''}${amount}</strong>
+        </div>`;
+      }).join('');
+    }
+
+    function toggleCoinHistory() {
+      const panel = document.getElementById('coinHistoryPanel');
+      const button = document.querySelector('.coin-history-toggle');
+      if (!panel) return;
+      const isOpening = panel.classList.toggle('hidden') === false;
+      if (button) button.setAttribute('aria-expanded', String(isOpening));
+      if (isOpening) renderCoinHistory();
+    }
+
+    async function claimDailyReward() {
+      if (!_coinWallet.ready) {
+        showSettingsMessage('Espera un momento: estamos sincronizando tus monedas.');
+        return;
+      }
+      const today = getLocalDateKey();
+      const previousDate = getPreviousDateKey(today);
+      const ownerId = getCoinOwnerId();
+
+      if (ownerId !== 'guest' && firebaseReady) {
+        try {
+          const result = await getCoinWalletRef(ownerId).transaction(wallet => {
+            const current = normalizeCoinWallet(wallet, ownerId);
+            if (current.dailyRewardDate === today) return;
+            const next = { ...current };
+            const hadYesterdayReward = current.dailyRewardDate === previousDate;
+            next.balance += 25;
+            next.dailyRewardDate = today;
+            next.streak = hadYesterdayReward ? (current.streak || 0) + 1 : 1;
+            addCoinMovement(next, 25, 'daily_reward', 'Recompensa diaria');
+            return {
+              balance: next.balance,
+              dailyRewardDate: next.dailyRewardDate,
+              streak: next.streak,
+              totalEarned: next.totalEarned,
+              totalSpent: next.totalSpent,
+              transactions: next.transactions,
+              updatedAt: firebase.database.ServerValue.TIMESTAMP
+            };
+          });
+          if (!result.committed) {
+            _coinWallet.dailyRewardDate = today;
+            updateCoinUI();
+            showSettingsMessage('La recompensa de hoy ya fue reclamada.');
+            return;
+          }
+          _coinWallet = { ...normalizeCoinWallet(result.snapshot.val(), ownerId), ready: true, syncing: false };
+        } catch (error) {
+          console.error('No se pudo reclamar la recompensa sincronizada:', error);
+          const hadYesterdayReward = _coinWallet.dailyRewardDate === previousDate;
+          _coinWallet.balance += 25;
+          _coinWallet.dailyRewardDate = today;
+          _coinWallet.streak = hadYesterdayReward ? (_coinWallet.streak || 0) + 1 : 1;
+          addCoinMovement(_coinWallet, 25, 'daily_reward', 'Recompensa diaria');
+          _coinWallet.syncError = true;
+        }
+      } else {
+        if (_coinWallet.dailyRewardDate === today) return;
+        const hadYesterdayReward = _coinWallet.dailyRewardDate === previousDate;
+        _coinWallet.balance = getCoins() + 25;
+        _coinWallet.dailyRewardDate = today;
+        _coinWallet.streak = hadYesterdayReward ? (_coinWallet.streak || 0) + 1 : 1;
+        addCoinMovement(_coinWallet, 25, 'daily_reward', 'Recompensa diaria');
+      }
+      saveCoinWalletLocally();
+      updateCoinUI();
       showSettingsMessage('¡Recompensa recibida! +25 monedas');
+    }
+
+    async function spendCoins(amount, label = 'Episodio desbloqueado') {
+      const cost = Math.max(0, Math.floor(Number(amount) || 0));
+      if (!_coinWallet.ready) return { ok: false, reason: 'syncing' };
+      const ownerId = getCoinOwnerId();
+
+      if (ownerId !== 'guest' && firebaseReady) {
+        try {
+          const result = await getCoinWalletRef(ownerId).transaction(wallet => {
+            const current = normalizeCoinWallet(wallet, ownerId);
+            if (current.balance < cost) return;
+            const next = { ...current, balance: current.balance - cost };
+            addCoinMovement(next, -cost, 'unlock', label);
+            return {
+              balance: next.balance,
+              dailyRewardDate: next.dailyRewardDate || '',
+              streak: next.streak || 0,
+              totalEarned: next.totalEarned || 0,
+              totalSpent: next.totalSpent || 0,
+              transactions: next.transactions,
+              updatedAt: firebase.database.ServerValue.TIMESTAMP
+            };
+          });
+          if (!result.committed) {
+            const remoteBalance = Number(result.snapshot && result.snapshot.val() && result.snapshot.val().balance);
+            return { ok: false, reason: Number.isFinite(remoteBalance) && remoteBalance < cost ? 'insufficient' : 'cancelled' };
+          }
+          _coinWallet = { ...normalizeCoinWallet(result.snapshot.val(), ownerId), ready: true, syncing: false };
+        } catch (error) {
+          console.error('No se pudo gastar monedas sincronizadas:', error);
+          if (getCoins() < cost) return { ok: false, reason: 'insufficient' };
+          _coinWallet.balance -= cost;
+          addCoinMovement(_coinWallet, -cost, 'unlock', label);
+          _coinWallet.syncError = true;
+        }
+      } else {
+        if (getCoins() < cost) return { ok: false, reason: 'insufficient' };
+        _coinWallet.balance -= cost;
+        addCoinMovement(_coinWallet, -cost, 'unlock', label);
+      }
+
+      saveCoinWalletLocally();
+      updateCoinUI();
+      return { ok: true };
     }
 
     function getEpisodeUnlockKey(miniId, episodeId) {
@@ -11992,7 +12338,7 @@
       _pendingCoinUnlock = null;
     }
 
-    function unlockPendingEpisode() {
+    async function unlockPendingEpisode() {
       if (!_pendingCoinUnlock) return;
       const pending = _pendingCoinUnlock;
       const mini = miniDatabase[pending.miniId] || seriesDatabase[pending.miniId];
@@ -12002,12 +12348,15 @@
         return;
       }
       const cost = getEpisodeUnlockCost(ep);
-      const balance = getCoins();
-      if (balance < cost) {
+      const result = await spendCoins(cost, `Episodio ${pending.episodeIdx + 1} desbloqueado`);
+      if (!result.ok && result.reason === 'syncing') {
+        showSettingsMessage('Espera un momento: estamos sincronizando tus monedas.');
+        return;
+      }
+      if (!result.ok && result.reason === 'insufficient') {
         showSettingsMessage('Necesitas ' + cost + ' monedas. Reclama tu recompensa diaria.');
         return;
       }
-      setCoins(balance - cost);
       localStorage.setItem(getEpisodeUnlockKey(pending.miniId, pending.episodeId), 'true');
       closeCoinUnlockModal();
       if (_miniPlayerMini && _miniPlayerMini.id === pending.miniId) {
@@ -12140,6 +12489,7 @@
       };
       const id = idMap[name];
       if (!id) return;
+      closeAllSettingsSubs();
       // Sync email to sub-section
       if (name === 'cuenta') {
         const emailEl = document.getElementById('userEmailSub');
