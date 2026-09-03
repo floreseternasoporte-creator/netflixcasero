@@ -2151,6 +2151,227 @@ button:focus-visible,
   color: var(--atenis-coral) !important;
 }
 
+.coin-rewards-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 20px 0 10px;
+}
+
+.coin-section-kicker {
+  display: block;
+  color: var(--atenis-amber);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+
+.coin-rewards-heading h3 {
+  margin: 5px 0 0;
+  color: var(--atenis-copy);
+  font-family: var(--uber-display);
+  font-size: 19px;
+  line-height: 1.05;
+}
+
+.coin-rewards-heading > i {
+  padding-top: 4px;
+  color: var(--atenis-coral);
+}
+
+.coin-rewards-grid {
+  display: grid;
+  gap: 9px;
+  margin-bottom: 16px;
+}
+
+.coin-reward-card {
+  display: grid;
+  grid-template-columns: 35px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 76px;
+  padding: 10px;
+  border: 1px solid var(--atenis-line);
+  border-radius: 15px;
+  background: rgba(18,26,44,.62);
+}
+
+.coin-reward-card--watch {
+  background: linear-gradient(100deg, rgba(255,118,95,.1), rgba(18,26,44,.62) 64%);
+}
+
+.coin-reward-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 11px;
+  background: rgba(255,118,95,.13);
+  color: var(--atenis-coral);
+  font-size: 13px;
+}
+
+.coin-reward-card-copy {
+  min-width: 0;
+}
+
+.coin-reward-card-copy strong {
+  display: block;
+  color: var(--atenis-copy);
+  font-size: 12px;
+}
+
+.coin-reward-card-copy p {
+  margin: 4px 0 0;
+  color: var(--atenis-subtle);
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.coin-reward-amount {
+  align-self: start;
+  color: #69d49a;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.coin-task-btn {
+  min-height: 32px;
+  padding: 0 9px;
+  border: 1px solid rgba(244,200,107,.35);
+  border-radius: 9px;
+  background: rgba(244,200,107,.1);
+  color: var(--atenis-amber);
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.coin-task-btn:disabled {
+  border-color: var(--atenis-line);
+  background: rgba(255,255,255,.04);
+  color: var(--atenis-subtle);
+  cursor: default;
+}
+
+.settings-nav-heading {
+  padding: 14px 14px 7px;
+  color: var(--atenis-subtle);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  background: rgba(8,11,20,.22);
+}
+
+.settings-nav-heading:first-child {
+  padding-top: 11px;
+}
+
+.search-suggestion-intro {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 13px;
+  padding: 14px;
+  border: 1px solid var(--atenis-line);
+  border-radius: 14px;
+  background: rgba(18,26,44,.58);
+}
+
+.search-suggestion-intro > i {
+  color: var(--atenis-coral);
+  font-size: 16px;
+}
+
+.search-suggestion-intro strong,
+.search-suggestion-intro span {
+  display: block;
+}
+
+.search-suggestion-intro strong {
+  color: var(--atenis-copy);
+  font-size: 12px;
+}
+
+.search-suggestion-intro span {
+  margin-top: 3px;
+  color: var(--atenis-subtle);
+  font-size: 10px;
+}
+
+.search-quick-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.search-quick-tags button {
+  min-height: 34px;
+  padding: 0 13px;
+  border: 1px solid var(--atenis-line);
+  border-radius: 999px;
+  background: var(--atenis-panel);
+  color: var(--atenis-dim);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.search-quick-tags button:hover {
+  border-color: var(--atenis-coral);
+  color: var(--atenis-coral);
+}
+
+/* Search results are intentionally compact: browsing should not feel like a wall of posters. */
+.search-results-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-result-item {
+  display: grid !important;
+  grid-template-columns: 54px minmax(0, 1fr);
+  min-height: 74px;
+  border-radius: 13px !important;
+}
+
+.search-result-poster {
+  width: 54px !important;
+  height: 74px !important;
+}
+
+.search-result-content {
+  min-width: 0;
+  padding: 10px 11px !important;
+}
+
+.search-result-description {
+  display: none;
+}
+
+@media (max-width: 390px) {
+  .coin-reward-card {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .coin-reward-card-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .coin-reward-amount,
+  .coin-task-btn {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
 @media (max-width: 390px) {
   .coin-wallet-card {
     align-items: flex-start;

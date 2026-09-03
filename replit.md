@@ -16,7 +16,7 @@ Zambik es una plataforma de streaming de peliculas y series. La aplicacion permi
 ## Technologies
 - HTML5/CSS3/JavaScript (Frontend)
 - Firebase Auth y Realtime Database (Backend)
-- Python http.server (Static file server)
+- Flask (servidor web y proxy de cargas)
 - Dropbox (Video hosting)
 
 ## Recent Changes

@@ -4593,12 +4593,22 @@
     .manual-sub-duration { color: #4c6ef5; font-weight: 700; }
     .manual-sub-cue {
       display: grid;
-      grid-template-columns: 56px 56px 1fr 28px;
+      grid-template-columns: 82px 1fr 28px;
       gap: 6px;
       align-items: start;
       margin-top: 6px;
     }
+    .manual-sub-time-label {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      color: #8f95a8;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
     .manual-sub-time, .manual-sub-text {
+      width: 100%;
       background: #0d0e1a;
       border: 1px solid #252941;
       border-radius: 7px;
@@ -4607,6 +4617,12 @@
       padding: 7px;
     }
     .manual-sub-text { resize: vertical; min-height: 32px; }
+    .mini-field-hint {
+      color: #7f879d;
+      font-size: 10px;
+      line-height: 1.35;
+      margin-top: 5px;
+    }
     .manual-sub-remove {
       background: #241016;
       border: 1px solid #51202a;
@@ -5757,30 +5773,18 @@
 
       <!-- Estado vacío: sugerencias -->
       <div id="searchSuggestions" class="search-suggestions">
-        <div class="search-suggestion-row" onclick="doSuggestedSearch('Acción')">
-          <div class="search-suggestion-icon"><i class="fas fa-fire"></i></div>
-          <div class="search-suggestion-text">Acción</div>
-          <div class="search-suggestion-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="search-suggestion-intro">
+          <i class="fas fa-wand-magic-sparkles"></i>
+          <div>
+            <strong>Explora sin ruido</strong>
+            <span>Escribe al menos dos letras o elige un género.</span>
+          </div>
         </div>
-        <div class="search-suggestion-row" onclick="doSuggestedSearch('Drama')">
-          <div class="search-suggestion-icon"><i class="fas fa-heart"></i></div>
-          <div class="search-suggestion-text">Drama</div>
-          <div class="search-suggestion-arrow"><i class="fas fa-chevron-right"></i></div>
-        </div>
-        <div class="search-suggestion-row" onclick="doSuggestedSearch('Comedia')">
-          <div class="search-suggestion-icon"><i class="fas fa-laugh"></i></div>
-          <div class="search-suggestion-text">Comedia</div>
-          <div class="search-suggestion-arrow"><i class="fas fa-chevron-right"></i></div>
-        </div>
-        <div class="search-suggestion-row" onclick="doSuggestedSearch('Terror')">
-          <div class="search-suggestion-icon"><i class="fas fa-skull"></i></div>
-          <div class="search-suggestion-text">Terror</div>
-          <div class="search-suggestion-arrow"><i class="fas fa-chevron-right"></i></div>
-        </div>
-        <div class="search-suggestion-row" onclick="doSuggestedSearch('Thriller')">
-          <div class="search-suggestion-icon"><i class="fas fa-eye"></i></div>
-          <div class="search-suggestion-text">Thriller</div>
-          <div class="search-suggestion-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="search-quick-tags" aria-label="Búsquedas rápidas">
+          <button type="button" onclick="doSuggestedSearch('Acción')">Acción</button>
+          <button type="button" onclick="doSuggestedSearch('Drama')">Drama</button>
+          <button type="button" onclick="doSuggestedSearch('Comedia')">Comedia</button>
+          <button type="button" onclick="doSuggestedSearch('Terror')">Terror</button>
         </div>
       </div>
 
@@ -5844,6 +5848,7 @@
 
       <!-- Nav list — Netflix style rows -->
       <div class="settings-nav-list">
+        <div class="settings-nav-heading">Tu cuenta</div>
         <div class="settings-nav-row settings-nav-row--coins" onclick="openSettingsSub('monedas')">
           <div class="settings-nav-icon" style="background:#2b2410"><i class="fas fa-coins" style="color:#f5c451"></i></div>
           <span class="settings-nav-label">Monedas</span>
@@ -5856,6 +5861,7 @@
           <span class="settings-nav-value" id="settingsNavNameVal"></span>
           <i class="fas fa-chevron-right settings-nav-arrow"></i>
         </div>
+        <div class="settings-nav-heading">Preferencias</div>
         <div class="settings-nav-row" onclick="openSettingsSub('reproduccion')">
           <div class="settings-nav-icon" style="background:#1a1e40"><i class="fas fa-play-circle" style="color:#7c6ef5"></i></div>
           <span class="settings-nav-label">Reproducción</span>
@@ -5876,6 +5882,7 @@
           <span class="settings-nav-label">Notificaciones</span>
           <i class="fas fa-chevron-right settings-nav-arrow"></i>
         </div>
+        <div class="settings-nav-heading">Ayuda</div>
         <div class="settings-nav-row" onclick="openSettingsSub('ayuda')">
           <div class="settings-nav-icon" style="background:#1a1e2a"><i class="fas fa-question-circle" style="color:#a0b4ff"></i></div>
           <span class="settings-nav-label">Ayuda y Soporte</span>
@@ -5915,6 +5922,39 @@
               <i class="fas fa-gift"></i> Reclamar
             </button>
           </div>
+        </div>
+        <div class="coin-rewards-heading">
+          <div>
+            <span class="coin-section-kicker">MÁS FORMAS DE GANAR</span>
+            <h3>Consigue monedas mientras usas Atenis</h3>
+          </div>
+          <i class="fas fa-sparkles"></i>
+        </div>
+        <div class="coin-rewards-grid">
+          <article class="coin-reward-card coin-reward-card--watch">
+            <div class="coin-reward-card-icon"><i class="fas fa-play"></i></div>
+            <div class="coin-reward-card-copy">
+              <strong>Completa un episodio</strong>
+              <p id="watchRewardStatus">Mira el 90% de un episodio para ganar monedas.</p>
+            </div>
+            <span class="coin-reward-amount">+10</span>
+          </article>
+          <article class="coin-reward-card">
+            <div class="coin-reward-card-icon"><i class="fas fa-fire"></i></div>
+            <div class="coin-reward-card-copy">
+              <strong>Racha de 7 días</strong>
+              <p>Reclama un bonus cuando mantengas tu recompensa diaria.</p>
+            </div>
+            <button class="coin-task-btn" id="weeklyRewardBtn" type="button" onclick="claimWeeklyCoinReward()">Reclamar +100</button>
+          </article>
+          <article class="coin-reward-card">
+            <div class="coin-reward-card-icon"><i class="fas fa-share-nodes"></i></div>
+            <div class="coin-reward-card-copy">
+              <strong>Invita a un amigo</strong>
+              <p>Comparte Atenis una vez y recibe un bonus de bienvenida.</p>
+            </div>
+            <button class="coin-task-btn" id="inviteRewardBtn" type="button" onclick="shareCoinInvite()">Compartir +30</button>
+          </article>
         </div>
         <div class="coin-wallet-stats">
           <div class="coin-wallet-stat">
@@ -6386,17 +6426,18 @@
       <!-- Paso 2: Detalles -->
       <div class="mini-upload-step hidden" id="miniStep2">
 
-        <!-- Titles section -->
+        <!-- Titles section: one source of truth for every language -->
         <div class="mini-edit-section-label" data-i18n="titles_section">Títulos</div>
         <div class="mini-form-group">
-          <label data-i18n="title_original">Título Original *</label>
-          <input type="text" id="miniTitleInput" placeholder="Título en idioma original" oninput="updateMiniTitlePreview('new')">
+          <label>Título de la Mini *</label>
+          <input type="text" id="miniTitleInput" placeholder="Escribe el título una sola vez" oninput="updateMiniTitlePreview('new')">
+          <div class="mini-field-hint">Se usará automáticamente en español, inglés y portada si no agregas una traducción aparte.</div>
         </div>
-        <div class="mini-form-group">
+        <div class="mini-form-group mini-advanced-title-field" style="display:none;">
           <label>🇪🇸 <span data-i18n="title_es">Título en Español</span></label>
           <input type="text" id="miniTitleEsInput" placeholder="Título en español">
         </div>
-        <div class="mini-form-group">
+        <div class="mini-form-group mini-advanced-title-field" style="display:none;">
           <label>🇺🇸 <span data-i18n="title_en">Title in English</span></label>
           <input type="text" id="miniTitleEnInput" placeholder="Title in English">
         </div>
@@ -6718,15 +6759,16 @@
 
       <!-- Titles -->
       <div class="mini-edit-section-label" data-i18n="titles_section">Títulos</div>
-      <div class="mini-form-group">
-        <label data-i18n="title_original">Título Original *</label>
-        <input type="text" id="meditTitle" placeholder="Título en idioma original" oninput="updateMiniTitlePreview('edit')">
+        <div class="mini-form-group">
+          <label>Título de la Mini *</label>
+          <input type="text" id="meditTitle" placeholder="Edita el título una sola vez" oninput="updateMiniTitlePreview('edit')">
+          <div class="mini-field-hint">Este mismo título se mostrará en todos los idiomas automáticamente.</div>
       </div>
-      <div class="mini-form-group">
+      <div class="mini-form-group mini-advanced-title-field" style="display:none;">
         <label>🇪🇸 <span data-i18n="title_es">Título en Español</span></label>
         <input type="text" id="meditTitleEs" placeholder="Título en español">
       </div>
-      <div class="mini-form-group">
+      <div class="mini-form-group mini-advanced-title-field" style="display:none;">
         <label>🇺🇸 <span data-i18n="title_en">Title in English</span></label>
         <input type="text" id="meditTitleEn" placeholder="Title in English">
       </div>
@@ -7370,6 +7412,8 @@
       document.getElementById('navHome').classList.add('active');
     }
 
+    let searchDebounceTimer = null;
+
     // Sistema de búsqueda
     function setupSearch() {
       const searchInput = document.getElementById('searchInput');
@@ -7395,6 +7439,7 @@
           }
         });
         searchSectionInput.addEventListener('input', function() {
+          clearTimeout(searchDebounceTimer);
           if (this.value.trim() === '') {
             if (browseState.status !== 'all' || browseState.genre) {
               renderBrowseCatalog();
@@ -7403,8 +7448,12 @@
               document.getElementById('searchNoResults').classList.add('hidden');
               document.getElementById('searchResultsMeta').textContent = '';
             }
+          } else if (this.value.trim().length < 2) {
+            showSearchSuggestions();
+            document.getElementById('searchNoResults').classList.add('hidden');
+            document.getElementById('searchResultsMeta').textContent = 'Escribe al menos 2 letras';
           } else {
-            performSearchFromSection();
+            searchDebounceTimer = setTimeout(() => performSearchFromSection(), 320);
           }
         });
       }
@@ -10250,7 +10299,7 @@
       const suggestions = document.getElementById('searchSuggestions');
       const grid = document.getElementById('searchResultsGrid');
       if (suggestions) suggestions.style.display = 'none';
-      if (grid) grid.style.display = 'grid';
+      if (grid) grid.style.display = 'flex';
     }
 
     document.addEventListener('keydown', (event) => {
@@ -10456,7 +10505,7 @@
             </button>
           </div>
           <div class="manual-sub-editor" id="meditSubEditor_${idx}_${lang}" data-lang="${lang}">
-            <div class="manual-sub-hint">Edita inicio, fin y texto de cada línea.</div>
+            <div class="manual-sub-hint">Indica cuándo aparece cada línea; el final se calcula con el siguiente tiempo.</div>
             <div class="manual-sub-cues" id="meditSubCues_${idx}_${lang}">
               ${cues.map(cue => _manualSubtitleCueHtml(cue)).join('')}
             </div>
@@ -10468,8 +10517,10 @@
     function _manualSubtitleCueHtml(cue = {}) {
       return `
         <div class="manual-sub-cue">
-          <input class="manual-sub-time" type="text" placeholder="0:00" value="${cue.start || ''}" aria-label="Inicio">
-          <input class="manual-sub-time" type="text" placeholder="0:03" value="${cue.end || ''}" aria-label="Fin">
+          <label class="manual-sub-time-label">Desde
+            <input class="manual-sub-time" type="text" placeholder="0:00" value="${cue.start || ''}" aria-label="Inicio">
+          </label>
+          <input class="manual-sub-end" type="hidden" value="${cue.end || ''}">
           <textarea class="manual-sub-text" rows="1" placeholder="Texto del subtítulo">${cue.text || ''}</textarea>
           <button type="button" class="manual-sub-remove" onclick="this.closest('.manual-sub-cue').remove()"><i class="fas fa-times"></i></button>
         </div>`;
@@ -10484,17 +10535,35 @@
       const subtitles = {};
       document.querySelectorAll(`[id^="meditSubEditor_${idx}_"]`).forEach(editor => {
         const lang = editor.dataset.lang;
-        const cues = [];
+        const rawCues = [];
         editor.querySelectorAll('.manual-sub-cue').forEach(row => {
-          const times = row.querySelectorAll('.manual-sub-time');
-          const start = times[0]?.value.trim();
-          const end = times[1]?.value.trim();
+          const start = row.querySelector('.manual-sub-time')?.value.trim();
+          const end = row.querySelector('.manual-sub-end')?.value.trim();
           const text = row.querySelector('.manual-sub-text')?.value.trim();
-          if (start && end && text) cues.push({ start, end, text });
+          if (start && text) rawCues.push({ start, end, text });
+        });
+        rawCues.sort((a, b) => _subtitleTimeToSeconds(a.start) - _subtitleTimeToSeconds(b.start));
+        const cues = rawCues.map((cue, i) => {
+          const startSeconds = _subtitleTimeToSeconds(cue.start);
+          const nextStart = rawCues[i + 1] ? _subtitleTimeToSeconds(rawCues[i + 1].start) : 0;
+          const endSeconds = _subtitleTimeToSeconds(cue.end) > startSeconds
+            ? _subtitleTimeToSeconds(cue.end)
+            : nextStart > startSeconds ? nextStart : startSeconds + 3;
+          return { ...cue, end: _formatSubtitleEditorTime(endSeconds) };
         });
         if (cues.length) subtitles[lang] = cues;
       });
       return subtitles;
+    }
+
+    function _formatSubtitleEditorTime(seconds) {
+      const safeSeconds = Math.max(0, Number(seconds) || 0);
+      const hours = Math.floor(safeSeconds / 3600);
+      const minutes = Math.floor((safeSeconds % 3600) / 60);
+      const secs = Math.floor(safeSeconds % 60);
+      return hours > 0
+        ? `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+        : `${String(minutes).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
     }
 
     function renderMiniEditEpisodes() {
@@ -10667,8 +10736,9 @@
         const snap = await database.ref('miniDramas/' + _miniEditId).once('value');
         const old = snap.val() || {};
 
-        const titleEs  = document.getElementById('meditTitleEs').value.trim();
-        const titleEn  = document.getElementById('meditTitleEn').value.trim();
+        const unifiedTitle = document.getElementById('meditTitle').value.trim();
+        const titleEs  = unifiedTitle;
+        const titleEn  = unifiedTitle;
         const descEs   = document.getElementById('meditDescEs').value.trim();
         const descEn   = document.getElementById('meditDescEn').value.trim();
 
@@ -10695,7 +10765,7 @@
         const titleFont = selFontEdit ? selFontEdit.getAttribute('data-font') : (old.titleFont || 'elegant');
 
         const updates = {
-          title:          document.getElementById('meditTitle').value.trim() || old.title,
+          title:          unifiedTitle || old.title,
           titleEs:        titleEs || old.titleEs || old.spanishTitle || '',
           titleEn:        titleEn || old.titleEn || '',
           spanishTitle:   titleEs || old.spanishTitle || '',
@@ -11051,7 +11121,7 @@
             </button>
           </div>
           <div class="manual-sub-editor" id="manualSubEditor_${idx}_${lang}" data-lang="${lang}">
-            <div class="manual-sub-hint">Escribe inicio, fin y texto. La duración del video aparece al cargarlo.</div>
+            <div class="manual-sub-hint">Indica cuándo aparece cada línea; el final se calcula con el siguiente tiempo.</div>
             <div class="manual-sub-duration" id="manualSubDuration_${idx}_${lang}">Duración: --:--</div>
             <div class="manual-sub-cues" id="manualSubCues_${idx}_${lang}"></div>
           </div>`;
@@ -11102,8 +11172,10 @@
       const row = document.createElement('div');
       row.className = 'manual-sub-cue';
       row.innerHTML = `
-        <input class="manual-sub-time" type="text" placeholder="0:00" value="${cue.start || ''}" aria-label="Inicio">
-        <input class="manual-sub-time" type="text" placeholder="0:03" value="${cue.end || ''}" aria-label="Fin">
+        <label class="manual-sub-time-label">Desde
+          <input class="manual-sub-time" type="text" placeholder="0:00" value="${cue.start || ''}" aria-label="Inicio">
+        </label>
+        <input class="manual-sub-end" type="hidden" value="${cue.end || ''}">
         <textarea class="manual-sub-text" rows="1" placeholder="Texto del subtítulo">${cue.text || ''}</textarea>
         <button type="button" class="manual-sub-remove" onclick="this.closest('.manual-sub-cue').remove()"><i class="fas fa-times"></i></button>
       `;
@@ -11114,12 +11186,21 @@
       const subtitles = {};
       document.querySelectorAll(`[id^="manualSubEditor_${idx}_"]`).forEach(editor => {
         const lang = editor.dataset.lang;
-        const cues = [];
+        const rawCues = [];
         editor.querySelectorAll('.manual-sub-cue').forEach(row => {
-          const start = row.querySelectorAll('.manual-sub-time')[0]?.value.trim();
-          const end = row.querySelectorAll('.manual-sub-time')[1]?.value.trim();
+          const start = row.querySelector('.manual-sub-time')?.value.trim();
+          const end = row.querySelector('.manual-sub-end')?.value.trim();
           const text = row.querySelector('.manual-sub-text')?.value.trim();
-          if (start && end && text) cues.push({ start, end, text });
+          if (start && text) rawCues.push({ start, end, text });
+        });
+        rawCues.sort((a, b) => _subtitleTimeToSeconds(a.start) - _subtitleTimeToSeconds(b.start));
+        const cues = rawCues.map((cue, i) => {
+          const startSeconds = _subtitleTimeToSeconds(cue.start);
+          const nextStart = rawCues[i + 1] ? _subtitleTimeToSeconds(rawCues[i + 1].start) : 0;
+          const endSeconds = _subtitleTimeToSeconds(cue.end) > startSeconds
+            ? _subtitleTimeToSeconds(cue.end)
+            : nextStart > startSeconds ? nextStart : startSeconds + 3;
+          return { ...cue, end: _formatSubtitleEditorTime(endSeconds) };
         });
         if (cues.length) subtitles[lang] = cues;
       });
@@ -11276,10 +11357,9 @@
         const descEnEl = document.getElementById('miniDescEnInput');
         const descEn   = descEnEl ? descEnEl.value.trim() : '';
         const rating   = document.getElementById('miniRatingInput').value;
-        const titleEsEl = document.getElementById('miniTitleEsInput');
-        const titleEnEl = document.getElementById('miniTitleEnInput');
-        const titleEs  = (titleEsEl ? titleEsEl.value.trim() : '') || title;
-        const titleEn  = (titleEnEl ? titleEnEl.value.trim() : '') || title;
+        // Un solo campo de título mantiene sincronizados todos los idiomas.
+        const titleEs  = title;
+        const titleEn  = title;
 
         // Poster URLs
         const posterOrig = miniUploadData.coverUrlOrig || miniUploadData.coverUrl || '';
@@ -11515,6 +11595,11 @@
       if (tEl) tEl.textContent = _fmtTime(vid.currentTime);
       if (dEl) dEl.textContent = _fmtTime(vid.duration || 0);
       _updateMiniSubtitleOverlay();
+
+      // Completar el 90% de cualquier episodio da una recompensa diaria.
+      if (_miniPlayerMini && vid.duration && pct >= 90) {
+        void claimCoinReward('watch_episode', 10, 'Episodio completado', 'daily');
+      }
 
       // Guardar progreso en historial cada vez que se actualiza
       if (_miniPlayerMini && vid.duration && pct >= 1) {
@@ -11930,6 +12015,7 @@
       totalEarned: 0,
       totalSpent: 0,
       transactions: [],
+      rewardClaims: {},
       ready: false,
       syncing: false,
       syncError: false
@@ -11978,6 +12064,7 @@
         totalEarned: Math.max(0, Math.floor(Number(data.totalEarned) || 0)),
         totalSpent: Math.max(0, Math.floor(Number(data.totalSpent) || 0)),
         transactions: Array.isArray(data.transactions) ? data.transactions.slice(0, 30) : [],
+        rewardClaims: data.rewardClaims && typeof data.rewardClaims === 'object' ? { ...data.rewardClaims } : {},
         ready: false,
         syncing: false,
         syncError: false
@@ -11993,7 +12080,8 @@
         streak: wallet.streak || 0,
         totalEarned: wallet.totalEarned || 0,
         totalSpent: wallet.totalSpent || 0,
-        transactions: Array.isArray(wallet.transactions) ? wallet.transactions.slice(0, 30) : []
+        transactions: Array.isArray(wallet.transactions) ? wallet.transactions.slice(0, 30) : [],
+        rewardClaims: wallet.rewardClaims && typeof wallet.rewardClaims === 'object' ? { ...wallet.rewardClaims } : {}
       }));
       if (wallet.dailyRewardDate) {
         localStorage.setItem(getDailyRewardStorageKey(wallet.ownerId), wallet.dailyRewardDate);
@@ -12082,6 +12170,7 @@
             totalEarned: _coinWallet.totalEarned || 0,
             totalSpent: _coinWallet.totalSpent || 0,
             transactions: _coinWallet.transactions || [],
+            rewardClaims: _coinWallet.rewardClaims || {},
             updatedAt: firebase.database.ServerValue.TIMESTAMP
           });
         }
@@ -12107,6 +12196,7 @@
           totalEarned: _coinWallet.totalEarned || 0,
           totalSpent: _coinWallet.totalSpent || 0,
           transactions: (_coinWallet.transactions || []).slice(0, 30),
+          rewardClaims: _coinWallet.rewardClaims || {},
           updatedAt: firebase.database.ServerValue.TIMESTAMP
         });
       } catch (error) {
@@ -12172,6 +12262,28 @@
         const el = document.getElementById(id);
         if (el) el.textContent = values[index];
       });
+      const weeklyToken = getCoinRewardToken('weekly_streak', 'weekly');
+      const weeklyClaimed = (_coinWallet.rewardClaims || {}).weekly_streak === weeklyToken;
+      const inviteClaimed = (_coinWallet.rewardClaims || {}).invite_friend === 'once';
+      const watchedToday = (_coinWallet.rewardClaims || {}).watch_episode === today;
+      const weeklyBtn = document.getElementById('weeklyRewardBtn');
+      if (weeklyBtn) {
+        weeklyBtn.disabled = !_coinWallet.ready || _coinWallet.streak < 7 || weeklyClaimed;
+        weeklyBtn.textContent = weeklyClaimed
+          ? 'Reclamado'
+          : _coinWallet.streak < 7 ? `${_coinWallet.streak || 0}/7 días` : 'Reclamar +100';
+      }
+      const inviteBtn = document.getElementById('inviteRewardBtn');
+      if (inviteBtn) {
+        inviteBtn.disabled = !_coinWallet.ready || inviteClaimed;
+        inviteBtn.textContent = inviteClaimed ? 'Reclamado' : 'Compartir +30';
+      }
+      const watchStatus = document.getElementById('watchRewardStatus');
+      if (watchStatus) {
+        watchStatus.textContent = watchedToday
+          ? 'Recompensa de hoy recibida. Vuelve mañana.'
+          : 'Mira el 90% de un episodio para ganar monedas.';
+      }
       if (!document.getElementById('coinHistoryPanel')?.classList.contains('hidden')) {
         renderCoinHistory();
       }
@@ -12206,6 +12318,99 @@
       if (isOpening) renderCoinHistory();
     }
 
+    const _coinRewardInFlight = {};
+
+    function getCoinRewardToken(type, period = 'daily') {
+      if (period === 'once') return 'once';
+      const today = getLocalDateKey();
+      if (period === 'weekly') {
+        const date = new Date(`${today}T12:00:00`);
+        const day = date.getDay();
+        date.setDate(date.getDate() - (day === 0 ? 6 : day - 1));
+        return getLocalDateKey(date);
+      }
+      return today;
+    }
+
+    async function claimCoinReward(type, amount, label, period = 'daily') {
+      if (!_coinWallet.ready) {
+        showSettingsMessage('Espera un momento: estamos sincronizando tus monedas.');
+        return false;
+      }
+      if (_coinRewardInFlight[type]) return false;
+      if (type === 'weekly_streak' && (_coinWallet.streak || 0) < 7) return false;
+
+      const token = getCoinRewardToken(type, period);
+      if ((_coinWallet.rewardClaims || {})[type] === token) return false;
+      _coinRewardInFlight[type] = true;
+      const ownerId = getCoinOwnerId();
+      const safeAmount = Math.max(0, Math.floor(Number(amount) || 0));
+
+      try {
+        if (ownerId !== 'guest' && firebaseReady) {
+          const result = await getCoinWalletRef(ownerId).transaction(wallet => {
+            const current = normalizeCoinWallet(wallet, ownerId);
+            if ((current.rewardClaims || {})[type] === token) return;
+            const next = { ...current, balance: current.balance + safeAmount };
+            next.rewardClaims = { ...(current.rewardClaims || {}), [type]: token };
+            addCoinMovement(next, safeAmount, type, label);
+            return {
+              balance: next.balance,
+              dailyRewardDate: next.dailyRewardDate || '',
+              streak: next.streak || 0,
+              totalEarned: next.totalEarned || 0,
+              totalSpent: next.totalSpent || 0,
+              transactions: next.transactions,
+              rewardClaims: next.rewardClaims,
+              updatedAt: firebase.database.ServerValue.TIMESTAMP
+            };
+          });
+          if (!result.committed) return false;
+          _coinWallet = { ...normalizeCoinWallet(result.snapshot.val(), ownerId), ready: true, syncing: false };
+        } else {
+          _coinWallet.rewardClaims = { ...(_coinWallet.rewardClaims || {}), [type]: token };
+          _coinWallet.balance = getCoins() + safeAmount;
+          addCoinMovement(_coinWallet, safeAmount, type, label);
+        }
+        saveCoinWalletLocally();
+        updateCoinUI();
+        showSettingsMessage(`¡${label}! +${safeAmount} monedas`);
+        return true;
+      } catch (error) {
+        _coinWallet.syncError = true;
+        console.error('No se pudo reclamar la recompensa:', error);
+        return false;
+      } finally {
+        delete _coinRewardInFlight[type];
+      }
+    }
+
+    function claimWeeklyCoinReward() {
+      return claimCoinReward('weekly_streak', 100, 'Bonus por racha de 7 días', 'weekly');
+    }
+
+    async function shareCoinInvite() {
+      if ((_coinWallet.rewardClaims || {}).invite_friend === 'once') return;
+      const shareData = {
+        title: 'Atenis',
+        text: 'Descubre tus próximas historias en Atenis.',
+        url: window.location.href
+      };
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(window.location.href);
+          showSettingsMessage('Enlace copiado. Compártelo con un amigo.');
+        } else {
+          window.prompt('Copia este enlace para compartir Atenis:', window.location.href);
+        }
+        await claimCoinReward('invite_friend', 30, 'Invitación compartida', 'once');
+      } catch (error) {
+        if (error?.name !== 'AbortError') showSettingsMessage('No se pudo compartir el enlace.');
+      }
+    }
+
     async function claimDailyReward() {
       if (!_coinWallet.ready) {
         showSettingsMessage('Espera un momento: estamos sincronizando tus monedas.');
@@ -12233,6 +12438,7 @@
               totalEarned: next.totalEarned,
               totalSpent: next.totalSpent,
               transactions: next.transactions,
+              rewardClaims: next.rewardClaims || {},
               updatedAt: firebase.database.ServerValue.TIMESTAMP
             };
           });
@@ -12284,6 +12490,7 @@
               totalEarned: next.totalEarned || 0,
               totalSpent: next.totalSpent || 0,
               transactions: next.transactions,
+              rewardClaims: next.rewardClaims || {},
               updatedAt: firebase.database.ServerValue.TIMESTAMP
             };
           });
