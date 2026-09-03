@@ -5725,16 +5725,6 @@
       </div>
     </div>
 
-    <div class="search-discovery-bar">
-      <div>
-        <div class="search-discovery-kicker">ATENIS / EXPLORAR</div>
-        <h1 class="search-discovery-title">Encuentra tu próxima historia</h1>
-      </div>
-      <button class="search-discovery-reset" type="button" onclick="resetBrowseFilters()" aria-label="Restablecer filtros">
-        <i class="fas fa-rotate-left"></i>
-      </button>
-    </div>
-
     <div class="search-category-chips" id="searchCategoryChips" aria-label="Filtrar catálogo">
       <button class="search-chip active" type="button" data-browse-status="all" onclick="setBrowseStatus(this,'all')">Todo</button>
       <button class="search-chip" type="button" data-browse-status="new" onclick="setBrowseStatus(this,'new')">Nuevos</button>
@@ -5773,13 +5763,6 @@
 
       <!-- Estado vacío: sugerencias -->
       <div id="searchSuggestions" class="search-suggestions">
-        <div class="search-suggestion-intro">
-          <i class="fas fa-wand-magic-sparkles"></i>
-          <div>
-            <strong>Explora sin ruido</strong>
-            <span>Escribe al menos dos letras o elige un género.</span>
-          </div>
-        </div>
         <div class="search-quick-tags" aria-label="Búsquedas rápidas">
           <button type="button" onclick="doSuggestedSearch('Acción')">Acción</button>
           <button type="button" onclick="doSuggestedSearch('Drama')">Drama</button>
@@ -5932,12 +5915,12 @@
         </div>
         <div class="coin-rewards-grid">
           <article class="coin-reward-card coin-reward-card--watch">
-            <div class="coin-reward-card-icon"><i class="fas fa-play"></i></div>
+            <div class="coin-reward-card-icon"><i class="fas fa-tv"></i></div>
             <div class="coin-reward-card-copy">
-              <strong>Completa un episodio</strong>
-              <p id="watchRewardStatus">Mira el 90% de un episodio para ganar monedas.</p>
+              <strong>Ver un anuncio</strong>
+              <p>Ve cada anuncio completo y recibe 5 monedas. Los anuncios aparecen al azar.</p>
             </div>
-            <span class="coin-reward-amount">+10</span>
+            <button class="coin-task-btn" id="adRewardBtn" type="button" onclick="openRewardAd()">Ver +5</button>
           </article>
           <article class="coin-reward-card">
             <div class="coin-reward-card-icon"><i class="fas fa-fire"></i></div>
@@ -5955,6 +5938,17 @@
             </div>
             <button class="coin-task-btn" id="inviteRewardBtn" type="button" onclick="shareCoinInvite()">Compartir +30</button>
           </article>
+        </div>
+        <div class="ad-library-panel" id="adLibraryPanel" style="display:none;">
+          <div class="ad-library-heading">
+            <div>
+              <strong>Biblioteca de anuncios</strong>
+              <span>Agrega otros videos para que también salgan al azar.</span>
+            </div>
+            <label class="ad-upload-btn" for="adVideoUpload"><i class="fas fa-plus"></i> Añadir</label>
+            <input id="adVideoUpload" type="file" accept="video/*" style="display:none;" onchange="uploadRewardAd(this)">
+          </div>
+          <div class="ad-library-list" id="adLibraryList"></div>
         </div>
         <div class="coin-wallet-stats">
           <div class="coin-wallet-stat">
@@ -6550,6 +6544,30 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Reward ad player -->
+  <div class="reward-ad-modal" id="rewardAdModal" aria-hidden="true">
+    <div class="reward-ad-backdrop" onclick="closeRewardAd()"></div>
+    <div class="reward-ad-card" role="dialog" aria-modal="true" aria-labelledby="rewardAdTitle">
+      <div class="reward-ad-header">
+        <div>
+          <span class="reward-ad-kicker">RECOMPENSA</span>
+          <h2 id="rewardAdTitle">Mira el anuncio completo</h2>
+        </div>
+        <button type="button" class="reward-ad-close" id="rewardAdCloseBtn" onclick="closeRewardAd()" aria-label="Cerrar anuncio">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="reward-ad-video-wrap">
+        <video id="rewardAdVideo" playsinline preload="metadata"></video>
+        <div class="reward-ad-countdown" id="rewardAdCountdown">0:00</div>
+      </div>
+      <div class="reward-ad-footer">
+        <span id="rewardAdStatus">Cuando termine recibirás 5 monedas.</span>
+        <strong>+5 <i class="fas fa-coins"></i></strong>
+      </div>
     </div>
   </div>
 
@@ -8710,7 +8728,8 @@
         renderInitialCatalogState();
         const remoteCatalogLoads = [
           loadMiniDramas(),        // Cargar dramas cortos Mini desde Firebase
-          loadDynamicCatalog()     // Cargar catálogo adicional desde Firebase
+          loadDynamicCatalog(),    // Cargar catálogo adicional desde Firebase
+          loadRewardAds()          // Cargar anuncios adicionales para recompensas
         ];
         const hasStaticCatalog = Object.keys(seriesDatabase).length > 0;
         if (!hasStaticCatalog) {
@@ -11596,11 +11615,6 @@
       if (dEl) dEl.textContent = _fmtTime(vid.duration || 0);
       _updateMiniSubtitleOverlay();
 
-      // Completar el 90% de cualquier episodio da una recompensa diaria.
-      if (_miniPlayerMini && vid.duration && pct >= 90) {
-        void claimCoinReward('watch_episode', 10, 'Episodio completado', 'daily');
-      }
-
       // Guardar progreso en historial cada vez que se actualiza
       if (_miniPlayerMini && vid.duration && pct >= 1) {
         saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, 'mini');
@@ -12265,7 +12279,6 @@
       const weeklyToken = getCoinRewardToken('weekly_streak', 'weekly');
       const weeklyClaimed = (_coinWallet.rewardClaims || {}).weekly_streak === weeklyToken;
       const inviteClaimed = (_coinWallet.rewardClaims || {}).invite_friend === 'once';
-      const watchedToday = (_coinWallet.rewardClaims || {}).watch_episode === today;
       const weeklyBtn = document.getElementById('weeklyRewardBtn');
       if (weeklyBtn) {
         weeklyBtn.disabled = !_coinWallet.ready || _coinWallet.streak < 7 || weeklyClaimed;
@@ -12278,11 +12291,10 @@
         inviteBtn.disabled = !_coinWallet.ready || inviteClaimed;
         inviteBtn.textContent = inviteClaimed ? 'Reclamado' : 'Compartir +30';
       }
-      const watchStatus = document.getElementById('watchRewardStatus');
-      if (watchStatus) {
-        watchStatus.textContent = watchedToday
-          ? 'Recompensa de hoy recibida. Vuelve mañana.'
-          : 'Mira el 90% de un episodio para ganar monedas.';
+      const adBtn = document.getElementById('adRewardBtn');
+      if (adBtn) {
+        adBtn.disabled = !_coinWallet.ready;
+        adBtn.textContent = 'Ver +5';
       }
       if (!document.getElementById('coinHistoryPanel')?.classList.contains('hidden')) {
         renderCoinHistory();
@@ -12319,6 +12331,143 @@
     }
 
     const _coinRewardInFlight = {};
+    const DEFAULT_REWARD_ADS = [{
+      id: 'uploaded-ad-1',
+      name: 'Anuncio principal',
+      url: '/attached_assets/AQMHHdkCHVCGaXhnRTpuDTpMgeKm5EoTld7ipPUPMI0QABPyi28AtU7uWp2m1Q_1788453066789.mp4'
+    }];
+    let _rewardAds = [];
+    let _rewardAdOpen = false;
+    let _rewardAdCompleted = false;
+    let _rewardAdCurrent = null;
+
+    function getRewardAds() {
+      const stored = Array.isArray(_rewardAds) ? _rewardAds : [];
+      const all = [...DEFAULT_REWARD_ADS, ...stored];
+      return all.filter((ad, index, list) => ad && ad.url && list.findIndex(item => item.url === ad.url) === index);
+    }
+
+    async function loadRewardAds() {
+      try {
+        const snapshot = await withFirebaseTimeout(database.ref('adVideos').once('value'), 'adVideos', 5000);
+        const remote = snapshot && snapshot.val();
+        _rewardAds = remote && typeof remote === 'object'
+          ? Object.entries(remote).map(([id, ad]) => ({ id, ...ad })).filter(ad => ad.url)
+          : [];
+      } catch (error) {
+        console.warn('No se pudieron cargar anuncios adicionales:', error);
+        _rewardAds = [];
+      }
+      renderRewardAdLibrary();
+    }
+
+    function renderRewardAdLibrary() {
+      const panel = document.getElementById('adLibraryPanel');
+      const list = document.getElementById('adLibraryList');
+      if (!panel || !list) return;
+      panel.style.display = isMiniAdmin() ? 'block' : 'none';
+      if (!isMiniAdmin()) return;
+      list.innerHTML = getRewardAds().map(ad => `
+        <div class="ad-library-item">
+          <i class="fas fa-film"></i>
+          <span>${String(ad.name || 'Anuncio').replace(/[<>]/g, '')}</span>
+          <small>${ad.id === 'uploaded-ad-1' ? 'Incluido' : 'Cloudinary'}</small>
+        </div>
+      `).join('');
+    }
+
+    async function uploadRewardAd(input) {
+      if (!isMiniAdmin() || !input?.files?.[0]) return;
+      const file = input.files[0];
+      if (!file.type.startsWith('video/')) {
+        showSettingsMessage('Selecciona un video para agregarlo a los anuncios.');
+        input.value = '';
+        return;
+      }
+      if (file.size > 500 * 1024 * 1024) {
+        showSettingsMessage('El anuncio no puede superar 500 MB.');
+        input.value = '';
+        return;
+      }
+      try {
+        showSettingsMessage('Subiendo anuncio…');
+        const url = await uploadToCloudinary(file, null, true);
+        const ad = { url, name: file.name, createdAt: Date.now(), createdBy: currentFirebaseUser.uid };
+        const ref = database.ref('adVideos').push();
+        await ref.set(ad);
+        _rewardAds.push({ id: ref.key, ...ad });
+        renderRewardAdLibrary();
+        showSettingsMessage('Anuncio agregado. También saldrá al azar.');
+      } catch (error) {
+        console.error('Error al agregar anuncio:', error);
+        showSettingsMessage('No se pudo agregar el anuncio.');
+      } finally {
+        input.value = '';
+      }
+    }
+
+    function openRewardAd() {
+      if (!_coinWallet.ready) {
+        showSettingsMessage('Espera un momento: estamos sincronizando tus monedas.');
+        return;
+      }
+      const ads = getRewardAds();
+      if (!ads.length) {
+        showSettingsMessage('Todavía no hay anuncios disponibles.');
+        return;
+      }
+      const video = document.getElementById('rewardAdVideo');
+      const modal = document.getElementById('rewardAdModal');
+      if (!video || !modal) return;
+      _rewardAdCurrent = ads[Math.floor(Math.random() * ads.length)];
+      _rewardAdOpen = true;
+      _rewardAdCompleted = false;
+      video.src = _rewardAdCurrent.url;
+      video.currentTime = 0;
+      video.controls = false;
+      video.onended = finishRewardAd;
+      video.onplay = updateRewardAdProgress;
+      video.ontimeupdate = updateRewardAdProgress;
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.getElementById('rewardAdStatus').textContent = 'Cuando termine recibirás 5 monedas.';
+      video.play().catch(() => {
+        document.getElementById('rewardAdStatus').textContent = 'Pulsa reproducir para comenzar el anuncio.';
+      });
+    }
+
+    function updateRewardAdProgress() {
+      const video = document.getElementById('rewardAdVideo');
+      const countdown = document.getElementById('rewardAdCountdown');
+      if (!video || !countdown) return;
+      countdown.textContent = `${_fmtTime(video.currentTime)} / ${_fmtTime(video.duration || 0)}`;
+    }
+
+    async function finishRewardAd() {
+      if (!_rewardAdOpen || _rewardAdCompleted) return;
+      _rewardAdCompleted = true;
+      const status = document.getElementById('rewardAdStatus');
+      if (status) status.textContent = 'Anuncio completado. Entregando tus 5 monedas…';
+      const claimed = await claimCoinReward('ad_watch', 5, 'Anuncio visto', 'always');
+      if (status) status.textContent = claimed ? '¡Listo! Ganaste 5 monedas.' : 'No se pudo entregar la recompensa.';
+    }
+
+    function closeRewardAd() {
+      const modal = document.getElementById('rewardAdModal');
+      const video = document.getElementById('rewardAdVideo');
+      _rewardAdOpen = false;
+      if (video) {
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+        video.onended = null;
+        video.ontimeupdate = null;
+      }
+      if (modal) {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+    }
 
     function getCoinRewardToken(type, period = 'daily') {
       if (period === 'once') return 'once';
@@ -12341,7 +12490,7 @@
       if (type === 'weekly_streak' && (_coinWallet.streak || 0) < 7) return false;
 
       const token = getCoinRewardToken(type, period);
-      if ((_coinWallet.rewardClaims || {})[type] === token) return false;
+      if (period !== 'always' && (_coinWallet.rewardClaims || {})[type] === token) return false;
       _coinRewardInFlight[type] = true;
       const ownerId = getCoinOwnerId();
       const safeAmount = Math.max(0, Math.floor(Number(amount) || 0));
@@ -12350,9 +12499,11 @@
         if (ownerId !== 'guest' && firebaseReady) {
           const result = await getCoinWalletRef(ownerId).transaction(wallet => {
             const current = normalizeCoinWallet(wallet, ownerId);
-            if ((current.rewardClaims || {})[type] === token) return;
+            if (period !== 'always' && (current.rewardClaims || {})[type] === token) return;
             const next = { ...current, balance: current.balance + safeAmount };
-            next.rewardClaims = { ...(current.rewardClaims || {}), [type]: token };
+            if (period !== 'always') {
+              next.rewardClaims = { ...(current.rewardClaims || {}), [type]: token };
+            }
             addCoinMovement(next, safeAmount, type, label);
             return {
               balance: next.balance,
@@ -12368,7 +12519,9 @@
           if (!result.committed) return false;
           _coinWallet = { ...normalizeCoinWallet(result.snapshot.val(), ownerId), ready: true, syncing: false };
         } else {
-          _coinWallet.rewardClaims = { ...(_coinWallet.rewardClaims || {}), [type]: token };
+          if (period !== 'always') {
+            _coinWallet.rewardClaims = { ...(_coinWallet.rewardClaims || {}), [type]: token };
+          }
           _coinWallet.balance = getCoins() + safeAmount;
           addCoinMovement(_coinWallet, safeAmount, type, label);
         }
