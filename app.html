@@ -5785,6 +5785,24 @@
         </button>
       </div>
 
+      <div class="settings-premium-card">
+        <div class="settings-premium-kicker">ATENIS PREMIUM</div>
+        <h3>Más historias.<br><span>Más para ti.</span></h3>
+        <div class="settings-premium-benefit"><i class="fas fa-check"></i><span>Series y películas premium</span></div>
+        <div class="settings-premium-benefit"><i class="fas fa-check"></i><span>Estrenos y mini dramas exclusivos</span></div>
+        <div class="settings-premium-benefit"><i class="fas fa-check"></i><span>Cancela cuando quieras</span></div>
+        <button class="settings-premium-cta" type="button" onclick="window.location.href='subscription.html'">Empieza ya</button>
+      </div>
+
+      <div class="settings-credit-preview">
+        <div class="settings-credit-copy">
+          <div class="settings-credit-kicker">ATENIS CRÉDITOS</div>
+          <div class="settings-credit-title">Tu saldo</div>
+          <div class="settings-credit-balance"><span id="settingsCreditsPreviewBalance">100</span> <small>monedas</small></div>
+        </div>
+        <button class="settings-credit-action" type="button" onclick="openSettingsSub('monedas')">Ver créditos</button>
+      </div>
+
       <!-- Nav list — Netflix style rows -->
       <div class="settings-nav-list">
         <div class="settings-nav-row settings-nav-row--coins" onclick="openSettingsSub('monedas')">
@@ -11737,7 +11755,7 @@
 
     function updateCoinUI() {
       const balance = getCoins();
-      ['settingsCoinsValue', 'settingsCoinsBalance', 'coinUnlockBalance'].forEach(id => {
+      ['settingsCoinsValue', 'settingsCoinsBalance', 'settingsCreditsPreviewBalance', 'coinUnlockBalance'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = balance;
       });
