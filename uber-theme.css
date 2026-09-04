@@ -1,8 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
 
 /*
-  Atenis Streaming — ElevenLabs-inspired workspace theme
-  Charcoal surfaces, monochrome controls, clean typography.
+  Atenis Streaming — TikTok-inspired streaming theme
+  Deep black surfaces, vivid pink accent, expressive controls.
 */
 :root {
   --uber-black: #0d0d0d;
@@ -15,8 +15,8 @@
   --uber-text: #f1f1ef;
   --uber-muted: #a3a3a0;
   --uber-subtle: #666662;
-  --uber-green: #f5f5f5;
-  --uber-green-hover: #ffffff;
+  --uber-green: #fe2c55;
+  --uber-green-hover: #ff4f73;
   --uber-danger: #e11900;
   --uber-radius: 9px;
   --uber-radius-lg: 14px;
@@ -1270,8 +1270,8 @@ body.settings-open {
   --atenis-copy: #f5f5f5;
   --atenis-dim: #a3a3a0;
   --atenis-subtle: #666662;
-  --atenis-coral: #f5f5f5;
-  --atenis-amber: #cfcfcb;
+  --atenis-coral: #fe2c55;
+  --atenis-amber: #ff8aa0;
   --atenis-periwinkle: #d4d4d0;
   --uber-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --uber-display: "Space Grotesk", "DM Sans", sans-serif;
@@ -2873,8 +2873,8 @@ button:focus-visible,
    Charcoal canvas, quiet borders, monochrome controls, compact workspace.
    ───────────────────────────────────────────────────────────── */
 :root {
-  --eleven-coral: #f5f5f5;
-  --eleven-coral-soft: rgba(255, 255, 255, 0.10);
+  --eleven-coral: #fe2c55;
+  --eleven-coral-soft: rgba(254, 44, 85, 0.14);
   --eleven-canvas: #0d0d0d;
   --eleven-panel: #151515;
   --eleven-panel-raised: #1b1b1b;
@@ -3315,4 +3315,115 @@ body:has(.plans-section) .feature-icon {
 body:has(.page-layout) .badge-top {
   color: #0d0d0d !important;
   background: #f5f5f5 !important;
+}
+
+
+/* TikTok-inspired pink pass for every public surface */
+body:has(.auth-root) {
+  --accent: #fe2c55;
+  --accent-hov: #ff4f73;
+  --accent-glow: rgba(254,44,85,0.20);
+}
+
+.auth-logo-icon {
+  background: #fe2c55 !important;
+  box-shadow: 0 0 28px rgba(254,44,85,0.25) !important;
+}
+.auth-logo-icon svg {
+  fill: #ffffff !important;
+}
+.auth-tab.active,
+.auth-btn {
+  background: #fe2c55 !important;
+  color: #ffffff !important;
+  border-color: #fe2c55 !important;
+}
+.auth-tab.active {
+  box-shadow: 0 5px 18px rgba(254,44,85,0.22) !important;
+}
+.auth-btn:hover {
+  background: #ff4f73 !important;
+  border-color: #ff4f73 !important;
+}
+.auth-link,
+.auth-switch button,
+body:has(.page-layout) .hero-title span,
+body:has(.page-layout) .feature-row-icon,
+body:has(.plans-section) .hero-tag,
+body:has(.plans-section) .popular-badge,
+body:has(.plans-section) .plan-features li .check,
+body:has(.plans-section) .offer-icon,
+body:has(.plans-section) .offer-arrow,
+body:has(.plans-section) .feature-icon {
+  color: #fe2c55 !important;
+}
+.auth-link:hover,
+.auth-switch button:hover {
+  color: #ff8aa0 !important;
+}
+body:has(.page-layout) .btn-primary,
+body:has(.plans-section) .header-btn.solid,
+body:has(.plans-section) .plan-btn.primary,
+body:has(.plans-section) .cta-btn-main {
+  background: #fe2c55 !important;
+  color: #ffffff !important;
+  border-color: #fe2c55 !important;
+  box-shadow: 0 8px 22px rgba(254,44,85,0.20) !important;
+}
+body:has(.page-layout) .btn-primary:hover,
+body:has(.plans-section) .header-btn.solid:hover,
+body:has(.plans-section) .plan-btn.primary:hover,
+body:has(.plans-section) .cta-btn-main:hover {
+  background: #ff4f73 !important;
+  border-color: #ff4f73 !important;
+}
+body:has(.plans-section) .popular-badge {
+  background: #fe2c55 !important;
+  color: #ffffff !important;
+}
+body:has(.plans-section) .offer-banner {
+  border-color: rgba(254,44,85,0.45) !important;
+}
+
+/* Main app accents */
+.featured-hero-btn.primary,
+.search-section-wrapper .search-btn,
+.mini-next-btn,
+.mini-player-progress-fill,
+.video-progress-fill,
+.settings-btn.primary,
+.primary-button,
+.btn-primary,
+.submit-btn,
+.claim-button {
+  background: #fe2c55 !important;
+  border-color: #fe2c55 !important;
+}
+.featured-hero-btn.primary:hover,
+.search-section-wrapper .search-btn:hover,
+.mini-next-btn:hover,
+.settings-btn.primary:hover,
+.primary-button:hover,
+.btn-primary:hover,
+.submit-btn:hover,
+.claim-button:hover {
+  background: #ff4f73 !important;
+  border-color: #ff4f73 !important;
+}
+.bottom-nav button.active,
+.bottom-nav button.active i,
+#navMini.active i,
+.mini-side-btn.is-saved i,
+.mini-side-btn.is-saved span {
+  color: #fe2c55 !important;
+}
+.settings-nav-icon {
+  background: rgba(254,44,85,0.14) !important;
+}
+.settings-nav-icon i,
+.settings-sub-back i,
+.settings-nav-arrow,
+.history-item-time i,
+.feature-icon {
+  color: #fe2c55 !important;
 }
