@@ -1834,7 +1834,7 @@
       }
     }
 
-    /* Navegación inferior — 4 ítems limpios */
+    /* Navegación inferior — cuatro destinos claramente identificados */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -1869,7 +1869,12 @@
       transition: color 0.15s;
     }
     .bottom-nav button span {
-      display: none;
+      display: block;
+      margin-top: 4px;
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: 0.01em;
     }
 
     .bottom-nav button.active {
@@ -5852,6 +5857,7 @@
           <span class="settings-nav-label">Ayuda y Soporte</span>
           <i class="fas fa-chevron-right settings-nav-arrow"></i>
         </div>
+        <div class="settings-nav-heading" id="adminNavHeading" style="display:none;">Administración</div>
         <div class="settings-nav-row" id="adminSeriesNavRow" style="display:none;" onclick="openSettingsSub('series')">
           <div class="settings-nav-icon" style="background:#231a3b"><i class="fas fa-film" style="color:#b69cff"></i></div>
           <span class="settings-nav-label">Admin — Series</span>
@@ -8594,7 +8600,8 @@
       if (authenticated) {
         renderInitialCatalogState();
         const remoteCatalogLoads = [
-          loadDynamicCatalog(),    // Cargar catálogo adicional desde Firebase
+          loadLegacySeries(),      // Recuperar las series existentes del catálogo anterior
+          loadDynamicCatalog(),    // Cargar nuevas series desde el catálogo central
           loadRewardAds()          // Cargar anuncios adicionales para recompensas
         ];
         const hasStaticCatalog = Object.keys(seriesDatabase).length > 0;
@@ -10726,6 +10733,33 @@
       return Object.values(val).filter(item => item && item.id);
     }
 
+    // Compatibilidad: las series que ya estaban publicadas se guardaron originalmente
+    // en este nodo. Se cargan como Series normales, sin crear una sección Mini.
+    async function loadLegacySeries() {
+      const legacyRef = database.ref('miniDramas');
+      const applySnapshot = snapshot => {
+        let changed = false;
+        normalizeFirebaseCollection(snapshot && snapshot.val()).forEach(item => {
+          seriesDatabase[item.id] = { ...item, type: 'series' };
+          changed = true;
+        });
+        if (changed) {
+          if (typeof buildFeaturedHero === 'function') buildFeaturedHero();
+          renderCatalogSections();
+          renderUpcomingReleases();
+          updateReleaseIndicators();
+        }
+      };
+
+      try {
+        const firstSnapshot = await withFirebaseTimeout(legacyRef.once('value'), 'series existentes');
+        applySnapshot(firstSnapshot);
+        legacyRef.on('value', applySnapshot, error => console.error('Error escuchando series existentes:', error));
+      } catch (error) {
+        console.error('Error cargando series existentes:', error);
+      }
+    }
+
     async function loadDynamicCatalog() {
       const catalogRef = database.ref('catalog');
       const applySnapshot = snapshot => {
@@ -12597,8 +12631,10 @@
 
     function _showAdminNavigationIfAdmin() {
       const isAdmin = isSeriesAdmin();
+      const heading = document.getElementById('adminNavHeading');
       const subsRow = document.getElementById('adminSubsNavRow');
       const seriesRow = document.getElementById('adminSeriesNavRow');
+      if (heading) heading.style.display = isAdmin ? 'block' : 'none';
       if (subsRow) subsRow.style.display = isAdmin ? 'flex' : 'none';
       if (seriesRow) seriesRow.style.display = isAdmin ? 'flex' : 'none';
     }
