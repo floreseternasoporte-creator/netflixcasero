@@ -3454,3 +3454,86 @@ body:has(#seriesDetail.active) .top-bar {
 .search-section .search-page-header {
   background: #0d0d0d !important;
 }
+
+
+/* TikTok visual pass for the vertical player information and episode sheets. */
+.mini-info-sheet,
+.mini-eps-sheet {
+  background: rgba(13, 13, 13, 0.98) !important;
+  border-top: 1px solid rgba(254, 44, 85, 0.30) !important;
+  box-shadow: 0 -18px 55px rgba(0, 0, 0, 0.60), 0 -2px 0 rgba(37, 244, 238, 0.10) !important;
+  backdrop-filter: blur(18px);
+}
+.mini-info-sheet-inner,
+.mini-sheet-body {
+  background: transparent !important;
+}
+.mini-info-title,
+.mini-sheet-series-title,
+.mini-sheet-tab.active,
+.mini-synopsis-panel,
+.mini-info-description,
+.mini-info-section-label,
+.mini-ep-box {
+  color: #f7f7f5 !important;
+}
+.mini-info-poster,
+.mini-sheet-poster {
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 12px !important;
+  box-shadow: 4px 4px 0 rgba(37, 244, 238, 0.22), 8px 8px 0 rgba(254, 44, 85, 0.18) !important;
+}
+.mini-info-badge,
+.mini-ep-range-btn,
+.mini-ep-box {
+  background: #191919 !important;
+  border-color: #323232 !important;
+  color: #b7b7b5 !important;
+}
+.mini-info-badge.highlight,
+.mini-ep-range-btn.active,
+.mini-ep-box.ep-playing {
+  background: rgba(254, 44, 85, 0.16) !important;
+  border-color: #fe2c55 !important;
+  color: #ffffff !important;
+  box-shadow: 2px 2px 0 rgba(37, 244, 238, 0.25) !important;
+}
+.mini-info-rating,
+.mini-sheet-rating {
+  color: #25f4ee !important;
+}
+.mini-info-ep-count,
+.mini-sheet-stats,
+.mini-info-section-label,
+.mini-sheet-tab {
+  color: #9b9b98 !important;
+}
+.mini-info-divider,
+.mini-sheet-title-row,
+.mini-sheet-tabs {
+  border-color: #2a2a2a !important;
+}
+.mini-sheet-tab.active::after {
+  background: #fe2c55 !important;
+  box-shadow: 0 0 12px rgba(254, 44, 85, 0.70) !important;
+}
+.mini-sheet-close-btn {
+  background: #191919 !important;
+  border-color: #343434 !important;
+  color: #f7f7f5 !important;
+}
+.mini-ep-box.ep-playing .mini-ep-box-icon,
+.mini-ep-box.ep-locked .mini-ep-box-icon {
+  color: #fe2c55 !important;
+}
+.mini-eps-sheet-handle {
+  background: linear-gradient(90deg, #25f4ee, #fe2c55) !important;
+  box-shadow: 0 0 12px rgba(254, 44, 85, 0.35) !important;
+}
+.mini-side-btn.is-saved {
+  color: #fe2c55 !important;
+  text-shadow: 0 0 16px rgba(254, 44, 85, 0.45);
+}
+.mini-side-btn.is-saved i {
+  color: #fe2c55 !important;
+}

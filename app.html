@@ -7771,10 +7771,28 @@
     }
 
 
+    function readMyListStorage() {
+      try {
+        const value = JSON.parse(localStorage.getItem('atenis_my_list') || '[]');
+        return Array.isArray(value) ? value : [];
+      } catch (error) {
+        console.warn('Mi lista tenía datos inválidos; se restauró una lista vacía.', error);
+        return [];
+      }
+    }
+
+    function writeMyListStorage(items) {
+      localStorage.setItem('atenis_my_list', JSON.stringify(items));
+      window.dispatchEvent(new CustomEvent('atenis:my-list-changed', { detail: items }));
+    }
+
     function getMyListItems() {
-      const stored = JSON.parse(localStorage.getItem('atenis_my_list') || '[]');
-      return stored
-        .map(item => ({ ...item, series: seriesDatabase[item.id] }))
+      return readMyListStorage()
+        .map(item => ({
+          ...item,
+          id: String(item.id),
+          series: seriesDatabase[item.id] || item.seriesSnapshot || null
+        }))
         .filter(item => item.series)
         .sort((a, b) => new Date(b.addedAt || 0) - new Date(a.addedAt || 0));
     }
@@ -7816,9 +7834,11 @@
     }
 
     function removeFromMyList(seriesId) {
-      const filtered = JSON.parse(localStorage.getItem('atenis_my_list') || '[]').filter(item => item.id !== seriesId);
-      localStorage.setItem('atenis_my_list', JSON.stringify(filtered));
+      const normalizedId = String(seriesId);
+      const filtered = readMyListStorage().filter(item => String(item.id) !== normalizedId);
+      writeMyListStorage(filtered);
       refreshMyListViews();
+      updateMiniSaveButton();
       showSettingsMessage('Eliminado de Mi Lista');
     }
 
@@ -9027,18 +9047,28 @@
       });
     }
 
-    function addSeriesToMyList(seriesId) {
-      const myList = JSON.parse(localStorage.getItem('atenis_my_list') || '[]');
-      if (!myList.some(item => item.id === seriesId)) {
-        myList.push({ id: seriesId, addedAt: new Date().toISOString() });
-        localStorage.setItem('atenis_my_list', JSON.stringify(myList));
-        return true;
+    function addSeriesToMyList(seriesId, seriesSnapshot = null) {
+      const normalizedId = String(seriesId);
+      const myList = readMyListStorage();
+      const existing = myList.find(item => String(item.id) === normalizedId);
+      if (existing) {
+        if (!existing.seriesSnapshot && seriesSnapshot) {
+          existing.seriesSnapshot = seriesSnapshot;
+          writeMyListStorage(myList);
+        }
+        return false;
       }
-      return false;
+      myList.push({
+        id: normalizedId,
+        addedAt: new Date().toISOString(),
+        seriesSnapshot: seriesSnapshot || seriesDatabase[normalizedId] || null
+      });
+      writeMyListStorage(myList);
+      return true;
     }
     function isInMyList(seriesId) {
-      const myList = JSON.parse(localStorage.getItem('atenis_my_list') || '[]');
-      return myList.some(item => item.id === seriesId);
+      const normalizedId = String(seriesId);
+      return readMyListStorage().some(item => String(item.id) === normalizedId);
     }
     function updateMiniSaveButton() {
       const button = document.getElementById('miniSaveBtn');
@@ -9056,7 +9086,7 @@
       if (isInMyList(mini.id)) {
         removeFromMyList(mini.id);
       } else {
-        addSeriesToMyList(mini.id);
+        addSeriesToMyList(mini.id, mini);
         refreshMyListViews();
         showSettingsMessage('Agregado a Mi Lista');
       }
@@ -9064,7 +9094,8 @@
     }
 
     function notifyUpcomingRelease(seriesId, button) {
-      const added = addSeriesToMyList(seriesId);
+      const added = addSeriesToMyList(seriesId, seriesDatabase[seriesId] || null);
+      refreshMyListViews();
       button.classList.add('notified');
       button.innerHTML = '<i class="fas fa-check"></i><span>En mi lista</span>';
 
