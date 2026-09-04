@@ -1,26 +1,26 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
 
 /*
-  Atenis Streaming — DeepSeek navy theme
-  Dark navy surfaces, blue accent, clean typography.
+  Atenis Streaming — ElevenLabs-inspired workspace theme
+  Charcoal surfaces, warm coral accent, clean typography.
 */
 :root {
-  --uber-black: #0a0b14;
-  --uber-surface: #0d0e1a;
-  --uber-surface-elevated: #111322;
-  --uber-surface-muted: #151830;
-  --uber-border: #1c1e2e;
-  --uber-border-strong: #252848;
-  --uber-white: #ffffff;
-  --uber-text: #f5f5f5;
-  --uber-muted: #8b9ab0;
-  --uber-subtle: #4d5a70;
-  --uber-green: #4c6ef5;
-  --uber-green-hover: #3b5fd4;
+  --uber-black: #0d0d0d;
+  --uber-surface: #121212;
+  --uber-surface-elevated: #191919;
+  --uber-surface-muted: #202020;
+  --uber-border: #292929;
+  --uber-border-strong: #3a3a3a;
+  --uber-white: #f7f7f5;
+  --uber-text: #f1f1ef;
+  --uber-muted: #a3a3a0;
+  --uber-subtle: #666662;
+  --uber-green: #ff633d;
+  --uber-green-hover: #ff7b5a;
   --uber-danger: #e11900;
-  --uber-radius: 8px;
-  --uber-radius-lg: 12px;
-  --uber-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --uber-radius: 9px;
+  --uber-radius-lg: 14px;
+  --uber-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 html,
@@ -2864,5 +2864,265 @@ button:focus-visible,
 
   .search-sort-control {
     align-self: flex-end;
+  }
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   Atenis visual refresh — inspired by ElevenLabs workspace UI
+   Charcoal canvas, quiet borders, warm coral accent, compact controls.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --eleven-coral: #ff633d;
+  --eleven-coral-soft: rgba(255, 99, 61, 0.14);
+  --eleven-canvas: #0d0d0d;
+  --eleven-panel: #151515;
+  --eleven-panel-raised: #1b1b1b;
+  --eleven-line: rgba(255, 255, 255, 0.11);
+  --eleven-line-soft: rgba(255, 255, 255, 0.07);
+  --eleven-copy: #f7f7f5;
+  --eleven-copy-muted: #a3a3a0;
+}
+
+html,
+body {
+  background: var(--eleven-canvas) !important;
+  color: var(--eleven-copy) !important;
+  font-family: var(--uber-font) !important;
+}
+
+body {
+  background-image: radial-gradient(circle at 50% -20%, rgba(255, 99, 61, 0.055), transparent 42%) !important;
+}
+
+.app-container,
+.main-container,
+.home-section,
+.search-section,
+.settings-section,
+.history-section,
+.my-list-section {
+  background: transparent !important;
+}
+
+.top-bar {
+  background: linear-gradient(180deg, rgba(13, 13, 13, 0.94), rgba(13, 13, 13, 0.58) 72%, transparent) !important;
+  border-bottom: 1px solid var(--eleven-line-soft) !important;
+  backdrop-filter: blur(18px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(120%) !important;
+}
+
+.top-bar-logo,
+.logo,
+.logo h1 {
+  color: var(--eleven-copy) !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor !important;
+  letter-spacing: -0.055em !important;
+}
+
+.section-title,
+.featured-hero-title,
+.search-page-title,
+.settings-title,
+.history-title,
+.series-detail-title {
+  color: var(--eleven-copy) !important;
+  letter-spacing: -0.045em !important;
+}
+
+.section-title {
+  font-family: "Space Grotesk", var(--uber-font) !important;
+  font-size: clamp(19px, 3vw, 25px) !important;
+  font-weight: 600 !important;
+}
+
+.carousel-item,
+.nr-card,
+.flavor-card,
+.mini-card,
+.mini-carousel-item,
+.history-item,
+.search-result-item,
+.settings-profile-card,
+.settings-nav-row,
+.settings-sub-group {
+  background: var(--eleven-panel) !important;
+  border-color: var(--eleven-line) !important;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.16) !important;
+}
+
+.carousel-item:hover,
+.nr-card:hover,
+.flavor-card:hover,
+.mini-card:hover,
+.mini-carousel-item:hover,
+.settings-nav-row:hover {
+  border-color: rgba(255, 99, 61, 0.48) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 99, 61, 0.08) !important;
+}
+
+.card-title-overlay,
+.carousel-item-overlay,
+.mini-carousel-item-overlay {
+  background: linear-gradient(180deg, transparent 15%, rgba(13, 13, 13, 0.92) 100%) !important;
+}
+
+.movie-badge,
+.premiere-badge,
+.nr-badge,
+.live-badge,
+.badge,
+.status-badge,
+.offer-badge,
+.age-badge {
+  background: var(--eleven-coral) !important;
+  color: #17110e !important;
+  border-color: var(--eleven-coral) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em !important;
+}
+
+button,
+.main-btn,
+.hero-btn,
+.search-btn,
+.settings-btn,
+.primary-button,
+.btn-primary,
+.submit-btn,
+.claim-button,
+.mini-next-btn {
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease !important;
+}
+
+.main-btn.primary,
+.hero-btn.primary,
+.search-section-wrapper .search-btn,
+.settings-btn.primary,
+.primary-button,
+.btn-primary,
+.submit-btn,
+.claim-button,
+.mini-next-btn {
+  background: var(--eleven-coral) !important;
+  color: #17110e !important;
+  border-color: var(--eleven-coral) !important;
+  box-shadow: 0 7px 18px rgba(255, 99, 61, 0.18) !important;
+}
+
+.main-btn.primary:hover,
+.hero-btn.primary:hover,
+.search-section-wrapper .search-btn:hover,
+.settings-btn.primary:hover,
+.primary-button:hover,
+.btn-primary:hover,
+.submit-btn:hover,
+.claim-button:hover,
+.mini-next-btn:hover {
+  background: #ff7b5a !important;
+  border-color: #ff7b5a !important;
+  box-shadow: 0 9px 24px rgba(255, 99, 61, 0.28) !important;
+}
+
+.main-btn.secondary,
+.hero-btn.secondary,
+.settings-btn.secondary,
+.btn-secondary,
+.back-btn,
+.back-button,
+.logout-btn,
+.close-button,
+.settings-close-btn {
+  background: var(--eleven-panel-raised) !important;
+  color: var(--eleven-copy) !important;
+  border-color: var(--eleven-line) !important;
+}
+
+input,
+select,
+textarea,
+.form-input,
+.setting-select,
+.search-section-wrapper {
+  background: var(--eleven-panel) !important;
+  border-color: var(--eleven-line) !important;
+  color: var(--eleven-copy) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.form-input:focus,
+.setting-select:focus,
+.search-section-wrapper:focus-within {
+  outline: none !important;
+  border-color: var(--eleven-coral) !important;
+  box-shadow: 0 0 0 3px var(--eleven-coral-soft) !important;
+}
+
+.bottom-nav {
+  background: rgba(21, 21, 21, 0.78) !important;
+  border-top: 1px solid var(--eleven-line) !important;
+  box-shadow: 0 -14px 34px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.035) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+}
+
+.bottom-nav button {
+  color: var(--eleven-copy-muted) !important;
+}
+
+.bottom-nav button.active,
+.bottom-nav button.active i,
+#navMini.active i {
+  color: var(--eleven-coral) !important;
+}
+
+.bottom-nav button span {
+  font-size: 10px !important;
+  letter-spacing: 0.01em !important;
+}
+
+.settings-nav-row,
+.settings-sub-group {
+  border-radius: 12px !important;
+}
+
+.settings-nav-icon {
+  background: var(--eleven-coral-soft) !important;
+}
+
+.settings-nav-icon i,
+.settings-sub-back i,
+.settings-nav-arrow,
+.history-item-time i,
+.feature-icon {
+  color: var(--eleven-coral) !important;
+}
+
+.toast,
+.notification,
+.message,
+.welcome-message,
+.success-message {
+  background: var(--eleven-panel-raised) !important;
+  border-color: var(--eleven-line) !important;
+  color: var(--eleven-copy) !important;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.34) !important;
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    padding-inline: 16px !important;
+  }
+
+  .carousel-item,
+  .nr-card,
+  .flavor-card,
+  .mini-card,
+  .mini-carousel-item {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18) !important;
   }
 }
