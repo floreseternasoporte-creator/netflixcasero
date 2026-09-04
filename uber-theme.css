@@ -3427,3 +3427,30 @@ body:has(.plans-section) .offer-banner {
 .feature-icon {
   color: #fe2c55 !important;
 }
+
+
+/* Full-screen sections must be opaque so the fixed brand bar never bleeds through. */
+.history-section,
+.my-list-section,
+.settings-section,
+.search-section,
+.series-detail {
+  background: #0d0d0d !important;
+  isolation: isolate;
+}
+
+body:has(#myListSection.active) .top-bar,
+body:has(#historySection.active) .top-bar,
+body:has(#calendarSection.active) .top-bar,
+body:has(#settingsSection.active) .top-bar,
+body:has(#searchSection.active) .top-bar,
+body:has(#seriesDetail.active) .top-bar {
+  display: none !important;
+}
+
+.my-list-section .upcoming-topbar,
+.history-section .history-header,
+.settings-section .settings-header,
+.search-section .search-page-header {
+  background: #0d0d0d !important;
+}
