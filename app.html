@@ -4171,6 +4171,8 @@
       display: none;
       flex-direction: column;
       align-items: stretch;
+      touch-action: none;
+      overscroll-behavior: none;
     }
     .mini-player.active { display: flex; }
 
@@ -4178,6 +4180,7 @@
       position: absolute; inset: 0;
       width: 100%; height: 100%;
       object-fit: contain;
+      touch-action: none;
       transition: filter 0.8s ease, transform 0.8s ease;
     }
     .mini-player-video.mini-ending {
@@ -4645,27 +4648,6 @@
       border-radius: 7px;
       min-height: 32px;
       cursor: pointer;
-    }
-
-    /* ── Navigation arrows (prev/next episode) ── */
-    .mini-player-nav {
-      position: absolute; right: 14px; top: 50%;
-      transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 10px; z-index: 12;
-    }
-    .mini-player-nav-btn {
-      background: rgba(13,14,26,0.6);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: #fff;
-      width: 38px; height: 38px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; cursor: pointer;
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      transition: background 0.15s;
-    }
-    .mini-player-nav-btn:active { background: rgba(76,110,245,0.35); }
-    .mini-player-nav-btn:disabled {
-      opacity: 0.2; pointer-events: none;
     }
 
     /* ══════════════════════════════════════════
@@ -6573,7 +6555,7 @@
         <i class="fas fa-info-circle"></i>
         <span data-i18n="info">Info</span>
       </button>
-      <button class="mini-side-btn" id="miniSaveBtn" onclick="toggleCurrentMiniMyList()" aria-label="Guardar en Mi Lista" aria-pressed="false">
+      <button type="button" class="mini-side-btn" id="miniSaveBtn" onclick="event.stopPropagation(); toggleCurrentMiniMyList()" aria-label="Guardar en Mi Lista" aria-pressed="false">
         <i class="far fa-bookmark"></i>
         <span>Mi lista</span>
       </button>
@@ -6607,16 +6589,6 @@
 
     <!-- Hidden dubbed audio element (synchronized with video) -->
     <audio id="miniDubbedAudio" style="display:none;" preload="none"></audio>
-
-    <!-- Navigation arrows -->
-    <div class="mini-player-nav">
-      <button class="mini-player-nav-btn" id="miniPlayerPrev" onclick="prevMiniEpisode()">
-        <i class="fas fa-chevron-up"></i>
-      </button>
-      <button class="mini-player-nav-btn" id="miniPlayerNext" onclick="nextMiniEpisode()">
-        <i class="fas fa-chevron-down"></i>
-      </button>
-    </div>
 
     <!-- Bottom info -->
     <div class="mini-player-bottom">
@@ -11455,6 +11427,34 @@
     let _miniPlayerEpIdx = 0;
     let _miniProgressInterval = null;
     let _miniEpsSheetOpen = false;
+    let _miniSwipeStartX = 0;
+    let _miniSwipeStartY = 0;
+    let _miniSwipeIgnore = false;
+
+    function setupMiniSwipeGestures() {
+      const player = document.getElementById('miniPlayer');
+      if (!player || player.dataset.swipeReady === 'true') return;
+      player.dataset.swipeReady = 'true';
+      player.addEventListener('pointerdown', event => {
+        const interactive = event.target.closest('button, input, select, textarea, .mini-info-sheet, .mini-eps-sheet, .mini-tracks-modal, .mini-next-overlay');
+        _miniSwipeIgnore = Boolean(interactive);
+        if (_miniSwipeIgnore) return;
+        _miniSwipeStartX = event.clientX;
+        _miniSwipeStartY = event.clientY;
+      }, { passive: true });
+      player.addEventListener('pointerup', event => {
+        if (_miniSwipeIgnore || !_miniPlayerMini) {
+          _miniSwipeIgnore = false;
+          return;
+        }
+        const deltaX = event.clientX - _miniSwipeStartX;
+        const deltaY = event.clientY - _miniSwipeStartY;
+        if (Math.abs(deltaY) < 64 || Math.abs(deltaY) < Math.abs(deltaX) * 1.25) return;
+        if (deltaY < 0) nextMiniEpisode();
+        else prevMiniEpisode();
+      }, { passive: true });
+      player.addEventListener('pointercancel', () => { _miniSwipeIgnore = false; }, { passive: true });
+    }
 
     function showMiniPlayer(miniId, epIdx) {
       const mini = miniDatabase[miniId] || seriesDatabase[miniId];
@@ -11466,6 +11466,7 @@
 
       const player = document.getElementById('miniPlayer');
       if (!player) return;
+      setupMiniSwipeGestures();
       player.classList.add('active');
       hideBottomNav();
 
@@ -11585,11 +11586,6 @@
           }, 1000);
         }
       };
-
-      const prevBtn = document.getElementById('miniPlayerPrev');
-      const nextBtn = document.getElementById('miniPlayerNext');
-      if (prevBtn) prevBtn.disabled = (idx === 0);
-      if (nextBtn) nextBtn.disabled = (idx >= eps.length - 1);
 
       document.querySelectorAll('.mini-ep-item').forEach((el, i) => el.classList.toggle('active', i === idx));
 
