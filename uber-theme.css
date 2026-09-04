@@ -2,7 +2,7 @@
 
 /*
   Atenis Streaming — ElevenLabs-inspired workspace theme
-  Charcoal surfaces, warm coral accent, clean typography.
+  Charcoal surfaces, monochrome controls, clean typography.
 */
 :root {
   --uber-black: #0d0d0d;
@@ -15,8 +15,8 @@
   --uber-text: #f1f1ef;
   --uber-muted: #a3a3a0;
   --uber-subtle: #666662;
-  --uber-green: #ff633d;
-  --uber-green-hover: #ff7b5a;
+  --uber-green: #f5f5f5;
+  --uber-green-hover: #ffffff;
   --uber-danger: #e11900;
   --uber-radius: 9px;
   --uber-radius-lg: 14px;
@@ -1262,18 +1262,18 @@ body.settings-open {
    azul noche, coral para acciones y ámbar para créditos.
    ═══════════════════════════════════════════════════════════════════════ */
 :root {
-  --atenis-ink: #080b14;
-  --atenis-night: #0c1120;
-  --atenis-panel: #121a2c;
-  --atenis-panel-2: #18243a;
-  --atenis-line: rgba(193, 207, 242, .13);
-  --atenis-copy: #f4efe8;
-  --atenis-dim: #9da9bf;
-  --atenis-subtle: #66738e;
-  --atenis-coral: #ff765f;
-  --atenis-amber: #f4c86b;
-  --atenis-periwinkle: #a9b6ff;
-  --uber-font: "DM Sans", "Avenir Next", "Trebuchet MS", sans-serif;
+  --atenis-ink: #0d0d0d;
+  --atenis-night: #121212;
+  --atenis-panel: #151515;
+  --atenis-panel-2: #1b1b1b;
+  --atenis-line: rgba(255, 255, 255, .11);
+  --atenis-copy: #f5f5f5;
+  --atenis-dim: #a3a3a0;
+  --atenis-subtle: #666662;
+  --atenis-coral: #f5f5f5;
+  --atenis-amber: #cfcfcb;
+  --atenis-periwinkle: #d4d4d0;
+  --uber-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --uber-display: "Space Grotesk", "DM Sans", sans-serif;
 }
 
@@ -2870,11 +2870,11 @@ button:focus-visible,
 
 /* ─────────────────────────────────────────────────────────────
    Atenis visual refresh — inspired by ElevenLabs workspace UI
-   Charcoal canvas, quiet borders, warm coral accent, compact controls.
+   Charcoal canvas, quiet borders, monochrome controls, compact workspace.
    ───────────────────────────────────────────────────────────── */
 :root {
-  --eleven-coral: #ff633d;
-  --eleven-coral-soft: rgba(255, 99, 61, 0.14);
+  --eleven-coral: #f5f5f5;
+  --eleven-coral-soft: rgba(255, 255, 255, 0.10);
   --eleven-canvas: #0d0d0d;
   --eleven-panel: #151515;
   --eleven-panel-raised: #1b1b1b;
@@ -3125,4 +3125,194 @@ textarea:focus,
   .mini-carousel-item {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18) !important;
   }
+}
+
+
+/* Public pages: monochrome ElevenLabs-style treatment */
+body:has(.auth-root),
+body:has(.page-layout),
+body:has(.plans-section),
+body:has(.subscription-section) {
+  background: #0d0d0d !important;
+  color: #f5f5f5 !important;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+/* Auth / sign-in */
+.auth-bg {
+  background: radial-gradient(ellipse 70% 55% at 50% -14%, rgba(255,255,255,0.07), transparent 62%), #0d0d0d !important;
+}
+.auth-bg-grid {
+  background-image: linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px) !important;
+}
+.auth-logo {
+  color: #f5f5f5 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.055em !important;
+}
+.auth-logo-icon {
+  background: #f5f5f5 !important;
+  box-shadow: none !important;
+  border-radius: 10px !important;
+}
+.auth-logo-icon svg {
+  fill: #0d0d0d !important;
+}
+.auth-card {
+  max-width: 420px !important;
+}
+.auth-tabs {
+  background: #151515 !important;
+  border-color: rgba(255,255,255,0.11) !important;
+  border-radius: 10px !important;
+}
+.auth-tab {
+  border-radius: 7px !important;
+  color: #a3a3a0 !important;
+}
+.auth-tab.active {
+  background: #f5f5f5 !important;
+  color: #0d0d0d !important;
+  box-shadow: none !important;
+}
+.auth-title {
+  font-weight: 600 !important;
+  letter-spacing: -0.045em !important;
+}
+.form-label {
+  color: #a3a3a0 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+.form-input {
+  background: #151515 !important;
+  border-color: rgba(255,255,255,0.12) !important;
+  border-radius: 9px !important;
+}
+.form-input:focus {
+  border-color: #f5f5f5 !important;
+  background: #191919 !important;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.09) !important;
+}
+.auth-btn {
+  background: #f5f5f5 !important;
+  color: #0d0d0d !important;
+  border-radius: 9px !important;
+  box-shadow: none !important;
+}
+.auth-btn:hover {
+  background: #ffffff !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.28) !important;
+}
+.auth-link,
+.auth-switch button {
+  color: #f5f5f5 !important;
+}
+.auth-link:hover,
+.auth-switch button:hover {
+  color: #cfcfcb !important;
+}
+.auth-switch,
+.auth-sub {
+  color: #a3a3a0 !important;
+}
+
+/* Welcome page */
+body:has(.page-layout) .header,
+body:has(.plans-section) .header {
+  background: rgba(13,13,13,0.86) !important;
+  border-bottom-color: rgba(255,255,255,0.10) !important;
+}
+body:has(.page-layout) .hero-eyebrow,
+body:has(.plans-section) .hero-tag {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  color: #f5f5f5 !important;
+}
+body:has(.page-layout) .hero-title span,
+body:has(.page-layout) .feature-row-icon,
+body:has(.plans-section) .hero-tag,
+body:has(.plans-section) .popular-badge,
+body:has(.plans-section) .plan-features li .check,
+body:has(.plans-section) .offer-icon,
+body:has(.plans-section) .offer-arrow,
+body:has(.plans-section) .feature-icon {
+  color: #f5f5f5 !important;
+}
+body:has(.page-layout) .btn-primary,
+body:has(.plans-section) .header-btn.solid,
+body:has(.plans-section) .plan-btn.primary,
+body:has(.plans-section) .cta-btn-main {
+  background: #f5f5f5 !important;
+  color: #0d0d0d !important;
+  border-color: #f5f5f5 !important;
+}
+body:has(.page-layout) .btn-primary:hover,
+body:has(.plans-section) .header-btn.solid:hover,
+body:has(.plans-section) .plan-btn.primary:hover,
+body:has(.plans-section) .cta-btn-main:hover {
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+}
+body:has(.page-layout) .btn-outline,
+body:has(.plans-section) .header-btn.outline,
+body:has(.plans-section) .plan-btn.ghost,
+body:has(.plans-section) .cta-btn-secondary {
+  background: #151515 !important;
+  color: #f5f5f5 !important;
+  border-color: rgba(255,255,255,0.14) !important;
+}
+body:has(.page-layout) .right-side,
+body:has(.plans-section) .plan-card,
+body:has(.plans-section) .feature-block {
+  background: #151515 !important;
+}
+body:has(.plans-section) .plans-grid,
+body:has(.plans-section) .features-grid {
+  background: rgba(255,255,255,0.10) !important;
+  border-color: rgba(255,255,255,0.10) !important;
+}
+body:has(.plans-section) .offer-banner {
+  background: #151515 !important;
+  border-color: rgba(255,255,255,0.16) !important;
+}
+body:has(.plans-section) .popular-badge {
+  background: #f5f5f5 !important;
+  color: #0d0d0d !important;
+}
+
+@media (max-width: 700px) {
+  body:has(.page-layout) .right-side {
+    background: #151515 !important;
+    border-top: 1px solid rgba(255,255,255,0.10) !important;
+  }
+}
+
+
+body:has(.auth-root) {
+  --bg: #0d0d0d;
+  --surface: #151515;
+  --surface-el: #1b1b1b;
+  --border: rgba(255,255,255,0.11);
+  --border-str: rgba(255,255,255,0.18);
+  --text: #f5f5f5;
+  --muted: #a3a3a0;
+  --subtle: #666662;
+  --accent: #f5f5f5;
+  --accent-hov: #ffffff;
+  --accent-glow: rgba(255,255,255,0.10);
+}
+
+body:has(.page-layout) .badge-top,
+body:has(.page-layout) .feature-row-icon,
+body:has(.page-layout) .hero-eyebrow,
+body:has(.plans-section) .offer-icon,
+body:has(.plans-section) .feature-icon {
+  background: #1b1b1b !important;
+  border-color: rgba(255,255,255,0.14) !important;
+}
+
+body:has(.page-layout) .badge-top {
+  color: #0d0d0d !important;
+  background: #f5f5f5 !important;
 }
