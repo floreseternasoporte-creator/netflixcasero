@@ -1840,16 +1840,17 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: #0d0e1a !important;
-      border-top: 1px solid #1c1e2e;
+      background: rgba(16, 18, 34, 0.68) !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
       display: flex;
       justify-content: space-around;
       align-items: stretch;
       padding: 8px 0;
       padding-bottom: max(8px, env(safe-area-inset-bottom));
       z-index: 3000;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
     }
 
     .bottom-nav button {
@@ -1887,6 +1888,16 @@
       font-size: 22px;
       display: block;
       transition: color 0.15s;
+    }
+
+    .bottom-nav button:active {
+      transform: scale(0.94);
+    }
+
+    @supports not ((backdrop-filter: blur(1px))) {
+      .bottom-nav {
+        background: rgba(13, 14, 26, 0.96) !important;
+      }
     }
 
 
@@ -4377,6 +4388,10 @@
       font-size: 24px;
       filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
     }
+    .mini-side-btn.is-saved i,
+    .mini-side-btn.is-saved span {
+      color: #ffd166;
+    }
 
     /* ── Subtitle CC menu ── */
     .mini-sub-menu {
@@ -6557,6 +6572,10 @@
       <button class="mini-side-btn" onclick="toggleMiniInfoSheet()">
         <i class="fas fa-info-circle"></i>
         <span data-i18n="info">Info</span>
+      </button>
+      <button class="mini-side-btn" id="miniSaveBtn" onclick="toggleCurrentMiniMyList()" aria-label="Guardar en Mi Lista" aria-pressed="false">
+        <i class="far fa-bookmark"></i>
+        <span>Mi lista</span>
       </button>
       <button class="mini-side-btn" id="miniAudioSubBtn" onclick="openMiniTracksModal()" style="display:none;">
         <i class="fas fa-language"></i>
@@ -9114,6 +9133,32 @@
       }
       return false;
     }
+    function isInMyList(seriesId) {
+      const myList = JSON.parse(localStorage.getItem('atenis_my_list') || '[]');
+      return myList.some(item => item.id === seriesId);
+    }
+    function updateMiniSaveButton() {
+      const button = document.getElementById('miniSaveBtn');
+      if (!button || !_miniPlayerMini) return;
+      const saved = isInMyList(_miniPlayerMini.id);
+      button.classList.toggle('is-saved', saved);
+      button.setAttribute('aria-pressed', saved ? 'true' : 'false');
+      button.setAttribute('aria-label', saved ? 'Quitar de Mi Lista' : 'Guardar en Mi Lista');
+      button.innerHTML = `<i class="${saved ? 'fas' : 'far'} fa-bookmark"></i><span>${saved ? 'Guardado' : 'Mi lista'}</span>`;
+    }
+    function toggleCurrentMiniMyList() {
+      if (!_miniPlayerMini) return;
+      const mini = _miniPlayerMini;
+      if (!seriesDatabase[mini.id]) seriesDatabase[mini.id] = mini;
+      if (isInMyList(mini.id)) {
+        removeFromMyList(mini.id);
+      } else {
+        addSeriesToMyList(mini.id);
+        refreshMyListViews();
+        showSettingsMessage('Agregado a Mi Lista');
+      }
+      updateMiniSaveButton();
+    }
 
     function notifyUpcomingRelease(seriesId, button) {
       const added = addSeriesToMyList(seriesId);
@@ -11434,6 +11479,7 @@
 
       document.getElementById('miniPlayerTitle').textContent = getLocalizedMiniTitle(mini);
       document.getElementById('miniPlayerGenreTag').textContent = mini.genre || '';
+      updateMiniSaveButton();
 
       const eps = mini.episodes || [];
       if (eps.length > 1) {
