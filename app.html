@@ -6505,11 +6505,10 @@
   <!-- Reward ad player -->
   <div class="reward-ad-modal" id="rewardAdModal" aria-hidden="true">
     <div class="reward-ad-backdrop"></div>
-    <div class="reward-ad-card" role="dialog" aria-modal="true" aria-labelledby="rewardAdTitle">
+    <div class="reward-ad-card" role="dialog" aria-modal="true" aria-label="AD">
       <div class="reward-ad-header">
         <div>
           <span class="reward-ad-kicker">AD</span>
-          <h2 id="rewardAdTitle">Anuncio</h2>
         </div>
         <button type="button" class="reward-ad-close" id="rewardAdCloseBtn" onclick="closeRewardAd()" aria-label="Cerrar anuncio" hidden>
           <i class="fas fa-times"></i>
@@ -12301,9 +12300,7 @@
       video.onended = finishRewardAd;
       video.onplay = updateRewardAdProgress;
       video.ontimeupdate = updateRewardAdProgress;
-      const title = document.getElementById('rewardAdTitle');
       const closeButton = document.getElementById('rewardAdCloseBtn');
-      if (title) title.textContent = _rewardAdCurrent.name || 'Anuncio';
       if (closeButton) {
         closeButton.hidden = true;
         closeButton.disabled = true;
