@@ -4287,6 +4287,114 @@
       font-size: 12px; color: rgba(255,255,255,0.55);
       margin-bottom: 18px; font-weight: 500;
     }
+    .mini-ep-title-row { display: flex; gap: 8px; align-items: center; }
+    .mini-ep-title-row .mini-ep-title-input { flex: 1; }
+    .mini-ep-season-label {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: #aaa; white-space: nowrap; flex-shrink: 0;
+    }
+    .mini-ep-season-input {
+      width: 52px; background: #1a1a1a; border: 1px solid #333; color: #fff;
+      border-radius: 8px; padding: 8px 6px; font-size: 13px; text-align: center;
+    }
+    /* ── Vista de Detalle (Películas y Series) ─────────────────────────── */
+    .detail-view {
+      position: fixed; inset: 0; background: #0b0b10; z-index: 4500;
+      display: none; flex-direction: column; overflow-y: auto;
+      -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+    }
+    .detail-view.active { display: flex; }
+    .detail-hero {
+      position: relative; min-height: 52vh; flex-shrink: 0;
+      background-size: cover; background-position: center top;
+      display: flex; align-items: flex-end;
+    }
+    .detail-hero-gradient {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, #0b0b10 4%, rgba(11,11,16,0.55) 45%, rgba(11,11,16,0.15) 75%);
+    }
+    .detail-back-btn {
+      position: absolute; top: calc(14px + env(safe-area-inset-top)); left: 14px; z-index: 2;
+      width: 40px; height: 40px; border-radius: 50%; border: none;
+      background: rgba(0,0,0,0.55); color: #fff; font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .detail-hero-content { position: relative; z-index: 1; padding: 0 20px 18px; width: 100%; }
+    .detail-type-badge {
+      display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #fff; background: #E50914;
+      padding: 4px 10px; border-radius: 4px; margin-bottom: 10px;
+    }
+    .detail-title {
+      font-size: 30px; font-weight: 800; line-height: 1.15; margin: 0 0 10px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+    }
+    .detail-meta {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+      font-size: 13px; color: #b3b3b3;
+    }
+    .detail-meta .match { color: #46d369; font-weight: 700; }
+    .detail-meta .rating-badge {
+      border: 1px solid #6b6b6b; padding: 1px 7px; border-radius: 3px;
+      font-size: 11px; color: #d2d2d2;
+    }
+    .detail-body { padding: 6px 20px 40px; }
+    .detail-actions { display: flex; gap: 10px; margin: 4px 0 16px; }
+    .detail-play-btn {
+      flex: 1; border: none; border-radius: 8px; padding: 13px;
+      background: #fff; color: #000; font-size: 16px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      cursor: pointer;
+    }
+    .detail-play-btn:active { transform: scale(0.98); }
+    .detail-list-btn {
+      border-radius: 8px; padding: 13px 18px; cursor: pointer;
+      background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+      font-size: 14px; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .detail-list-btn.in-list { color: #46d369; border-color: rgba(70,211,105,0.5); }
+    .detail-synopsis { font-size: 14px; line-height: 1.55; color: #d2d2d2; margin: 0 0 22px; }
+    .detail-seasons-label {
+      font-size: 17px; font-weight: 700; margin-bottom: 12px;
+    }
+    .detail-season-tabs { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; }
+    .detail-season-tab {
+      flex-shrink: 0; border: 1px solid #333; background: #16161d; color: #ddd;
+      border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .detail-season-tab.active { background: #E50914; border-color: #E50914; color: #fff; }
+    .detail-episode-list { display: flex; flex-direction: column; gap: 10px; }
+    .detail-episode {
+      display: flex; gap: 12px; align-items: center; width: 100%;
+      background: #141419; border: 1px solid #22222b; border-radius: 12px;
+      padding: 10px; cursor: pointer; text-align: left; color: #fff;
+    }
+    .detail-episode:active { transform: scale(0.99); }
+    .detail-ep-thumb {
+      position: relative; width: 112px; height: 64px; border-radius: 8px; flex-shrink: 0;
+      background: #000 center/cover; overflow: hidden;
+    }
+    .detail-ep-thumb .ep-play {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.35); font-size: 20px; color: #fff;
+    }
+    .detail-ep-thumb .ep-lock {
+      position: absolute; top: 4px; right: 4px; font-size: 11px; color: #ffd54a;
+      background: rgba(0,0,0,0.6); border-radius: 4px; padding: 2px 5px;
+    }
+    .detail-ep-info { flex: 1; min-width: 0; }
+    .detail-ep-num { font-size: 11px; color: #8a8a93; font-weight: 700; letter-spacing: 0.06em; }
+    .detail-ep-title { font-size: 14px; font-weight: 700; margin: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .detail-ep-desc { font-size: 12px; color: #9a9aa3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .detail-ep-progress { height: 3px; background: #2a2a33; border-radius: 2px; margin-top: 6px; }
+    .detail-ep-progress > div { height: 100%; background: #E50914; border-radius: 2px; }
+
+    /* ── Modo cine: películas en el reproductor ─────────────────────────── */
+    #miniPlayer.cinema-mode .mini-side-btn.eps-btn,
+    #miniPlayer.cinema-mode .mini-side-btn.info-btn,
+    #miniPlayer.cinema-mode #miniPlayerEpLabel,
+    #miniPlayer.cinema-mode .mini-player-eps-btn { display: none !important; }
     .mini-player-controls-row {
       display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
     }
@@ -5590,6 +5698,24 @@
         </div>
       </div>
 
+      <div class="section" id="moviesSection">
+        <div class="section-header">
+          <h2 class="section-title" data-i18n="movies_section">Películas</h2>
+        </div>
+        <div class="carousel-container">
+          <div class="carousel" id="moviesCarousel"></div>
+        </div>
+      </div>
+
+      <div class="section" id="tvSection">
+        <div class="section-header">
+          <h2 class="section-title" data-i18n="tv_section">Series</h2>
+        </div>
+        <div class="carousel-container">
+          <div class="carousel" id="tvCarousel"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -6437,6 +6563,23 @@
           </div>
         </div>
 
+        <!-- Tipo de contenido / Duración -->
+        <div class="mini-form-row">
+          <div class="mini-form-group">
+            <label data-i18n="type_label">Tipo de contenido</label>
+            <select id="miniTypeInput" onchange="onMiniTypeChange()">
+              <option value="mini" data-i18n="type_mini">Miniserie</option>
+              <option value="tv" data-i18n="type_tv">Serie</option>
+              <option value="movie" data-i18n="type_movie">Película</option>
+              <option value="shortfilm" data-i18n="type_shortfilm">Cortometraje</option>
+            </select>
+          </div>
+          <div class="mini-form-group" id="miniDurationGroup" style="display:none;">
+            <label data-i18n="duration_label">Duración</label>
+            <input type="text" id="miniDurationInput" data-i18n-ph="duration_ph" placeholder="Ej. 1h 45min" maxlength="12">
+          </div>
+        </div>
+
         <!-- Descriptions section -->
         <div class="mini-edit-section-label" data-i18n="descriptions_section">Descripción</div>
         <div class="mini-form-group">
@@ -6542,11 +6685,11 @@
 
     <!-- Side buttons -->
     <div class="mini-player-side">
-      <button class="mini-side-btn" onclick="toggleMiniEpsSheet()">
+      <button class="mini-side-btn eps-btn" onclick="toggleMiniEpsSheet()">
         <i class="fas fa-list"></i>
         <span data-i18n="episodes">Episodios</span>
       </button>
-      <button class="mini-side-btn" onclick="toggleMiniInfoSheet()">
+      <button class="mini-side-btn info-btn" onclick="toggleMiniInfoSheet()">
         <i class="fas fa-info-circle"></i>
         <span data-i18n="info">Info</span>
       </button>
@@ -6678,6 +6821,39 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════════════════
+       Vista de Detalle — estilo Netflix para Películas y Series
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="detailView" class="detail-view" aria-hidden="true">
+    <div class="detail-hero" id="detailHero">
+      <button class="detail-back-btn" onclick="closeDetailView()" aria-label="Volver">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <div class="detail-hero-gradient"></div>
+      <div class="detail-hero-content">
+        <div class="detail-type-badge" id="detailTypeBadge">Película</div>
+        <h1 class="detail-title" id="detailTitle">Título</h1>
+        <div class="detail-meta" id="detailMeta"></div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-actions">
+        <button class="detail-play-btn" id="detailPlayBtn" onclick="playDetailTitle()">
+          <i class="fas fa-play"></i><span id="detailPlayLabel">Reproducir</span>
+        </button>
+        <button class="detail-list-btn" id="detailListBtn" onclick="toggleDetailMyList()" aria-label="Mi Lista">
+          <i class="fas fa-plus"></i><span data-i18n="detail_mylist">Mi Lista</span>
+        </button>
+      </div>
+      <p class="detail-synopsis" id="detailSynopsis"></p>
+      <div class="detail-seasons" id="detailSeasons" style="display:none;">
+        <div class="detail-seasons-label" data-i18n="detail_episodes">Episodios</div>
+        <div class="detail-season-tabs" id="detailSeasonTabs"></div>
+        <div class="detail-episode-list" id="detailEpisodeList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
        Mini Edit Modal — Admin only bottom sheet
        ═══════════════════════════════════════════════════════════════════════ -->
   <div id="miniEditModal" class="mini-edit-modal">
@@ -6784,6 +6960,23 @@
         <div class="mini-form-group">
           <label data-i18n="year">Año</label>
           <input type="text" id="meditYear" maxlength="4">
+        </div>
+      </div>
+
+      <!-- Tipo de contenido / Duración -->
+      <div class="mini-form-row">
+        <div class="mini-form-group">
+          <label data-i18n="type_label">Tipo de contenido</label>
+          <select id="meditType" onchange="onMeditTypeChange()">
+            <option value="series" data-i18n="type_mini">Miniserie</option>
+            <option value="tv" data-i18n="type_tv">Serie</option>
+            <option value="movie" data-i18n="type_movie">Película</option>
+            <option value="shortfilm" data-i18n="type_shortfilm">Cortometraje</option>
+          </select>
+        </div>
+        <div class="mini-form-group" id="meditDurationGroup" style="display:none;">
+          <label data-i18n="duration_label">Duración</label>
+          <input type="text" id="meditDuration" data-i18n-ph="duration_ph" placeholder="Ej. 1h 45min" maxlength="12">
         </div>
       </div>
 
@@ -7933,7 +8126,7 @@
         </div>
         <div class="history-item-content">
           <div class="history-item-title">${series.title}</div>
-          <div class="history-item-meta">${series.year} • ${series.type === 'movie' ? 'Película' : 'Serie'}</div>
+          <div class="history-item-meta">${series.year} • ${getContentTypeLabel(series)}</div>
           <div class="history-item-time">
             <i class="fas fa-clock"></i> ${timeAgo} • ${Math.round(progress)}% visto
           </div>
@@ -8824,13 +9017,23 @@
 
     const contentSections = [
       { carouselId: 'animeCarousel', genre: 'Anime' },
-      { carouselId: 'terrorCarousel', genre: 'Terror' }
+      { carouselId: 'terrorCarousel', genre: 'Terror' },
+      { carouselId: 'moviesCarousel', types: ['movie', 'shortfilm'], titleKey: 'movies_section' },
+      { carouselId: 'tvCarousel', types: ['tv'], titleKey: 'tv_section' }
     ];
 
     function getContentTypeLabel(series) {
-      if (series.type === 'shortfilm') return 'Cortometraje';
-      if (series.type === 'movie') return 'Película';
-      return 'Serie';
+      if (series.type === 'shortfilm') return t('content_shortfilm');
+      if (series.type === 'movie') return t('content_movie');
+      if (series.type === 'tv') return t('content_tv');
+      return t('content_mini');
+    }
+
+    function getDetailTypeLabel(series) {
+      if (series.type === 'movie') return t('content_movie');
+      if (series.type === 'tv') return t('content_tv');
+      if (series.type === 'shortfilm') return t('content_shortfilm');
+      return t('content_mini');
     }
 
     function createCatalogEmptyState(message = 'No hay películas disponibles. Pronto agregaremos nuevo contenido.') {
@@ -8892,7 +9095,7 @@
       renderFlavorsGrid({ loading: true });
       contentSections.forEach(sectionConfig => {
         const carousel = document.getElementById(sectionConfig.carouselId);
-        const sectionEl = document.getElementById({ animeCarousel: 'animeSection', terrorCarousel: 'terrorSection' }[sectionConfig.carouselId]);
+        const sectionEl = document.getElementById({ animeCarousel: 'animeSection', terrorCarousel: 'terrorSection', moviesCarousel: 'moviesSection', tvCarousel: 'tvSection' }[sectionConfig.carouselId]);
         if (sectionEl) sectionEl.style.display = '';
         if (carousel) {
           carousel.innerHTML = '';
@@ -9010,7 +9213,7 @@
     }
 
     function renderCatalogSections() {
-      const sectionIds = { animeCarousel: 'animeSection', terrorCarousel: 'terrorSection' };
+      const sectionIds = { animeCarousel: 'animeSection', terrorCarousel: 'terrorSection', moviesCarousel: 'moviesSection', tvCarousel: 'tvSection' };
       contentSections.forEach(sectionConfig => {
         const carousel = document.getElementById(sectionConfig.carouselId);
         if (!carousel) return;
@@ -9209,14 +9412,226 @@
     // Conectar spinner de buffering al elemento de video desde el inicio
     setupBufferingListeners();
 
-    // Abrir la reproducción de una serie desde cualquier sección del catálogo.
+    // Abrir el contenido desde cualquier sección del catálogo.
+    // Películas y series abren la vista de detalle estilo Netflix;
+    // las miniseries van directo al reproductor vertical.
     function showSeriesDetail(seriesId) {
       const series = seriesDatabase[seriesId];
       if (!series) return;
       currentSeries = series;
+      if (series.type === 'movie' || series.type === 'tv') {
+        openDetailView(seriesId);
+        return;
+      }
       hideAllSections();
       setTopBarMode(true);
       showMiniPlayer(seriesId, 0);
+    }
+
+    // ── Vista de Detalle (Películas y Series) ──────────────────────────────
+    let _detailSeriesId = null;
+    let _detailSeasonIdx = 0;
+
+    function getDetailSeasons(series) {
+      if (!series) return [];
+      if (Array.isArray(series.seasons) && series.seasons.length) {
+        return series.seasons.map((s, i) => {
+          const n = s.n || (i + 1);
+          return {
+            n,
+            name: s.name || (t('detail_season') + ' ' + n),
+            episodes: (s.episodes || []).map(ep => ({ ...ep }))
+          };
+        });
+      }
+      const eps = series.episodes || [];
+      const map = {};
+      eps.forEach((ep, flatIdx) => {
+        const s = Math.max(1, parseInt(ep.season, 10) || 1);
+        if (!map[s]) map[s] = [];
+        map[s].push({ ...ep, _flatIdx: flatIdx });
+      });
+      return Object.keys(map).map(Number).sort((a, b) => a - b)
+        .map(n => ({ n, name: t('detail_season') + ' ' + n, episodes: map[n] }));
+    }
+
+    function openDetailView(seriesId) {
+      const series = seriesDatabase[seriesId];
+      if (!series) return;
+      _detailSeriesId = seriesId;
+      _detailSeasonIdx = 0;
+
+      const hero = document.getElementById('detailHero');
+      const poster = String(series.poster || '').replace(/"/g, '');
+      if (hero) hero.style.backgroundImage = poster ? `url("${poster}")` : 'none';
+
+      const badge = document.getElementById('detailTypeBadge');
+      if (badge) badge.textContent = getDetailTypeLabel(series);
+      const titleEl = document.getElementById('detailTitle');
+      if (titleEl) titleEl.textContent = series.spanishTitle || series.title || '';
+
+      const metaParts = [];
+      metaParts.push(`<span class="rating-badge">${series.rating || 'TV-MA'}</span>`);
+      if (series.year) metaParts.push(`<span>${series.year}</span>`);
+      if (series.type === 'movie' && series.duration) metaParts.push(`<span>${series.duration}</span>`);
+      if (series.type === 'tv') {
+        const seasons = getDetailSeasons(series);
+        const totalEps = seasons.reduce((a, s) => a + s.episodes.length, 0);
+        const seasonWord = t('detail_season') + (seasons.length === 1 ? '' : 's');
+        metaParts.push(`<span>${seasons.length} ${seasonWord} · ${totalEps} ${t('detail_episodes').toLowerCase()}</span>`);
+      }
+      if (series.genre) metaParts.push(`<span>${series.genre}</span>`);
+      const metaEl = document.getElementById('detailMeta');
+      if (metaEl) metaEl.innerHTML = metaParts.join('');
+
+      const desc = series.descriptionEs || series.description || '';
+      const synEl = document.getElementById('detailSynopsis');
+      if (synEl) synEl.textContent = desc || t('no_desc');
+
+      updateDetailPlayButton();
+      updateDetailListButton();
+
+      const seasonsWrap = document.getElementById('detailSeasons');
+      if (seasonsWrap) {
+        if (series.type === 'tv') {
+          seasonsWrap.style.display = '';
+          renderDetailSeasons();
+        } else {
+          seasonsWrap.style.display = 'none';
+        }
+      }
+
+      const view = document.getElementById('detailView');
+      if (view) {
+        view.classList.add('active');
+        view.setAttribute('aria-hidden', 'false');
+        view.scrollTop = 0;
+      }
+    }
+
+    function closeDetailView() {
+      const view = document.getElementById('detailView');
+      if (view) {
+        view.classList.remove('active');
+        view.setAttribute('aria-hidden', 'true');
+      }
+      _detailSeriesId = null;
+      showBottomNav();
+    }
+
+    function updateDetailPlayButton() {
+      const label = document.getElementById('detailPlayLabel');
+      if (!label || !_detailSeriesId) return;
+      const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+      const item = history.find(h => h.seriesId === _detailSeriesId);
+      const hasProgress = item && item.progress >= 3 && item.progress <= 94;
+      label.textContent = hasProgress ? t('detail_continue') : t('detail_play');
+    }
+
+    function playDetailTitle() {
+      if (!_detailSeriesId) return;
+      const seriesId = _detailSeriesId;
+      const series = seriesDatabase[seriesId];
+      if (!series) return;
+      const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+      const item = history.find(h => h.seriesId === seriesId);
+      const hasProgress = item && item.progress >= 3 && item.progress <= 94;
+      closeDetailView();
+      if (hasProgress) {
+        resumeSeriesFromHistory(seriesId);
+        return;
+      }
+      if (series.type === 'tv') {
+        const seasons = getDetailSeasons(series);
+        const firstEp = seasons.length && seasons[0].episodes.length ? seasons[0].episodes[0] : null;
+        const flatIdx = firstEp && Number.isInteger(firstEp._flatIdx) ? firstEp._flatIdx : 0;
+        showMiniPlayer(seriesId, flatIdx);
+      } else {
+        showMiniPlayer(seriesId, 0);
+      }
+    }
+
+    function playDetailEpisode(flatIdx) {
+      if (!_detailSeriesId) return;
+      const id = _detailSeriesId;
+      closeDetailView();
+      showMiniPlayer(id, flatIdx);
+    }
+
+    function toggleDetailMyList() {
+      const series = _detailSeriesId && seriesDatabase[_detailSeriesId];
+      if (!series) return;
+      if (isInMyList(series.id)) {
+        removeFromMyList(series.id);
+      } else {
+        addSeriesToMyList(series.id, series);
+        refreshMyListViews();
+      }
+      updateDetailListButton();
+    }
+
+    function updateDetailListButton() {
+      const btn = document.getElementById('detailListBtn');
+      if (!btn || !_detailSeriesId) return;
+      const inList = isInMyList(_detailSeriesId);
+      btn.classList.toggle('in-list', inList);
+      const icon = btn.querySelector('i');
+      if (icon) icon.className = inList ? 'fas fa-check' : 'fas fa-plus';
+      const span = btn.querySelector('span');
+      if (span) span.textContent = inList ? t('detail_inlist') : t('detail_mylist');
+    }
+
+    function renderDetailSeasons() {
+      const series = _detailSeriesId && seriesDatabase[_detailSeriesId];
+      const tabsEl = document.getElementById('detailSeasonTabs');
+      const listEl = document.getElementById('detailEpisodeList');
+      if (!tabsEl || !listEl) return;
+      const seasons = getDetailSeasons(series);
+      tabsEl.innerHTML = '';
+      listEl.innerHTML = '';
+      if (!series || !seasons.length) {
+        listEl.innerHTML = `<div style="color:#777;font-size:13px;">${t('no_episodes')}</div>`;
+        return;
+      }
+      if (_detailSeasonIdx >= seasons.length) _detailSeasonIdx = 0;
+      seasons.forEach((s, i) => {
+        const tab = document.createElement('button');
+        tab.type = 'button';
+        tab.className = 'detail-season-tab' + (i === _detailSeasonIdx ? ' active' : '');
+        tab.textContent = s.name;
+        tab.onclick = () => { _detailSeasonIdx = i; renderDetailSeasons(); };
+        tabsEl.appendChild(tab);
+      });
+      tabsEl.style.display = seasons.length > 1 ? '' : 'none';
+      const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+      const hItem = history.find(h => h.seriesId === _detailSeriesId);
+      seasons[_detailSeasonIdx].episodes.forEach((ep, i) => {
+        const flatIdx = Number.isInteger(ep._flatIdx) ? ep._flatIdx : i;
+        const locked = isMiniEpisodeLocked(series, flatIdx, ep);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'detail-episode';
+        const epNum = i + 1;
+        const epTitle = ep.title || (t('ep_label') + ' ' + epNum);
+        let progHtml = '';
+        if (hItem && (hItem.episodeIdx || 0) === flatIdx && hItem.progress > 0) {
+          progHtml = `<div class="detail-ep-progress"><div style="width:${Math.round(hItem.progress)}%"></div></div>`;
+        }
+        const thumb = String(series.poster || '').replace(/"/g, '');
+        btn.innerHTML =
+          `<div class="detail-ep-thumb" style="background-image:url(&quot;${thumb}&quot;)">` +
+            `<div class="ep-play"><i class="fas fa-play"></i></div>` +
+            (locked ? `<div class="ep-lock"><i class="fas fa-lock"></i></div>` : '') +
+          `</div>` +
+          `<div class="detail-ep-info">` +
+            `<div class="detail-ep-num">${t('ep_label').toUpperCase()} ${epNum}</div>` +
+            `<div class="detail-ep-title"></div>` +
+            progHtml +
+          `</div>`;
+        btn.querySelector('.detail-ep-title').textContent = epTitle;
+        btn.onclick = () => playDetailEpisode(flatIdx);
+        listEl.appendChild(btn);
+      });
     }
 
     function updateNetflixPlayButton() { }
@@ -10328,6 +10743,15 @@
         edit_title:'Editar', posters_section:'Portadas', change_poster:'Cambiar portada',
         new_mini:'Nueva Serie', publish:'Publicar',
         sub_title:'Subtítulos', sub_off:'Desactivado',
+        content_movie:'Película', content_tv:'Serie', content_mini:'MINI',
+        content_shortfilm:'Cortometraje',
+        detail_play:'Reproducir', detail_continue:'Continuar',
+        detail_mylist:'Mi Lista', detail_inlist:'En mi lista',
+        detail_season:'Temporada', detail_episodes:'Episodios',
+        type_label:'Tipo de contenido', type_mini:'Miniserie',
+        type_tv:'Serie', type_movie:'Película', type_shortfilm:'Cortometraje',
+        duration_label:'Duración', duration_ph:'Ej. 1h 45min',
+        season_label:'Temp.', movies_section:'Películas', tv_section:'Series',
         lang_and_subs:'Idioma y Subtítulos',
       },
       en: {
@@ -10358,6 +10782,15 @@
         edit_title:'Edit', posters_section:'Posters', change_poster:'Change poster',
         new_mini:'New Series', publish:'Publish',
         sub_title:'Subtitles', sub_off:'Off',
+        content_movie:'Movie', content_tv:'TV Series', content_mini:'MINI',
+        content_shortfilm:'Short Film',
+        detail_play:'Play', detail_continue:'Continue',
+        detail_mylist:'My List', detail_inlist:'In my list',
+        detail_season:'Season', detail_episodes:'Episodes',
+        type_label:'Content type', type_mini:'Miniseries',
+        type_tv:'TV Series', type_movie:'Movie', type_shortfilm:'Short Film',
+        duration_label:'Duration', duration_ph:'E.g. 1h 45min',
+        season_label:'S.', movies_section:'Movies', tv_section:'TV Series',
         lang_and_subs:'Language & Subtitles',
       }
     };
@@ -10375,6 +10808,11 @@
         const key = el.getAttribute('data-i18n');
         const text = t(key);
         if (text) el.textContent = text;
+      });
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        const text = t(key);
+        if (text) el.placeholder = text;
       });
       const langVal = document.getElementById('settingsNavLangVal');
       if (langVal) langVal.textContent = currentLanguage === 'en' ? 'English' : 'Español';
@@ -10600,6 +11038,13 @@
       }
     }
 
+    function onMeditTypeChange() {
+      const typeEl = document.getElementById('meditType');
+      const type = typeEl ? typeEl.value : 'series';
+      const durGroup = document.getElementById('meditDurationGroup');
+      if (durGroup) durGroup.style.display = type === 'movie' ? '' : 'none';
+    }
+
     async function openSeriesEdit(miniId) {
       if (!isSeriesAdmin()) return;
       _miniEditId = miniId;
@@ -10615,6 +11060,11 @@
       document.getElementById('meditTitleEn').value  = m.titleEn || '';
       document.getElementById('meditGenre').value    = m.genre || 'Drama';
       document.getElementById('meditYear').value     = m.year || '2026';
+      const meditType = document.getElementById('meditType');
+      if (meditType) meditType.value = m.type || 'series';
+      const meditDur = document.getElementById('meditDuration');
+      if (meditDur) meditDur.value = m.duration || '';
+      onMeditTypeChange();
       document.getElementById('meditDescEs').value   = m.descriptionEs || m.description || '';
       document.getElementById('meditDescEn').value   = m.descriptionEn || '';
       document.getElementById('meditRating').value   = m.rating || 'PG-13';
@@ -10725,8 +11175,12 @@
         const selFontEdit = document.querySelector('#miniFontSelectorEdit .mini-font-option.active');
         const titleFont = selFontEdit ? selFontEdit.getAttribute('data-font') : (old.titleFont || 'elegant');
 
+        const editTypeEl = document.getElementById('meditType');
+        const editDurEl = document.getElementById('meditDuration');
         const updates = {
           title:          unifiedTitle || old.title,
+          type:           editTypeEl ? editTypeEl.value : (old.type || 'series'),
+          duration:       editDurEl ? editDurEl.value.trim() : (old.duration || ''),
           titleEs:        titleEs || old.titleEs || old.spanishTitle || '',
           titleEn:        titleEn || old.titleEn || '',
           spanishTitle:   titleEs || old.spanishTitle || '',
@@ -10860,6 +11314,16 @@
 
     // ── Upload modal ─────────────────────────────────────────────────────────
 
+    function onMiniTypeChange() {
+      const typeEl = document.getElementById('miniTypeInput');
+      const type = typeEl ? typeEl.value : 'mini';
+      const durGroup = document.getElementById('miniDurationGroup');
+      if (durGroup) durGroup.style.display = type === 'movie' ? '' : 'none';
+      document.querySelectorAll('.mini-ep-season-label').forEach(el => {
+        el.style.display = type === 'tv' ? '' : 'none';
+      });
+    }
+
     function openSeriesUpload() {
       miniUploadData = { coverUrl: null, coverUrlOrig: null, coverUrlEs: null, coverUrlEn: null, episodes: [] };
       miniEpisodeCounter = 0;
@@ -10892,6 +11356,11 @@
       if (modalH2) modalH2.textContent = t('new_mini');
       const pubBtn = document.getElementById('miniPublishHeaderBtn');
       if (pubBtn) pubBtn.textContent = t('publish');
+      const typeEl = document.getElementById('miniTypeInput');
+      if (typeEl) typeEl.value = 'mini';
+      const durEl = document.getElementById('miniDurationInput');
+      if (durEl) durEl.value = '';
+      onMiniTypeChange();
       goToMiniStep(1);
       applyMiniTranslations();
     }
@@ -11002,8 +11471,14 @@
             <i class="fas fa-trash"></i>
           </button>
         </div>
-        <input class="mini-ep-title-input" id="miniEpTitle${idx}" type="text"
-               placeholder="${t('ep_label')} ${idx}">
+        <div class="mini-ep-title-row">
+          <input class="mini-ep-title-input" id="miniEpTitle${idx}" type="text"
+                 placeholder="${t('ep_label')} ${idx}">
+          <label class="mini-ep-season-label">${t('season_label')}
+            <input class="mini-ep-season-input" id="miniEpSeason${idx}" type="number"
+                   min="1" max="99" value="1">
+          </label>
+        </div>
         <label class="mini-video-upload-area" id="miniEpVideoArea${idx}" for="miniEpVideoFile${idx}">
           <i class="fas fa-video"></i> Toca para subir video
         </label>
@@ -11021,6 +11496,10 @@
 
       // Register episode slot
       miniUploadData.episodes.push({ id: idx, title: '', videoUrl: null, thumbnail: null, subtitles: {} });
+      // El campo de temporada solo aplica a series
+      const curType = (document.getElementById('miniTypeInput') || {}).value || 'mini';
+      const seasonLabel = row.querySelector('.mini-ep-season-label');
+      if (seasonLabel) seasonLabel.style.display = curType === 'tv' ? '' : 'none';
     }
 
     function addManualSubtitleCue(idx, lang, cue = {}) {
@@ -11224,18 +11703,35 @@
         const posterEn   = miniUploadData.coverUrlEn   || posterOrig;
 
         // Build episodes array from DOM + upload data
+        const contentType = (document.getElementById('miniTypeInput') || {}).value || 'mini';
+        const durationEl = document.getElementById('miniDurationInput');
+        const contentDuration = durationEl ? durationEl.value.trim() : '';
         const episodes = miniUploadData.episodes
           .filter(e => e.videoUrl)
           .map((e, i) => {
             const titleEl = document.getElementById('miniEpTitle' + e.id);
+            const seasonEl = document.getElementById('miniEpSeason' + e.id);
+            const seasonNum = Math.max(1, parseInt(seasonEl ? seasonEl.value : '1', 10) || 1);
             return {
               id:        i + 1,
               title:     (titleEl ? titleEl.value.trim() : '') || `${t('ep_label')} ${i + 1}`,
               videoUrl:  e.videoUrl,
               thumbnail: posterOrig,
+              season:    seasonNum,
               subtitles: Object.assign({}, e.subtitles || {}, collectManualSubtitles(e.id))
             };
           });
+        // Agrupar por temporada (para la vista de detalle estilo Netflix)
+        const seasonsMap = {};
+        episodes.forEach((ep, flatIdx) => {
+          const s = ep.season || 1;
+          if (!seasonsMap[s]) seasonsMap[s] = [];
+          seasonsMap[s].push({ ...ep, _flatIdx: flatIdx });
+        });
+        const seasons = Object.keys(seasonsMap)
+          .map(Number)
+          .sort((a, b) => a - b)
+          .map(n => ({ n, name: `${t('detail_season')} ${n}`, episodes: seasonsMap[n] }));
 
         const selFontNew = document.querySelector('#miniFontSelectorNew .mini-font-option.active');
         const titleFont = selFontNew ? selFontNew.getAttribute('data-font') : 'elegant';
@@ -11247,7 +11743,8 @@
           titleEn,
           spanishTitle:   titleEs,
           searchAliases:  [title, titleEs, titleEn].filter(Boolean),
-          type:           'series',
+          type:           contentType === 'mini' ? 'series' : contentType,
+          duration:       contentDuration,
           year,
           genre,
           originalLang:   document.getElementById('miniOriginalLangInput').value.trim(),
@@ -11257,6 +11754,7 @@
           posterOriginal: posterOrig,
           posterEs,
           posterEn,
+          seasons:        seasons,
           trailer:        '',
           description:    descEs,
           descriptionEs:  descEs,
@@ -11343,6 +11841,8 @@
       if (!player) return;
       setupMiniSwipeGestures();
       player.classList.add('active');
+      // Modo cine para películas: oculta la UI de episodios propia de miniseries
+      player.classList.toggle('cinema-mode', mini.type === 'movie');
       hideBottomNav();
 
       // Reset all sheets
