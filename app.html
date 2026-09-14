@@ -4300,6 +4300,18 @@
     }
     .mini-player-play-btn:active { transform: scale(0.93); }
     .mini-player-play-btn i { margin-left: 2px; }
+    .mini-seek-btn {
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+      color: #fff; width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; cursor: pointer; flex-shrink: 0; position: relative;
+      transition: transform 0.15s;
+    }
+    .mini-seek-btn:active { transform: scale(0.93); }
+    .mini-seek-btn .seek-label {
+      position: absolute; font-size: 8px; font-weight: 800; line-height: 1;
+      top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+    }
     .mini-player-eps-btn {
       background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.18);
@@ -6578,8 +6590,14 @@
       <div class="mini-player-title" id="miniPlayerTitle">Título</div>
       <div class="mini-player-genre-tag" id="miniPlayerGenreTag">Género</div>
       <div class="mini-player-controls-row">
+        <button class="mini-seek-btn" onclick="seekMiniRelative(-10)" aria-label="Retroceder 10 segundos">
+          <i class="fas fa-rotate-left"></i><span class="seek-label">10</span>
+        </button>
         <button class="mini-player-play-btn" id="miniPlayerPlayBtn" onclick="toggleMiniPlay()">
           <i class="fas fa-pause"></i>
+        </button>
+        <button class="mini-seek-btn" onclick="seekMiniRelative(10)" aria-label="Avanzar 10 segundos">
+          <i class="fas fa-rotate-right"></i><span class="seek-label">10</span>
         </button>
         <button class="mini-player-eps-btn" onclick="toggleMiniEpsSheet()">
           <i class="fas fa-th-list"></i>
@@ -7949,7 +7967,7 @@
     }
 
     // Guardar en historial cuando se reproduce
-    function saveToHistory(seriesId, progress, currentTimeSec, durationSec, type) {
+    function saveToHistory(seriesId, progress, currentTimeSec, durationSec, type, episodeIdx) {
       const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
       
       // Buscar si ya existe
@@ -7961,6 +7979,7 @@
         progress: progress,
         currentTimeSec: currentTimeSec || 0,
         durationSec: durationSec || 0,
+        episodeIdx: Number.isInteger(episodeIdx) ? episodeIdx : 0,
         watchedAt: new Date().toISOString()
       };
       
@@ -7981,6 +8000,28 @@
     }
 
     // ===== CONTINUAR VIENDO =====
+    // Reanudar desde "Continuar Viendo": abre el episodio y minuto exactos donde quedó el usuario
+    function resumeSeriesFromHistory(seriesId) {
+      const series = seriesDatabase[seriesId];
+      if (!series) return;
+      const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+      const item = history.find(h => h.seriesId === seriesId);
+      const eps = series.episodes || [];
+      let epIdx = 0;
+      let startTime = 0;
+      if (item) {
+        const savedEp = Number.isInteger(item.episodeIdx) ? item.episodeIdx : 0;
+        epIdx = eps.length ? Math.max(0, Math.min(savedEp, eps.length - 1)) : 0;
+        const t = Number(item.currentTimeSec) || 0;
+        const d = Number(item.durationSec) || 0;
+        // Ignorar posiciones casi al inicio o casi al final del episodio
+        if (t > 5 && (!d || t < d - 10)) startTime = t;
+      }
+      hideAllSections();
+      setTopBarMode(true);
+      showMiniPlayer(seriesId, epIdx, startTime);
+    }
+
     function buildContinueWatchingSection() {
       const section = document.getElementById('continueWatchingSection');
       const carousel = document.getElementById('continueCarousel');
@@ -8016,7 +8057,7 @@
 
         const card = document.createElement('div');
         card.className = 'continue-item';
-        card.onclick = () => showSeriesDetail(series.id);
+        card.onclick = () => resumeSeriesFromHistory(series.id);
         const contTitle = series.spanishTitle || series.title;
         const isMiniItem = item.type === 'series';
         card.innerHTML = `
@@ -11255,6 +11296,8 @@
     // ════════════════════════════════════════════════════════════════════════
 
     let _miniPlayerMini = null;
+    let _miniPlayerResumeTime = 0;
+    let _miniResumeSeekHandler = null;
     let _miniPlayerEpIdx = 0;
     let _miniProgressInterval = null;
     let _miniEpsSheetOpen = false;
@@ -11287,12 +11330,13 @@
       player.addEventListener('pointercancel', () => { _miniSwipeIgnore = false; }, { passive: true });
     }
 
-    function showMiniPlayer(miniId, epIdx) {
+    function showMiniPlayer(miniId, epIdx, startTime) {
       const mini = seriesDatabase[miniId];
       if (!mini) return;
 
       _miniPlayerMini = mini;
       _miniPlayerEpIdx = epIdx || 0;
+      _miniPlayerResumeTime = Number(startTime) > 5 ? Number(startTime) : 0;
       getCoins();
 
       const player = document.getElementById('miniPlayer');
@@ -11320,7 +11364,8 @@
         document.getElementById('miniPlayerEpsBtnLabel').textContent = t('see_info');
       }
 
-      _playMiniEp(_miniPlayerEpIdx);
+      _playMiniEp(_miniPlayerEpIdx, _miniPlayerResumeTime);
+      _miniPlayerResumeTime = 0;
     }
 
     function closeMiniPlayer() {
@@ -11332,7 +11377,7 @@
       if (vid && _miniPlayerMini && vid.duration) {
         const pct = (vid.currentTime / vid.duration) * 100;
         if (pct >= 1) {
-          saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, 'series');
+          saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, 'series', _miniPlayerEpIdx);
         }
       }
       if (vid) { vid.pause(); vid.src = ''; }
@@ -11348,13 +11393,17 @@
       _miniPlayerMini = null;
     }
 
-    function _playMiniEp(idx) {
+    function _playMiniEp(idx, startTime) {
       if (!_miniPlayerMini) return;
       const eps = _miniPlayerMini.episodes || [];
       if (idx < 0 || idx >= eps.length) return;
 
       if (isMiniEpisodeLocked(_miniPlayerMini, idx, eps[idx])) {
         openCoinUnlockModal(_miniPlayerMini.id, idx);
+        // Conservar el punto de reanudación para después del desbloqueo
+        if (_pendingCoinUnlock && Number(startTime) > 5) {
+          _pendingCoinUnlock.startTime = Number(startTime);
+        }
         return;
       }
 
@@ -11370,6 +11419,24 @@
       if (rawUrl) {
         vid.src = (typeof normalizeMediaUrl === 'function') ? normalizeMediaUrl(rawUrl) : rawUrl;
         vid.load();
+        // Reanudar desde el punto guardado (Continuar Viendo): solo al abrir, no al cambiar de episodio
+        if (_miniResumeSeekHandler) {
+          vid.removeEventListener('loadedmetadata', _miniResumeSeekHandler);
+          _miniResumeSeekHandler = null;
+        }
+        const resumeAt = Number(startTime);
+        if (Number.isFinite(resumeAt) && resumeAt > 5) {
+          _miniResumeSeekHandler = () => {
+            try {
+              if (vid.duration && resumeAt < vid.duration - 5) vid.currentTime = resumeAt;
+            } catch (e) {}
+            if (_miniResumeSeekHandler) {
+              vid.removeEventListener('loadedmetadata', _miniResumeSeekHandler);
+              _miniResumeSeekHandler = null;
+            }
+          };
+          vid.addEventListener('loadedmetadata', _miniResumeSeekHandler);
+        }
         const p = vid.play();
         if (p) p.catch(() => {});
       } else {
@@ -11446,7 +11513,7 @@
 
       // Guardar progreso en historial cada vez que se actualiza
       if (_miniPlayerMini && vid.duration && pct >= 1) {
-        saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, 'series');
+        saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, 'series', _miniPlayerEpIdx);
       }
     }
 
@@ -11506,7 +11573,8 @@
     async function _loadMiniSubtitles(vid, ep, mini) {
       // Remove all existing tracks
       Array.from(vid.querySelectorAll('track')).forEach(t => t.remove());
-      _miniCurrentSubLang = 'off';
+      // NOTA: no se resetean _miniCurrentSubLang/_miniCurrentAudioLang aquí:
+      // la preferencia del usuario persiste entre episodios y se re-aplica abajo si existe.
       _miniSubtitleCuesByLang = {};
       _miniAvailableSubs = {};
       _clearMiniSubtitleOverlay();
@@ -11538,7 +11606,6 @@
         const dubMap = _miniPlayerMini.dubbedAudio[_miniPlayerEpIdx] || {};
         Object.assign(_miniDubbedAudioUrls, dubMap);
       }
-      _miniCurrentAudioLang = 'original';
       const dubAudio = document.getElementById('miniDubbedAudio');
       if (dubAudio) { dubAudio.pause(); dubAudio.src = ''; }
       const vid2 = document.getElementById('miniPlayerVideo');
@@ -11587,6 +11654,20 @@
 
       // Build CC menu (now a no-op — modal uses _miniAvailableSubs)
       _buildMiniSubMenu(subs, mini);
+
+      // Re-aplicar la preferencia del usuario si el episodio nuevo la soporta
+      const prefAudio = _miniCurrentAudioLang;
+      if (prefAudio && prefAudio !== 'original' && _miniDubbedAudioUrls[prefAudio]) {
+        _setMiniAudioTrack(prefAudio);
+      } else {
+        _setMiniAudioTrack('original');
+      }
+      const prefSub = _miniCurrentSubLang;
+      if (prefSub && prefSub !== 'off' && _miniAvailableSubs[prefSub]) {
+        setMiniSubtitle(prefSub);
+      } else {
+        setMiniSubtitle('off');
+      }
     }
 
     // ── Mini Tracks Modal ────────────────────────────────────────────────────
@@ -11673,6 +11754,7 @@
         dubAudio.pause();
         dubAudio.src = '';
         vid.muted = false;
+        vid.onseeked = null;
       } else {
         const url = _miniDubbedAudioUrls[lang];
         if (!url) { vid.muted = false; return; }
@@ -11727,6 +11809,14 @@
       btn.innerHTML = vid.paused
         ? '<i class="fas fa-play" style="margin-left:2px"></i>'
         : '<i class="fas fa-pause"></i>';
+    }
+
+    function seekMiniRelative(seconds) {
+      const vid = document.getElementById('miniPlayerVideo');
+      if (!vid || !vid.duration || !Number.isFinite(vid.duration)) return;
+      const target = Math.max(0, Math.min(vid.duration - 0.5, vid.currentTime + seconds));
+      try { vid.currentTime = target; } catch (e) {}
+      _updateMiniProgress();
     }
 
     function toggleMiniPlay() {
@@ -12501,7 +12591,7 @@
       closeCoinUnlockModal();
       if (_miniPlayerMini && _miniPlayerMini.id === pending.miniId) {
         _renderMiniSheetBody();
-        _playMiniEp(pending.episodeIdx);
+        _playMiniEp(pending.episodeIdx, pending.startTime || 0);
       }
       showSettingsMessage('Episodio desbloqueado por ' + cost + ' monedas');
     }
