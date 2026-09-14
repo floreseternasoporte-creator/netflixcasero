@@ -695,6 +695,8 @@
     let ageCategory = null;
     let detectionInterval = null;
     let model = null;
+    let _faceDetecting = false;   // evita llamadas solapadas a estimateFaces
+    let _activateShown = false;   // evita programar múltiples timeouts del botón
 
     // Función para iniciar verificación facial EN TIEMPO REAL
     async function startFaceVerification() {
@@ -738,6 +740,8 @@
 
     // Detectar edad EN TIEMPO REAL
     async function detectAgeRealTime(video, ageBadge, ageText) {
+      if (_faceDetecting) return; // una detección a la vez
+      _faceDetecting = true;
       try {
         const predictions = await model.estimateFaces(video, false);
         
@@ -752,7 +756,7 @@
           // Algoritmo simple de estimación de edad basado en tamaño facial
           // En producción, usar un modelo ML entrenado para edad
           const baseAge = 18 + Math.floor(faceSize / 10);
-          detectedAge = Math.min(Math.max(baseAge, 13), 65);
+          detectedAge = Math.min(Math.max(baseAge, 8), 65);
           
           // Actualizar UI en tiempo real
           if (detectedAge < 13) {
@@ -776,10 +780,11 @@
           }
           
           // Mostrar botón de activación después de 3 segundos de detección estable
-          if (detectedAge >= 13) {
+          if (detectedAge >= 13 && !_activateShown) {
+            _activateShown = true;
             setTimeout(() => {
               const activateBtn = document.getElementById('activateBtn');
-              if (activateBtn.style.display === 'none') {
+              if (activateBtn && activateBtn.style.display === 'none') {
                 activateBtn.style.display = 'block';
                 clearInterval(detectionInterval);
               }
@@ -794,6 +799,8 @@
         }
       } catch (error) {
         console.error('Error en detección:', error);
+      } finally {
+        _faceDetecting = false;
       }
     }
 

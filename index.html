@@ -829,6 +829,50 @@
       return { movie:'Película', series:'Serie', shortfilm:'Cortometraje' }[type] || 'Contenido';
     }
 
+    // Slides promocionales de respaldo: se usan cuando no hay catálogo
+    // disponible (index.html es estático y no consulta Firebase).
+    function _buildFallbackSlides(slider, dotsEl, arrowPrev) {
+      const promos = [
+        { badge: 'ORIGINAL', color: '#06C167', title: 'Atenis Originals',
+          desc: 'Películas, series y minis creados para ti. Historias que no verás en ningún otro lugar.',
+          tag: 'Exclusivo' },
+        { badge: 'MINIS', color: '#b45cf2', title: 'Minis verticales',
+          desc: 'Dramas cortos en formato vertical, perfectos para ver donde quieras, cuando quieras.',
+          tag: 'Nuevo' },
+        { badge: '4K', color: '#0066dd', title: 'Calidad cinematográfica',
+          desc: 'Imagen nítida y sonido envolvente en todos tus dispositivos. Crea tu cuenta gratis.',
+          tag: 'HD · 4K' },
+      ];
+      promos.forEach((p, i) => {
+        const slide = document.createElement('div');
+        slide.className = 'slide' + (i === 0 ? ' active' : '');
+        slide.innerHTML = `
+          <div class="slide-bg" style="background:${SLIDE_GRADIENTS[i % SLIDE_GRADIENTS.length]};"></div>
+          <div class="slide-deco"></div>
+          <div class="slide-content">
+            <div class="slide-badges">
+              <span class="badge-top" style="background:${p.color};">${p.badge}</span>
+              <span class="badge-tag">${p.tag}</span>
+            </div>
+            <div class="slide-title">${p.title}</div>
+            <p class="slide-desc">${p.desc}</p>
+            <div class="slide-actions">
+              <a href="login.html" class="slide-play-btn"><i class="fas fa-play"></i></a>
+              <a href="login.html" class="slide-watch-btn"><i class="fas fa-plus"></i> Crear cuenta</a>
+              <a href="landing.html" class="slide-watch-btn"><i class="fas fa-info-circle"></i> Ver planes</a>
+            </div>
+          </div>`;
+        slider.insertBefore(slide, arrowPrev);
+
+        const dot = document.createElement('button');
+        dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => { clearAutoPlay(); goToSlide(i); startAutoPlay(); });
+        dotsEl.appendChild(dot);
+      });
+      totalSlides = promos.length;
+      startAutoPlay();
+    }
+
     function buildSlider() {
       const slider = document.getElementById('promoSlider');
       const dotsEl = document.getElementById('sliderDots');
@@ -840,7 +884,12 @@
       const upcoming = all.filter(s => s.isLocked  && !_isAvailable(s));
       const items    = [...avail, ...upcoming].slice(0, 6);
 
-      if (!items.length) return;
+      // Sin catálogo (index.html no usa Firebase): mostrar slides promocionales
+      // de respaldo para que el hero nunca quede vacío.
+      if (!items.length) {
+        _buildFallbackSlides(slider, dotsEl, arrowPrev);
+        return;
+      }
 
       items.forEach((item, i) => {
         const badge  = _badge(item);

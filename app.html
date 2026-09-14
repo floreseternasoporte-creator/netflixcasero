@@ -7427,25 +7427,15 @@
       }, 600);
     }
 
-    // Realizar búsqueda
+    // Realizar búsqueda (legado: el buscador activo es #searchSectionInput)
     function performSearch() {
-      const query = document.getElementById('searchInput').value.trim();
-      if (!query) return;
-
+      const legacyInput = document.getElementById('searchInput');
+      const sectionInput = document.getElementById('searchSectionInput');
+      if (legacyInput && sectionInput && legacyInput.value.trim()) {
+        sectionInput.value = legacyInput.value.trim();
+      }
       showSearchSection();
-      document.getElementById('searchSectionInput').value = query;
-
-      // Mostrar loading
-      document.getElementById('searchLoading').classList.remove('hidden');
-      document.getElementById('searchResultsGrid').innerHTML = '';
-      document.getElementById('searchNoResults').classList.add('hidden');
-
-      // Simular búsqueda
-      setTimeout(() => {
-        const results = searchContent(query);
-        displaySearchResults(results, query);
-        document.getElementById('searchLoading').classList.add('hidden');
-      }, 1000);
+      performSearchFromSection();
     }
 
     // Buscar contenido del catálogo de Series
@@ -9180,7 +9170,6 @@
       showMiniPlayer(seriesId, 0);
     }
 
-    function closeSeriesDetail() { }
     function updateNetflixPlayButton() { }
     function updatePlayButton() { }
 
@@ -9749,7 +9738,8 @@
 
     // Función para cerrar detalles de serie
     function closeSeriesDetail() {
-      document.getElementById('seriesDetail').classList.remove('active');
+      const detailEl = document.getElementById('seriesDetail');
+      if (detailEl) detailEl.classList.remove('active');
 
       // Limpiar video de trailer
       const videoEl = document.getElementById('seriesDetailVideo');
