@@ -9435,12 +9435,25 @@
     function getDetailSeasons(series) {
       if (!series) return [];
       if (Array.isArray(series.seasons) && series.seasons.length) {
+        const flat = series.episodes || [];
+        let cursor = 0;
         return series.seasons.map((s, i) => {
           const n = s.n || (i + 1);
           return {
             n,
             name: s.name || (t('detail_season') + ' ' + n),
-            episodes: (s.episodes || []).map(ep => ({ ...ep }))
+            episodes: (s.episodes || []).map(ep => {
+              // Resolver el índice plano del episodio para reproducir el correcto:
+              // primero se intenta emparejar con la lista plana por videoUrl/id/título,
+              // y si no hay coincidencia se usa un índice acumulativo por temporada.
+              let fi = flat.findIndex(f =>
+                (ep.videoUrl && f.videoUrl && f.videoUrl === ep.videoUrl) ||
+                (ep.id != null && f.id === ep.id) ||
+                (ep.title && f.title && f.title === ep.title));
+              if (fi < 0) { fi = cursor; }
+              cursor = Math.max(cursor, fi + 1);
+              return { ...ep, _flatIdx: fi };
+            })
           };
         });
       }
