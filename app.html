@@ -8018,6 +8018,7 @@
         card.className = 'continue-item';
         card.onclick = () => showSeriesDetail(series.id);
         const contTitle = series.spanishTitle || series.title;
+        const isMiniItem = item.type === 'series';
         card.innerHTML = `
           <img src="${series.poster}" alt="${contTitle}" loading="lazy">
           <div class="continue-play-btn"><i class="fas fa-play" style="margin-left:2px;"></i></div>
@@ -8478,6 +8479,7 @@
       let heroIndex   = 0;
       let heroTimer   = null;
       let heroPaused  = false;
+      let _heroListenersBound = false;
 
       // Aplica los datos de un item al hero (con animación de fade)
       function applyHeroSlide(item, animate) {
@@ -8566,36 +8568,42 @@
         dotsEl.innerHTML = heroItems.map((_, i) =>
           `<button class="featured-hero-dot${i===0?' active':''}" data-i="${i}"></button>`
         ).join('');
-        dotsEl.addEventListener('click', e => {
-          const btn = e.target.closest('.featured-hero-dot');
-          if (!btn) return;
-          goToSlide(parseInt(btn.dataset.i), true);
-          startAutoPlay(); // reinicia el temporizador al hacer clic
-        });
 
-        // Pausar al hacer hover (escritorio)
-        const hero = document.getElementById('featuredHero');
-        hero.addEventListener('mouseenter', () => { heroPaused = true; });
-        hero.addEventListener('mouseleave', () => { heroPaused = false; });
+        // Listeners del hero: se registran UNA sola vez (buildFeaturedHero se
+        // llama en cada actualización de Firebase; sin el guard se acumulan)
+        if (!_heroListenersBound) {
+          dotsEl.addEventListener('click', e => {
+            const btn = e.target.closest('.featured-hero-dot');
+            if (!btn) return;
+            goToSlide(parseInt(btn.dataset.i), true);
+            startAutoPlay(); // reinicia el temporizador al hacer clic
+          });
 
-        // Swipe horizontal en móvil
-        let swipeStartX = 0;
-        let swipeStartY = 0;
-        hero.addEventListener('touchstart', e => {
-          swipeStartX = e.touches[0].clientX;
-          swipeStartY = e.touches[0].clientY;
-          heroPaused = true;
-        }, { passive: true });
-        hero.addEventListener('touchend', e => {
-          const dx = e.changedTouches[0].clientX - swipeStartX;
-          const dy = e.changedTouches[0].clientY - swipeStartY;
-          // Solo cuenta como swipe si fue más horizontal que vertical
-          if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-            goToSlide(dx < 0 ? heroIndex + 1 : heroIndex - 1, true);
-            startAutoPlay();
-          }
-          setTimeout(() => { heroPaused = false; }, 2500);
-        }, { passive: true });
+          // Pausar al hacer hover (escritorio)
+          const hero = document.getElementById('featuredHero');
+          hero.addEventListener('mouseenter', () => { heroPaused = true; });
+          hero.addEventListener('mouseleave', () => { heroPaused = false; });
+
+          // Swipe horizontal en móvil
+          let swipeStartX = 0;
+          let swipeStartY = 0;
+          hero.addEventListener('touchstart', e => {
+            swipeStartX = e.touches[0].clientX;
+            swipeStartY = e.touches[0].clientY;
+            heroPaused = true;
+          }, { passive: true });
+          hero.addEventListener('touchend', e => {
+            const dx = e.changedTouches[0].clientX - swipeStartX;
+            const dy = e.changedTouches[0].clientY - swipeStartY;
+            // Solo cuenta como swipe si fue más horizontal que vertical
+            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+              goToSlide(dx < 0 ? heroIndex + 1 : heroIndex - 1, true);
+              startAutoPlay();
+            }
+            setTimeout(() => { heroPaused = false; }, 2500);
+          }, { passive: true });
+          _heroListenersBound = true;
+        }
 
         goToSlide(0, false);
         startAutoPlay();
@@ -8807,14 +8815,14 @@
       } else if (isTop10) {
         badgeHtml = `<div class="nr-badge top10">TOP 10</div>`;
       } else if (!opts.newRelease && !opts.flavor) {
-        badgeHtml = `<div class="${isLocked ? 'premiere-badge' : 'movie-badge'}" id="${series.id}-badge">${isLocked ? 'Estreno' : getContentTypeLabel(series)}</div>`;
+        badgeHtml = `<div class="${isLocked ? 'premiere-badge' : 'movie-badge'}">${isLocked ? 'Estreno' : getContentTypeLabel(series)}</div>`;
       }
 
       card.innerHTML = `
         <img src="${series.poster}" alt="${displayTitle}" loading="lazy">
         ${badgeHtml}
         ${isLocked ? `
-          <div class="locked-overlay" id="${series.id}-lock">
+          <div class="locked-overlay">
             <div class="locked-icon"><i class="fas fa-lock"></i></div>
           </div>
         ` : ''}
@@ -10268,6 +10276,7 @@
         next_episode:'Siguiente episodio', watch_now:'Ver ahora',
         starting_in:'Iniciando en',
         no_desc:'Sin descripción disponible.', no_episodes:'No hay episodios disponibles.',
+        no_video:'Este episodio aún no tiene video disponible.',
         ep_label:'Episodio', ep_count:'episodios', views:'Vistas',
         uploading:'Subiendo...', upload_done:'✓ Listo', upload_error:'✗ Error al subir',
         publish_mini:'Publicar Serie', add_episode:'Agregar episodio',
@@ -10297,6 +10306,7 @@
         next_episode:'Next episode', watch_now:'Watch now',
         starting_in:'Starting in',
         no_desc:'No description available.', no_episodes:'No episodes available.',
+        no_video:'This episode has no video available yet.',
         ep_label:'Episode', ep_count:'episodes', views:'Views',
         uploading:'Uploading...', upload_done:'✓ Ready', upload_error:'✗ Upload error',
         publish_mini:'Publish Series', add_episode:'Add episode',
@@ -11362,6 +11372,12 @@
         vid.load();
         const p = vid.play();
         if (p) p.catch(() => {});
+      } else {
+        // Episodio sin video: detener el anterior para no seguir mostrando otro capítulo
+        vid.pause();
+        vid.removeAttribute('src');
+        vid.load();
+        showSettingsMessage(t('no_video') || 'Este episodio aún no tiene video disponible.');
       }
 
       // Load subtitle tracks for this episode

@@ -759,7 +759,7 @@
             <li><i class="fas fa-check"></i> Descarga para ver offline</li>
             <li><i class="fas fa-times"></i> Sin anuncios</li>
           </ul>
-          <button class="plan-button secondary" onclick="selectPlan('basic', 'Plan Básico', '$4.99')">
+          <button class="plan-button secondary" onclick="selectPlan('basic', 'Plan Básico', '$4.99', this)">
             <i class="fas fa-spinner spinner"></i>
             Elegir Plan Básico
           </button>
@@ -779,7 +779,7 @@
             <li><i class="fas fa-check"></i> Contenido exclusivo</li>
             <li><i class="fas fa-check"></i> Estrenos anticipados</li>
           </ul>
-          <button class="plan-button primary" onclick="selectPlan('premium', 'Plan Premium', '$9.99')">
+          <button class="plan-button primary" onclick="selectPlan('premium', 'Plan Premium', '$9.99', this)">
             <i class="fas fa-spinner spinner"></i>
             Elegir Plan Premium
           </button>
@@ -800,7 +800,7 @@
             <li><i class="fas fa-check"></i> Contenido exclusivo</li>
             <li><i class="fas fa-check"></i> Soporte prioritario</li>
           </ul>
-          <button class="plan-button secondary" onclick="selectPlan('family', 'Plan Familiar', '$14.99')">
+          <button class="plan-button secondary" onclick="selectPlan('family', 'Plan Familiar', '$14.99', this)">
             <i class="fas fa-spinner spinner"></i>
             Elegir Plan Familiar
           </button>
@@ -892,14 +892,14 @@
     }
 
     // Seleccionar plan
-    async function selectPlan(planType, planName, planPrice) {
+    async function selectPlan(planType, planName, planPrice, buttonEl) {
       if (!currentUser) {
         alert('Error: Usuario no autenticado');
         return;
       }
 
-      // Encontrar el botón clickeado
-      const button = event.target;
+      // Botón pasado explícitamente desde el onclick (sin depender del global `event`)
+      const button = buttonEl && buttonEl.closest ? buttonEl.closest('button') : buttonEl;
       setButtonLoading(button, true);
 
       try {
@@ -978,6 +978,7 @@
 
     // Loading en botón
     function setButtonLoading(button, loading) {
+      if (!button) return;
       if (loading) {
         button.classList.add('loading');
         button.disabled = true;
