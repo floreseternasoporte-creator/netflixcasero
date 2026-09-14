@@ -603,7 +603,7 @@ body[style*="linear-gradient"] {
   width: 100% !important;
   transform: none !important;
   display: grid !important;
-  grid-template-columns: repeat(5, 1fr) !important;
+  grid-template-columns: repeat(4, 1fr) !important;
   gap: 0 !important;
   padding: 8px 0 !important;
   padding-bottom: max(8px, env(safe-area-inset-bottom, 0px)) !important;
@@ -1291,6 +1291,7 @@ button:focus-visible,
 .bottom-nav button,
 .bottom-nav button.active,
 .bottom-nav button:hover {
+  position: relative !important;
   min-height: 54px !important;
   padding: 7px 5px !important;
   gap: 4px !important;
