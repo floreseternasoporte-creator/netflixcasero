@@ -593,7 +593,7 @@
         const cred = await auth.createUserWithEmailAndPassword(email, password);
         await cred.user.updateProfile({ displayName: name });
 
-        const selectedPlan = JSON.parse(localStorage.getItem('zambik_selected_plan') || 'null');
+        const selectedPlan = JSON.parse(localStorage.getItem('atenis_selected_plan') || 'null');
         const userData = {
           name, email,
           createdAt: firebase.database.ServerValue.TIMESTAMP,
@@ -601,7 +601,7 @@
         };
         if (selectedPlan) {
           userData.selectedPlan = selectedPlan;
-          localStorage.removeItem('zambik_selected_plan');
+          localStorage.removeItem('atenis_selected_plan');
         }
         await database.ref('users/' + cred.user.uid).set(userData);
         sendWelcomeEmail(name, email);
@@ -683,7 +683,7 @@
           window.location.href = data.profile ? 'app.html?from=landing' : 'profile-setup.html';
         } else {
           if (data && data.selectedPlan) {
-            localStorage.setItem('zambik_preselected_plan', JSON.stringify(data.selectedPlan));
+            localStorage.setItem('atenis_selected_plan', JSON.stringify(data.selectedPlan));
           }
           window.location.href = 'subscription.html';
         }

@@ -17,8 +17,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Cinzel:wght@700;900&family=Bebas+Neue&family=Dancing+Script:wght@700&family=Pacifico&display=swap">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <div id="google_translate_element" style="display: none;"></div>
+  <script src="https://translate.google.com/translate_a/element.js"></script>
   <style>
     /* Reinicio básico */
     * {
@@ -5601,6 +5600,7 @@
   <link rel="stylesheet" href="uber-theme.css">
 </head>
 <body>
+  <div id="google_translate_element" style="display: none;"></div>
   <!-- Top Bar fijo -->
   <div class="top-bar" id="topBar">
     <span class="top-bar-logo">Atenis</span>
@@ -6497,7 +6497,7 @@
         <div class="mini-edit-section-label" data-i18n="titles_section">Títulos</div>
         <div class="mini-form-group">
           <label>Título de la Serie *</label>
-          <input type="text" id="miniTitleInput" placeholder="Escribe el título una sola vez" oninput="updateMiniTitlePreview('new')">
+          <input type="text" id="miniTitleInput" data-i18n-ph="ph_title_new" placeholder="Escribe el título una sola vez" oninput="updateMiniTitlePreview('new')">
           <div class="mini-field-hint">Se usará automáticamente en español, inglés y portada si no agregas una traducción aparte.</div>
         </div>
         <div class="mini-form-group mini-advanced-title-field" style="display:none;">
@@ -6584,11 +6584,11 @@
         <div class="mini-edit-section-label" data-i18n="descriptions_section">Descripción</div>
         <div class="mini-form-group">
           <label>🇪🇸 <span data-i18n="desc_es">Descripción en Español</span></label>
-          <textarea id="miniDescInput" placeholder="Describe de qué trata la serie..." rows="3"></textarea>
+          <textarea id="miniDescInput" data-i18n-ph="ph_desc" placeholder="Describe de qué trata la serie..." rows="3"></textarea>
         </div>
         <div class="mini-form-group">
           <label>🇺🇸 <span data-i18n="desc_en">Description in English</span></label>
-          <textarea id="miniDescEnInput" placeholder="Describe the series in English..." rows="3"></textarea>
+          <textarea id="miniDescEnInput" data-i18n-ph="ph_desc_en" placeholder="Describe the series in English..." rows="3"></textarea>
         </div>
 
         <!-- Rating / Original Language -->
@@ -6603,7 +6603,7 @@
         </div>
         <div class="mini-form-group">
           <label data-i18n="original_lang">Idioma original</label>
-          <input type="text" id="miniOriginalLangInput" placeholder="Ej: Chino, Coreano, Japonés...">
+          <input type="text" id="miniOriginalLangInput" data-i18n-ph="ph_orig_lang" placeholder="Ej: Chino, Coreano, Japonés...">
         </div>
         <div class="mini-form-group">
           <label data-i18n="available_subs">Subtítulos disponibles</label>
@@ -6897,16 +6897,16 @@
       <div class="mini-edit-section-label" data-i18n="titles_section">Títulos</div>
         <div class="mini-form-group">
           <label>Título de la Serie *</label>
-          <input type="text" id="meditTitle" placeholder="Edita el título una sola vez" oninput="updateMiniTitlePreview('edit')">
+          <input type="text" id="meditTitle" data-i18n-ph="ph_title_edit" placeholder="Edita el título una sola vez" oninput="updateMiniTitlePreview('edit')">
           <div class="mini-field-hint">Este mismo título se mostrará en todos los idiomas automáticamente.</div>
       </div>
       <div class="mini-form-group mini-advanced-title-field" style="display:none;">
         <label>🇪🇸 <span data-i18n="title_es">Título en Español</span></label>
-        <input type="text" id="meditTitleEs" placeholder="Título en español">
+        <input type="text" id="meditTitleEs" data-i18n-ph="ph_title_es" placeholder="Título en español">
       </div>
       <div class="mini-form-group mini-advanced-title-field" style="display:none;">
         <label>🇺🇸 <span data-i18n="title_en">Title in English</span></label>
-        <input type="text" id="meditTitleEn" placeholder="Title in English">
+        <input type="text" id="meditTitleEn" data-i18n-ph="ph_title_en" placeholder="Title in English">
       </div>
 
       <!-- Title font style selector (edit form) -->
@@ -6984,11 +6984,11 @@
       <div class="mini-edit-section-label" data-i18n="descriptions_section">Descripción</div>
       <div class="mini-form-group">
         <label>🇪🇸 <span data-i18n="desc_es">Descripción en Español</span></label>
-        <textarea id="meditDescEs" rows="3" placeholder="Descripción en español..."></textarea>
+        <textarea id="meditDescEs" rows="3" data-i18n-ph="ph_desc_es" placeholder="Descripción en español..."></textarea>
       </div>
       <div class="mini-form-group">
         <label>🇺🇸 <span data-i18n="desc_en">Description in English</span></label>
-        <textarea id="meditDescEn" rows="3" placeholder="Description in English..."></textarea>
+        <textarea id="meditDescEn" rows="3" data-i18n-ph="ph_desc_en_f" placeholder="Description in English..."></textarea>
       </div>
 
       <!-- Rating / Language -->
@@ -7003,7 +7003,7 @@
       </div>
       <div class="mini-form-group">
         <label data-i18n="original_lang">Idioma original</label>
-        <input type="text" id="meditOrigLang" placeholder="Ej: Chino, Coreano...">
+        <input type="text" id="meditOrigLang" data-i18n-ph="ph_orig_lang" placeholder="Ej: Chino, Coreano...">
       </div>
       <div class="mini-form-group">
         <label data-i18n="available_subs">Subtítulos disponibles</label>
@@ -7215,7 +7215,8 @@
         set: () => Promise.reject(new Error('Firebase no está disponible')),
         update: () => Promise.reject(new Error('Firebase no está disponible')),
         push: () => ({ key: `offline_${Date.now()}`, set: () => Promise.reject(new Error('Firebase no está disponible')) }),
-        child: () => ({ once: () => Promise.resolve({ val: () => null }) })
+        child: () => ({ once: () => Promise.resolve({ val: () => null }) }),
+        remove: () => Promise.reject(new Error('Firebase no está disponible'))
       })
     });
 
@@ -7227,6 +7228,11 @@
     let userProfile = null;
 
     // Función para verificar autenticación con Firebase
+    // Estado del gate: se ejecuta completo una sola vez; las renovaciones de
+    // token solo refrescan la interfaz (mismo usuario) o recargan (distinto).
+    let _authGateDone = false;
+    let _authGateUid = null;
+
     function checkAuthentication() {
       return new Promise((resolve) => {
         if (!auth) {
@@ -7242,39 +7248,79 @@
           resolve(false);
         }, 10000);
 
+        // Firebase suele emitir null al arrancar aunque haya sesión persistida.
+        // Gracia breve antes de expulsar a login.
+        let nullGraceTimer = null;
+
         auth.onAuthStateChanged(async (user) => {
-          clearTimeout(authTimeout);
-          if (user) {
-            currentFirebaseUser = user;
-
-            // Verificar que tenga suscripción y perfil
-            try {
-              const userRef = database.ref('users/' + user.uid);
-              const snapshot = await userRef.once('value');
-              const userData = snapshot.val();
-
-              if (!userData || !userData.subscription) {
-                window.location.href = 'subscription.html';
-                return;
-              }
-
-              if (!userData.profile) {
-                window.location.href = 'profile-setup.html';
-                return;
-              }
-
-              // Usuario completo, cargar datos
-               userProfile = userData.profile;
-               updateUserInterface();
-               initializeCoinWallet(user.uid);
-              resolve(true);
-
-            } catch (error) {
-              console.error('Error verificando usuario:', error);
+          if (!user) {
+            if (_authGateDone) {
+              // La sesión se cerró después del gate inicial: ir a login.
               window.location.href = 'login.html';
+              resolve(false);
+              return;
             }
-          } else {
+            if (!nullGraceTimer) {
+              nullGraceTimer = setTimeout(() => {
+                nullGraceTimer = null;
+                if (!_authGateDone) {
+                  window.location.href = 'login.html';
+                  resolve(false);
+                }
+              }, 2500);
+            }
+            return;
+          }
+
+          if (nullGraceTimer) { clearTimeout(nullGraceTimer); nullGraceTimer = null; }
+
+          // Gate ya superado: no repetir la verificación en cada renovación.
+          if (_authGateDone) {
+            if (user.uid === _authGateUid) {
+              currentFirebaseUser = user;
+              updateUserInterface();
+              resolve(true);
+            } else {
+              // Usuario distinto: recargar para re-evaluar el gate desde cero.
+              window.location.reload();
+              resolve(false);
+            }
+            return;
+          }
+
+          clearTimeout(authTimeout);
+          _authGateDone = true;
+          _authGateUid = user.uid;
+          currentFirebaseUser = user;
+
+          // Verificar que tenga suscripción y perfil
+          try {
+            const userRef = database.ref('users/' + user.uid);
+            const snapshot = await withFirebaseTimeout(userRef.once('value'), 'users/' + user.uid);
+            const userData = snapshot && snapshot.val();
+
+            if (!userData || !userData.subscription) {
+              window.location.href = 'subscription.html';
+              resolve(false);
+              return;
+            }
+
+            if (!userData.profile) {
+              window.location.href = 'profile-setup.html';
+              resolve(false);
+              return;
+            }
+
+            // Usuario completo, cargar datos
+             userProfile = userData.profile;
+             updateUserInterface();
+             initializeCoinWallet(user.uid);
+            resolve(true);
+
+          } catch (error) {
+            console.error('Error verificando usuario:', error);
             window.location.href = 'login.html';
+            resolve(false);
           }
         });
       });
@@ -7286,7 +7332,7 @@
         // Actualizar avatar del usuario en ajustes si existe
         const userAvatar = document.getElementById('userAvatar');
         if (userAvatar && userProfile.avatar) {
-          const avatarData = userProfile.avatar.data;
+          const avatarData = (userProfile.avatar.data || {});
           if (avatarData.type === 'icon') {
             userAvatar.innerHTML = `<i class="fas ${avatarData.icon}"></i>`;
             userAvatar.style.background = avatarData.gradient;
@@ -7302,6 +7348,7 @@
 
     // Función para cerrar sesión de Firebase
     function logoutFirebase() {
+      if (!auth) { window.location.href = 'login.html'; return; }
       auth.signOut().then(() => {
         // No borrar el historial, ajustes ni monedas locales al cerrar sesión.
         // El saldo sincronizado vive además en users/{uid}/coinWallet.
@@ -8082,7 +8129,7 @@
       historyEmpty.classList.add('hidden');
       
       setTimeout(() => {
-        const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+        const history = readAtenisHistory();
         historyLoading.classList.add('hidden');
         
         if (history.length === 0) {
@@ -8159,9 +8206,18 @@
       }
     }
 
+    // Lectura defensiva del historial: localStorage puede corromperse y un
+    // JSON.parse sin protección rompería el home, el detalle y la reanudación.
+    function readAtenisHistory() {
+      try {
+        const h = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+        return Array.isArray(h) ? h : [];
+      } catch (e) { return []; }
+    }
+
     // Guardar en historial cuando se reproduce
     function saveToHistory(seriesId, progress, currentTimeSec, durationSec, type, episodeIdx) {
-      const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+      const history = readAtenisHistory();
       
       // Buscar si ya existe
       const existingIndex = history.findIndex(item => item.seriesId === seriesId);
@@ -8197,7 +8253,7 @@
     function resumeSeriesFromHistory(seriesId) {
       const series = seriesDatabase[seriesId];
       if (!series) return;
-      const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+      const history = readAtenisHistory();
       const item = history.find(h => h.seriesId === seriesId);
       const eps = series.episodes || [];
       let epIdx = 0;
@@ -8220,7 +8276,7 @@
       const carousel = document.getElementById('continueCarousel');
       if (!section || !carousel) return;
 
-      const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+      const history = readAtenisHistory();
 
       // Solo mostrar items entre 3% y 94% de progreso (en curso, no terminados)
       const inProgress = history
@@ -8251,10 +8307,10 @@
         const card = document.createElement('div');
         card.className = 'continue-item';
         card.onclick = () => resumeSeriesFromHistory(series.id);
-        const contTitle = series.spanishTitle || series.title;
-        const isMiniItem = item.type === 'series';
+        const contTitle = series.spanishTitle || series.title || '';
+        const isMiniItem = (series.type || 'series') === 'series';
         card.innerHTML = `
-          <img src="${series.poster}" alt="${contTitle}" loading="lazy">
+          <img src="${series.poster || ''}" alt="${contTitle}" loading="lazy">
           <div class="continue-play-btn"><i class="fas fa-play" style="margin-left:2px;"></i></div>
           <div class="continue-overlay">
             ${isMiniItem ? '<div style="position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#E91E8C,#FF6B35);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:3px;letter-spacing:0.05em;">MINI</div>' : ''}
@@ -8707,7 +8763,7 @@
     // ── Hero slider automático ─────────────────────────────────────────
     (function() {
       const SLIDE_DURATION = 7000; // ms por slide
-      const TYPE_LABELS = { movie:'Película', series:'Serie', shortfilm:'Cortometraje' };
+      const TYPE_LABELS = { movie:'Película', series:'Serie', shortfilm:'Cortometraje', mini:'Miniserie', tv:'Serie' };
 
       let heroItems   = [];
       let heroIndex   = 0;
@@ -8728,7 +8784,7 @@
         }
 
         const doApply = () => {
-          bg.style.backgroundImage = `url('${item.poster}')`;
+          bg.style.backgroundImage = item.poster ? `url('${item.poster}')` : 'none';
           document.getElementById('featuredHeroTitle').textContent = item.spanishTitle || item.title;
           document.getElementById('featuredHeroDesc').textContent  = item.description || '';
           document.getElementById('featuredHeroBadges').innerHTML  = `
@@ -8781,7 +8837,7 @@
       function startAutoPlay() {
         clearInterval(heroTimer);
         heroTimer = setInterval(() => {
-          if (!heroPaused) goToSlide(heroIndex + 1, true);
+          if (!heroPaused && heroItems.length) goToSlide(heroIndex + 1, true);
         }, SLIDE_DURATION);
       }
 
@@ -8792,6 +8848,7 @@
           document.getElementById('featuredHero').style.display = 'none';
           return;
         }
+        document.getElementById('featuredHero').style.display = '';
 
         // Disponibles primero
         const availIdx = heroItems.findIndex(s => !s.isLocked || isMovieAvailable(s));
@@ -8886,7 +8943,9 @@
         }, 1000);
         
         // Cargar y aplicar configuraciones guardadas
-        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
+        let settings = {};
+        try { settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}') || {}; }
+        catch (e) { settings = {}; }
         applyTheme(settings.theme || 'default');
         applyTextSize(settings.textSize || 'medium');
         
@@ -9049,7 +9108,7 @@
       card.onclick = () => showSeriesDetail(series.id);
       const isLocked = series.isLocked && !isMovieAvailable(series);
 
-      const displayTitle = series.spanishTitle || series.title;
+      const displayTitle = series.spanishTitle || series.title || '';
       const isNew = series.isNew || opts.forceNew;
       const isTop10 = series.isTop10;
 
@@ -9063,7 +9122,7 @@
       }
 
       card.innerHTML = `
-        <img src="${series.poster}" alt="${displayTitle}" loading="lazy">
+        <img src="${series.poster || ''}" alt="${displayTitle}" loading="lazy">
         ${badgeHtml}
         ${isLocked ? `
           <div class="locked-overlay">
@@ -9532,10 +9591,18 @@
       showBottomNav();
     }
 
+    // (script 2) Lectura defensiva del historial local.
+    function readDetailHistory() {
+      try {
+        const h = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+        return Array.isArray(h) ? h : [];
+      } catch (e) { return []; }
+    }
+
     function updateDetailPlayButton() {
       const label = document.getElementById('detailPlayLabel');
       if (!label || !_detailSeriesId) return;
-      const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+      const history = readDetailHistory();
       const item = history.find(h => h.seriesId === _detailSeriesId);
       const hasProgress = item && item.progress >= 3 && item.progress <= 94;
       label.textContent = hasProgress ? t('detail_continue') : t('detail_play');
@@ -9546,9 +9613,11 @@
       const seriesId = _detailSeriesId;
       const series = seriesDatabase[seriesId];
       if (!series) return;
-      const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+      const history = readDetailHistory();
       const item = history.find(h => h.seriesId === seriesId);
       const hasProgress = item && item.progress >= 3 && item.progress <= 94;
+      const eps = series.episodes || [];
+      if (!eps.length) { showSettingsMessage(t('no_episodes')); return; }
       closeDetailView();
       if (hasProgress) {
         resumeSeriesFromHistory(seriesId);
@@ -9616,7 +9685,7 @@
         tabsEl.appendChild(tab);
       });
       tabsEl.style.display = seasons.length > 1 ? '' : 'none';
-      const history = JSON.parse(localStorage.getItem('atenis_history') || '[]');
+      const history = readDetailHistory();
       const hItem = history.find(h => h.seriesId === _detailSeriesId);
       seasons[_detailSeasonIdx].episodes.forEach((ep, i) => {
         const flatIdx = Number.isInteger(ep._flatIdx) ? ep._flatIdx : i;
@@ -10334,48 +10403,6 @@
     }
 
     // Función para cargar contenido (episodios o película)
-    function loadContent(series) {
-      const episodesList = document.getElementById('episodesList');
-      const episodesTitle = document.querySelector('.episodes-title');
-
-      // Cambiar título según el tipo
-      if (series.type === 'movie' || series.type === 'shortfilm') { // Considerar cortometraje
-        episodesTitle.textContent = series.type === 'movie' ? 'Película' : 'Cortometraje';
-      } else {
-        episodesTitle.textContent = 'Episodios - Temporada 1';
-      }
-
-      episodesList.innerHTML = '';
-
-      series.episodes.forEach(episode => {
-        const episodeElement = document.createElement('div');
-        episodeElement.className = 'episode-item';
-        episodeElement.onclick = () => playEpisode(1, episode.id);
-
-        // Para películas y cortometrajes, no mostrar número de episodio
-        const episodeNumber = (series.type === 'movie' || series.type === 'shortfilm') ? '' : `${episode.id}. `;
-        const durationDisplay = episode.duration || 'Cargando...';
-
-        episodeElement.innerHTML = `
-          <div class="episode-thumbnail">
-            <img src="${episode.thumbnail}" alt="${episode.title}">
-            <div class="episode-play-overlay">
-              <i class="fas fa-play"></i>
-            </div>
-          </div>
-          <div class="episode-info">
-            <div class="episode-header">
-              <span class="episode-number">${episodeNumber}${episode.title}</span>
-              <span class="episode-duration" id="duration-${episode.id}">${durationDisplay}</span>
-            </div>
-            <div class="episode-description">${episode.description}</div>
-          </div>
-        `;
-
-        episodesList.appendChild(episodeElement);
-      });
-    }
-
     // Función para reproducir intro de Atenis
     function playAtenisIntro(callback) {
       // Ir directo al contenido sin reproducir intro externo
@@ -10748,6 +10775,11 @@
         no_video:'Este episodio aún no tiene video disponible.',
         ep_label:'Episodio', ep_count:'episodios', views:'Vistas',
         uploading:'Subiendo...', upload_done:'✓ Listo', upload_error:'✗ Error al subir',
+        ph_title_new:'Escribe el título una sola vez', ph_title_edit:'Edita el título una sola vez',
+        ph_desc:'Describe de qué trata la serie...', ph_desc_en:'Describe the series in English...',
+        ph_orig_lang:'Ej: Chino, Coreano, Japonés...',
+        ph_title_es:'Título en español', ph_title_en:'Title in English',
+        ph_desc_es:'Descripción en español...', ph_desc_en_f:'Description in English...',
         publish_mini:'Publicar Serie', add_episode:'Agregar episodio',
         publishing:'Publicando...', publish_success:'✓ Serie publicada exitosamente',
         see_episodes:'Ver episodios', see_info:'Ver info',
@@ -10787,6 +10819,11 @@
         no_video:'This episode has no video available yet.',
         ep_label:'Episode', ep_count:'episodes', views:'Views',
         uploading:'Uploading...', upload_done:'✓ Ready', upload_error:'✗ Upload error',
+        ph_title_new:'Type the title once', ph_title_edit:'Edit the title once',
+        ph_desc:'Describe what the series is about...', ph_desc_en:'Describe the series in English...',
+        ph_orig_lang:'E.g.: Chinese, Korean, Japanese...',
+        ph_title_es:'Spanish title', ph_title_en:'Title in English',
+        ph_desc_es:'Spanish description...', ph_desc_en_f:'Description in English...',
         publish_mini:'Publish Series', add_episode:'Add episode',
         publishing:'Publishing...', publish_success:'✓ Mini published successfully',
         see_episodes:'See episodes', see_info:'See info',
@@ -10887,6 +10924,7 @@
     // ── Mini Edit Modal ───────────────────────────────────────────────────────
 
     let _miniEditId = null;
+    let _miniEditNode = 'catalog'; // 'catalog' o 'miniDramas' (contenido legado)
     let _miniEditPosters = { orig: null, es: null, en: null };
     let _miniEditEpisodes = []; // mutable working copy
 
@@ -10987,12 +11025,17 @@
       list.innerHTML = _miniEditEpisodes.map((ep, i) => {
         const hasVideo = !!(ep.videoUrl);
         const safeTitle = (ep.title || '').replace(/"/g, '&quot;');
+        const epSeason = Math.max(1, parseInt(ep.season, 10) || 1);
         return `
           <div class="medit-ep-row">
             <div class="medit-ep-header">
               <span class="medit-ep-num">EP ${i + 1}</span>
               <input class="medit-ep-title-input" id="meditEpTitle_${i}" value="${safeTitle}"
                      placeholder="${t('ep_label')} ${i + 1}">
+              <label class="mini-ep-season-label" data-medit-season>${t('season_label')}
+                <input class="mini-ep-season-input" id="meditEpSeason_${i}" type="number"
+                       min="1" max="99" value="${epSeason}">
+              </label>
               <button class="medit-ep-remove" onclick="removeMiniEditEpisode(${i})" title="Eliminar">
                 <i class="fas fa-trash"></i>
               </button>
@@ -11010,6 +11053,8 @@
           </div>
         `;
       }).join('');
+      // Sincronizar visibilidad del campo de temporada con el tipo actual.
+      onMeditTypeChange();
     }
 
     function addMiniEditEpisode() {
@@ -11056,15 +11101,27 @@
       const type = typeEl ? typeEl.value : 'series';
       const durGroup = document.getElementById('meditDurationGroup');
       if (durGroup) durGroup.style.display = type === 'movie' ? '' : 'none';
+      // El campo de temporada por episodio solo aplica a series de TV.
+      const isTv = type === 'tv';
+      document.querySelectorAll('#meditEpisodesList [data-medit-season]').forEach(el => {
+        el.style.display = isTv ? '' : 'none';
+      });
     }
 
     async function openSeriesEdit(miniId) {
       if (!isSeriesAdmin()) return;
       _miniEditId = miniId;
+      _miniEditNode = 'catalog';
       _miniEditPosters = { orig: null, es: null, en: null };
 
-      const snap = await database.ref('catalog/' + miniId).once('value');
-      const m = snap.val();
+      let snap = await database.ref('catalog/' + miniId).once('value');
+      let m = snap.val();
+      if (!m) {
+        // Contenido legado (ej. Génesis) vive en miniDramas.
+        snap = await database.ref('miniDramas/' + miniId).once('value');
+        m = snap.val();
+        if (m) _miniEditNode = 'miniDramas';
+      }
       if (!m) return;
 
       // Populate form
@@ -11122,6 +11179,7 @@
     function closeSeriesEdit() {
       document.getElementById('miniEditModal').classList.remove('active');
       _miniEditId = null;
+      _miniEditNode = 'catalog';
     }
 
     async function handleMiniEditCover(input, type) {
@@ -11157,7 +11215,7 @@
       if (btn) { btn.disabled = true; btn.textContent = t('publishing'); }
 
       try {
-        const snap = await database.ref('catalog/' + seriesId).once('value');
+        const snap = await database.ref(_miniEditNode + '/' + seriesId).once('value');
         const old = snap.val() || {};
 
         const unifiedTitle = document.getElementById('meditTitle').value.trim();
@@ -11179,11 +11237,24 @@
         _miniEditEpisodes.forEach((ep, i) => {
           const titleEl = document.getElementById('meditEpTitle_' + i);
           if (titleEl) ep.title = titleEl.value.trim() || (t('ep_label') + ' ' + (i + 1));
+          const seasonEl = document.getElementById('meditEpSeason_' + i);
+          ep.season = Math.max(1, parseInt(seasonEl ? seasonEl.value : '1', 10) || 1);
           ep.id = i + 1;
           ep.subtitles = collectMiniEditSubtitles(i);
           // Keep thumbnail as poster if not set
           if (!ep.thumbnail) ep.thumbnail = posterOrig;
         });
+
+        // Reconstruir seasons desde episodes (igual que al publicar).
+        const editSeasonsMap = {};
+        _miniEditEpisodes.forEach((ep, flatIdx) => {
+          const s = Math.max(1, parseInt(ep.season, 10) || 1);
+          ep.season = s;
+          if (!editSeasonsMap[s]) editSeasonsMap[s] = [];
+          editSeasonsMap[s].push({ ...ep, _flatIdx: flatIdx });
+        });
+        const editSeasons = Object.keys(editSeasonsMap).map(Number).sort((a, b) => a - b)
+          .map(n => ({ n, name: `${t('detail_season')} ${n}`, episodes: editSeasonsMap[n] }));
 
         const selFontEdit = document.querySelector('#miniFontSelectorEdit .mini-font-option.active');
         const titleFont = selFontEdit ? selFontEdit.getAttribute('data-font') : (old.titleFont || 'elegant');
@@ -11214,10 +11285,11 @@
           isLocked:       document.getElementById('meditLocked').checked,
           titleFont,
           episodes:       _miniEditEpisodes,
+          seasons:        editSeasons,
           updatedAt:      Date.now(),
         };
 
-        await database.ref('catalog/' + seriesId).update(updates);
+        await database.ref(_miniEditNode + '/' + seriesId).update(updates);
         seriesDatabase[seriesId] = { ...old, ...updates, id: seriesId };
         closeSeriesEdit();
         renderCatalogSections();
@@ -11239,7 +11311,7 @@
       if (!confirmed) return;
 
       try {
-        await database.ref('catalog/' + seriesId).remove();
+        await database.ref(_miniEditNode + '/' + seriesId).remove();
         delete seriesDatabase[seriesId];
         closeSeriesEdit();
         renderCatalogSections();
@@ -11279,7 +11351,7 @@
       const applySnapshot = snapshot => {
         let changed = false;
         normalizeFirebaseCollection(snapshot && snapshot.val()).forEach(item => {
-          seriesDatabase[item.id] = { ...item, type: 'series' };
+          seriesDatabase[item.id] = { ...item, type: item.type || 'series' };
           changed = true;
         });
         if (changed) {
@@ -11493,7 +11565,7 @@
           </label>
         </div>
         <label class="mini-video-upload-area" id="miniEpVideoArea${idx}" for="miniEpVideoFile${idx}">
-          <i class="fas fa-video"></i> Toca para subir video
+          <i class="fas fa-video"></i> ${t('tap_upload')} video
         </label>
         <input type="file" id="miniEpVideoFile${idx}"
                accept="video/mp4,video/quicktime,video/x-msvideo,video/x-matroska,video/*"
@@ -11692,6 +11764,10 @@
         return;
       }
 
+      // Evitar doble publicación si se pulsan los dos botones a la vez.
+      if (saveSeries._saving) return;
+      saveSeries._saving = true;
+
       const publishBtn = document.getElementById('miniPublishFinalBtn');
       if (publishBtn) {
         publishBtn.disabled = true;
@@ -11699,7 +11775,7 @@
       }
 
       try {
-        const id = 'serie-' + Date.now();
+        const id = 'serie-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
         const genre    = document.getElementById('miniGenreInput').value;
         const year     = document.getElementById('miniYearInput').value;
         const descEs   = document.getElementById('miniDescInput').value.trim();
@@ -11795,6 +11871,7 @@
         console.error('Error guardando la serie:', err);
         alert('Error al publicar: ' + err.message);
       } finally {
+        saveSeries._saving = false;
         if (publishBtn) {
           publishBtn.disabled = false;
           publishBtn.innerHTML = '<i class="fas fa-upload"></i> Publicar Serie';
@@ -11890,7 +11967,7 @@
       if (vid && _miniPlayerMini && vid.duration) {
         const pct = (vid.currentTime / vid.duration) * 100;
         if (pct >= 1) {
-          saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, 'series', _miniPlayerEpIdx);
+          saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, (_miniPlayerMini.type || 'series'), _miniPlayerEpIdx);
         }
       }
       if (vid) { vid.pause(); vid.src = ''; }
@@ -12004,7 +12081,7 @@
         }
       };
 
-      document.querySelectorAll('.mini-ep-item').forEach((el, i) => el.classList.toggle('active', i === idx));
+      if (_miniEpsSheetOpen && typeof _renderMiniSheetBody === 'function') _renderMiniSheetBody();
 
       clearInterval(_miniProgressInterval);
       _miniProgressInterval = setInterval(_updateMiniProgress, 500);
@@ -12026,7 +12103,7 @@
 
       // Guardar progreso en historial cada vez que se actualiza
       if (_miniPlayerMini && vid.duration && pct >= 1) {
-        saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, 'series', _miniPlayerEpIdx);
+        saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, (_miniPlayerMini.type || 'series'), _miniPlayerEpIdx);
       }
     }
 
@@ -13082,31 +13159,36 @@
     }
 
     async function unlockPendingEpisode() {
-      if (!_pendingCoinUnlock) return;
-      const pending = _pendingCoinUnlock;
-      const mini = miniDatabase[pending.miniId] || seriesDatabase[pending.miniId];
-      const ep = mini && mini.episodes ? mini.episodes[pending.episodeIdx] : null;
-      if (!mini || !ep) {
+      if (!_pendingCoinUnlock || unlockPendingEpisode._busy) return;
+      unlockPendingEpisode._busy = true;
+      try {
+        const pending = _pendingCoinUnlock;
+        const mini = miniDatabase[pending.miniId] || seriesDatabase[pending.miniId];
+        const ep = mini && mini.episodes ? mini.episodes[pending.episodeIdx] : null;
+        if (!mini || !ep) {
+          closeCoinUnlockModal();
+          return;
+        }
+        const cost = getEpisodeUnlockCost(ep);
+        const result = await spendCoins(cost, `Episodio ${pending.episodeIdx + 1} desbloqueado`);
+        if (!result.ok && result.reason === 'syncing') {
+          showSettingsMessage('Espera un momento: estamos sincronizando tus monedas.');
+          return;
+        }
+        if (!result.ok && result.reason === 'insufficient') {
+          showSettingsMessage('Necesitas ' + cost + ' monedas. Reclama tu recompensa diaria.');
+          return;
+        }
+        localStorage.setItem(getEpisodeUnlockKey(pending.miniId, pending.episodeId), 'true');
         closeCoinUnlockModal();
-        return;
+        if (_miniPlayerMini && _miniPlayerMini.id === pending.miniId) {
+          _renderMiniSheetBody();
+          _playMiniEp(pending.episodeIdx, pending.startTime || 0);
+        }
+        showSettingsMessage('Episodio desbloqueado por ' + cost + ' monedas');
+      } finally {
+        unlockPendingEpisode._busy = false;
       }
-      const cost = getEpisodeUnlockCost(ep);
-      const result = await spendCoins(cost, `Episodio ${pending.episodeIdx + 1} desbloqueado`);
-      if (!result.ok && result.reason === 'syncing') {
-        showSettingsMessage('Espera un momento: estamos sincronizando tus monedas.');
-        return;
-      }
-      if (!result.ok && result.reason === 'insufficient') {
-        showSettingsMessage('Necesitas ' + cost + ' monedas. Reclama tu recompensa diaria.');
-        return;
-      }
-      localStorage.setItem(getEpisodeUnlockKey(pending.miniId, pending.episodeId), 'true');
-      closeCoinUnlockModal();
-      if (_miniPlayerMini && _miniPlayerMini.id === pending.miniId) {
-        _renderMiniSheetBody();
-        _playMiniEp(pending.episodeIdx, pending.startTime || 0);
-      }
-      showSettingsMessage('Episodio desbloqueado por ' + cost + ' monedas');
     }
 
     function _renderMiniEpsList() {
@@ -13295,8 +13377,13 @@
 
       container.innerHTML = '<div style="text-align:center;padding:24px;color:#888;font-size:13px;"><i class="fas fa-spinner fa-spin"></i> Cargando series...</div>';
       try {
-        const snapshot = await database.ref('catalog').once('value');
-        const items = normalizeFirebaseCollection(snapshot.val())
+        const [snapCatalog, snapLegacy] = await Promise.all([
+          database.ref('catalog').once('value'),
+          database.ref('miniDramas').once('value')
+        ]);
+        const legacyItems = normalizeFirebaseCollection(snapLegacy.val())
+          .map(x => ({ ...x, _node: 'miniDramas' }));
+        const items = normalizeFirebaseCollection(snapCatalog.val()).concat(legacyItems)
           .sort((a, b) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0));
         container.innerHTML = '';
 
@@ -13323,7 +13410,8 @@
           const meta = document.createElement('div');
           meta.className = 'setting-description';
           const episodeCount = Array.isArray(series.episodes) ? series.episodes.length : 0;
-          meta.textContent = `${series.year || '—'} · ${series.genre || 'Sin género'} · ${episodeCount} episodio${episodeCount === 1 ? '' : 's'}`;
+          const legacyMark = series._node === 'miniDramas' ? ' · legado' : '';
+          meta.textContent = `${series.year || '—'} · ${series.genre || 'Sin género'} · ${episodeCount} episodio${episodeCount === 1 ? '' : 's'}${legacyMark}`;
           info.append(title, meta);
 
           const edit = document.createElement('button');

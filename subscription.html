@@ -849,6 +849,53 @@
 
     let currentUser = null;
 
+    // ── Carrusel de planes ──────────────────────────────────────────────
+    const _planOrder = ['basic', 'premium', 'family'];
+    let _currentPlanIdx = 1; // el plan popular arranca al centro
+
+    function _renderPlanCarousel() {
+      const n = _planOrder.length;
+      document.querySelectorAll('#plansCarousel .plan-card').forEach(card => {
+        const idx = parseInt(card.getAttribute('data-index'), 10) || 0;
+        card.classList.remove('active', 'left', 'right', 'hidden');
+        if (idx === _currentPlanIdx) card.classList.add('active');
+        else if (idx === (_currentPlanIdx - 1 + n) % n) card.classList.add('left');
+        else if (idx === (_currentPlanIdx + 1) % n) card.classList.add('right');
+        else card.classList.add('hidden');
+      });
+      document.querySelectorAll('.carousel-indicators .indicator').forEach((dot, i) => {
+        dot.classList.toggle('active', i === _currentPlanIdx);
+      });
+    }
+
+    function prevPlan() {
+      _currentPlanIdx = (_currentPlanIdx - 1 + _planOrder.length) % _planOrder.length;
+      _renderPlanCarousel();
+    }
+
+    function nextPlan() {
+      _currentPlanIdx = (_currentPlanIdx + 1) % _planOrder.length;
+      _renderPlanCarousel();
+    }
+
+    function goToPlan(n) {
+      const idx = parseInt(n, 10);
+      if (Number.isInteger(idx) && idx >= 0 && idx < _planOrder.length) _currentPlanIdx = idx;
+      _renderPlanCarousel();
+    }
+
+    // Preseleccionar el plan elegido en landing/login (clave unificada).
+    (function preselectPlan() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('atenis_selected_plan') || 'null');
+        if (saved && saved.plan) {
+          const idx = _planOrder.indexOf(saved.plan);
+          if (idx >= 0) _currentPlanIdx = idx;
+        }
+      } catch (e) { /* clave ausente o corrupta: se queda el plan popular */ }
+      _renderPlanCarousel();
+    })();
+
     // Verificar autenticación
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -867,10 +914,10 @@
     async function checkExistingSubscription(user) {
       try {
         // Verificar si es un cambio de plan
-        const isChangingPlan = localStorage.getItem('zambik_changing_plan');
+        const isChangingPlan = localStorage.getItem('atenis_changing_plan');
         if (isChangingPlan === 'true') {
           // Limpiar flag y permitir cambio de plan
-          localStorage.removeItem('zambik_changing_plan');
+          localStorage.removeItem('atenis_changing_plan');
           return;
         }
 

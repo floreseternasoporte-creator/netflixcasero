@@ -79,6 +79,9 @@ def index():
 
 @app.route('/<path:path>')
 def static_files(path):
+    # No exponer código del servidor ni archivos ocultos del proyecto
+    if path.endswith('.py') or path.startswith('.') or '/.' in path:
+        return jsonify({'error': 'No encontrado'}), 404
     return send_from_directory(DIRECTORY, path)
 
 

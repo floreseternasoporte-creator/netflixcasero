@@ -698,6 +698,31 @@
     let _faceDetecting = false;   // evita llamadas solapadas a estimateFaces
     let _activateShown = false;   // evita programar múltiples timeouts del botón
 
+    // Detiene la detección y libera la cámara (se usa al activar, al salir, etc.)
+    function stopFaceStream() {
+      if (detectionInterval) {
+        clearInterval(detectionInterval);
+        detectionInterval = null;
+      }
+      if (faceStream) {
+        faceStream.getTracks().forEach(track => track.stop());
+        faceStream = null;
+      }
+    }
+
+    // Si el usuario sale de la página, liberar la cámara para que no quede encendida
+    window.addEventListener('pagehide', stopFaceStream);
+    window.addEventListener('beforeunload', stopFaceStream);
+
+    // Escáner de tarjeta desactivado (el formulario está comentado): stubs para
+    // que los onclick del modal huérfano no lancen ReferenceError
+    function startCardScan() { /* desactivado */ }
+    function captureCard() { /* desactivado */ }
+    function stopCardScan() {
+      const m = document.getElementById('scannerModal');
+      if (m) m.classList.remove('active');
+    }
+
     // Función para iniciar verificación facial EN TIEMPO REAL
     async function startFaceVerification() {
       const video = document.getElementById('faceVideo');
@@ -732,7 +757,12 @@
         
       } catch (error) {
         console.error('Error:', error);
-        alert('No se pudo acceder a la cámara. Verifica los permisos.');
+        const msg = error && error.name === 'NotAllowedError'
+          ? 'Permiso de cámara denegado. Actívalo en los ajustes del navegador y reintenta.'
+          : (error && error.name === 'NotFoundError'
+            ? 'No se encontró ninguna cámara en este dispositivo.'
+            : 'No se pudo acceder a la cámara. Verifica los permisos.');
+        alert(msg);
         startBtn.disabled = false;
         startBtn.innerHTML = '<i class="fas fa-camera"></i> Iniciar Verificación Facial';
       }
@@ -752,10 +782,15 @@
             Math.pow(face.bottomRight[0] - face.topLeft[0], 2) +
             Math.pow(face.bottomRight[1] - face.topLeft[1], 2)
           );
-          
-          // Algoritmo simple de estimación de edad basado en tamaño facial
-          // En producción, usar un modelo ML entrenado para edad
-          const baseAge = 18 + Math.floor(faceSize / 10);
+
+          // Heurística de demostración basada en la proporción del rostro en el
+          // encuadre: a mayor proporción, mayor edad estimada.
+          // En producción, usar un modelo ML entrenado para edad.
+          const frameDiag = Math.sqrt(
+            Math.pow(video.videoWidth || 640, 2) + Math.pow(video.videoHeight || 480, 2)
+          ) || 800;
+          const sizeRatio = Math.min(Math.max(faceSize / frameDiag, 0), 1);
+          const baseAge = Math.round(6 + sizeRatio * 70);
           detectedAge = Math.min(Math.max(baseAge, 8), 65);
           
           // Actualizar UI en tiempo real
@@ -807,16 +842,18 @@
     // Activar prueba gratuita
     async function activateTrial() {
       const activateBtn = document.getElementById('activateBtn');
+
+      if (!currentUser) {
+        alert('Debes iniciar sesión para activar la prueba.');
+        window.location.href = 'login.html';
+        return;
+      }
+
       activateBtn.disabled = true;
       activateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Activando...';
 
-      // Detener detección en tiempo real
-      if (detectionInterval) {
-        clearInterval(detectionInterval);
-      }
-      if (faceStream) {
-        faceStream.getTracks().forEach(track => track.stop());
-      }
+      // Detener detección en tiempo real y liberar la cámara
+      stopFaceStream();
 
       try {
         const trialData = {
