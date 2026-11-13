@@ -9,7 +9,7 @@
 
 ## ¿Qué reciben los usuarios?
 
-Cuando alguien se registra en Zambik, automáticamente recibe un correo con:
+Cuando alguien se registra en Atenis, automáticamente recibe un correo con:
 
 - 🎉 Bienvenida personalizada con su nombre
 - 🎬 Lista de películas y series disponibles

@@ -843,11 +843,26 @@
     };
 
     // Inicializar Firebase
+    if (typeof window.firebase === 'undefined') {
+      const _fbErr = document.createElement('div');
+      _fbErr.textContent = 'No se pudo conectar con Firebase. Revisa tu conexión y recarga.';
+      _fbErr.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#b91c1c;color:#fff;padding:14px;text-align:center;font:600 15px sans-serif;';
+      document.body.appendChild(_fbErr);
+      throw new Error('Firebase SDK no cargó');
+    }
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const database = firebase.database();
 
     let currentUser = null;
+
+    // Aviso heredado de login/app (prueba terminada o suscripción cancelada).
+    (function showAuthNotice() {
+      try {
+        const notice = localStorage.getItem('atenis_auth_notice');
+        if (notice) { localStorage.removeItem('atenis_auth_notice'); setTimeout(() => alert(notice), 300); }
+      } catch (e) {}
+    })();
 
     // ── Carrusel de planes ──────────────────────────────────────────────
     const _planOrder = ['basic', 'premium', 'family'];
@@ -862,6 +877,11 @@
         else if (idx === (_currentPlanIdx - 1 + n) % n) card.classList.add('left');
         else if (idx === (_currentPlanIdx + 1) % n) card.classList.add('right');
         else card.classList.add('hidden');
+        // La tarjeta oculta no debe ser enfocable.
+        card.querySelectorAll('button').forEach(b => {
+          if (card.classList.contains('hidden')) b.setAttribute('tabindex', '-1');
+          else b.removeAttribute('tabindex');
+        });
       });
       document.querySelectorAll('.carousel-indicators .indicator').forEach((dot, i) => {
         dot.classList.toggle('active', i === _currentPlanIdx);
@@ -925,7 +945,17 @@
         const snapshot = await userRef.once('value');
         const userData = snapshot.val();
 
+        if (userData && userData.accountStatus && userData.accountStatus.status === 'deactivated') {
+          try { await auth.signOut(); } catch (e) {}
+          window.location.href = 'login.html';
+          return;
+        }
+
         if (userData && userData.subscription) {
+          const _sub = userData.subscription;
+          if (_sub.status === 'cancelled' || (_sub.status === 'trial' && _sub.trialEndDate && Date.now() > _sub.trialEndDate)) {
+            return; // quedarse aquí para elegir un plan
+          }
           // Ya tiene suscripción, verificar perfil
           if (userData.profile) {
             window.location.href = 'app.html';
@@ -974,7 +1004,6 @@
       } catch (error) {
         console.error('Error seleccionando plan:', error);
         alert('Error al seleccionar el plan. Intenta nuevamente.');
-      } finally {
         setButtonLoading(button, false);
       }
     }
@@ -1039,9 +1068,13 @@
     async function logout() {
       try {
         await auth.signOut();
+        Object.keys(localStorage).filter(key => key.startsWith('atenis_') || key.startsWith('watched_')).forEach(key => {
+          localStorage.removeItem(key);
+        });
         window.location.href = 'login.html';
       } catch (error) {
         console.error('Error cerrando sesión:', error);
+        alert('No se pudo cerrar sesión. Inténtalo de nuevo.');
       }
     }
 
@@ -1053,7 +1086,10 @@
       const scrollLeft = carousel.scrollLeft;
       const cardWidth = carousel.querySelector('.plan-card').offsetWidth + 20;
       const currentIndex = Math.round(scrollLeft / cardWidth);
-      
+      if (Number.isInteger(currentIndex) && currentIndex >= 0 && currentIndex < _planOrder.length) {
+        _currentPlanIdx = currentIndex;
+      }
+
       indicators.forEach((indicator, index) => {
         if (index === currentIndex) {
           indicator.classList.add('active');

@@ -679,6 +679,13 @@
       appId: "1:478151254938:web:e2c00e3a5426bd192b9023"
     };
 
+    if (typeof window.firebase === 'undefined') {
+      const _fbErr = document.createElement('div');
+      _fbErr.textContent = 'No se pudo conectar con Firebase. Revisa tu conexión y recarga.';
+      _fbErr.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#b91c1c;color:#fff;padding:14px;text-align:center;font:600 15px sans-serif;';
+      document.body.appendChild(_fbErr);
+      throw new Error('Firebase SDK no cargó');
+    }
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const database = firebase.database();
@@ -856,6 +863,21 @@
       stopFaceStream();
 
       try {
+        const existingSnap = await database.ref('users/' + currentUser.uid + '/subscription').once('value');
+        const existingSub = existingSnap.val();
+        if (existingSub && existingSub.status === 'active' && existingSub.plan && existingSub.plan !== 'trial') {
+          alert('Ya tienes un plan de pago activo. No es necesario activar la prueba.');
+          activateBtn.disabled = false;
+          activateBtn.innerHTML = '<i class="fas fa-check"></i> Activar Prueba Gratuita';
+          return;
+        }
+        if (existingSub && (existingSub.trialUsed === true || existingSub.plan === 'trial')) {
+          alert('Ya usaste tu prueba gratuita.');
+          activateBtn.disabled = false;
+          activateBtn.innerHTML = '<i class="fas fa-check"></i> Activar Prueba Gratuita';
+          return;
+        }
+
         const trialData = {
           plan: 'trial',
           name: 'Prueba Premium 4 Meses',
@@ -863,6 +885,7 @@
           startDate: firebase.database.ServerValue.TIMESTAMP,
           trialEndDate: Date.now() + (120 * 24 * 60 * 60 * 1000),
           status: 'trial',
+          trialUsed: true,
           ageVerified: true,
           ageCategory: ageCategory,
           estimatedAge: detectedAge,

@@ -519,19 +519,27 @@
     };
 
     // Inicializar Firebase
+    if (typeof window.firebase === 'undefined') {
+      const _fbErr = document.createElement('div');
+      _fbErr.textContent = 'No se pudo conectar con Firebase. Revisa tu conexión y recarga.';
+      _fbErr.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#b91c1c;color:#fff;padding:14px;text-align:center;font:600 15px sans-serif;';
+      document.body.appendChild(_fbErr);
+      throw new Error('Firebase SDK no cargó');
+    }
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const database = firebase.database();
 
     let currentUser = null;
     let selectedAvatar = null;
+    let _avatarsGenerated = false;
 
     // Verificar autenticación
     auth.onAuthStateChanged((user) => {
       if (user) {
         currentUser = user;
         document.getElementById('profileName').value = user.displayName || '';
-        generateAvatars();
+        if (!_avatarsGenerated) { _avatarsGenerated = true; generateAvatars(); }
         checkUserStatus(user);
       } else {
         window.location.href = 'login.html';
@@ -566,7 +574,8 @@
     // Generar avatares
     function generateAvatars() {
       const avatarsGrid = document.getElementById('avatarsGrid');
-      
+      avatarsGrid.innerHTML = '';
+
       // Lista de avatares con iconos y colores
       const avatars = [
         { type: 'icon', icon: 'fa-user', gradient: 'linear-gradient(135deg, #00A2FF, #0078D4)', color: '#ffffff' },
@@ -628,7 +637,12 @@
         alert('Por favor ingresa un nombre para tu perfil');
         return;
       }
-      
+
+      if (!currentUser) {
+        alert('Debes iniciar sesión para crear tu perfil');
+        return;
+      }
+
       setButtonLoading(submitButton, true);
 
       try {
@@ -698,9 +712,13 @@
     async function logout() {
       try {
         await auth.signOut();
+        Object.keys(localStorage).filter(key => key.startsWith('atenis_') || key.startsWith('watched_')).forEach(key => {
+          localStorage.removeItem(key);
+        });
         window.location.href = 'login.html';
       } catch (error) {
         console.error('Error cerrando sesión:', error);
+        alert('No se pudo cerrar sesión. Inténtalo de nuevo.');
       }
     }
   </script>

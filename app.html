@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, shrink-to-fit=no">
   <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="format-detection" content="telephone=no">
   <meta name="screen-orientation" content="portrait">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#ffffff">
   <title>Atenis</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -5865,6 +5865,7 @@
         <button class="search-genre-chip" type="button" data-browse-genre="Acción" onclick="setBrowseGenre(this,'Acción')">Acción</button>
         <button class="search-genre-chip" type="button" data-browse-genre="Comedia" onclick="setBrowseGenre(this,'Comedia')">Comedia</button>
         <button class="search-genre-chip" type="button" data-browse-genre="Terror" onclick="setBrowseGenre(this,'Terror')">Terror</button>
+        <button class="search-genre-chip" type="button" data-browse-genre="Suspenso" onclick="setBrowseGenre(this,'Suspenso')">Suspenso</button>
         <button class="search-genre-chip" type="button" data-browse-genre="Anime" onclick="setBrowseGenre(this,'Anime')">Anime</button>
       </div>
       <label class="search-sort-control">
@@ -6500,11 +6501,11 @@
           <input type="text" id="miniTitleInput" data-i18n-ph="ph_title_new" placeholder="Escribe el título una sola vez" oninput="updateMiniTitlePreview('new')">
           <div class="mini-field-hint">Se usará automáticamente en español, inglés y portada si no agregas una traducción aparte.</div>
         </div>
-        <div class="mini-form-group mini-advanced-title-field" style="display:none;">
+        <div class="mini-form-group mini-advanced-title-field">
           <label>🇪🇸 <span data-i18n="title_es">Título en Español</span></label>
           <input type="text" id="miniTitleEsInput" placeholder="Título en español">
         </div>
-        <div class="mini-form-group mini-advanced-title-field" style="display:none;">
+        <div class="mini-form-group mini-advanced-title-field">
           <label>🇺🇸 <span data-i18n="title_en">Title in English</span></label>
           <input type="text" id="miniTitleEnInput" placeholder="Title in English">
         </div>
@@ -6613,6 +6614,17 @@
             <label class="mini-lang-check"><input type="checkbox" id="miniSubOrig" value="original"> Original</label>
           </div>
         </div>
+        <div class="mini-form-group">
+          <label>Fecha de estreno</label>
+          <input type="date" id="miniReleaseInput">
+        </div>
+        <div class="mini-form-group">
+          <label>Destacado</label>
+          <div class="mini-lang-checkboxes">
+            <label class="mini-lang-check"><input type="checkbox" id="miniFeatured"> Featured</label>
+            <label class="mini-lang-check"><input type="checkbox" id="miniTrending"> Trending</label>
+          </div>
+        </div>
         <div class="mini-step-btns">
           <button class="mini-back-step-btn" onclick="goToMiniStep(1)" data-i18n="back_btn">← Atrás</button>
           <button class="mini-upload-next-btn" onclick="goToMiniStep(3)" data-i18n="next_btn">Siguiente →</button>
@@ -6681,6 +6693,7 @@
         <i class="fas fa-play"></i> <span data-i18n="watch_now">Ver ahora</span>
       </button>
       <div class="mini-next-countdown" id="miniNextCountdown"></div>
+      <button class="mini-next-close-btn" type="button" onclick="closeMiniPlayer()" aria-label="Cerrar" style="margin-top:10px;background:transparent;border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:20px;padding:6px 16px;cursor:pointer;">Cerrar</button>
     </div>
 
     <!-- Side buttons -->
@@ -6742,6 +6755,7 @@
         <button class="mini-seek-btn" onclick="seekMiniRelative(10)" aria-label="Avanzar 10 segundos">
           <i class="fas fa-rotate-right"></i><span class="seek-label">10</span>
         </button>
+        <button class="mini-seek-btn" id="miniSpeedBtn" onclick="cycleMiniSpeed()" aria-label="Velocidad de reproducción">1x</button>
         <button class="mini-player-eps-btn" onclick="toggleMiniEpsSheet()">
           <i class="fas fa-th-list"></i>
           <span id="miniPlayerEpsBtnLabel">Ver episodios</span>
@@ -6796,7 +6810,7 @@
   <!-- Desbloqueo de episodios con monedas -->
   <div class="coin-unlock-modal" id="coinUnlockModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="coinUnlockTitle">
     <div class="coin-unlock-card">
-      <button class="coin-unlock-close" type="button" onclick="closeCoinUnlockModal()" aria-label="Cerrar">
+      <button class="coin-unlock-close" type="button" onclick="closeCoinUnlockModal(true)" aria-label="Cerrar">
         <i class="fas fa-times"></i>
       </button>
       <div class="coin-unlock-icon"><i class="fas fa-lock"></i></div>
@@ -6900,11 +6914,11 @@
           <input type="text" id="meditTitle" data-i18n-ph="ph_title_edit" placeholder="Edita el título una sola vez" oninput="updateMiniTitlePreview('edit')">
           <div class="mini-field-hint">Este mismo título se mostrará en todos los idiomas automáticamente.</div>
       </div>
-      <div class="mini-form-group mini-advanced-title-field" style="display:none;">
+      <div class="mini-form-group mini-advanced-title-field">
         <label>🇪🇸 <span data-i18n="title_es">Título en Español</span></label>
         <input type="text" id="meditTitleEs" data-i18n-ph="ph_title_es" placeholder="Título en español">
       </div>
-      <div class="mini-form-group mini-advanced-title-field" style="display:none;">
+      <div class="mini-form-group mini-advanced-title-field">
         <label>🇺🇸 <span data-i18n="title_en">Title in English</span></label>
         <input type="text" id="meditTitleEn" data-i18n-ph="ph_title_en" placeholder="Title in English">
       </div>
@@ -6980,6 +6994,13 @@
         </div>
       </div>
 
+      <div class="mini-form-row">
+        <div class="mini-form-group">
+          <label>Fecha de estreno</label>
+          <input type="date" id="meditReleaseDate">
+        </div>
+      </div>
+
       <!-- Descriptions -->
       <div class="mini-edit-section-label" data-i18n="descriptions_section">Descripción</div>
       <div class="mini-form-group">
@@ -7035,19 +7056,19 @@
 
   <!-- Navegación inferior — 4 ítems -->
   <nav class="bottom-nav">
-    <button id="navHome" class="active">
+    <button id="navHome" class="active" aria-label="Inicio">
       <i class="fas fa-home"></i>
       <span>Inicio</span>
     </button>
-    <button id="navSearch">
+    <button id="navSearch" aria-label="Buscar">
       <i class="fas fa-search"></i>
       <span>Buscar</span>
     </button>
-    <button id="navMyList">
+    <button id="navMyList" aria-label="Mi Lista">
       <i class="fas fa-bookmark"></i>
       <span>Mi Lista</span>
     </button>
-    <button id="navProfile">
+    <button id="navProfile" aria-label="Perfil">
       <i class="fas fa-user-circle"></i>
       <span>Perfil</span>
     </button>
@@ -7299,6 +7320,24 @@
             const snapshot = await withFirebaseTimeout(userRef.once('value'), 'users/' + user.uid);
             const userData = snapshot && snapshot.val();
 
+            if (userData && userData.accountStatus && userData.accountStatus.status === 'deactivated') {
+              try { localStorage.setItem('atenis_auth_notice', 'Tu cuenta está desactivada. Contacta con soporte.'); } catch (e) {}
+              try { await auth.signOut(); } catch (e) {}
+              window.location.href = 'login.html';
+              resolve(false);
+              return;
+            }
+
+            if (userData && userData.subscription) {
+              const _sub = userData.subscription;
+              if (_sub.status === 'cancelled' || (_sub.status === 'trial' && _sub.trialEndDate && Date.now() > _sub.trialEndDate)) {
+                try { localStorage.setItem('atenis_auth_notice', _sub.status === 'cancelled' ? 'Tu suscripción fue cancelada. Elige un plan para seguir viendo Atenis.' : 'Tu prueba terminó. Elige un plan para seguir viendo Atenis.'); } catch (e) {}
+                window.location.href = 'subscription.html';
+                resolve(false);
+                return;
+              }
+            }
+
             if (!userData || !userData.subscription) {
               window.location.href = 'subscription.html';
               resolve(false);
@@ -7341,7 +7380,6 @@
 
         // Guardar datos en localStorage para compatibilidad
         localStorage.setItem('atenis_user_profile', JSON.stringify(userProfile));
-        localStorage.setItem('atenis_subscription', 'active');
       }
       _showAdminNavigationIfAdmin();
     }
@@ -7350,14 +7388,14 @@
     function logoutFirebase() {
       if (!auth) { window.location.href = 'login.html'; return; }
       auth.signOut().then(() => {
-        // No borrar el historial, ajustes ni monedas locales al cerrar sesión.
-        // El saldo sincronizado vive además en users/{uid}/coinWallet.
-        ['atenis_user_profile', 'atenis_subscription', 'atenis_editing_profile', 'atenis_changing_plan'].forEach(key => {
+        // Borra todas las claves propias de Atenis y de progreso visto.
+        Object.keys(localStorage).filter(key => key.startsWith('atenis_') || key.startsWith('watched_')).forEach(key => {
           localStorage.removeItem(key);
         });
         window.location.href = 'login.html';
       }).catch((error) => {
         console.error('Error cerrando sesión:', error);
+        alert('No se pudo cerrar sesión. Inténtalo de nuevo.');
       });
     }
 
@@ -7529,11 +7567,12 @@
 
       document.getElementById('searchLoading').classList.add('hidden');
       document.getElementById('searchNoResults').classList.add('hidden');
-      document.getElementById('searchSectionInput').value = '';
-
+      // No borrar la consulta anterior: el usuario vuelve a Buscar con su texto.
       showSearchSuggestions();
       resetBrowseFilters();
-      document.getElementById('searchSectionInput').focus();
+      if (window.matchMedia('(pointer:fine)').matches || window.innerWidth > 768) {
+        document.getElementById('searchSectionInput').focus();
+      }
     }
 
     // Mostrar sección de ajustes
@@ -7751,7 +7790,7 @@
 
         resultItem.innerHTML = `
           <div class="search-result-poster" style="position:relative;">
-            <img src="${series.poster}" alt="${series.title}">
+            <img src="${series.poster}" alt="${series.title}" loading="lazy" onerror="handlePosterError(this)">
           </div>
           <div class="search-result-content">
             <h3 class="search-result-title">${series.spanishTitle || series.title}</h3>
@@ -7759,7 +7798,7 @@
               <span>${series.year || ''}</span>
               <span>${typeLabel}</span>
               ${epCount ? `<span>${epCount}</span>` : ''}
-              ${series.rating ? `<span>★ ${series.rating}</span>` : ''}
+              ${series.rating ? `<span>Clasificación: ${series.rating}</span>` : ''}
             </div>
             <p class="search-result-description">${series.description || ''}</p>
           </div>
@@ -8102,7 +8141,7 @@
         row.className = 'history-item my-list-item';
         row.innerHTML = `
           <div class="history-item-poster" onclick="showSeriesDetail('${series.id}')">
-            <img src="${series.poster}" alt="${series.spanishTitle || series.title}">
+            <img src="${series.poster}" alt="${series.spanishTitle || series.title}" loading="lazy" onerror="handlePosterError(this)">
           </div>
           <div class="history-item-content" onclick="showSeriesDetail('${series.id}')">
             <div class="history-item-title">${series.spanishTitle || series.title}</div>
@@ -8574,13 +8613,7 @@
         showSettingsMessage(this.checked ? 'Subtítulos activados' : 'Subtítulos desactivados');
       });
 
-      // Idioma de interfaz - Cambio en tiempo real
-      document.getElementById('interfaceLanguage')?.addEventListener('change', function() {
-        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}');
-        settings.language = this.value;
-        localStorage.setItem('atenis_settings', JSON.stringify(settings));
-        handleLanguageChange(this.value);
-      });
+      // El cambio de idioma lo gestiona el onchange inline del selector (handleLanguageChange).
 
       // Audio preferido - Cambio en tiempo real
       document.getElementById('preferredAudio')?.addEventListener('change', function() {
@@ -8740,10 +8773,20 @@
     function handleLanguageChange(language) {
       localStorage.setItem('atenis_language', language);
       currentLanguage = language;
+      document.documentElement.lang = language;
+      try {
+        const _langSettings = JSON.parse(localStorage.getItem('atenis_settings') || '{}') || {};
+        _langSettings.language = language;
+        localStorage.setItem('atenis_settings', JSON.stringify(_langSettings));
+      } catch (e) {}
 
       // Sync the settings selector
       const sel = document.getElementById('interfaceLanguage');
       if (sel) sel.value = language;
+
+      applyMiniTranslations();
+      if (typeof renderCatalogSections === 'function') renderCatalogSections();
+      if (typeof buildFeaturedHero === 'function') buildFeaturedHero();
 
       showSettingsMessage(language === 'es' ? 'Idioma: Español' : 'Language: English');
     }
@@ -8785,12 +8828,11 @@
 
         const doApply = () => {
           bg.style.backgroundImage = item.poster ? `url('${item.poster}')` : 'none';
-          document.getElementById('featuredHeroTitle').textContent = item.spanishTitle || item.title;
-          document.getElementById('featuredHeroDesc').textContent  = item.description || '';
+          document.getElementById('featuredHeroTitle').textContent = getLocalizedMiniTitle(item);
+          document.getElementById('featuredHeroDesc').textContent  = getLocalizedMiniDesc(item);
           document.getElementById('featuredHeroBadges').innerHTML  = `
             <span style="background:${isLocked?'#ff6b00':'#4c6ef5'};color:#000;font-size:11px;font-weight:800;padding:3px 9px;border-radius:4px;text-transform:uppercase;">${isLocked?'ESTRENO':(TYPE_LABELS[item.type]||'CONTENIDO')}</span>
-            <span style="background:rgba(255,255,255,0.12);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;">${(item.genre||'').split(',')[0].trim()}</span>
-            <span style="border:1px solid rgba(255,255,255,0.28);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;">4K</span>`;
+            <span style="background:rgba(255,255,255,0.12);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;">${(item.genre||'').split(',')[0].trim()}</span>`;
 
           const playBtn = document.getElementById('featuredHeroPlay');
           if (isLocked) {
@@ -8837,7 +8879,7 @@
       function startAutoPlay() {
         clearInterval(heroTimer);
         heroTimer = setInterval(() => {
-          if (!heroPaused && heroItems.length) goToSlide(heroIndex + 1, true);
+          if (!heroPaused && !document.hidden && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && heroItems.length) goToSlide(heroIndex + 1, true);
         }, SLIDE_DURATION);
       }
 
@@ -8857,7 +8899,7 @@
         // Construir dots
         const dotsEl = document.getElementById('featuredHeroDots');
         dotsEl.innerHTML = heroItems.map((_, i) =>
-          `<button class="featured-hero-dot${i===0?' active':''}" data-i="${i}"></button>`
+          `<button class="featured-hero-dot${i===0?' active':''}" data-i="${i}" aria-label="Ir al destacado ${i + 1}"></button>`
         ).join('');
 
         // Listeners del hero: se registran UNA sola vez (buildFeaturedHero se
@@ -8896,7 +8938,8 @@
           _heroListenersBound = true;
         }
 
-        goToSlide(0, false);
+        // No resetear al slide 0 en cada refresco: conservar el slide que mira el usuario.
+        goToSlide(heroItems.length ? Math.min(heroIndex, heroItems.length - 1) : 0, false);
         startAutoPlay();
       }
 
@@ -9078,7 +9121,7 @@
       { carouselId: 'animeCarousel', genre: 'Anime' },
       { carouselId: 'terrorCarousel', genre: 'Terror' },
       { carouselId: 'moviesCarousel', types: ['movie', 'shortfilm'], titleKey: 'movies_section' },
-      { carouselId: 'tvCarousel', types: ['tv'], titleKey: 'tv_section' }
+      { carouselId: 'tvCarousel', types: ['tv', 'series'], titleKey: 'tv_section' }
     ];
 
     function getContentTypeLabel(series) {
@@ -9102,6 +9145,15 @@
       return emptyState;
     }
 
+    const ATENIS_POSTER_PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450"><rect width="300" height="450" fill="#2a2d45"/><text x="150" y="225" font-family="sans-serif" font-size="28" fill="#ffffff" text-anchor="middle">Atenis</text></svg>');
+    function handlePosterError(img) { if (!img) return; img.onerror = null; img.src = ATENIS_POSTER_PLACEHOLDER; }
+    // NEW solo si createdAt tiene menos de 30 días (nunca por posición).
+    function isNewReleaseItem(item) {
+      if (!item || !item.createdAt) return false;
+      const createdAt = new Date(item.createdAt).getTime();
+      return Number.isFinite(createdAt) && Date.now() - createdAt <= 1000 * 60 * 60 * 24 * 30;
+    }
+
     function createContentCard(series, opts = {}) {
       const card = document.createElement('div');
       card.className = opts.flavor ? 'flavor-card' : (opts.newRelease ? 'nr-card' : 'carousel-item');
@@ -9109,7 +9161,7 @@
       const isLocked = series.isLocked && !isMovieAvailable(series);
 
       const displayTitle = series.spanishTitle || series.title || '';
-      const isNew = series.isNew || opts.forceNew;
+      const isNew = isNewReleaseItem(series);
       const isTop10 = series.isTop10;
 
       let badgeHtml = '';
@@ -9122,7 +9174,7 @@
       }
 
       card.innerHTML = `
-        <img src="${series.poster || ''}" alt="${displayTitle}" loading="lazy">
+        <img src="${series.poster || ''}" alt="${displayTitle}" loading="lazy" onerror="handlePosterError(this)">
         ${badgeHtml}
         ${isLocked ? `
           <div class="locked-overlay">
@@ -9166,7 +9218,9 @@
     function renderNewReleaseSection(options = {}) {
       const container = document.getElementById('newReleaseCarousel');
       if (!container) return;
-      const items = Object.values(seriesDatabase).slice(0, 10);
+      const items = Object.values(seriesDatabase)
+        .sort((a, b) => (Number(new Date(b.createdAt || 0)) || 0) - (Number(new Date(a.createdAt || 0)) || 0))
+        .slice(0, 10);
       container.innerHTML = '';
       if (items.length === 0) {
         if (options.loading) {
@@ -9176,8 +9230,8 @@
         }
         return;
       }
-      items.forEach((series, i) => {
-        const card = createContentCard(series, { newRelease: true, forceNew: i < 4 });
+      items.forEach((series) => {
+        const card = createContentCard(series, { newRelease: true });
         container.appendChild(card);
       });
     }
@@ -9217,11 +9271,11 @@
         const item = document.createElement('div');
         item.className = 'tn-item';
         item.onclick = () => showSeriesDetail(series.id);
-        const badgeLabel = series.isNew ? 'NEW EP' : 'ORIGINAL';
-        const badgeClass = series.isNew ? 'new-ep' : 'original';
+        const badgeLabel = isNewReleaseItem(series) ? 'NEW EP' : 'ORIGINAL';
+        const badgeClass = isNewReleaseItem(series) ? 'new-ep' : 'original';
         item.innerHTML = `
           <div class="tn-rank">${i + 1}</div>
-          <div class="tn-poster"><img src="${series.poster}" alt="${displayTitle}" loading="lazy"></div>
+          <div class="tn-poster"><img src="${series.poster}" alt="${displayTitle}" loading="lazy" onerror="handlePosterError(this)"></div>
           <div class="tn-info">
             <div class="tn-title">${displayTitle}</div>
             <div class="tn-genre">${series.genre || ''}</div>
@@ -9247,8 +9301,8 @@
         }
         return;
       }
-      items.forEach((series, i) => {
-        const card = createContentCard(series, { flavor: true, forceNew: i === 1 });
+      items.forEach((series) => {
+        const card = createContentCard(series, { flavor: true });
         container.appendChild(card);
       });
     }
@@ -9273,6 +9327,11 @@
 
     function renderCatalogSections() {
       const sectionIds = { animeCarousel: 'animeSection', terrorCarousel: 'terrorSection', moviesCarousel: 'moviesSection', tvCarousel: 'tvSection' };
+      const _savedScroll = {};
+      contentSections.forEach(sectionConfig => {
+        const _c = document.getElementById(sectionConfig.carouselId);
+        if (_c) _savedScroll[sectionConfig.carouselId] = _c.scrollLeft;
+      });
       contentSections.forEach(sectionConfig => {
         const carousel = document.getElementById(sectionConfig.carouselId);
         if (!carousel) return;
@@ -9289,6 +9348,7 @@
         }
 
         items.forEach(series => carousel.appendChild(createContentCard(series)));
+        if (_savedScroll[sectionConfig.carouselId] != null) carousel.scrollLeft = _savedScroll[sectionConfig.carouselId];
       });
       renderNewReleaseSection();
       renderTrendingNumbered();
@@ -9330,8 +9390,8 @@
         calendarItem.className = 'history-item upcoming-card';
         calendarItem.innerHTML = `
           <div class="history-item-poster" onclick="showSeriesDetail('${series.id}')">
-            <img src="${series.poster}" alt="${series.title}">
-            <div class="upcoming-rating">${series.rating || 'TV-MA'}</div>
+            <img src="${series.poster}" alt="${series.title}" loading="lazy" onerror="handlePosterError(this)">
+            <div class="upcoming-rating">Clasificación: ${series.rating || 'TV-MA'}</div>
             <div class="upcoming-sound"><i class="fas fa-volume-mute"></i></div>
           </div>
           <div class="history-item-content">
@@ -9478,7 +9538,7 @@
       const series = seriesDatabase[seriesId];
       if (!series) return;
       currentSeries = series;
-      if (series.type === 'movie' || series.type === 'tv') {
+      if (series.type === 'movie' || series.type === 'tv' || series.type === 'shortfilm') {
         openDetailView(seriesId);
         return;
       }
@@ -9496,20 +9556,26 @@
       if (Array.isArray(series.seasons) && series.seasons.length) {
         const flat = series.episodes || [];
         let cursor = 0;
+        const usedFlat = new Set();
         return series.seasons.map((s, i) => {
           const n = s.n || (i + 1);
           return {
             n,
             name: s.name || (t('detail_season') + ' ' + n),
             episodes: (s.episodes || []).map(ep => {
-              // Resolver el índice plano del episodio para reproducir el correcto:
-              // primero se intenta emparejar con la lista plana por videoUrl/id/título,
-              // y si no hay coincidencia se usa un índice acumulativo por temporada.
-              let fi = flat.findIndex(f =>
-                (ep.videoUrl && f.videoUrl && f.videoUrl === ep.videoUrl) ||
-                (ep.id != null && f.id === ep.id) ||
-                (ep.title && f.title && f.title === ep.title));
-              if (fi < 0) { fi = cursor; }
+              // Resolver el índice plano sin reutilizarlo: primero por id único,
+              // luego por videoUrl y por título (solo entre índices aún libres),
+              // y si no hay coincidencia, por posición secuencial.
+              let fi = -1;
+              if (ep.id != null) fi = flat.findIndex((f, i) => !usedFlat.has(i) && f.id === ep.id);
+              if (fi < 0 && ep.videoUrl) fi = flat.findIndex((f, i) => !usedFlat.has(i) && f.videoUrl && f.videoUrl === ep.videoUrl);
+              if (fi < 0 && ep.title) fi = flat.findIndex((f, i) => !usedFlat.has(i) && f.title && f.title === ep.title);
+              if (fi < 0) {
+                fi = cursor;
+                while (usedFlat.has(fi) && fi < flat.length) fi++;
+                if (fi >= flat.length) fi = Math.max(0, flat.length - 1);
+              }
+              usedFlat.add(fi);
               cursor = Math.max(cursor, fi + 1);
               return { ...ep, _flatIdx: fi };
             })
@@ -9613,6 +9679,7 @@
       const seriesId = _detailSeriesId;
       const series = seriesDatabase[seriesId];
       if (!series) return;
+      if (series.isLocked && !isMovieAvailable(series)) { showLockedMessage(series); return; }
       const history = readDetailHistory();
       const item = history.find(h => h.seriesId === seriesId);
       const hasProgress = item && item.progress >= 3 && item.progress <= 94;
@@ -9636,6 +9703,9 @@
     function playDetailEpisode(flatIdx) {
       if (!_detailSeriesId) return;
       const id = _detailSeriesId;
+      const series = seriesDatabase[id];
+      if (!series) return;
+      if (series.isLocked && !isMovieAvailable(series)) { showLockedMessage(series); return; }
       closeDetailView();
       showMiniPlayer(id, flatIdx);
     }
@@ -9765,15 +9835,13 @@
 
     // Funciones de control de video
     function rewind() {
-      if (videoElement) {
-        videoElement.currentTime = Math.max(0, videoElement.currentTime - 10);
-      }
+      if (!videoElement || !Number.isFinite(videoElement.duration) || !Number.isFinite(videoElement.currentTime)) return;
+      videoElement.currentTime = Math.max(0, videoElement.currentTime - 10);
     }
 
     function forward() {
-      if (videoElement) {
-        videoElement.currentTime = Math.min(videoElement.duration, videoElement.currentTime + 10);
-      }
+      if (!videoElement || !Number.isFinite(videoElement.duration) || !Number.isFinite(videoElement.currentTime)) return;
+      videoElement.currentTime = Math.min(videoElement.duration, videoElement.currentTime + 10);
     }
 
     // Función para alternar silencio
@@ -9979,11 +10047,23 @@
       subtitles.forEach(track => {
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'track-option';
+        const isSubActive = videoElement && videoElement.textTracks
+          ? Array.from(videoElement.textTracks).some(tr => tr.mode === 'showing' && (tr.srclang === track || tr.label === getSubtitleTrackLabel(track)))
+          : false;
+        button.className = 'track-option' + (isSubActive ? ' active' : '');
+        button.setAttribute('aria-pressed', isSubActive ? 'true' : 'false');
         button.innerHTML = `
           <span>${getSubtitleTrackLabel(track)}</span>
           <i class="fas fa-check track-check" aria-hidden="true"></i>
         `;
+        button.onclick = () => {
+          if (videoElement && videoElement.textTracks) {
+            Array.from(videoElement.textTracks).forEach(tr => {
+              tr.mode = (tr.srclang === track || tr.label === getSubtitleTrackLabel(track)) ? 'showing' : 'disabled';
+            });
+          }
+          renderTracksModal();
+        };
         subtitlesContainer.appendChild(button);
       });
 
@@ -10613,7 +10693,6 @@
     }
 
     function isBrowseItemNew(item) {
-      if (item.isNew === true || item.isFeatured === true) return true;
       if (!item.createdAt) return false;
       const createdAt = new Date(item.createdAt).getTime();
       return Number.isFinite(createdAt) && Date.now() - createdAt <= 1000 * 60 * 60 * 24 * 30;
@@ -10627,8 +10706,7 @@
 
     function getBrowsePopularity(item) {
       const views = Number(String(item.views || 0).replace(/[^0-9.]/g, '')) || 0;
-      const rating = Number(item.rating) || 0;
-      return (item.isTrending ? 1000000 : 0) + (item.isFeatured ? 500000 : 0) + views + rating * 1000;
+      return views;
     }
 
     function getBrowseResults() {
@@ -10651,7 +10729,7 @@
       if (browseState.sort === 'az') {
         items.sort((a, b) => titleOf(a).localeCompare(titleOf(b), 'es'));
       } else if (browseState.sort === 'popular' || browseState.status === 'popular') {
-        items.sort((a, b) => getBrowsePopularity(b) - getBrowsePopularity(a));
+        items.sort((a, b) => getBrowsePopularity(b) - getBrowsePopularity(a) || (b.isTrending ? 1 : 0) - (a.isTrending ? 1 : 0) || (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
       } else {
         items.sort((a, b) => {
           const dateA = Number(new Date(a.createdAt || a.releaseDate || 0)) || 0;
@@ -11138,6 +11216,8 @@
       document.getElementById('meditDescEs').value   = m.descriptionEs || m.description || '';
       document.getElementById('meditDescEn').value   = m.descriptionEn || '';
       document.getElementById('meditRating').value   = m.rating || 'PG-13';
+      const meditRel = document.getElementById('meditReleaseDate');
+      if (meditRel) meditRel.value = m.releaseDate ? String(m.releaseDate).slice(0, 10) : '';
       document.getElementById('meditOrigLang').value = m.originalLang || '';
       document.getElementById('meditSubEs').checked  = (m.availableSubs || []).includes('es');
       document.getElementById('meditSubEn').checked  = (m.availableSubs || []).includes('en');
@@ -11219,8 +11299,12 @@
         const old = snap.val() || {};
 
         const unifiedTitle = document.getElementById('meditTitle').value.trim();
-        const titleEs  = unifiedTitle;
-        const titleEn  = unifiedTitle;
+        const meditTitleEsEl = document.getElementById('meditTitleEs');
+        const meditTitleEnEl = document.getElementById('meditTitleEn');
+        const titleEs  = (meditTitleEsEl && meditTitleEsEl.value.trim()) || unifiedTitle;
+        const titleEn  = (meditTitleEnEl && meditTitleEnEl.value.trim()) || unifiedTitle;
+        const meditRelEl = document.getElementById('meditReleaseDate');
+        const releaseDateVal = meditRelEl ? meditRelEl.value : (old.releaseDate || '');
         const descEs   = document.getElementById('meditDescEs').value.trim();
         const descEn   = document.getElementById('meditDescEn').value.trim();
 
@@ -11283,6 +11367,7 @@
           isFeatured:     document.getElementById('meditFeatured').checked,
           isTrending:     document.getElementById('meditTrending').checked,
           isLocked:       document.getElementById('meditLocked').checked,
+          releaseDate:    releaseDateVal,
           titleFont,
           episodes:       _miniEditEpisodes,
           seasons:        editSeasons,
@@ -11341,16 +11426,27 @@
 
     function normalizeFirebaseCollection(val) {
       if (!val) return [];
-      return Object.values(val).filter(item => item && item.id);
+      return Object.entries(val)
+        .map(([key, item]) => (item && typeof item === 'object') ? { ...item, id: item.id || key } : item)
+        .filter(item => item && item.id);
     }
 
     // Compatibilidad: las series que ya estaban publicadas se guardaron originalmente
     // en este nodo. Se cargan como Series normales, sin crear una sección Mini.
+    let _legacySeriesIds = new Set();
+    let _catalogSeriesIds = new Set();
+
     async function loadLegacySeries() {
       const legacyRef = database.ref('miniDramas');
       const applySnapshot = snapshot => {
         let changed = false;
-        normalizeFirebaseCollection(snapshot && snapshot.val()).forEach(item => {
+        const incoming = normalizeFirebaseCollection(snapshot && snapshot.val());
+        const incomingIds = new Set(incoming.map(item => item.id));
+        _legacySeriesIds.forEach(id => {
+          if (!incomingIds.has(id) && seriesDatabase[id]) { delete seriesDatabase[id]; changed = true; }
+        });
+        _legacySeriesIds = incomingIds;
+        incoming.forEach(item => {
           seriesDatabase[item.id] = { ...item, type: item.type || 'series' };
           changed = true;
         });
@@ -11375,7 +11471,13 @@
       const catalogRef = database.ref('catalog');
       const applySnapshot = snapshot => {
         let changed = false;
-        normalizeFirebaseCollection(snapshot && snapshot.val()).forEach(item => {
+        const incoming = normalizeFirebaseCollection(snapshot && snapshot.val());
+        const incomingIds = new Set(incoming.map(item => item.id));
+        _catalogSeriesIds.forEach(id => {
+          if (!incomingIds.has(id) && seriesDatabase[id]) { delete seriesDatabase[id]; changed = true; }
+        });
+        _catalogSeriesIds = incomingIds;
+        incoming.forEach(item => {
           seriesDatabase[item.id] = { ...item };
           changed = true;
         });
@@ -11410,6 +11512,7 @@
     }
 
     function openSeriesUpload() {
+      if (!isSeriesAdmin()) return;
       miniUploadData = { coverUrl: null, coverUrlOrig: null, coverUrlEs: null, coverUrlEn: null, episodes: [] };
       miniEpisodeCounter = 0;
       document.getElementById('miniUploadModal').classList.add('active');
@@ -11420,6 +11523,9 @@
       document.getElementById('miniDescInput').value = '';
       const descEn = document.getElementById('miniDescEnInput'); if (descEn) descEn.value = '';
       document.getElementById('miniYearInput').value = '2026';
+      const _mf = document.getElementById('miniFeatured'); if (_mf) _mf.checked = false;
+      const _mt = document.getElementById('miniTrending'); if (_mt) _mt.checked = false;
+      const _mr = document.getElementById('miniReleaseInput'); if (_mr) _mr.value = '';
       document.getElementById('miniSubEs').checked = false;
       document.getElementById('miniSubEn').checked = false;
       document.getElementById('miniSubOrig').checked = false;
@@ -11746,6 +11852,7 @@
     // ── Publicar una serie en Firebase ────────────────────────────────────────
 
     async function saveSeries() {
+      if (!isSeriesAdmin()) return;
       const title = document.getElementById('miniTitleInput').value.trim();
       if (!title) {
         alert(currentLanguage === 'en' ? 'Please enter the series title.' : 'Por favor escribe el título de la serie.');
@@ -11782,9 +11889,10 @@
         const descEnEl = document.getElementById('miniDescEnInput');
         const descEn   = descEnEl ? descEnEl.value.trim() : '';
         const rating   = document.getElementById('miniRatingInput').value;
-        // Un solo campo de título mantiene sincronizados todos los idiomas.
-        const titleEs  = title;
-        const titleEn  = title;
+        const titleEsEl = document.getElementById('miniTitleEsInput');
+        const titleEnEl = document.getElementById('miniTitleEnInput');
+        const titleEs  = (titleEsEl && titleEsEl.value.trim()) || title;
+        const titleEn  = (titleEnEl && titleEnEl.value.trim()) || title;
 
         // Poster URLs
         const posterOrig = miniUploadData.coverUrlOrig || miniUploadData.coverUrl || '';
@@ -11850,8 +11958,9 @@
           descriptionEn:  descEn || descEs,
           director:       'Atenis',
           cast:           '',
-          isFeatured:     false,
-          isTrending:     false,
+          isFeatured:     !!(document.getElementById('miniFeatured') && document.getElementById('miniFeatured').checked),
+          isTrending:     !!(document.getElementById('miniTrending') && document.getElementById('miniTrending').checked),
+          releaseDate:    (document.getElementById('miniReleaseInput') && document.getElementById('miniReleaseInput').value) || '',
           isLocked:       false,
           titleFont,
           episodes,
@@ -11888,6 +11997,8 @@
     let _miniResumeSeekHandler = null;
     let _miniPlayerEpIdx = 0;
     let _miniProgressInterval = null;
+    let _miniLastHistorySaveAt = 0;
+    let _miniLastHistoryPct = -1;
     let _miniEpsSheetOpen = false;
     let _miniSwipeStartX = 0;
     let _miniSwipeStartY = 0;
@@ -12035,6 +12146,7 @@
         vid.removeAttribute('src');
         vid.load();
         showSettingsMessage(t('no_video') || 'Este episodio aún no tiene video disponible.');
+        closeMiniPlayer();
       }
 
       // Load subtitle tracks for this episode
@@ -12044,6 +12156,13 @@
       vid.classList.remove('mini-ending');
       const nextOvl = document.getElementById('miniNextOverlay');
       if (nextOvl) nextOvl.classList.remove('visible');
+      const _nextBtn = document.querySelector('#miniNextOverlay .mini-next-btn');
+      if (_nextBtn) {
+        _nextBtn.innerHTML = '<i class="fas fa-play"></i> <span data-i18n="watch_now">Ver ahora</span>';
+        _nextBtn.onclick = () => _skipToNextMiniEp();
+      }
+      const _nextCount = document.getElementById('miniNextCountdown');
+      if (_nextCount) _nextCount.textContent = '';
       if (window._miniNextCountdown) {
         clearInterval(window._miniNextCountdown);
         window._miniNextCountdown = null;
@@ -12051,6 +12170,7 @@
 
       vid.onplay  = updateMiniPlayBtn;
       vid.onpause = updateMiniPlayBtn;
+      applyMiniSpeed(getMiniSpeed());
       vid.onended = function() {
         if (_miniPlayerEpIdx < eps.length - 1) {
           const nextIdx = _miniPlayerEpIdx + 1;
@@ -12078,6 +12198,27 @@
               if (countEl) countEl.textContent = t('starting_in') + ' ' + secs + '...';
             }
           }, 1000);
+        } else {
+          // Último episodio o película: overlay final con "Volver a ver" y cerrar.
+          vid.classList.add('mini-ending');
+          const titleEl = document.getElementById('miniNextTitle');
+          if (titleEl) titleEl.textContent = getLocalizedMiniTitle(_miniPlayerMini);
+          const overlay = document.getElementById('miniNextOverlay');
+          const countEl = document.getElementById('miniNextCountdown');
+          if (countEl) countEl.textContent = '';
+          const replayBtn = document.querySelector('#miniNextOverlay .mini-next-btn');
+          if (replayBtn) {
+            replayBtn.innerHTML = '<i class="fas fa-rotate-left"></i> Volver a ver';
+            replayBtn.onclick = () => {
+              if (overlay) overlay.classList.remove('visible');
+              vid.classList.remove('mini-ending');
+              try { vid.currentTime = 0; } catch (e) {}
+              vid.play().catch(() => {});
+              updateMiniPlayBtn();
+            };
+          }
+          if (overlay) overlay.classList.add('visible');
+          updateMiniPlayBtn();
         }
       };
 
@@ -12101,9 +12242,14 @@
       if (dEl) dEl.textContent = _fmtTime(vid.duration || 0);
       _updateMiniSubtitleOverlay();
 
-      // Guardar progreso en historial cada vez que se actualiza
+      // Guardar progreso como mucho cada 5 s o si el cambio es >= 1%.
       if (_miniPlayerMini && vid.duration && pct >= 1) {
-        saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, (_miniPlayerMini.type || 'series'), _miniPlayerEpIdx);
+        const now = Date.now();
+        if (now - _miniLastHistorySaveAt >= 5000 || Math.abs(pct - _miniLastHistoryPct) >= 1) {
+          _miniLastHistorySaveAt = now;
+          _miniLastHistoryPct = pct;
+          saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, (_miniPlayerMini.type || 'series'), _miniPlayerEpIdx);
+        }
       }
     }
 
@@ -12160,7 +12306,12 @@
       overlay.classList.add('visible');
     }
 
+    let _miniSubtitleBlobUrls = [];
+
     async function _loadMiniSubtitles(vid, ep, mini) {
+      // Revocar los blobs de subtítulos del episodio anterior antes de crear otros.
+      _miniSubtitleBlobUrls.forEach(url => { try { URL.revokeObjectURL(url); } catch (e) {} });
+      _miniSubtitleBlobUrls = [];
       // Remove all existing tracks
       Array.from(vid.querySelectorAll('track')).forEach(t => t.remove());
       // NOTA: no se resetean _miniCurrentSubLang/_miniCurrentAudioLang aquí:
@@ -12218,6 +12369,7 @@
         let trackUrl = null;
         if (Array.isArray(data)) {
           trackUrl = URL.createObjectURL(new Blob([manualCuesToTextTrack(data)], { type: 'text/' + 'vtt' }));
+          _miniSubtitleBlobUrls.push(trackUrl);
         } else if (typeof data === 'string') {
           trackUrl = data;
         }
@@ -12426,6 +12578,55 @@
       if (_miniPlayerEpIdx > 0) _playMiniEp(_miniPlayerEpIdx - 1);
     }
 
+    const MINI_SPEEDS = [1, 1.25, 1.5, 2, 0.5];
+    function getMiniSpeed() {
+      try {
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}') || {};
+        const s = Number(settings.miniSpeed);
+        return MINI_SPEEDS.includes(s) ? s : 1;
+      } catch (e) { return 1; }
+    }
+    function applyMiniSpeed(rate) {
+      const vid = document.getElementById('miniPlayerVideo');
+      const dubAudio = document.getElementById('miniDubbedAudio');
+      if (vid) vid.playbackRate = rate;
+      if (dubAudio) dubAudio.playbackRate = rate;
+      const btn = document.getElementById('miniSpeedBtn');
+      if (btn) btn.textContent = (rate % 1 === 0 ? rate.toFixed(0) : rate) + 'x';
+    }
+    function cycleMiniSpeed() {
+      const current = getMiniSpeed();
+      const next = MINI_SPEEDS[(MINI_SPEEDS.indexOf(current) + 1) % MINI_SPEEDS.length];
+      try {
+        const settings = JSON.parse(localStorage.getItem('atenis_settings') || '{}') || {};
+        settings.miniSpeed = next;
+        localStorage.setItem('atenis_settings', JSON.stringify(settings));
+      } catch (e) {}
+      applyMiniSpeed(next);
+    }
+
+    // Atajos de teclado del mini-player (solo cuando está activo).
+    document.addEventListener('keydown', (e) => {
+      const player = document.getElementById('miniPlayer');
+      if (!player || !player.classList.contains('active') || !_miniPlayerMini) return;
+      if (e.target && e.target.closest && e.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+      const vid = document.getElementById('miniPlayerVideo');
+      if (!vid) return;
+      if (e.code === 'Space' || e.key === 'k' || e.key === 'K') {
+        e.preventDefault();
+        if (e.code === 'Space' && e.target && e.target.tagName === 'BUTTON') e.target.blur();
+        toggleMiniPlay();
+      }
+      else if (e.key === 'ArrowLeft' || e.key === 'j' || e.key === 'J') { e.preventDefault(); seekMiniRelative(-10); }
+      else if (e.key === 'ArrowRight' || e.key === 'l' || e.key === 'L') { e.preventDefault(); seekMiniRelative(10); }
+      else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+        else player.requestFullscreen().catch(() => {});
+      }
+      else if (e.key === 'm' || e.key === 'M') { vid.muted = !vid.muted; }
+      else if (e.key === 'n' || e.key === 'N') { nextMiniEpisode(); }
+    });
+
     function seekMiniProgress(e) {
       const vid = document.getElementById('miniPlayerVideo');
       const bar = e.currentTarget;
@@ -12477,7 +12678,7 @@
       const description = getLocalizedMiniDesc(m);
       const poster      = getLocalizedMiniPoster(m);
       const year     = m.year || '';
-      const rating   = m.rating ? '★ ' + m.rating : '';
+      const rating   = m.rating ? 'Clasificación: ' + m.rating : '';
       const epCount  = (m.episodes && m.episodes.length) ? m.episodes.length + ' ' + t('ep_count') : '';
       const genres   = (m.genre || '').split(',').map(g => g.trim()).filter(Boolean);
       const duration = m.duration || '';
@@ -13149,13 +13350,19 @@
       }
     }
 
-    function closeCoinUnlockModal() {
+    function closeCoinUnlockModal(fromCancel) {
       const modal = document.getElementById('coinUnlockModal');
       if (modal) {
         modal.classList.remove('active');
         modal.setAttribute('aria-hidden', 'true');
       }
       _pendingCoinUnlock = null;
+      // Cancelación manual: si no hay video reproduciéndose, cerrar también el mini-player.
+      if (fromCancel) {
+        const vid = document.getElementById('miniPlayerVideo');
+        const isPlaying = vid && !vid.paused && vid.currentTime > 0 && !vid.ended;
+        if (!isPlaying) closeMiniPlayer();
+      }
     }
 
     async function unlockPendingEpisode() {
@@ -13212,7 +13419,7 @@
         statsEl.textContent = parts.join(' · ');
       }
       if (ratingEl) {
-        ratingEl.textContent = m.rating ? '★ ' + m.rating : '';
+        ratingEl.textContent = m.rating ? 'Clasificación: ' + m.rating : '';
       }
 
       // Reset tabs to "Episodios" active
