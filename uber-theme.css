@@ -592,10 +592,7 @@ body[style*="linear-gradient"] {
   padding-top: 0 !important;
 }
 
-/* Hide removed category chips and modernize the bottom navigation. */
-.search-category-chips {
-  display: none !important;
-}
+/* Modernize the bottom navigation. */
 
 .bottom-nav {
   left: 0 !important;
@@ -1766,28 +1763,6 @@ button:focus-visible,
   padding-top: 11px;
 }
 
-.search-quick-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.search-quick-tags button {
-  min-height: 34px;
-  padding: 0 13px;
-  border: 1px solid var(--atenis-line);
-  border-radius: 999px;
-  background: var(--atenis-panel);
-  color: var(--atenis-dim);
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.search-quick-tags button:hover {
-  border-color: var(--atenis-coral);
-  color: var(--atenis-coral);
-}
 
 /* Search results are intentionally compact: browsing should not feel like a wall of posters. */
 .search-results-grid {

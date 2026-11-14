@@ -2829,58 +2829,6 @@
       padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
     }
 
-    /* Estado vacío de búsqueda — sugerencias */
-    .search-suggestions {
-      padding: 4px 0 0;
-    }
-
-    .search-suggestions-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: #444444;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 14px;
-    }
-
-    .search-suggestion-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 13px 0;
-      border-bottom: 1px solid #111111;
-      cursor: pointer;
-      transition: opacity 0.15s ease;
-    }
-
-    .search-suggestion-row:hover {
-      opacity: 0.7;
-    }
-
-    .search-suggestion-icon {
-      width: 38px;
-      height: 38px;
-      background: #151515;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #666666;
-      font-size: 14px;
-      flex-shrink: 0;
-    }
-
-    .search-suggestion-text {
-      color: #ffffff;
-      font-size: 15px;
-      font-weight: 500;
-    }
-
-    .search-suggestion-arrow {
-      margin-left: auto;
-      color: #333333;
-      font-size: 12px;
-    }
 
     .search-loading {
       display: flex;
@@ -4298,7 +4246,7 @@
     }
     /* ── Vista de Detalle (Películas y Series) ─────────────────────────── */
     .detail-view {
-      position: fixed; inset: 0; background: #0b0b10; z-index: 4500;
+      position: fixed; inset: 0; background: #0b0b10; z-index: 4500; color: #fff;
       display: none; flex-direction: column; overflow-y: auto;
       -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
     }
@@ -4325,7 +4273,7 @@
       padding: 4px 10px; border-radius: 4px; margin-bottom: 10px;
     }
     .detail-title {
-      font-size: 30px; font-weight: 800; line-height: 1.15; margin: 0 0 10px;
+      font-size: 30px; font-weight: 800; line-height: 1.15; margin: 0 0 10px; color: #fff;
       text-shadow: 0 2px 12px rgba(0,0,0,0.7);
     }
     .detail-meta {
@@ -4388,6 +4336,15 @@
     .detail-ep-desc { font-size: 12px; color: #9a9aa3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .detail-ep-progress { height: 3px; background: #2a2a33; border-radius: 2px; margin-top: 6px; }
     .detail-ep-progress > div { height: 100%; background: #E50914; border-radius: 2px; }
+    .detail-info { margin-top: 6px; }
+    .detail-info-row { display: flex; justify-content: space-between; gap: 16px; padding: 9px 2px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 13px; color: #d2d2d2; }
+    .detail-info-row span:first-child { color: #8e8e93; flex-shrink: 0; }
+    .detail-info-row span:last-child { text-align: right; }
+    .detail-similar { margin-top: 24px; }
+    .detail-similar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .detail-similar-card { cursor: pointer; }
+    .detail-similar-card img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 8px; background: #1d2233; display: block; }
+    .detail-similar-card-title { font-size: 12px; font-weight: 600; color: #fff; margin-top: 6px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* ── Modo cine: películas en el reproductor ─────────────────────────── */
     #miniPlayer.cinema-mode .mini-side-btn.eps-btn,
@@ -5886,16 +5843,6 @@
         <div class="search-loading-text">Buscando...</div>
       </div>
 
-      <!-- Estado vacío: sugerencias -->
-      <div id="searchSuggestions" class="search-suggestions">
-        <div class="search-quick-tags" aria-label="Búsquedas rápidas">
-          <button type="button" onclick="doSuggestedSearch('Acción')">Acción</button>
-          <button type="button" onclick="doSuggestedSearch('Drama')">Drama</button>
-          <button type="button" onclick="doSuggestedSearch('Comedia')">Comedia</button>
-          <button type="button" onclick="doSuggestedSearch('Terror')">Terror</button>
-        </div>
-      </div>
-
       <div id="searchResultsGrid" class="search-results-grid" style="display:none;">
       </div>
 
@@ -6864,6 +6811,14 @@
         <div class="detail-season-tabs" id="detailSeasonTabs"></div>
         <div class="detail-episode-list" id="detailEpisodeList"></div>
       </div>
+      <div class="detail-info" id="detailInfo" style="display:none;">
+        <div class="detail-seasons-label">Detalles</div>
+        <div id="detailInfoRows"></div>
+      </div>
+      <div class="detail-similar" id="detailSimilar" style="display:none;">
+        <div class="detail-seasons-label">Más como esto</div>
+        <div class="detail-similar-grid" id="detailSimilarGrid"></div>
+      </div>
     </div>
   </div>
 
@@ -7568,8 +7523,8 @@
       document.getElementById('searchLoading').classList.add('hidden');
       document.getElementById('searchNoResults').classList.add('hidden');
       // No borrar la consulta anterior: el usuario vuelve a Buscar con su texto.
-      showSearchSuggestions();
       resetBrowseFilters();
+      renderBrowseCatalog();
       if (window.matchMedia('(pointer:fine)').matches || window.innerWidth > 768) {
         document.getElementById('searchSectionInput').focus();
       }
@@ -9639,12 +9594,81 @@
         }
       }
 
+      renderDetailInfo(series);
+      renderDetailSimilar(series);
+
       const view = document.getElementById('detailView');
       if (view) {
         view.classList.add('active');
         view.setAttribute('aria-hidden', 'false');
         view.scrollTop = 0;
       }
+    }
+
+    function renderDetailInfo(series) {
+      const wrap = document.getElementById('detailInfo');
+      const rowsEl = document.getElementById('detailInfoRows');
+      if (!wrap || !rowsEl) return;
+      const rows = [];
+      const add = (label, value) => {
+        if (value === undefined || value === null) return;
+        const v = String(value).trim();
+        if (!v) return;
+        rows.push([label, v]);
+      };
+      add('Año', series.year);
+      if (series.type === 'movie') add('Duración', series.duration);
+      if (series.type === 'tv') {
+        const seasons = getDetailSeasons(series);
+        const totalEps = seasons.reduce((a, s) => a + s.episodes.length, 0);
+        add('Episodios', seasons.length + (seasons.length === 1 ? ' temporada' : ' temporadas') + ' · ' + totalEps + ' episodios');
+      }
+      add('Género', series.genre);
+      add('Clasificación', series.rating);
+      add('Idioma original', series.originalLang);
+      add('Tipo', getDetailTypeLabel(series));
+      rowsEl.innerHTML = '';
+      if (!rows.length) { wrap.style.display = 'none'; return; }
+      rows.forEach(([label, value]) => {
+        const row = document.createElement('div');
+        row.className = 'detail-info-row';
+        const l = document.createElement('span');
+        l.textContent = label;
+        const r = document.createElement('span');
+        r.textContent = value;
+        row.append(l, r);
+        rowsEl.appendChild(row);
+      });
+      wrap.style.display = '';
+    }
+
+    function renderDetailSimilar(series) {
+      const wrap = document.getElementById('detailSimilar');
+      const grid = document.getElementById('detailSimilarGrid');
+      if (!wrap || !grid) return;
+      grid.innerHTML = '';
+      const genre = String(series.genre || '').split(',')[0].trim().toLowerCase();
+      const all = Object.values(seriesDatabase).filter(s => s && s.id && s.id !== series.id && !isDemoItem(s));
+      const sameGenre = all.filter(s => genre && String(s.genre || '').toLowerCase().includes(genre));
+      const sameType = all.filter(s => s.type === series.type && !sameGenre.includes(s));
+      const picks = sameGenre.concat(sameType).slice(0, 6);
+      if (!picks.length) { wrap.style.display = 'none'; return; }
+      picks.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'detail-similar-card';
+        card.onclick = () => showSeriesDetail(item.id);
+        const img = document.createElement('img');
+        img.src = item.poster || '';
+        img.alt = item.spanishTitle || item.title || '';
+        img.loading = 'lazy';
+        img.onerror = () => handlePosterError(img);
+        const t = document.createElement('div');
+        t.className = 'detail-similar-card-title';
+        t.textContent = item.spanishTitle || item.title || '';
+        card.append(img, t);
+        grid.appendChild(card);
+      });
+      wrap.style.display = '';
     }
 
     function closeDetailView() {
@@ -10784,7 +10808,8 @@
       if (select) select.value = 'recent';
       document.querySelectorAll('[data-browse-status]').forEach(item => item.classList.toggle('active', item.dataset.browseStatus === 'all'));
       document.querySelectorAll('[data-browse-genre]').forEach(item => item.classList.toggle('active', item.dataset.browseGenre === ''));
-      showSearchSuggestions();
+      const _sugg = document.getElementById('searchSuggestions');
+      if (_sugg) _sugg.style.display = 'none';
       const meta = document.getElementById('searchResultsMeta');
       if (meta) meta.textContent = '';
       document.getElementById('searchNoResults').classList.add('hidden');
@@ -10801,11 +10826,14 @@
     }
 
     // Mostrar/ocultar sugerencias vs resultados
+    // Las sugerencias ya no existen: mostrar el catálogo completo (Explorar).
+    // renderBrowseCatalog no llama a showSearchSuggestions, así que no hay ciclo.
     function showSearchSuggestions() {
       const suggestions = document.getElementById('searchSuggestions');
-      const grid = document.getElementById('searchResultsGrid');
-      if (suggestions) suggestions.style.display = 'block';
-      if (grid) grid.style.display = 'none';
+      if (suggestions) suggestions.style.display = 'none';
+      const q = document.getElementById('searchSectionInput')?.value.trim() || '';
+      if (q.length === 1) return; // 1 letra: quien llama muestra el aviso de mínimo 2 letras.
+      renderBrowseCatalog();
     }
 
     function hideSearchSuggestions() {
@@ -11424,11 +11452,43 @@
       return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
     }
 
+    // Ronda 5: filtro anti-demo. Detecta contenido de demostración por
+    // marcadores fuertes (título, descripción, flag o id). No toca títulos
+    // reales: exige "demo" como palabra completa al inicio del título, o las
+    // frases exactas de ejemplo / demostración.
+    function isDemoItem(item) {
+      if (!item || typeof item !== 'object') return false;
+      if (item.isDemo === true) return true;
+      if (/demo-/i.test(String(item.id || ''))) return true;
+      const title = String(item.spanishTitle || item.title || '').trim();
+      if (/^demo\b/i.test(title)) return true;
+      const lowTitle = title.toLowerCase();
+      if (lowTitle.includes('de ejemplo') || lowTitle.includes('película de ejemplo') || lowTitle.includes('serie de ejemplo')) return true;
+      const desc = String(item.descriptionEs || item.description || '').toLowerCase();
+      if (desc.includes('demostración') || desc.includes('contenido de demostración')) return true;
+      return false;
+    }
+
+    // Ronda 5: limpieza automática de demos en Firebase (solo admin, una vez
+    // por sesión y por nodo). Si una demo reaparece, se auto-elimina al entrar
+    // el admin. No borra ningún otro ítem.
+    const _demoCleanupDone = { catalog: false, miniDramas: false };
+    function cleanupDemoItems(node, rawVal) {
+      if (!isSeriesAdmin() || _demoCleanupDone[node] || !rawVal || typeof rawVal !== 'object') return;
+      _demoCleanupDone[node] = true;
+      Object.entries(rawVal).forEach(([key, item]) => {
+        if (!item || typeof item !== 'object') return;
+        if (isDemoItem({ ...item, id: item.id || key })) {
+          database.ref(node + '/' + key).remove().catch(err => console.error('Error eliminando ítem demo:', err));
+        }
+      });
+    }
+
     function normalizeFirebaseCollection(val) {
       if (!val) return [];
       return Object.entries(val)
         .map(([key, item]) => (item && typeof item === 'object') ? { ...item, id: item.id || key } : item)
-        .filter(item => item && item.id);
+        .filter(item => item && item.id && !isDemoItem(item));
     }
 
     // Compatibilidad: las series que ya estaban publicadas se guardaron originalmente
@@ -11441,6 +11501,7 @@
       const applySnapshot = snapshot => {
         let changed = false;
         const incoming = normalizeFirebaseCollection(snapshot && snapshot.val());
+        cleanupDemoItems('miniDramas', snapshot && snapshot.val());
         const incomingIds = new Set(incoming.map(item => item.id));
         _legacySeriesIds.forEach(id => {
           if (!incomingIds.has(id) && seriesDatabase[id]) { delete seriesDatabase[id]; changed = true; }
@@ -11472,6 +11533,7 @@
       const applySnapshot = snapshot => {
         let changed = false;
         const incoming = normalizeFirebaseCollection(snapshot && snapshot.val());
+        cleanupDemoItems('catalog', snapshot && snapshot.val());
         const incomingIds = new Set(incoming.map(item => item.id));
         _catalogSeriesIds.forEach(id => {
           if (!incomingIds.has(id) && seriesDatabase[id]) { delete seriesDatabase[id]; changed = true; }
@@ -13588,6 +13650,8 @@
           database.ref('catalog').once('value'),
           database.ref('miniDramas').once('value')
         ]);
+        cleanupDemoItems('catalog', snapCatalog.val());
+        cleanupDemoItems('miniDramas', snapLegacy.val());
         const legacyItems = normalizeFirebaseCollection(snapLegacy.val())
           .map(x => ({ ...x, _node: 'miniDramas' }));
         const items = normalizeFirebaseCollection(snapCatalog.val()).concat(legacyItems)
