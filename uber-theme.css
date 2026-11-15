@@ -65,7 +65,7 @@ body {
 .search-result-item {
   background: #FFFFFF !important;
   border: 1px solid #E7E7E7 !important;
-  border-radius: 12px !important;
+  border-radius: var(--dd-radius-lg) !important;
 }
 
 .info-tab-content {
@@ -474,9 +474,9 @@ body[style*="linear-gradient"] {
   min-height: 38px !important;
   padding: 8px 16px !important;
   border-radius: 999px !important;
-  background: var(--dd-page) !important;
+  background: var(--dd-pill) !important;
   border: 1px solid var(--dd-line) !important;
-  color: var(--dd-secondary) !important;
+  color: #313131 !important;
 }
 
 .search-chip.active,
@@ -550,7 +550,7 @@ body[style*="linear-gradient"] {
   }
 
   .search-section-wrapper #searchSectionInput {
-    font-size: 15px !important;
+    font-size: 16px !important;
   }
 
   .search-category-chips {
@@ -562,14 +562,16 @@ body[style*="linear-gradient"] {
   }
 
   .search-results-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px !important;
   }
 
   .search-result-item {
-    display: grid !important;
-    grid-template-columns: 96px minmax(0, 1fr) !important;
-    min-height: 142px !important;
+    display: block !important;
+  }
+
+  .search-result-description {
+    display: none !important;
   }
 }
 
@@ -1734,23 +1736,36 @@ button:focus-visible,
 }
 
 
-/* Search results are intentionally compact: browsing should not feel like a wall of posters. */
+/* Ronda 7: los resultados de Buscar son una cuadrícula de pósters verticales
+   (2 columnas en móvil). El bloque "compacto" anterior imponía una fila con
+   miniatura de 54 px en todos los anchos y era el que rompía la tarjeta. */
 .search-results-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+@media (max-width: 640px) {
+  .search-results-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
 }
 
 .search-result-item {
-  display: grid !important;
-  grid-template-columns: 54px minmax(0, 1fr);
-  min-height: 74px;
-  border-radius: 13px !important;
+  display: block !important;
+  border-radius: 16px !important;
 }
 
 .search-result-poster {
-  width: 54px !important;
-  height: 74px !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 2 / 3 !important;
+  background: var(--dd-pill) !important;
+}
+
+.search-result-poster img {
+  object-fit: cover !important;
 }
 
 .search-result-content {
@@ -1759,7 +1774,14 @@ button:focus-visible,
 }
 
 .search-result-description {
-  display: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: #313131 !important;
+  font-size: 12px;
+  line-height: 1.4;
+  margin-top: 6px;
 }
 
 .search-category-chips {
@@ -1997,17 +2019,17 @@ button:focus-visible,
 
 .search-chip {
   padding: 8px 14px !important;
-  background: var(--dd-page) !important;
+  background: var(--dd-pill) !important;
   border-color: var(--dd-line) !important;
-  color: var(--dd-secondary) !important;
+  color: #313131 !important;
   font-size: 11px !important;
 }
 
 .search-chip:hover,
 .search-chip.active {
-  background: var(--dd-red) !important;
-  border-color: var(--dd-red) !important;
-  color: #FDECEC !important;
+  background: #191919 !important;
+  border-color: #191919 !important;
+  color: #FFFFFF !important;
 }
 
 .search-browse-toolbar {
@@ -2035,10 +2057,10 @@ button:focus-visible,
 .search-genre-chip {
   flex: 0 0 auto;
   padding: 6px 10px;
-  border: 1px solid transparent;
+  border: 1px solid var(--dd-line);
   border-radius: 999px;
-  background: transparent;
-  color: var(--dd-secondary);
+  background: var(--dd-pill);
+  color: #313131;
   font-size: 10px;
   font-weight: 600;
   white-space: nowrap;
@@ -2047,9 +2069,9 @@ button:focus-visible,
 
 .search-genre-chip:hover,
 .search-genre-chip.active {
-  border-color: rgba(244,200,107,.35);
-  background: rgba(244,200,107,.1);
-  color: var(--dd-red);
+  border-color: #191919;
+  background: #191919;
+  color: #FFFFFF;
 }
 
 .search-sort-control {
@@ -2058,20 +2080,22 @@ button:focus-visible,
   gap: 6px;
   flex: 0 0 auto;
   color: var(--dd-secondary);
-  font-size: 10px;
+  font-size: 13px;
   white-space: nowrap;
 }
 
 .search-sort-control select {
-  max-width: 112px;
-  padding: 7px 8px;
+  width: auto;
+  min-width: 168px;
+  max-width: none;
+  padding: 8px 10px;
   border: 1px solid var(--dd-line);
   border-radius: 8px;
   outline: none;
   background: var(--dd-page);
   color: var(--dd-ink);
   font-family: inherit;
-  font-size: 10px;
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -2720,6 +2744,9 @@ input, textarea, select, .form-input, .search-input {
 .search-chip.active, .search-genre-chip.active, .filter-chip.active,
 .chip.active {
   background: #191919 !important;
+  border-color: #191919 !important;
+  outline: none !important;
+  box-shadow: none !important;
   color: #FFFFFF !important;
 }
 /* Modales / toasts / sheets: tarjeta blanca, hairline, backdrop neutro. */
