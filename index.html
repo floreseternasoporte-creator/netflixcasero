@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Atenis</title>
-  <meta name="theme-color" content="#FFFFFF">
+  <meta name="theme-color" content="#131921">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
@@ -19,7 +19,7 @@
     body {
       background: #FFFFFF;
       font-family: "Inter", -apple-system, "SF Pro", "Segoe UI", Roboto, sans-serif;
-      color: #191919;
+      color: #0F1111;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -41,22 +41,22 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #E7E7E7;
+      border-bottom: 1px solid #D5D9D9;
     }
 
     .logo {
       font-size: 24px;
       font-weight: 700;
-      color: #191919;
+      color: #0F1111;
       letter-spacing: -0.5px;
     }
 
     .header-login {
       background: transparent;
-      border: 1px solid #E7E7E7;
-      color: #191919;
+      border: 1px solid #D5D9D9;
+      color: #0F1111;
       padding: 10px 20px;
-      border-radius: 9999px;
+      border-radius: 8px;
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
@@ -65,8 +65,8 @@
     }
 
     .header-login:hover {
-      background: #F1F1F1;
-      border-color: #E7E7E7;
+      background: #F0F2F2;
+      border-color: #D5D9D9;
     }
 
     /* Hero Section */
@@ -83,9 +83,9 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(235,23,0,0.08);
-      border: 1px solid rgba(235,23,0,0.3);
-      color: #EB1700;
+      background: rgba(255,153,0,0.08);
+      border: 1px solid rgba(255,153,0,0.3);
+      color: #FF9900;
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 0.08em;
@@ -98,19 +98,19 @@
     .hero-title {
       font-size: clamp(52px, 10vw, 88px);
       font-weight: 700;
-      color: #191919;
+      color: #0F1111;
       letter-spacing: -3px;
       line-height: 0.95;
       margin-bottom: 24px;
     }
 
     .hero-title span {
-      color: #EB1700;
+      color: #FF9900;
     }
 
     .hero-description {
       font-size: 18px;
-      color: #6B6B6B;
+      color: #565959;
       line-height: 1.6;
       margin-bottom: 44px;
       font-weight: 400;
@@ -124,12 +124,12 @@
     }
 
     .btn-primary {
-      background: #EB1700;
-      color: #FFFFFF;
+      background: #FFD814;
+      color: #0F1111;
       border: none;
       padding: 16px 32px;
       min-height: 48px;
-      border-radius: 9999px;
+      border-radius: 8px;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
@@ -142,16 +142,16 @@
     }
 
     .btn-primary:hover {
-      background: #C31500;
+      background: #F7CA00;
     }
 
     .btn-outline {
       background: transparent;
-      color: #191919;
-      border: 1px solid #E7E7E7;
+      color: #0F1111;
+      border: 1px solid #D5D9D9;
       padding: 16px 32px;
       min-height: 48px;
-      border-radius: 9999px;
+      border-radius: 8px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
@@ -164,8 +164,8 @@
     }
 
     .btn-outline:hover {
-      background: #F1F1F1;
-      border-color: #E7E7E7;
+      background: #F0F2F2;
+      border-color: #D5D9D9;
     }
 
     /* Stats row */
@@ -174,7 +174,7 @@
       gap: 40px;
       margin-top: 64px;
       padding-top: 40px;
-      border-top: 1px solid #E7E7E7;
+      border-top: 1px solid #D5D9D9;
       flex-wrap: wrap;
     }
 
@@ -183,7 +183,7 @@
     .stat-value {
       font-size: 28px;
       font-weight: 700;
-      color: #191919;
+      color: #0F1111;
       letter-spacing: -0.5px;
       margin-bottom: 4px;
     }
@@ -214,7 +214,7 @@
       flex: 1;
       max-width: 500px;
       margin: 0 auto;
-      background: #F7F7F7;
+      background: #F0F2F2;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -235,7 +235,7 @@
       align-items: flex-start;
       gap: 16px;
       padding: 20px 0;
-      border-bottom: 1px solid #E7E7E7;
+      border-bottom: 1px solid #D5D9D9;
     }
 
     .feature-row:last-of-type {
@@ -246,13 +246,13 @@
       width: 40px;
       height: 40px;
       background: #FFFFFF;
-      border: 1px solid #E7E7E7;
+      border: 1px solid #D5D9D9;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: #EB1700;
+      color: #007185;
       font-size: 16px;
     }
 
@@ -274,7 +274,7 @@
     .right-cta {
       margin-top: 40px;
       padding-top: 32px;
-      border-top: 1px solid #E7E7E7;
+      border-top: 1px solid #D5D9D9;
     }
 
     .right-cta-text {
@@ -419,8 +419,8 @@
     }
 
     .badge-top {
-      background: #EB1700;
-      color: #FFFFFF;
+      background: #FF9900;
+      color: #0F1111;
       font-size: 11px;
       font-weight: 800;
       padding: 3px 8px;
@@ -527,7 +527,7 @@
     .slide-play-btn {
       width: 48px;
       height: 48px;
-      background: #EB1700;
+      background: #FFD814;
       border: none;
       border-radius: 50%;
       display: flex;
@@ -540,7 +540,7 @@
     }
 
     .slide-play-btn:hover {
-      background: #C31500;
+      background: #F7CA00;
       transform: scale(1.08);
     }
 
@@ -595,7 +595,7 @@
     }
 
     .slider-dot.active {
-      background: #EB1700;
+      background: #FF9900;
       width: 22px;
       border-radius: 4px;
     }
@@ -622,8 +622,8 @@
     }
 
     .slider-arrow:hover {
-      background: rgba(235,23,0,0.35);
-      border-color: #EB1700;
+      background: rgba(255,153,0,0.35);
+      border-color: #FF9900;
     }
 
     .slider-arrow-prev { left: 16px; }
@@ -635,7 +635,7 @@
       bottom: 0;
       left: 0;
       height: 2px;
-      background: #EB1700;
+      background: #FF9900;
       z-index: 10;
       transition: width 0.1s linear;
     }
@@ -651,7 +651,7 @@
     .section-divider-line {
       width: 3px;
       height: 20px;
-      background: #EB1700;
+      background: #FF9900;
       border-radius: 2px;
       flex-shrink: 0;
     }
@@ -673,7 +673,7 @@
       .right-side {
         flex: none;
         border-left: none;
-        border-top: 1px solid #E7E7E7;
+        border-top: 1px solid #D5D9D9;
         padding: 48px 28px;
       }
 
@@ -706,7 +706,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=9">
+  <link rel="stylesheet" href="uber-theme.css?v=10">
 </head>
 <body>
 
@@ -812,11 +812,11 @@
       if (item.isLocked && !_isAvailable(item))
         return { text: 'ESTRENO', color: '#ff6b00' };
       const map = {
-        'movie':     { text: 'PELÍCULA',     color: '#EB1700' },
-        'series':    { text: 'SERIE',         color: '#EB1700' },
-        'shortfilm': { text: 'CORTOMETRAJE',  color: '#EB1700' },
+        'movie':     { text: 'PELÍCULA',     color: '#FF9900' },
+        'series':    { text: 'SERIE',         color: '#FF9900' },
+        'shortfilm': { text: 'CORTOMETRAJE',  color: '#FF9900' },
       };
-      return map[item.type] || { text: 'ORIGINAL', color: '#EB1700' };
+      return map[item.type] || { text: 'ORIGINAL', color: '#FF9900' };
     }
 
     function _typeLabel(type) {
@@ -827,13 +827,13 @@
     // disponible (index.html es estático y no consulta Firebase).
     function _buildFallbackSlides(slider, dotsEl, arrowPrev) {
       const promos = [
-        { badge: 'ORIGINAL', color: '#EB1700', title: 'Atenis Originals',
+        { badge: 'ORIGINAL', color: '#FF9900', title: 'Atenis Originals',
           desc: 'Películas, series y minis creados para ti. Historias que no verás en ningún otro lugar.',
           tag: 'Exclusivo' },
-        { badge: 'MINIS', color: '#EB1700', title: 'Minis verticales',
+        { badge: 'MINIS', color: '#FF9900', title: 'Minis verticales',
           desc: 'Dramas cortos en formato vertical, perfectos para ver donde quieras, cuando quieras.',
           tag: 'Nuevo' },
-        { badge: '4K', color: '#EB1700', title: 'Calidad cinematográfica',
+        { badge: '4K', color: '#FF9900', title: 'Calidad cinematográfica',
           desc: 'Imagen nítida y sonido envolvente en todos tus dispositivos. Crea tu cuenta gratis.',
           tag: 'HD · 4K' },
       ];
