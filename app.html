@@ -3155,8 +3155,8 @@
 
     .settings-content {
       padding: 0;
-      max-width: 640px;
-      margin: 0 auto;
+      max-width: none;  /* R13P2: Ajustes de borde a borde */
+      margin: 0;
     }
 
     /* ── Netflix-style settings nav rows ── */
@@ -5590,7 +5590,7 @@
     }
 
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=12">
+  <link rel="stylesheet" href="uber-theme.css?v=13">
 </head>
 <body>
   <div id="google_translate_element" style="display: none;"></div>
@@ -7555,6 +7555,7 @@
 
     function topBarSettings() {
       hideAllSections();
+      hideBottomNav();  // R13P2: Ajustes a pantalla completa, sin píldora
       document.getElementById('settingsSection').classList.add('active');
       document.body.classList.add('settings-open');
       document.getElementById('topBar').classList.add('top-bar--solid');
@@ -7605,7 +7606,9 @@
 
         if (delta > 0 && currentTop > 80) {
           hideBottomNav();
-        } else {
+        } else if (!document.body.classList.contains('settings-open')) {
+          // R13P2: con Ajustes abierto el scroll hacia arriba no
+          // vuelve a mostrar la píldora (taparía el contenido).
           showBottomNav();
         }
 
@@ -7651,7 +7654,7 @@
     // Mostrar sección de ajustes
     function showSettingsSection() {
       hideAllSections();
-      showBottomNav();
+      hideBottomNav();  // R13P2: Ajustes a pantalla completa, sin píldora
       setTopBarMode(true);
       document.getElementById('settingsSection').classList.add('active');
       document.body.classList.add('settings-open');
@@ -7933,7 +7936,9 @@
     // con scroll horizontal; el tap en el póster abre el detalle.
     function browsePosterCard(series) {
       const card = document.createElement('div');
-      card.className = 'browse-poster-card';
+      // Ronda 13 P1: películas y cortos en tarjeta apaisada 16:9 (Disney+);
+      // series y miniseries siguen verticales 2/3.
+      card.className = 'browse-poster-card' + ((series.type === 'movie' || series.type === 'shortfilm') ? ' browse-poster-card--landscape' : '');
       card.setAttribute('role', 'button');
       card.setAttribute('tabindex', '0');
       card.setAttribute('aria-label', series.spanishTitle || series.title || '');
@@ -7969,7 +7974,8 @@
 
     // Filas de Explorar: solo con datos reales y solo las no vacías.
     // "Todo el catálogo" siempre; por género solo con 2+ títulos (cada título
-    // va a la fila de su primer género); "Miniseries" solo con 2+ minis.
+    // va a la fila de su primer género); "Miniseries" solo con 2+ minis;
+    // "Películas" solo con 2+ películas (Ronda 13 P1).
     function renderBrowseRows(items) {
       const resultsGrid = document.getElementById('searchResultsGrid');
       const noResults = document.getElementById('searchNoResults');
@@ -7994,6 +8000,8 @@
       });
       const minis = list.filter(item => !['movie', 'tv', 'shortfilm'].includes(item.type));
       if (minis.length >= 2) resultsGrid.appendChild(browseRow('Miniseries', minis));
+      const movies = list.filter(item => item.type === 'movie');
+      if (movies.length >= 2) resultsGrid.appendChild(browseRow('Películas', movies));
     }
 
     // Funciones para tabs de información
@@ -9446,7 +9454,11 @@
 
     function createContentCard(series, opts = {}) {
       const card = document.createElement('div');
-      card.className = opts.flavor ? 'flavor-card' : (opts.newRelease ? 'nr-card' : 'carousel-item');
+      // Ronda 13 P1: en Nuevo Lanzamiento las películas y cortos van en
+      // tarjeta apaisada 16:9 (Disney+); el resto vertical 2/3. Tendencias
+      // numeradas, carruseles por género y "Quizás te guste" no cambian.
+      const isLandscapeType = series.type === 'movie' || series.type === 'shortfilm';
+      card.className = opts.flavor ? 'flavor-card' : (opts.newRelease ? 'nr-card' + (isLandscapeType ? ' nr-card--landscape' : '') : 'carousel-item');
       card.onclick = () => showSeriesDetail(series.id);
       const isLocked = series.isLocked && !isMovieAvailable(series);
 

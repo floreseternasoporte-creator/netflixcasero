@@ -722,6 +722,13 @@ body.settings-open {
   display: flex !important;
 }
 
+/* Ronda 13 Parte 2: con Ajustes abierto la píldora inferior no existe.
+   Ningún camino JS puede volver a mostrarla; al cerrar se quita
+   body.settings-open y la barra vuelve sola. */
+body.settings-open .bottom-nav {
+  display: none !important;
+}
+
 .settings-section > .settings-header {
   flex: 0 0 auto;
 }
@@ -737,7 +744,7 @@ body.settings-open {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
   touch-action: pan-y;
-  padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)) !important;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;  /* R13P2: barra oculta */
 }
 
 .settings-sub {
@@ -1626,7 +1633,7 @@ button:focus-visible,
 }
 
 .settings-sub-body {
-  padding: 22px 20px 100px !important;
+  padding: 22px 20px calc(24px + env(safe-area-inset-bottom, 0px)) !important;  /* R13P2: barra oculta */
 }
 
 .coin-wallet-card {
@@ -2970,6 +2977,27 @@ body { font-family: var(--am-font) !important; }
   .browse-poster-card { flex-basis: 200px !important; }
   .browse-row-title { font-size: 22px !important; padding: 22px 24px 12px !important; }
   .browse-row-track { padding: 0 24px 8px !important; }
+}
+/* Ronda 13 P1 — tarjetas apaisadas 16:9 (Disney+) para películas y cortos.
+   Solo la imagen con object-fit:cover; mismo scroll horizontal con snap
+   que las verticales. En móvil la siguiente asoma por el borde (72%). */
+.browse-poster-card--landscape {
+  flex: 0 0 72% !important;
+  aspect-ratio: 16 / 9 !important;
+  /* En filas mixtas el carril estira los ítems; sin esto la tarjeta
+     perdería el 16:9 y se alargaría hasta la altura de las verticales. */
+  align-self: flex-start !important;
+}
+@media (min-width: 768px) {
+  .browse-poster-card--landscape { flex-basis: 320px !important; }
+}
+/* Ronda 13 P1 — Nuevo Lanzamiento: películas y cortos apaisados 16:9. */
+.new-release-scroll .nr-card--landscape {
+  width: 210px !important;
+  aspect-ratio: 16 / 9 !important;
+  /* Igual que arriba: sin esto el flex estira la tarjeta a la altura
+     de las verticales (189px) y el 16:9 se pierde. */
+  align-self: flex-start !important;
 }
 /* Compat: si llega HTML viejo en caché, sus tarjetas también quedan solo-póster. */
 .search-section .search-result-content { display: none !important; }
