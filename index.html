@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Atenis</title>
+  <meta name="theme-color" content="#FFFFFF">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
@@ -16,9 +17,9 @@
     }
 
     body {
-      background: #000000;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-      color: #ffffff;
+      background: #FFFFFF;
+      font-family: "Inter", -apple-system, "SF Pro", "Segoe UI", Roboto, sans-serif;
+      color: #191919;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -33,29 +34,29 @@
       left: 0;
       right: 0;
       padding: 20px 28px;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(255,255,255,0.85);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #1a1a1a;
+      border-bottom: 1px solid #E7E7E7;
     }
 
     .logo {
       font-size: 24px;
       font-weight: 700;
-      color: #ffffff;
+      color: #191919;
       letter-spacing: -0.5px;
     }
 
     .header-login {
       background: transparent;
-      border: 1px solid #3a3a3a;
-      color: #ffffff;
+      border: 1px solid #E7E7E7;
+      color: #191919;
       padding: 10px 20px;
-      border-radius: 8px;
+      border-radius: 9999px;
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
@@ -64,8 +65,8 @@
     }
 
     .header-login:hover {
-      background: #161616;
-      border-color: #555555;
+      background: #F1F1F1;
+      border-color: #E7E7E7;
     }
 
     /* Hero Section */
@@ -82,9 +83,9 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(6, 193, 103, 0.12);
-      border: 1px solid rgba(6, 193, 103, 0.3);
-      color: #06C167;
+      background: rgba(235,23,0,0.08);
+      border: 1px solid rgba(235,23,0,0.3);
+      color: #EB1700;
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 0.08em;
@@ -96,20 +97,20 @@
 
     .hero-title {
       font-size: clamp(52px, 10vw, 88px);
-      font-weight: 800;
-      color: #ffffff;
+      font-weight: 700;
+      color: #191919;
       letter-spacing: -3px;
       line-height: 0.95;
       margin-bottom: 24px;
     }
 
     .hero-title span {
-      color: #06C167;
+      color: #EB1700;
     }
 
     .hero-description {
       font-size: 18px;
-      color: #ababab;
+      color: #6B6B6B;
       line-height: 1.6;
       margin-bottom: 44px;
       font-weight: 400;
@@ -123,11 +124,12 @@
     }
 
     .btn-primary {
-      background: #06C167;
-      color: #000000;
+      background: #EB1700;
+      color: #FFFFFF;
       border: none;
       padding: 16px 32px;
-      border-radius: 8px;
+      min-height: 48px;
+      border-radius: 9999px;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
@@ -140,15 +142,16 @@
     }
 
     .btn-primary:hover {
-      background: #049451;
+      background: #C31500;
     }
 
     .btn-outline {
       background: transparent;
-      color: #ffffff;
-      border: 1px solid #3a3a3a;
+      color: #191919;
+      border: 1px solid #E7E7E7;
       padding: 16px 32px;
-      border-radius: 8px;
+      min-height: 48px;
+      border-radius: 9999px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
@@ -161,8 +164,8 @@
     }
 
     .btn-outline:hover {
-      background: #111111;
-      border-color: #555555;
+      background: #F1F1F1;
+      border-color: #E7E7E7;
     }
 
     /* Stats row */
@@ -171,7 +174,7 @@
       gap: 40px;
       margin-top: 64px;
       padding-top: 40px;
-      border-top: 1px solid #1a1a1a;
+      border-top: 1px solid #E7E7E7;
       flex-wrap: wrap;
     }
 
@@ -180,7 +183,7 @@
     .stat-value {
       font-size: 28px;
       font-weight: 700;
-      color: #ffffff;
+      color: #191919;
       letter-spacing: -0.5px;
       margin-bottom: 4px;
     }
@@ -211,7 +214,7 @@
       flex: 1;
       max-width: 500px;
       margin: 0 auto;
-      background: #080808;
+      background: #F7F7F7;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -232,7 +235,7 @@
       align-items: flex-start;
       gap: 16px;
       padding: 20px 0;
-      border-bottom: 1px solid #1a1a1a;
+      border-bottom: 1px solid #E7E7E7;
     }
 
     .feature-row:last-of-type {
@@ -242,14 +245,14 @@
     .feature-row-icon {
       width: 40px;
       height: 40px;
-      background: #111111;
-      border: 1px solid #2d2d2d;
+      background: #FFFFFF;
+      border: 1px solid #E7E7E7;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: #06C167;
+      color: #EB1700;
       font-size: 16px;
     }
 
@@ -271,7 +274,7 @@
     .right-cta {
       margin-top: 40px;
       padding-top: 32px;
-      border-top: 1px solid #1a1a1a;
+      border-top: 1px solid #E7E7E7;
     }
 
     .right-cta-text {
@@ -416,8 +419,8 @@
     }
 
     .badge-top {
-      background: #06C167;
-      color: #000;
+      background: #EB1700;
+      color: #FFFFFF;
       font-size: 11px;
       font-weight: 800;
       padding: 3px 8px;
@@ -524,7 +527,7 @@
     .slide-play-btn {
       width: 48px;
       height: 48px;
-      background: #06C167;
+      background: #EB1700;
       border: none;
       border-radius: 50%;
       display: flex;
@@ -537,12 +540,12 @@
     }
 
     .slide-play-btn:hover {
-      background: #04a554;
+      background: #C31500;
       transform: scale(1.08);
     }
 
     .slide-play-btn i {
-      color: #000;
+      color: #FFFFFF;
       font-size: 17px;
       margin-left: 2px;
     }
@@ -592,7 +595,7 @@
     }
 
     .slider-dot.active {
-      background: #06C167;
+      background: #EB1700;
       width: 22px;
       border-radius: 4px;
     }
@@ -604,7 +607,7 @@
       transform: translateY(-50%);
       width: 40px;
       height: 40px;
-      background: rgba(0,0,0,0.5);
+      background: rgba(25,25,25,0.5);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 50%;
       color: #ffffff;
@@ -619,8 +622,8 @@
     }
 
     .slider-arrow:hover {
-      background: rgba(6,193,103,0.35);
-      border-color: #06C167;
+      background: rgba(235,23,0,0.35);
+      border-color: #EB1700;
     }
 
     .slider-arrow-prev { left: 16px; }
@@ -632,7 +635,7 @@
       bottom: 0;
       left: 0;
       height: 2px;
-      background: #06C167;
+      background: #EB1700;
       z-index: 10;
       transition: width 0.1s linear;
     }
@@ -648,7 +651,7 @@
     .section-divider-line {
       width: 3px;
       height: 20px;
-      background: #06C167;
+      background: #EB1700;
       border-radius: 2px;
       flex-shrink: 0;
     }
@@ -670,7 +673,7 @@
       .right-side {
         flex: none;
         border-left: none;
-        border-top: 1px solid #1a1a1a;
+        border-top: 1px solid #E7E7E7;
         padding: 48px 28px;
       }
 
@@ -809,11 +812,11 @@
       if (item.isLocked && !_isAvailable(item))
         return { text: 'ESTRENO', color: '#ff6b00' };
       const map = {
-        'movie':     { text: 'PELÍCULA',     color: '#06C167' },
-        'series':    { text: 'SERIE',         color: '#0066dd' },
-        'shortfilm': { text: 'CORTOMETRAJE',  color: '#06C167' },
+        'movie':     { text: 'PELÍCULA',     color: '#EB1700' },
+        'series':    { text: 'SERIE',         color: '#EB1700' },
+        'shortfilm': { text: 'CORTOMETRAJE',  color: '#EB1700' },
       };
-      return map[item.type] || { text: 'ORIGINAL', color: '#06C167' };
+      return map[item.type] || { text: 'ORIGINAL', color: '#EB1700' };
     }
 
     function _typeLabel(type) {
@@ -824,13 +827,13 @@
     // disponible (index.html es estático y no consulta Firebase).
     function _buildFallbackSlides(slider, dotsEl, arrowPrev) {
       const promos = [
-        { badge: 'ORIGINAL', color: '#06C167', title: 'Atenis Originals',
+        { badge: 'ORIGINAL', color: '#EB1700', title: 'Atenis Originals',
           desc: 'Películas, series y minis creados para ti. Historias que no verás en ningún otro lugar.',
           tag: 'Exclusivo' },
-        { badge: 'MINIS', color: '#b45cf2', title: 'Minis verticales',
+        { badge: 'MINIS', color: '#EB1700', title: 'Minis verticales',
           desc: 'Dramas cortos en formato vertical, perfectos para ver donde quieras, cuando quieras.',
           tag: 'Nuevo' },
-        { badge: '4K', color: '#0066dd', title: 'Calidad cinematográfica',
+        { badge: '4K', color: '#EB1700', title: 'Calidad cinematográfica',
           desc: 'Imagen nítida y sonido envolvente en todos tus dispositivos. Crea tu cuenta gratis.',
           tag: 'HD · 4K' },
       ];

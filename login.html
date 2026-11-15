@@ -2,8 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>Atenis — Acceso</title>
+  <meta name="theme-color" content="#FFFFFF">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,17 +16,17 @@
 
   <style>
     :root {
-      --bg:          #000000;
-      --surface:     #0a0a0a;
-      --surface-el:  #111111;
-      --border:      #1a1a1a;
-      --border-str:  #2a2a2a;
-      --text:        #ffffff;
-      --muted:       #8b8b8b;
-      --subtle:      #555555;
-      --accent:      #06C167;
-      --accent-hov:  #049451;
-      --accent-glow: rgba(6,193,103,0.22);
+      --bg:          #FFFFFF;
+      --surface:     #FFFFFF;
+      --surface-el:  #F7F7F7;
+      --border:      #E7E7E7;
+      --border-str:  #E7E7E7;
+      --text:        #191919;
+      --muted:       #6B6B6B;
+      --subtle:      #6B6B6B;
+      --accent:      #EB1700;
+      --accent-hov:  #C31500;
+      --accent-glow: rgba(235,23,0,0.14);
       --danger:      #ef4444;
       --danger-soft: rgba(239,68,68,0.12);
       --good:        #22c55e;
@@ -49,8 +50,8 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(6,193,103,0.15) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 90% 90%, rgba(6,193,103,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(235,23,0,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 90% 90%, rgba(235,23,0,0.03) 0%, transparent 50%),
         var(--bg);
       z-index: 0;
     }
@@ -58,8 +59,8 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(6,193,103,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(6,193,103,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(235,23,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(235,23,0,0.03) 1px, transparent 1px);
       background-size: 48px 48px;
       z-index: 0;
       mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
@@ -94,7 +95,7 @@
       width: 44px;
       height: 44px;
       border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent) 0%, #049451 100%);
+      background: linear-gradient(135deg, var(--accent) 0%, #C31500 100%);
       box-shadow: 0 0 32px rgba(6,193,103,0.4);
       display: flex;
       align-items: center;
@@ -126,7 +127,7 @@
       padding: 4px;
       border: 1px solid var(--border);
       border-radius: 999px;
-      background: rgba(255,255,255,0.03);
+      background: rgba(25,25,25,0.03);
       margin-bottom: 28px;
     }
     .auth-tab {
@@ -144,7 +145,7 @@
     .auth-tab.active {
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 2px 12px rgba(6,193,103,0.35);
+      box-shadow: 0 2px 12px rgba(235,23,0,0.25);
     }
 
     /* View anim */
@@ -195,7 +196,7 @@
       padding: 13px 44px 13px 42px;
       border: 1px solid var(--border);
       border-radius: 12px;
-      background: rgba(255,255,255,0.04);
+      background: rgba(25,25,25,0.04);
       color: var(--text);
       font-family: var(--font);
       font-size: 15px;
@@ -205,7 +206,7 @@
     }
     .form-input:focus {
       border-color: var(--accent);
-      background: rgba(6,193,103,0.06);
+      background: rgba(235,23,0,0.06);
       box-shadow: 0 0 0 3px rgba(6,193,103,0.15);
     }
     .form-input::placeholder { color: var(--subtle); }
@@ -261,7 +262,7 @@
       transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
       box-shadow: 0 8px 24px rgba(6,193,103,0.28);
     }
-    .auth-btn:hover { background: var(--accent-hov); transform: translateY(-1px); box-shadow: 0 12px 32px rgba(6,193,103,0.35); }
+    .auth-btn:hover { background: var(--accent-hov); transform: translateY(-1px); box-shadow: 0 12px 32px rgba(235,23,0,0.25); }
     .auth-btn:active { transform: translateY(0) scale(0.99); }
     .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .auth-btn .btn-spinner {
@@ -639,18 +640,34 @@
     async function handleForgot(e) {
       e.preventDefault();
       const email = document.getElementById('forgotEmail').value.trim();
-      const btn   = document.getElementById('forgotBtn');
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showMessage('Ingresa un correo válido');
+        return;
+      }
+      const btn = document.getElementById('forgotBtn');
+      // Cooldown local de 60 s entre envíos.
+      const _lastForgot = Number(localStorage.getItem('atenis_forgot_cooldown') || 0);
+      if (Date.now() - _lastForgot < 60000) {
+        showMessage('Espera un momento antes de pedir otro enlace.');
+        return;
+      }
       setBtnLoading(btn, true);
       hideMessage();
       try {
+        localStorage.setItem('atenis_forgot_cooldown', String(Date.now()));
         await auth.sendPasswordResetEmail(email);
-        document.querySelector('#viewForgot form').style.display = 'none';
-        document.getElementById('forgotSuccess').style.display = 'block';
-      } catch(err) {
-        showMessage(getErrMsg(err.code));
-      } finally {
-        setBtnLoading(btn, false);
+      } catch (err) {
+        console.error('Error enviando enlace de recuperación:', err);
       }
+      // Mensaje genérico SIEMPRE: no revela si la cuenta existe.
+      document.querySelector('#viewForgot form').style.display = 'none';
+      const _forgotOk = document.getElementById('forgotSuccess');
+      if (_forgotOk) {
+        _forgotOk.style.display = 'block';
+        const _forgotMsg = _forgotOk.querySelector('p');
+        if (_forgotMsg) _forgotMsg.textContent = 'Si existe una cuenta con ese correo, te enviamos el enlace.';
+      }
+      setBtnLoading(btn, false);
     }
 
     function setBtnLoading(btn, loading) {
@@ -686,14 +703,25 @@
       const map = [
         { w: '0%',   bg: 'transparent' },
         { w: '25%',  bg: '#ef4444' },
-        { w: '50%',  bg: '#f97316' },
-        { w: '75%',  bg: '#eab308' },
-        { w: '90%',  bg: '#84cc16' },
-        { w: '100%', bg: '#22c55e' },
+        { w: '50%',  bg: '#EB1700' },
+        { w: '75%',  bg: '#EB1700' },
+        { w: '90%',  bg: '#EB1700' },
+        { w: '100%', bg: '#EB1700' },
       ];
       const s = map[score] || map[0];
       fill.style.width = s.w;
       fill.style.background = s.bg;
+    }
+
+    // Ronda 6 (A5): lista de permiso de suscripción (misma regla que app.html).
+    function isSubscriptionValid(sub) {
+      if (!sub || typeof sub !== 'object') return false;
+      if (sub.status === 'active') return true;
+      if (sub.status === 'trial') {
+        const end = Number(sub.trialEndDate);
+        return Number.isFinite(end) && end > 0 && Date.now() < end;
+      }
+      return false;
     }
 
     async function checkUserSubscription(user) {
@@ -705,20 +733,12 @@
           try { await auth.signOut(); } catch (e) {}
           return;
         }
-        if (data && data.subscription) {
-          const sub = data.subscription;
-          if (sub.status === 'cancelled') {
-            try { localStorage.setItem('atenis_auth_notice', 'Tu suscripción fue cancelada. Elige un plan para seguir viendo Atenis.'); } catch (e) {}
-            window.location.href = 'subscription.html';
-            return;
-          }
-          if (sub.status === 'trial' && sub.trialEndDate && Date.now() > sub.trialEndDate) {
-            try { localStorage.setItem('atenis_auth_notice', 'Tu prueba terminó. Elige un plan para seguir viendo Atenis.'); } catch (e) {}
-            window.location.href = 'subscription.html';
-            return;
-          }
+        if (data && isSubscriptionValid(data.subscription)) {
           window.location.href = data.profile ? 'app.html?from=landing' : 'profile-setup.html';
         } else {
+          if (data && data.subscription) {
+            try { localStorage.setItem('atenis_auth_notice', data.subscription.status === 'cancelled' ? 'Tu suscripción fue cancelada. Elige un plan para seguir viendo Atenis.' : 'Tu prueba terminó o tu suscripción no está activa. Elige un plan para seguir viendo Atenis.'); } catch (e) {}
+          }
           if (data && data.selectedPlan) {
             localStorage.setItem('atenis_selected_plan', JSON.stringify(data.selectedPlan));
           }

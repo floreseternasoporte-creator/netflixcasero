@@ -3,8 +3,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Atenis - Configurar Perfil</title>
+  <meta name="theme-color" content="#FFFFFF">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
@@ -21,9 +22,9 @@
     }
 
     body {
-      background: #000000;
+      background: #FFFFFF;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-      color: #ffffff;
+      color: #191919;
       min-height: 100vh;
       padding: 0;
       margin: 0;
@@ -33,7 +34,7 @@
 
     /* Contenedor principal estilo Uber */
     .profile-container {
-      background: #000000;
+      background: #FFFFFF;
       border-radius: 0;
       padding: 0;
       width: 100%;
@@ -86,22 +87,22 @@
     .profile-header {
       text-align: center;
       padding: 48px 20px 32px 20px;
-      background: #000000;
+      background: #FFFFFF;
       position: relative;
       overflow: hidden;
-      border-bottom: 1px solid #2d2d2d;
+      border-bottom: 1px solid #E7E7E7;
     }
 
     .profile-title {
       font-size: 40px;
       font-weight: 700;
       margin-bottom: 10px;
-      color: #ffffff;
+      color: #191919;
       letter-spacing: -1px;
     }
 
     .profile-subtitle {
-      color: #ababab;
+      color: #6B6B6B;
       font-size: 16px;
       font-weight: 400;
     }
@@ -118,18 +119,18 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      background: #161616;
+      background: #FFFFFF;
       padding: 12px 24px;
       border-radius: 8px;
-      border: 1px solid #2d2d2d;
+      border: 1px solid #E7E7E7;
     }
 
     .step-number {
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: #06C167;
-      color: #000000;
+      background: #EB1700;
+      color: #FFFFFF;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -139,7 +140,7 @@
 
     .step-text {
       font-size: 15px;
-      color: #ffffff;
+      color: #191919;
       font-weight: 600;
     }
 
@@ -147,7 +148,7 @@
     .profile-form {
       display: none;
       padding: 32px;
-      background: #000000;
+      background: #FFFFFF;
       margin: 0;
       flex: 1;
     }
@@ -163,7 +164,7 @@
 
     .form-label {
       display: block;
-      color: #ababab;
+      color: #6B6B6B;
       font-weight: 500;
       margin-bottom: 8px;
       font-size: 14px;
@@ -172,10 +173,10 @@
     .form-input {
       width: 100%;
       padding: 14px 16px;
-      background: #1a1a1a;
-      border: 1px solid #2d2d2d;
-      border-radius: 8px;
-      color: #ffffff;
+      background: #FFFFFF;
+      border: 1px solid #E7E7E7;
+      border-radius: 12px;
+      color: #191919;
       font-size: 16px;
       font-weight: 400;
       transition: border-color 0.2s ease;
@@ -184,12 +185,13 @@
 
     .form-input:focus {
       outline: none;
-      border-color: #06C167;
-      background: #1a1a1a;
+      border-color: #191919;
+      border-width: 2px;
+      background: #FFFFFF;
     }
 
     .form-input::placeholder {
-      color: #555555;
+      color: #6B6B6B;
       font-weight: 400;
     }
 
@@ -200,20 +202,20 @@
       gap: 16px;
       margin-bottom: 32px;
       padding: 20px;
-      background: #161616;
+      background: #FFFFFF;
       border-radius: 12px;
-      border: 1px solid #2d2d2d;
+      border: 1px solid #E7E7E7;
     }
 
     .avatar-option {
       aspect-ratio: 1;
       border-radius: 50%;
-      border: 2px solid #2d2d2d;
+      border: 2px solid #E7E7E7;
       cursor: pointer;
       transition: border-color 0.2s ease;
       overflow: hidden;
       position: relative;
-      background: #1a1a1a;
+      background: #F1F1F1;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -221,12 +223,12 @@
     }
 
     .avatar-option:hover {
-      border-color: #555555;
+      border-color: #6B6B6B;
     }
 
     .avatar-option.selected {
-      border-color: #06C167;
-      background: rgba(6, 193, 103, 0.1);
+      border-color: #EB1700;
+      background: rgba(235,23,0,0.08);
     }
 
     .avatar-option img {
@@ -246,7 +248,8 @@
     .btn {
       padding: 16px 36px;
       border: none;
-      border-radius: 8px;
+      min-height: 48px;
+      border-radius: 9999px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
@@ -255,22 +258,22 @@
     }
 
     .btn-primary {
-      background: #06C167;
-      color: #000000;
+      background: #EB1700;
+      color: #FFFFFF;
     }
 
     .btn-primary:hover {
-      background: #049451;
+      background: #C31500;
     }
 
     .btn-secondary {
-      background: #1a1a1a;
-      color: #ffffff;
-      border: 1px solid #2d2d2d;
+      background: #F1F1F1;
+      color: #191919;
+      border: 1px solid #E7E7E7;
     }
 
     .btn-secondary:hover {
-      background: #2d2d2d;
+      background: #E7E7E7;
     }
 
     .btn:active {
@@ -303,15 +306,15 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: #161616;
-      color: #ffffff;
+      background: #FFFFFF;
+      color: #191919;
       padding: 40px 48px;
       border-radius: 12px;
       font-size: 20px;
       font-weight: 600;
       z-index: 3000;
       text-align: center;
-      border: 1px solid #06C167;
+      border: 1px solid #EB1700;
       display: none;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
@@ -547,12 +550,33 @@
     });
 
     // Verificar estado del usuario
+    // Ronda 6 (A20/A5): lista de permiso de suscripción (misma regla que app.html).
+    function isSubscriptionValid(sub) {
+      if (!sub || typeof sub !== 'object') return false;
+      if (sub.status === 'active') return true;
+      if (sub.status === 'trial') {
+        const end = Number(sub.trialEndDate);
+        return Number.isFinite(end) && end > 0 && Date.now() < end;
+      }
+      return false;
+    }
+
     async function checkUserStatus(user) {
       try {
         const userRef = database.ref('users/' + user.uid);
         const snapshot = await userRef.once('value');
         const userData = snapshot.val();
-        
+
+        if (userData && userData.accountStatus && userData.accountStatus.status === 'deactivated') {
+          try { await auth.signOut(); } catch (e) {}
+          window.location.href = 'login.html';
+          return;
+        }
+        if (userData && userData.subscription && !isSubscriptionValid(userData.subscription)) {
+          window.location.href = 'subscription.html';
+          return;
+        }
+
         if (!userData || !userData.subscription) {
           // No tiene suscripción, redirigir
           window.location.href = 'subscription.html';
@@ -712,8 +736,10 @@
     async function logout() {
       try {
         await auth.signOut();
-        Object.keys(localStorage).filter(key => key.startsWith('atenis_') || key.startsWith('watched_')).forEach(key => {
-          localStorage.removeItem(key);
+        // Ronda 6 (A1): solo claves de sesión/identidad; la lista, el historial
+        // y los ajustes son por usuario y sobreviven al cierre de sesión.
+        ['atenis_user_profile', 'atenis_subscription', 'atenis_editing_profile', 'atenis_changing_plan', 'atenis_auth_notice'].forEach(key => {
+          try { localStorage.removeItem(key); } catch (e) {}
         });
         window.location.href = 'login.html';
       } catch (error) {

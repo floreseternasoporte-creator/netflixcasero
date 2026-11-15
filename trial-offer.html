@@ -2,8 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Atenis - Oferta Especial 4 Meses Gratis</title>
+  <meta name="theme-color" content="#FFFFFF">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -11,43 +12,13 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
+
     body {
-      background: linear-gradient(135deg, #1a0033 0%, #330066 25%, #000033 50%, #660033 75%, #1a0033 100%);
-      background-size: 400% 400%;
-      animation: cartoonGradient 20s ease-in-out infinite;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-      color: #ffffff;
+      background: #FFFFFF;
+      font-family: "Inter", -apple-system, "SF Pro", "Segoe UI", Roboto, sans-serif;
+      color: #191919;
       min-height: 100vh;
       position: relative;
-      background-attachment: fixed;
-    }
-
-    @keyframes cartoonGradient {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="30" cy="30" r="8" fill="%23FFD700" opacity="0.9"/><circle cx="170" cy="50" r="6" fill="%23FF1493" opacity="0.8"/><circle cx="100" cy="150" r="10" fill="%2300FF88" opacity="0.9"/><circle cx="50" cy="120" r="7" fill="%239D4EDD" opacity="0.8"/><circle cx="150" cy="180" r="9" fill="%23FF6B35" opacity="0.9"/><polygon points="80,20 85,30 75,30" fill="%23FFD700" opacity="0.7"/><polygon points="160,100 170,115 150,115" fill="%23FF1493" opacity="0.7"/></svg>');
-      background-size: 200px 200px;
-      animation: cartoonShapes 25s ease-in-out infinite;
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    @keyframes cartoonShapes {
-      0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); opacity: 1; }
-      25% { transform: translateY(-40px) rotate(90deg) scale(1.3); opacity: 0.8; }
-      50% { transform: translateY(20px) rotate(180deg) scale(0.8); opacity: 1; }
-      75% { transform: translateY(-20px) rotate(270deg) scale(1.2); opacity: 0.9; }
     }
 
     .header {
@@ -60,33 +31,21 @@
       padding: 0;
     }
 
-    @keyframes headerBounce {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-3px); }
-    }
-
-
-
     .back-btn {
-      background: linear-gradient(45deg, #FFD700, #FFA500);
-      border: 4px solid #FF1493;
-      color: #000000;
-      padding: 12px 24px;
-      border-radius: 15px;
+      background: #F1F1F1;
+      border: 1px solid #E7E7E7;
+      color: #191919;
+      padding: 0 24px;
+      min-height: 48px;
+      border-radius: 9999px;
       text-decoration: none;
-      font-weight: 900;
-      display: flex;
+      font-weight: 600;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
-      transition: all 0.3s ease;
-      text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5);
     }
 
-    .back-btn:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.7);
-    }
+    .back-btn:hover { background: #E7E7E7; }
 
     .container {
       max-width: 1200px;
@@ -95,83 +54,50 @@
     }
 
     .offer-badge {
-      background: linear-gradient(135deg, #FFD700, #FFA500, #FFD700);
-      background-size: 200% 200%;
-      animation: shimmer 2s linear infinite;
-      color: #000;
-      padding: 15px 35px;
-      border-radius: 50px;
+      background: #EB1700;
+      color: #FFFFFF;
+      padding: 12px 28px;
+      border-radius: 9999px;
       font-size: 16px;
-      font-weight: 900;
+      font-weight: 700;
       text-align: center;
       margin: 20px auto 40px auto;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      border: 4px solid #FF1493;
-      box-shadow: 0 8px 30px rgba(255, 215, 0, 0.7);
-      text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.5);
+      letter-spacing: 0.06em;
       display: inline-block;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
     }
 
     h1 {
       font-size: 72px;
-      font-weight: 900;
+      font-weight: 700;
       text-align: center;
       margin-bottom: 25px;
-      color: #FFD700;
-      letter-spacing: 4px;
-      text-shadow: 
-        5px 5px 0px #9D4EDD,
-        10px 10px 0px #660099,
-        15px 15px 0px rgba(0, 0, 0, 0.5);
-      animation: cartoonTitleBounce 2s ease-in-out infinite;
+      color: #191919;
+      letter-spacing: -0.02em;
       text-transform: uppercase;
-    }
-
-    @keyframes cartoonTitleBounce {
-      0%, 100% { transform: scale(1) rotate(-2deg); }
-      25% { transform: scale(1.08) rotate(2deg); }
-      50% { transform: scale(1.05) rotate(-1deg); }
-      75% { transform: scale(1.1) rotate(3deg); }
-    }
-
-    @keyframes starSpin {
-      0% { transform: translateY(-50%) rotate(0deg) scale(1); }
-      50% { transform: translateY(-50%) rotate(180deg) scale(1.3); }
-      100% { transform: translateY(-50%) rotate(360deg) scale(1); }
     }
 
     .subtitle {
       text-align: center;
       font-size: 28px;
       margin-bottom: 50px;
-      color: #FFD700;
-      font-weight: 700;
-      text-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+      color: #6B6B6B;
+      font-weight: 600;
     }
 
     .benefits {
-      background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 162, 255, 0.1) 100%);
-      border-radius: 20px;
+      background: #F7F7F7;
+      border-radius: 16px;
       padding: 40px;
       margin-bottom: 50px;
-      border: 3px solid rgba(0, 255, 136, 0.4);
-      box-shadow: 0 10px 40px rgba(0, 255, 136, 0.2);
+      border: 1px solid #E7E7E7;
     }
 
     .benefits h3 {
       font-size: 32px;
       margin-bottom: 30px;
-      background: linear-gradient(90deg, #00FF88, #FFD700);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 900;
+      color: #191919;
+      font-weight: 700;
     }
 
     .benefits ul { list-style: none; }
@@ -182,22 +108,19 @@
       align-items: center;
       gap: 15px;
       font-size: 20px;
-      color: #E0E0E0;
+      color: #313131;
       font-weight: 500;
     }
 
     .benefits li i {
-      color: #00FF88;
+      color: #EB1700;
       font-size: 24px;
-      filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.6));
     }
 
     .form-section h3 {
-      background: linear-gradient(90deg, #00FF88, #00D4AA);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #191919;
       font-size: 36px;
-      font-weight: 900;
+      font-weight: 700;
       margin-bottom: 35px;
     }
 
@@ -208,26 +131,26 @@
       margin-bottom: 12px;
       font-weight: 700;
       font-size: 18px;
-      color: #FFD700;
-      text-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+      color: #191919;
     }
 
     input {
       width: 100%;
-      padding: 20px;
-      border: 2px solid rgba(0, 255, 136, 0.4);
+      padding: 16px 20px;
+      border: 1px solid #E7E7E7;
       border-radius: 12px;
-      background: rgba(20, 28, 48, 0.9);
-      color: #fff;
-      font-size: 18px;
+      background: #FFFFFF;
+      color: #191919;
+      font-size: 16px;
       font-weight: 600;
     }
 
     input:focus {
       outline: none;
-      border-color: #FFD700;
-      box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.3), 0 0 20px rgba(0, 255, 136, 0.4);
-      background: rgba(20, 28, 48, 1);
+      border-color: #191919;
+      border-width: 2px;
+      box-shadow: 0 0 0 3px rgba(25,25,25,0.08);
+      background: #FFFFFF;
     }
 
     .input-with-scan {
@@ -235,20 +158,21 @@
       gap: 10px;
     }
 
-    .input-with-scan input { 
+    .input-with-scan input {
       flex: 1;
       padding-right: 60px;
     }
 
     .scan-btn {
-      background: linear-gradient(45deg, #00FF88, #00D4AA);
-      border: none;
-      color: #002040;
-      padding: 20px 25px;
+      background: #F1F1F1;
+      border: 1px solid #E7E7E7;
+      color: #191919;
+      padding: 0 25px;
+      min-height: 48px;
       border-radius: 12px;
       cursor: pointer;
       font-size: 20px;
-      font-weight: 900;
+      font-weight: 700;
       flex-shrink: 0;
       z-index: 2;
     }
@@ -285,78 +209,45 @@
 
     .submit-btn {
       width: 100%;
-      padding: 25px;
+      padding: 16px;
+      min-height: 48px;
       border: none;
-      border-radius: 15px;
-      font-size: 22px;
-      font-weight: 900;
+      border-radius: 9999px;
+      font-size: 18px;
+      font-weight: 700;
       cursor: pointer;
-      background: linear-gradient(135deg, #FFD700, #FFA500, #FFD700);
-      background-size: 200% 200%;
-      animation: buttonShimmer 3s ease-in-out infinite;
-      color: #000;
-      border: 6px solid #FF1493;
-      text-transform: uppercase;
-      letter-spacing: 3px;
+      background: #EB1700;
+      color: #FFFFFF;
       margin-top: 40px;
-      box-shadow: 
-        0 10px 35px rgba(255, 215, 0, 0.7),
-        0 0 40px rgba(255, 20, 147, 0.5);
-      text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.5);
-      transition: all 0.3s ease;
     }
 
-    @keyframes buttonShimmer {
-      0%, 100% { 
-        background-position: 0% 50%;
-        box-shadow: 0 10px 35px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 20, 147, 0.5);
-      }
-      50% { 
-        background-position: 100% 50%;
-        box-shadow: 0 15px 45px rgba(255, 215, 0, 0.9), 0 0 60px rgba(255, 20, 147, 0.7);
-      }
-    }
-
-    .submit-btn:hover:not(:disabled) {
-      transform: translateY(-6px) scale(1.05);
-      animation: buttonWobble 0.5s ease-in-out;
-    }
-
-    @keyframes buttonWobble {
-      0%, 100% { transform: translateY(-6px) scale(1.05) rotate(0deg); }
-      25% { transform: translateY(-8px) scale(1.08) rotate(2deg); }
-      75% { transform: translateY(-4px) scale(1.02) rotate(-1deg); }
-    }
+    .submit-btn:hover:not(:disabled) { background: #C31500; }
 
     .security-note {
       text-align: center;
       margin-top: 25px;
       font-size: 16px;
-      color: #B0B0B0;
+      color: #6B6B6B;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
     }
 
-    .security-note i {
-      color: #00FF88;
-    }
+    .security-note i { color: #EB1700; }
 
     .terms {
       margin-top: 40px;
       padding: 30px;
-      background: rgba(0, 255, 136, 0.08);
-      border-radius: 12px;
+      background: #F7F7F7;
+      border-radius: 16px;
       font-size: 16px;
-      color: #D0D0D0;
+      color: #6B6B6B;
       line-height: 1.8;
-      border: 2px solid rgba(0, 255, 136, 0.3);
+      border: 1px solid #E7E7E7;
     }
 
-    .terms strong {
-      color: #FFD700;
-    }
+    .terms strong { color: #191919; }
 
     .scanner-modal {
       display: none;
@@ -365,7 +256,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.95);
+      background: rgba(25,25,25,0.5);
       z-index: 9999;
       justify-content: center;
       align-items: center;
@@ -379,9 +270,9 @@
       max-width: 500px;
       width: 100%;
       background: #000;
-      border-radius: 20px;
+      border-radius: 16px;
       overflow: hidden;
-      border: 3px solid #00FF88;
+      border: 3px solid #EB1700;
     }
 
     #videoPreview { width: 100%; display: block; }
@@ -393,9 +284,9 @@
       transform: translate(-50%, -50%);
       width: 85%;
       height: 200px;
-      border: 3px solid #00FF88;
+      border: 3px solid #EB1700;
       border-radius: 15px;
-      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 0 9999px rgba(25,25,25,0.5);
       pointer-events: none;
     }
 
@@ -405,7 +296,7 @@
       left: 0;
       right: 0;
       height: 2px;
-      background: linear-gradient(90deg, transparent, #00FF88, transparent);
+      background: linear-gradient(90deg, transparent, #EB1700, transparent);
       animation: scan 2s linear infinite;
     }
 
@@ -421,26 +312,20 @@
     }
 
     .scanner-btn {
-      padding: 15px 30px;
+      padding: 0 30px;
+      min-height: 48px;
       border: none;
-      border-radius: 12px;
+      border-radius: 9999px;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
     }
 
-    .scanner-btn.capture {
-      background: linear-gradient(45deg, #00FF88, #00D4AA);
-      color: #002040;
-    }
-
-    .scanner-btn.cancel {
-      background: linear-gradient(45deg, #FF6B35, #F7931E);
-      color: #fff;
-    }
+    .scanner-btn.capture { background: #EB1700; color: #FFFFFF; }
+    .scanner-btn.cancel { background: #F1F1F1; color: #191919; }
 
     .scanner-instructions {
-      color: #fff;
+      color: #FFFFFF;
       text-align: center;
       margin-bottom: 15px;
       font-size: 18px;
@@ -460,10 +345,10 @@
       width: 100%;
       max-width: 500px;
       margin: 0 auto 30px;
-      border-radius: 20px;
+      border-radius: 16px;
       overflow: hidden;
-      border: 5px solid #00FF88;
-      box-shadow: 0 10px 40px rgba(0, 255, 136, 0.4);
+      border: 3px solid #EB1700;
+      box-shadow: 0 6px 16px rgba(25,25,25,0.08);
     }
 
     #faceVideo {
@@ -487,10 +372,10 @@
     .face-circle {
       width: 250px;
       height: 250px;
-      border: 4px dashed #FFD700;
+      border: 4px dashed #EB1700;
       border-radius: 50%;
       animation: rotateDash 3s linear infinite;
-      box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+      box-shadow: 0 0 30px rgba(235,23,0,0.2);
     }
 
     @keyframes rotateDash {
@@ -501,30 +386,23 @@
     .age-result {
       text-align: center;
       padding: 30px;
-      background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 162, 255, 0.1));
-      border-radius: 20px;
+      background: #F7F7F7;
+      border-radius: 16px;
       margin-bottom: 30px;
-      border: 3px solid rgba(0, 255, 136, 0.4);
+      border: 1px solid #E7E7E7;
     }
 
     .age-badge {
       display: inline-block;
       font-size: 72px;
-      font-weight: 900;
-      color: #FFD700;
-      text-shadow: 3px 3px 0px #FF1493;
+      font-weight: 700;
+      color: #EB1700;
       margin-bottom: 15px;
-      animation: badgePulse 2s ease-in-out infinite;
-    }
-
-    @keyframes badgePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
     }
 
     .age-text {
       font-size: 24px;
-      color: #fff;
+      color: #191919;
       font-weight: 700;
     }
 
@@ -691,9 +569,43 @@
     const database = firebase.database();
     let currentUser = null;
 
+    // Ronda 6 (A20/A5): lista de permiso de suscripción (misma regla que app.html).
+    function isSubscriptionValid(sub) {
+      if (!sub || typeof sub !== 'object') return false;
+      if (sub.status === 'active') return true;
+      if (sub.status === 'trial') {
+        const end = Number(sub.trialEndDate);
+        return Number.isFinite(end) && end > 0 && Date.now() < end;
+      }
+      return false;
+    }
+
+    async function checkTrialGate(user) {
+      try {
+        const snap = await database.ref('users/' + user.uid).once('value');
+        const data = snap.val();
+        if (data && data.accountStatus && data.accountStatus.status === 'deactivated') {
+          try { await auth.signOut(); } catch (e) {}
+          window.location.href = 'login.html';
+          return;
+        }
+        if (data && data.subscription && data.subscription.status === 'active') {
+          window.location.href = 'app.html';
+          return;
+        }
+        if (data && data.subscription && data.subscription.status === 'trial' && !isSubscriptionValid(data.subscription)) {
+          try { localStorage.setItem('atenis_auth_notice', 'Tu prueba terminó. Elige un plan para seguir viendo Atenis.'); } catch (e) {}
+          window.location.href = 'subscription.html';
+          return;
+        }
+      } catch (e) { console.error('Error verificando estado del trial:', e); }
+    }
+
     auth.onAuthStateChanged((user) => {
-      if (user) currentUser = user;
-      else window.location.href = 'login.html';
+      if (user) {
+        currentUser = user;
+        checkTrialGate(user);
+      } else window.location.href = 'login.html';
     });
 
     // Variables para verificación facial
@@ -810,15 +722,15 @@
           } else if (detectedAge < 18) {
             ageCategory = '13+';
             ageBadge.textContent = '13+';
-            ageBadge.style.color = '#FFA500';
+            ageBadge.style.color = '#191919';
             ageText.textContent = '⚠️ Edad: ~' + detectedAge + ' años (Supervisión requerida)';
-            ageText.style.color = '#FFA500';
+            ageText.style.color = '#191919';
           } else {
             ageCategory = '18+';
             ageBadge.textContent = '18+';
-            ageBadge.style.color = '#00FF88';
+            ageBadge.style.color = '#EB1700';
             ageText.textContent = '✅ Edad: ~' + detectedAge + ' años (Verificado)';
-            ageText.style.color = '#00FF88';
+            ageText.style.color = '#EB1700';
           }
           
           // Mostrar botón de activación después de 3 segundos de detección estable
@@ -835,9 +747,9 @@
         } else {
           // No se detecta rostro
           ageBadge.textContent = '👤';
-          ageBadge.style.color = '#FFD700';
+          ageBadge.style.color = '#6B6B6B';
           ageText.textContent = 'Posiciona tu rostro en el círculo';
-          ageText.style.color = '#fff';
+          ageText.style.color = '#6B6B6B';
         }
       } catch (error) {
         console.error('Error en detección:', error);
@@ -853,6 +765,12 @@
       if (!currentUser) {
         alert('Debes iniciar sesión para activar la prueba.');
         window.location.href = 'login.html';
+        return;
+      }
+
+      // Ronda 6 (A20): la edad se valida DENTRO de la función, no solo en el botón.
+      if (typeof detectedAge === 'number' && detectedAge < 13) {
+        alert('Debes tener al menos 13 años para activar la prueba.');
         return;
       }
 
@@ -902,7 +820,7 @@
         await database.ref('users/' + currentUser.uid + '/subscription').set(trialData);
 
         activateBtn.innerHTML = '<i class="fas fa-check-circle"></i> ¡Activado!';
-        activateBtn.style.background = 'linear-gradient(45deg, #10b981, #34d399)';
+        activateBtn.style.background = '#EB1700';
 
         setTimeout(() => {
           window.location.href = 'profile-setup.html';

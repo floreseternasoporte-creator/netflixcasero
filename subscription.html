@@ -3,8 +3,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Atenis - Selecciona tu Plan</title>
+  <meta name="theme-color" content="#FFFFFF">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -29,9 +30,9 @@
     }
 
     body {
-      background: #000000;
+      background: #FFFFFF;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-      color: #ffffff;
+      color: #191919;
       min-height: 100vh;
       position: relative;
     }
@@ -45,8 +46,8 @@
       left: 0;
       right: 0;
       padding: 18px 30px;
-      background: #000000;
-      border-bottom: 1px solid #2d2d2d;
+      background: #FFFFFF;
+      border-bottom: 1px solid #E7E7E7;
       z-index: 1000;
       display: flex;
       justify-content: space-between;
@@ -56,7 +57,7 @@
     .logo {
       font-size: 26px;
       font-weight: 700;
-      color: #ffffff;
+      color: #191919;
       letter-spacing: -0.5px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
@@ -65,14 +66,14 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      color: #ababab;
+      color: #6B6B6B;
       font-size: 14px;
     }
 
     .logout-btn {
-      background: #1a1a1a;
-      border: 1px solid #2d2d2d;
-      color: #ffffff;
+      background: #E7E7E7;
+      border: 1px solid #E7E7E7;
+      color: #191919;
       padding: 10px 16px;
       border-radius: 8px;
       cursor: pointer;
@@ -82,7 +83,7 @@
     }
 
     .logout-btn:hover {
-      background: #2d2d2d;
+      background: #E7E7E7;
     }
 
     /* Contenedor principal */
@@ -119,13 +120,13 @@
       font-size: 48px;
       font-weight: 700;
       margin-bottom: 16px;
-      color: #ffffff;
+      color: #191919;
       letter-spacing: -1px;
     }
 
     .subscription-subtitle {
       font-size: 18px;
-      color: #ababab;
+      color: #6B6B6B;
       margin-bottom: 0;
       font-weight: 400;
       line-height: 1.5;
@@ -156,9 +157,9 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: #1a1a1a;
-      border: 1px solid #2d2d2d;
-      color: #ffffff;
+      background: #E7E7E7;
+      border: 1px solid #E7E7E7;
+      color: #191919;
       width: 48px;
       height: 48px;
       border-radius: 50%;
@@ -172,7 +173,7 @@
     }
 
     .carousel-nav:hover {
-      background: #2d2d2d;
+      background: #E7E7E7;
       transform: translateY(-50%);
     }
 
@@ -193,22 +194,22 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #2d2d2d;
+      background: #E7E7E7;
       border: none;
       cursor: pointer;
       transition: background 0.2s ease;
     }
 
     .indicator.active {
-      background: #ffffff;
+      background: #EB1700;
       transform: scale(1.3);
     }
 
     .plan-card {
       position: absolute;
       width: 360px;
-      background: #161616;
-      border: 1px solid #2d2d2d;
+      background: #FFFFFF;
+      border: 1px solid #E7E7E7;
       border-radius: 16px;
       padding: 40px 32px;
       padding-top: 52px;
@@ -224,7 +225,7 @@
     }
 
     .plan-card:hover {
-      border-color: #555555;
+      border-color: #6B6B6B;
     }
 
     .plan-card.active {
@@ -232,7 +233,7 @@
       transform: translateZ(0px) scale(1.05);
       opacity: 1;
       filter: blur(0px);
-      border-color: #2d2d2d;
+      border-color: #E7E7E7;
     }
 
     .plan-card.left {
@@ -256,7 +257,7 @@
     }
 
     .plan-card.popular {
-      border-color: #06C167;
+      border-color: #EB1700;
     }
 
     .plan-card.popular::before {
@@ -265,8 +266,8 @@
       top: -1px;
       left: 0;
       right: 0;
-      background: #06C167;
-      color: #000000;
+      background: #EB1700;
+      color: #FFFFFF;
       padding: 10px;
       font-size: 12px;
       font-weight: 700;
@@ -278,21 +279,21 @@
       font-size: 24px;
       font-weight: 600;
       margin-bottom: 16px;
-      color: #ffffff;
+      color: #191919;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     .plan-price {
       font-size: 56px;
       font-weight: 700;
-      color: #ffffff;
+      color: #191919;
       margin-bottom: 8px;
       letter-spacing: -2px;
     }
 
     .plan-period {
       font-size: 14px;
-      color: #ababab;
+      color: #6B6B6B;
       margin-bottom: 28px;
       font-weight: 400;
     }
@@ -309,26 +310,27 @@
       align-items: center;
       gap: 12px;
       font-size: 15px;
-      color: #e0e0e0;
+      color: #313131;
       font-weight: 400;
-      border-bottom: 1px solid #1a1a1a;
+      border-bottom: 1px solid #E7E7E7;
     }
 
     .plan-features li i {
-      color: #06C167;
+      color: #EB1700;
       width: 18px;
       font-size: 14px;
     }
 
     .plan-features li i.fa-times {
-      color: #555555;
+      color: #6B6B6B;
     }
 
     .plan-button {
       width: 100%;
       padding: 16px;
       border: none;
-      border-radius: 8px;
+      min-height: 48px;
+      border-radius: 9999px;
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
@@ -336,21 +338,21 @@
     }
 
     .plan-button.primary {
-      background: #06C167;
-      color: #000000;
+      background: #EB1700;
+      color: #FFFFFF;
     }
 
     .plan-button.primary:hover {
-      background: #049451;
+      background: #C31500;
     }
 
     .plan-button.secondary {
-      background: #ffffff;
-      color: #000000;
+      background: #F1F1F1;
+      color: #191919;
     }
 
     .plan-button.secondary:hover {
-      background: #e5e5e5;
+      background: #E7E7E7;
     }
 
     .plan-button:disabled {
@@ -390,15 +392,15 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: #161616;
-      color: #ffffff;
+      background: #FFFFFF;
+      color: #191919;
       padding: 32px 40px;
       border-radius: 12px;
       font-size: 18px;
       font-weight: 600;
       z-index: 3000;
       text-align: center;
-      border: 1px solid #06C167;
+      border: 1px solid #EB1700;
       display: none;
     }
 
@@ -561,8 +563,8 @@
 
     /* Banner de oferta especial */
     .special-offer-banner {
-      background: #161616;
-      border: 1px solid #06C167;
+      background: #FFFFFF;
+      border: 1px solid #EB1700;
       border-radius: 12px;
       padding: 20px 24px;
       margin: 24px auto 40px auto;
@@ -577,12 +579,12 @@
     }
 
     .special-offer-banner:hover {
-      border-color: #049451;
+      border-color: #C31500;
     }
 
     .offer-icon {
       font-size: 28px;
-      color: #06C167;
+      color: #EB1700;
     }
 
     .offer-content {
@@ -592,21 +594,21 @@
     .offer-title {
       font-size: 16px;
       font-weight: 600;
-      color: #ffffff;
+      color: #191919;
       margin-bottom: 4px;
       letter-spacing: 0;
     }
 
     .offer-text {
       font-size: 14px;
-      color: #ababab;
+      color: #6B6B6B;
       font-weight: 400;
       line-height: 1.4;
     }
 
     .offer-arrow {
       font-size: 20px;
-      color: #06C167;
+      color: #EB1700;
     }
 
     @media (max-width: 480px) {
@@ -820,6 +822,11 @@
     </div>
   </main>
 
+  <!-- Cancelar suscripción (solo con plan activo) -->
+  <div style="text-align:center;padding:0 20px 32px;">
+    <button id="cancelSubscriptionBtn" type="button" onclick="cancelSubscription()" style="display:none;background:none;border:none;color:#EB1700;font-size:14px;font-weight:600;cursor:pointer;text-decoration:underline;">Cancelar mi suscripción</button>
+  </div>
+
   <!-- Mensaje de éxito -->
   <div id="successMessage" class="success-message">
     <div style="margin-bottom: 15px;">
@@ -930,8 +937,22 @@
       }
     });
 
+    // Ronda 6 (A5): lista de permiso de suscripción (misma regla que app.html).
+    function isSubscriptionValid(sub) {
+      if (!sub || typeof sub !== 'object') return false;
+      if (sub.status === 'active') return true;
+      if (sub.status === 'trial') {
+        const end = Number(sub.trialEndDate);
+        return Number.isFinite(end) && end > 0 && Date.now() < end;
+      }
+      return false;
+    }
+
     // Verificar suscripción existente
     async function checkExistingSubscription(user) {
+      const _nameEl = document.getElementById('userName');
+      const _prevName = _nameEl ? _nameEl.textContent : '';
+      if (_nameEl) _nameEl.textContent = 'Cargando…';
       try {
         // Verificar si es un cambio de plan
         const isChangingPlan = localStorage.getItem('atenis_changing_plan');
@@ -942,7 +963,11 @@
         }
 
         const userRef = database.ref('users/' + user.uid);
-        const snapshot = await userRef.once('value');
+        // Ronda 6 (A22): timeout de 8 s, no quedarse en silencio.
+        const snapshot = await Promise.race([
+          userRef.once('value'),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000))
+        ]);
         const userData = snapshot.val();
 
         if (userData && userData.accountStatus && userData.accountStatus.status === 'deactivated') {
@@ -952,8 +977,10 @@
         }
 
         if (userData && userData.subscription) {
-          const _sub = userData.subscription;
-          if (_sub.status === 'cancelled' || (_sub.status === 'trial' && _sub.trialEndDate && Date.now() > _sub.trialEndDate)) {
+          // Mostrar el botón de cancelar cuando hay plan activo.
+          const _cancelBtn = document.getElementById('cancelSubscriptionBtn');
+          if (_cancelBtn && isSubscriptionValid(userData.subscription)) _cancelBtn.style.display = 'inline-block';
+          if (!isSubscriptionValid(userData.subscription)) {
             return; // quedarse aquí para elegir un plan
           }
           // Ya tiene suscripción, verificar perfil
@@ -965,6 +992,27 @@
         }
       } catch (error) {
         console.error('Error verificando suscripción:', error);
+        alert('No se pudo verificar tu suscripción. Revisa tu conexión e inténtalo de nuevo.');
+      } finally {
+        if (_nameEl) _nameEl.textContent = user.displayName || user.email || _prevName;
+      }
+    }
+
+    // Ronda 6 (A18): cancelación (solo marcador en cliente, sin pasarela).
+    async function cancelSubscription() {
+      if (!currentUser) { alert('Error: Usuario no autenticado'); return; }
+      if (!confirm('¿Cancelar tu suscripción? Podrás elegir un plan nuevo cuando quieras.')) return;
+      try {
+        const ref = database.ref('users/' + currentUser.uid + '/subscription');
+        const snap = await ref.once('value');
+        const current = snap.val() || {};
+        if (!current || !current.plan) { alert('No tienes una suscripción activa.'); return; }
+        await ref.update({ ...current, status: 'cancelled' });
+        alert('Suscripción cancelada.');
+        window.location.href = 'subscription.html';
+      } catch (e) {
+        console.error('Error cancelando suscripción:', e);
+        alert('No se pudo cancelar la suscripción. Inténtalo de nuevo.');
       }
     }
 
@@ -980,6 +1028,12 @@
       setButtonLoading(button, true);
 
       try {
+        // Ronda 6 (A6): conservar trialUsed y ageVerified del plan anterior.
+        let _existingSub = null;
+        try {
+          const _snap = await database.ref('users/' + currentUser.uid + '/subscription').once('value');
+          _existingSub = _snap.val() || null;
+        } catch (e) {}
         // Crear objeto de suscripción
         const subscription = {
           plan: planType,
@@ -989,6 +1043,8 @@
           status: 'active',
           features: getPlanFeatures(planType)
         };
+        if (_existingSub && _existingSub.trialUsed === true) subscription.trialUsed = true;
+        if (_existingSub && _existingSub.ageVerified) subscription.ageVerified = _existingSub.ageVerified;
 
         // Guardar suscripción en Firebase
         await database.ref('users/' + currentUser.uid + '/subscription').set(subscription);
@@ -1068,8 +1124,10 @@
     async function logout() {
       try {
         await auth.signOut();
-        Object.keys(localStorage).filter(key => key.startsWith('atenis_') || key.startsWith('watched_')).forEach(key => {
-          localStorage.removeItem(key);
+        // Ronda 6 (A1): solo claves de sesión/identidad; la lista, el historial
+        // y los ajustes son por usuario y sobreviven al cierre de sesión.
+        ['atenis_user_profile', 'atenis_subscription', 'atenis_editing_profile', 'atenis_changing_plan', 'atenis_auth_notice'].forEach(key => {
+          try { localStorage.removeItem(key); } catch (e) {}
         });
         window.location.href = 'login.html';
       } catch (error) {
