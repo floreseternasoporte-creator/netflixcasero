@@ -4134,7 +4134,7 @@
     /* ── Next-episode overlay — centrado en la parte baja del video ── */
     .mini-next-overlay {
       position: absolute;
-      bottom: 140px; left: 50%;
+      bottom: 152px; left: 50%;
       transform: translateX(-50%);
       width: calc(100% - 48px);
       max-width: 320px;
@@ -4145,7 +4145,7 @@
       -webkit-backdrop-filter: blur(16px);
       display: flex; flex-direction: column;
       align-items: center;
-      padding: 20px 24px 18px;
+      padding: 16px 20px 14px;
       z-index: 15;
       opacity: 0;
       transition: opacity 0.35s ease;
@@ -4162,7 +4162,7 @@
     }
     .mini-next-title {
       font-size: 15px; font-weight: 700; color: #fff;
-      text-align: center; margin-bottom: 16px;
+      text-align: center; margin-bottom: 12px;
       line-height: 1.35;
     }
     .mini-next-btn {
@@ -4177,6 +4177,14 @@
       font-size: 12px; color: rgba(255,255,255,0.45);
       margin-top: 10px;
     }
+    /* Ronda 14 (F1): botón Cancelar del autoplay (cierra el overlay sin
+       reproducir nada; el reproductor sigue abierto). */
+    .mini-next-cancel-btn {
+      background: transparent; border: 1px solid rgba(255,255,255,0.4); color: #fff;
+      border-radius: 8px; padding: 6px 16px; margin-top: 10px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .mini-next-cancel-btn:active { background: rgba(255,255,255,0.12); }
 
     /* ── Top bar ── */
     .mini-player-top {
@@ -4483,6 +4491,11 @@
       -webkit-box-decoration-break: clone;
       white-space: pre-line;
     }
+    /* Ronda 14 (F5): tamaño de subtítulos (clase puesta por
+       applyMiniSubtitleSize; Mediano = el tamaño base de siempre). */
+    .mini-subtitle-overlay.sub-size-small { font-size: clamp(13px, 3.2vw, 17px); }
+    .mini-subtitle-overlay.sub-size-medium { font-size: clamp(16px, 4vw, 22px); }
+    .mini-subtitle-overlay.sub-size-large { font-size: clamp(20px, 5vw, 28px); }
 
     /* ── Side action buttons ── */
     .mini-player-side {
@@ -5590,7 +5603,7 @@
     }
 
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=13">
+  <link rel="stylesheet" href="uber-theme.css?v=14">
 </head>
 <body>
   <div id="google_translate_element" style="display: none;"></div>
@@ -6158,6 +6171,17 @@
           </div>
           <div class="setting-item">
             <div class="setting-info">
+              <div class="setting-name">Tamaño de subtítulos</div>
+              <div class="setting-description">Tamaño del texto de los subtítulos en el reproductor</div>
+            </div>
+            <select class="setting-select" id="subtitleSize">
+              <option value="small">Pequeño</option>
+              <option value="medium">Mediano</option>
+              <option value="large">Grande</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
               <div class="setting-name">Idioma de audio</div>
               <div class="setting-description">Pista de audio preferida</div>
             </div>
@@ -6190,6 +6214,43 @@
               <option value="pg">Solo familiar</option>
             </select>
           </div>
+        </div>
+        <!-- Ronda 14 (F2): PIN parental — protege el contenido para adultos (R, +18).
+             El PIN nunca se muestra en texto visible: solo inputs type=password. -->
+        <div class="settings-sub-group parental-pin-group">
+          <div class="setting-item parental-pin-status-row">
+            <div class="setting-info">
+              <div class="setting-name">PIN parental</div>
+              <div class="setting-description" id="parentalPinStatus">Sin PIN configurado</div>
+            </div>
+            <span class="parental-pin-badge" id="parentalPinBadge"><i class="fas fa-lock-open"></i></span>
+          </div>
+          <p class="parental-pin-hint">El PIN protege el contenido para adultos (clasificación R o +18). Se pedirá antes de abrir el detalle y antes de reproducir ese título.</p>
+          <div class="setting-item parental-pin-field" id="parentalCurrentPinRow" style="display:none;">
+            <div class="setting-info">
+              <div class="setting-name">PIN actual</div>
+              <div class="setting-description">Necesario para cambiar el PIN</div>
+            </div>
+            <input type="password" class="parental-pin-input" id="parentalCurrentPin" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••" aria-label="PIN actual">
+          </div>
+          <div class="setting-item parental-pin-field">
+            <div class="setting-info">
+              <div class="setting-name">PIN nuevo</div>
+              <div class="setting-description">4 dígitos</div>
+            </div>
+            <input type="password" class="parental-pin-input" id="parentalNewPin" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••" aria-label="PIN nuevo">
+          </div>
+          <div class="setting-item parental-pin-field">
+            <div class="setting-info">
+              <div class="setting-name">Confirmar PIN</div>
+              <div class="setting-description">Repite los 4 dígitos</div>
+            </div>
+            <input type="password" class="parental-pin-input" id="parentalConfirmPin" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••" aria-label="Confirmar PIN">
+          </div>
+          <div class="parental-pin-msg hidden" id="parentalPinMsg" role="alert"></div>
+          <button class="settings-btn primary parental-pin-save" type="button" onclick="saveParentalPin()">
+            <i class="fas fa-shield-alt"></i> Guardar PIN
+          </button>
         </div>
       </div>
     </div>
@@ -6358,8 +6419,25 @@
     <div class="history-actions">
       <button class="history-btn secondary" onclick="clearHistory()">
         <i class="fas fa-trash"></i>
-        Limpiar Historial
+        Borrar todo el historial
       </button>
+    </div>
+  </div>
+
+  <!-- Ronda 14 (F2): modal de PIN parental — pide el PIN antes de abrir el
+       detalle o reproducir un título para adultos. Inputs type=password:
+       el PIN nunca aparece en texto visible ni como valor legible. -->
+  <div id="pinModal" class="pin-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="pinModalTitle">
+    <div class="pin-modal-card">
+      <div class="pin-modal-icon"><i class="fas fa-lock"></i></div>
+      <h3 class="pin-modal-title" id="pinModalTitle">Contenido para adultos</h3>
+      <p class="pin-modal-text" id="pinModalText">Introduce el PIN parental para continuar.</p>
+      <input type="password" class="pin-modal-input" id="pinModalInput" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••" aria-label="PIN parental" onkeydown="if(event.key==='Enter')submitPinModal()">
+      <div class="pin-modal-error hidden" id="pinModalError" role="alert">PIN incorrecto. Inténtalo de nuevo.</div>
+      <div class="pin-modal-actions">
+        <button class="settings-btn secondary" type="button" onclick="closePinModal()">Cancelar</button>
+        <button class="settings-btn primary" type="button" onclick="submitPinModal()">Desbloquear</button>
+      </div>
     </div>
   </div>
 
@@ -6447,6 +6525,29 @@
           <input type="file" id="miniCoverInputEn" accept="image/*" style="display:none;" onchange="handleMiniCoverUpload(this,'en')">
           <div class="mini-upload-prog hidden" id="coverUploadProg_en"><div class="mini-upload-prog-fill" id="coverProgFill_en"></div></div>
           <p class="mini-upload-prog-text hidden" id="coverProgText_en"></p>
+        </div>
+
+        <hr class="mini-cover-lang-divider">
+
+        <!-- Ronda 14 F4: imagen apaisada (16:9) opcional para películas y
+             cortos. Si existe, la tarjeta horizontal la usa en vez de
+             recortar el póster. Misma validación que la portada. -->
+        <div class="mini-cover-lang-block">
+          <div class="mini-cover-lang-label">
+            <span data-i18n="backdrop_label">Imagen apaisada (16:9)</span>
+            <span style="color:#666;font-size:11px;margin-left:4px" data-i18n="optional">(opcional)</span>
+          </div>
+          <div class="mini-cover-picker mini-cover-picker--backdrop" id="miniCoverPickerBackdrop" onclick="document.getElementById('miniCoverInputBackdrop').click()">
+            <img id="miniCoverPreview_backdrop" style="display:none;width:100%;height:100%;object-fit:cover;background:#000;">
+            <div class="mini-cover-placeholder" id="miniCoverPlaceholder_backdrop">
+              <i class="fas fa-image"></i>
+              <span data-i18n="tap_upload">Toca para subir</span>
+            </div>
+          </div>
+          <input type="file" id="miniCoverInputBackdrop" accept="image/*" style="display:none;" onchange="handleMiniCoverUpload(this,'backdrop')">
+          <div class="mini-upload-prog hidden" id="coverUploadProg_backdrop"><div class="mini-upload-prog-fill" id="coverProgFill_backdrop"></div></div>
+          <p class="mini-upload-prog-text hidden" id="coverProgText_backdrop"></p>
+          <button type="button" class="mini-backdrop-remove hidden" id="miniBackdropRemoveBtn" onclick="removeMiniBackdrop()" data-i18n="remove_backdrop">Quitar imagen apaisada</button>
         </div>
 
         <button class="mini-upload-next-btn" onclick="goToMiniStep(2)" style="margin-top:10px;" data-i18n="next_btn">Siguiente →</button>
@@ -6664,10 +6765,10 @@
       <div class="mini-next-label" data-i18n="next_episode">Siguiente episodio</div>
       <div class="mini-next-title" id="miniNextTitle"></div>
       <button class="mini-next-btn" onclick="_skipToNextMiniEp()">
-        <i class="fas fa-play"></i> <span data-i18n="watch_now">Ver ahora</span>
+        <i class="fas fa-play"></i> <span data-i18n="watch_now">Reproducir ahora</span>
       </button>
       <div class="mini-next-countdown" id="miniNextCountdown"></div>
-      <button class="mini-next-close-btn" type="button" onclick="closeMiniPlayer()" aria-label="Cerrar" style="margin-top:10px;background:transparent;border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:8px;padding:6px 16px;cursor:pointer;">Cerrar</button>
+      <button class="mini-next-cancel-btn" type="button" onclick="_cancelMiniAutoplay()" aria-label="Cancelar">Cancelar</button>
     </div>
 
     <!-- Side buttons -->
@@ -6915,6 +7016,17 @@
           </div>
           <input type="file" id="meditCoverEn" accept="image/*" style="display:none;" onchange="handleMiniEditCover(this,'en')">
         </div>
+      </div>
+      <!-- Ronda 14 F4: imagen apaisada (16:9) opcional. Se conserva la
+           guardada si no se sube una nueva; "Quitar" la elimina al guardar. -->
+      <div class="mini-edit-backdrop-block">
+        <div class="mini-edit-poster-label" style="text-align:left;margin-bottom:6px;"><span data-i18n="backdrop_label">Imagen apaisada (16:9)</span> <span style="color:#666;font-size:11px" data-i18n="optional">(opcional)</span></div>
+        <div class="mini-edit-poster-thumb mini-edit-poster-thumb--backdrop" onclick="document.getElementById('meditCoverBackdrop').click()">
+          <img id="meditPreviewBackdrop" src="" alt="">
+          <span class="mini-edit-poster-thumb-empty" id="meditEmptyBackdrop"><i class="fas fa-image"></i></span>
+        </div>
+        <input type="file" id="meditCoverBackdrop" accept="image/*" style="display:none;" onchange="handleMiniEditCover(this,'backdrop')">
+        <button type="button" class="mini-backdrop-remove hidden" id="meditBackdropRemoveBtn" onclick="removeMeditBackdrop()" data-i18n="remove_backdrop">Quitar imagen apaisada</button>
       </div>
       <div id="meditCoverMsg" style="font-size:12px;color:#888;min-height:16px;margin-bottom:8px;"></div>
 
@@ -7398,6 +7510,7 @@
              updateUserInterface();
              initializeCoinWallet(user.uid);
              loadRemoteUnlockedEpisodes(user.uid);
+             loadParentalPinFromFirebase(user.uid); // Ronda 14 (F2): PIN parental remoto
             // Ronda 11: aviso no bloqueante si el correo no está verificado.
             if (user.emailVerified === false && !sessionStorage.getItem('atenis_unverified_notice')) {
               try { sessionStorage.setItem('atenis_unverified_notice', '1'); } catch (e) {}
@@ -7944,11 +8057,22 @@
       card.setAttribute('aria-label', series.spanishTitle || series.title || '');
       card.onclick = () => showSeriesDetail(series.id);
       card.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showSeriesDetail(series.id); } };
+      // Ronda 14 F4: la tarjeta apaisada usa el backdrop 16:9 si existe;
+      // si no, recorta el póster como antes. Si el backdrop falla al cargar,
+      // se intenta el póster antes de caer al placeholder.
+      const _isLandscapeCard = series.type === 'movie' || series.type === 'shortfilm';
+      const _cardImgSrc = (_isLandscapeCard && series.backdrop)
+        ? series.backdrop : (series.poster || '');
       const img = document.createElement('img');
-      img.src = series.poster || '';
+      img.src = _cardImgSrc;
       img.alt = '';
       img.loading = 'lazy';
-      img.onerror = () => handlePosterError(img);
+      img.onerror = () => {
+        if (_cardImgSrc !== (series.poster || '') && series.poster) {
+          img.onerror = () => handlePosterError(img);
+          img.src = series.poster;
+        } else handlePosterError(img);
+      };
       card.appendChild(img);
       return card;
     }
@@ -8329,6 +8453,209 @@
       try { localStorage.setItem(_atenisMigrateKey('atenis_history'), JSON.stringify(history || [])); } catch (e) {}
     }
 
+    // ════════════════════════════════════════════════════════════════════════
+    // RONDA 14 (F2) — CONTROL PARENTAL CON PIN
+    // El PIN protege el contenido clasificado para adultos (rating R, +18,
+    // TV-MA, NC-17 o campo adulto) y se pide antes de abrir el detalle y
+    // antes de reproducir. Sin PIN configurado la función queda dormida:
+    // nada pide PIN. El PIN correcto desbloquea ese título por la sesión
+    // (no se pide de nuevo por cada episodio). El PIN NUNCA se guarda en
+    // claro: solo su hash (con sal) en local por usuario y en Firebase
+    // users/{uid}/parentalPin. Tampoco se muestra en texto visible, ni en
+    // logs, ni como valor legible en el DOM (inputs type=password).
+    // ════════════════════════════════════════════════════════════════════════
+    // La comparación normaliza igual que isAdultContent (mayúsculas, sin
+    // espacios ni guiones): 'TV-MA' y 'TVMA' son el mismo valor.
+    const PARENTAL_ADULT_RATINGS = ['R', 'NC17', 'X', 'TVMA', 'MA', '+18', '18+', '18', 'ADULT', 'ADULTOS'];
+
+    function isAdultContent(series) {
+      if (!series || typeof series !== 'object') return false;
+      if (series.adult === true || series.isAdult === true || series.mature === true) return true;
+      const raw = series.rating || series.clasificacion || series.clasification || '';
+      const r = String(raw).toUpperCase().replace(/[\s\-_]/g, '');
+      return PARENTAL_ADULT_RATINGS.indexOf(r) !== -1;
+    }
+
+    // Hash síncrono (cyrb53) del PIN con sal por usuario. No criptográfico
+    // de grado bancario: su fin es no guardar el PIN en claro ni dejarlo
+    // legible en localStorage/Firebase; la verificación compara hashes.
+    function _pinHash(pin, salt) {
+      let h1 = 0xdeadbeef ^ salt.length, h2 = 0x41c6ce57 ^ salt.length;
+      const s = String(salt) + ':' + String(pin);
+      for (let i = 0; i < s.length; i++) {
+        const ch = s.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+      }
+      h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+      h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+      return (h2 >>> 0).toString(16) + (h1 >>> 0).toString(16);
+    }
+
+    // Caché en memoria: null = aún no leído, false = no hay PIN, objeto = {salt, hash}.
+    let _parentalPinCache = null;
+    // Títulos desbloqueados en esta sesión (seriesId -> true). Solo memoria.
+    let _parentalUnlocked = {};
+    // Estado pendiente del modal de PIN ({ series, onUnlocked }).
+    let _pinPending = null;
+
+    function _parentalPinLocalKey() { return atenisUserKey('atenis_parental_pin'); }
+
+    function _readStoredPinLocal() {
+      try {
+        const raw = localStorage.getItem(_parentalPinLocalKey());
+        if (!raw) return null;
+        const p = JSON.parse(raw);
+        return (p && p.salt && p.hash) ? p : null;
+      } catch (e) { return null; }
+    }
+
+    function getStoredParentalPin() {
+      if (_parentalPinCache !== null) return _parentalPinCache;
+      const local = _readStoredPinLocal();
+      _parentalPinCache = local || false;
+      return _parentalPinCache;
+    }
+
+    function hasParentalPin() { return !!getStoredParentalPin(); }
+
+    function _verifyParentalPin(pin) {
+      const stored = getStoredParentalPin();
+      if (!stored) return false;
+      return _pinHash(pin, stored.salt) === stored.hash;
+    }
+
+    function _makePinSalt() {
+      try {
+        const buf = new Uint32Array(2);
+        (window.crypto || {}).getRandomValues ? window.crypto.getRandomValues(buf) : null;
+        return 's' + buf[0].toString(36) + buf[1].toString(36) + Date.now().toString(36);
+      } catch (e) { return 's' + Math.random().toString(36).slice(2) + Date.now().toString(36); }
+    }
+
+    // Guarda el PIN (hash + sal): local por usuario siempre, Firebase si
+    // hay sesión. Si Firebase falla, el PIN local sigue valiendo.
+    async function saveParentalPinRecord(pin) {
+      const salt = _makePinSalt();
+      const rec = { salt: salt, hash: _pinHash(pin, salt) };
+      try { localStorage.setItem(_parentalPinLocalKey(), JSON.stringify(rec)); } catch (e) {}
+      _parentalPinCache = rec;
+      const uid = _atenisCurrentUid();
+      if (uid && firebaseReady && database) {
+        try { await database.ref('users/' + uid + '/parentalPin').set(rec); } catch (e) { console.warn('No se pudo guardar el PIN en Firebase:', e); }
+      }
+      return rec;
+    }
+
+    // Carga el PIN remoto una vez por sesión (al autenticar) y lo deja en
+    // caché + local, para que el bloqueo funcione también sin conexión.
+    async function loadParentalPinFromFirebase(uid) {
+      if (!uid || !firebaseReady || !database) return;
+      try {
+        const snap = await database.ref('users/' + uid + '/parentalPin').once('value');
+        const v = snap && snap.val();
+        if (v && v.salt && v.hash) {
+          _parentalPinCache = v;
+          try { localStorage.setItem(_parentalPinLocalKey(), JSON.stringify(v)); } catch (e) {}
+        }
+      } catch (e) { /* sin PIN remoto o sin red: vale el local */ }
+    }
+
+    // Puerta de entrada única: si el título no es adulto, si ya se
+    // desbloqueó en esta sesión, o si no hay PIN configurado, sigue.
+    // Si no, abre el modal y solo sigue con el PIN correcto.
+    function requirePinForSeries(series, onUnlocked) {
+      if (!series || !isAdultContent(series)) { onUnlocked(); return; }
+      if (_parentalUnlocked[series.id]) { onUnlocked(); return; }
+      if (!hasParentalPin()) { onUnlocked(); return; }
+      openPinModal(series, onUnlocked);
+    }
+
+    function openPinModal(series, onUnlocked) {
+      _pinPending = { series: series, onUnlocked: onUnlocked };
+      const modal = document.getElementById('pinModal');
+      const input = document.getElementById('pinModalInput');
+      const err = document.getElementById('pinModalError');
+      const text = document.getElementById('pinModalText');
+      if (text) text.textContent = '«' + (series.spanishTitle || series.title || 'Este título') + '» es contenido para adultos. Introduce el PIN parental para continuar.';
+      if (err) err.classList.add('hidden');
+      if (input) { input.value = ''; }
+      if (modal) modal.style.display = 'flex';
+      if (input) setTimeout(() => { try { input.focus(); } catch (e) {} }, 50);
+    }
+
+    function closePinModal() {
+      _pinPending = null;
+      const modal = document.getElementById('pinModal');
+      const input = document.getElementById('pinModalInput');
+      if (input) input.value = '';
+      if (modal) modal.style.display = 'none';
+    }
+
+    function submitPinModal() {
+      const input = document.getElementById('pinModalInput');
+      const err = document.getElementById('pinModalError');
+      const pin = input ? input.value.trim() : '';
+      if (!_pinPending) { closePinModal(); return; }
+      if (!_verifyParentalPin(pin)) {
+        if (err) err.classList.remove('hidden');
+        if (input) { input.value = ''; try { input.focus(); } catch (e) {} }
+        return;
+      }
+      const pending = _pinPending;
+      if (pending.series && pending.series.id) _parentalUnlocked[pending.series.id] = true;
+      closePinModal();
+      try { pending.onUnlocked(); } catch (e) { console.error('Error tras desbloquear con PIN:', e); }
+    }
+
+    // ── UI de Ajustes > Control Parental ──
+    function refreshParentalPinUI() {
+      const has = hasParentalPin();
+      const status = document.getElementById('parentalPinStatus');
+      const badge = document.getElementById('parentalPinBadge');
+      const currentRow = document.getElementById('parentalCurrentPinRow');
+      const msg = document.getElementById('parentalPinMsg');
+      if (status) status.textContent = has ? 'PIN configurado' : 'Sin PIN configurado';
+      if (badge) badge.innerHTML = has ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-lock-open"></i>';
+      if (currentRow) currentRow.style.display = has ? '' : 'none';
+      if (msg) { msg.classList.add('hidden'); msg.textContent = ''; }
+      ['parentalCurrentPin', 'parentalNewPin', 'parentalConfirmPin'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+    }
+
+    function _parentalPinMsg(text, isError) {
+      const msg = document.getElementById('parentalPinMsg');
+      if (!msg) return;
+      msg.textContent = text;
+      msg.classList.remove('hidden');
+      msg.classList.toggle('parental-pin-msg--error', !!isError);
+    }
+
+    async function saveParentalPin() {
+      const currentEl = document.getElementById('parentalCurrentPin');
+      const newEl = document.getElementById('parentalNewPin');
+      const confirmEl = document.getElementById('parentalConfirmPin');
+      const current = currentEl ? currentEl.value.trim() : '';
+      const next = newEl ? newEl.value.trim() : '';
+      const confirm = confirmEl ? confirmEl.value.trim() : '';
+      if (!/^\d{4}$/.test(next)) { _parentalPinMsg('El PIN debe tener 4 dígitos.', true); return; }
+      if (next !== confirm) { _parentalPinMsg('Los PIN no coinciden. Revísalos.', true); return; }
+      if (hasParentalPin()) {
+        if (!current) { _parentalPinMsg('Introduce el PIN actual para cambiarlo.', true); return; }
+        if (!_verifyParentalPin(current)) { _parentalPinMsg('El PIN actual no es correcto.', true); return; }
+      }
+      try {
+        await saveParentalPinRecord(next);
+        refreshParentalPinUI();
+        _parentalPinMsg('PIN guardado correctamente.', false);
+        showSettingsMessage('PIN parental guardado');
+      } catch (e) {
+        _parentalPinMsg('No se pudo guardar el PIN. Inténtalo de nuevo.', true);
+      }
+    }
+
     function readMyListStorage() {
       try {
         const value = JSON.parse(localStorage.getItem(_atenisMigrateKey('atenis_my_list')) || '[]');
@@ -8488,6 +8815,9 @@
             <i class="fas fa-clock"></i> ${timeAgo} • ${Math.round(progress)}% visto
           </div>
         </div>
+        <button class="history-item-remove" type="button" onclick="event.stopPropagation(); removeHistoryItem('${series.id}')" aria-label="Borrar del historial">
+          <i class="fas fa-trash"></i>
+        </button>
       `;
       
       return item;
@@ -8507,13 +8837,40 @@
       return 'Hace un momento';
     }
 
-    // Limpiar historial
-    function clearHistory() {
-      if (confirm('¿Estás seguro de que quieres eliminar todo el historial?')) {
-        localStorage.removeItem(_atenisMigrateKey('atenis_history'));
-        loadHistoryContent();
-        showSettingsMessage('Historial eliminado');
+    // Ronda 14 (F6): limpiar historial — borra el historial local, el
+    // progreso local (watched_*) y el progreso sincronizado en Firebase
+    // (users/{uid}/watchProgress). Si Firebase falla, el local ya quedó
+    // limpio y la UI no se rompe.
+    async function clearHistory() {
+      if (!confirm('¿Estás seguro de que quieres eliminar todo el historial?')) return;
+      const history = readAtenisHistory();
+      try { localStorage.removeItem(_atenisMigrateKey('atenis_history')); } catch (e) {}
+      history.forEach(item => {
+        if (!item || !item.seriesId) return;
+        try { localStorage.removeItem(atenisUserKey('watched_' + item.seriesId)); } catch (e) {}
+      });
+      const uid = _atenisCurrentUid();
+      if (uid && firebaseReady && database) {
+        try { await database.ref('users/' + uid + '/watchProgress').remove(); } catch (e) { console.warn('No se pudo borrar el progreso en Firebase:', e); }
       }
+      loadHistoryContent();
+      showSettingsMessage('Historial eliminado');
+    }
+
+    // Ronda 14 (F6): borrar UN título del historial con su progreso
+    // (local watched_* + nodo users/{uid}/watchProgress/{seriesId}).
+    // La lista se actualiza sin recargar la página.
+    async function removeHistoryItem(seriesId) {
+      if (!seriesId) return;
+      const history = readAtenisHistory().filter(item => item && item.seriesId !== seriesId);
+      writeAtenisHistory(history);
+      try { localStorage.removeItem(atenisUserKey('watched_' + seriesId)); } catch (e) {}
+      const uid = _atenisCurrentUid();
+      if (uid && firebaseReady && database) {
+        try { await database.ref('users/' + uid + '/watchProgress/' + seriesId).remove(); } catch (e) { console.warn('No se pudo borrar el progreso en Firebase:', e); }
+      }
+      loadHistoryContent();
+      showSettingsMessage('Título eliminado del historial');
     }
 
     // Lectura defensiva del historial: localStorage puede corromperse y un
@@ -8556,6 +8913,171 @@
       }
       
       writeAtenisHistory(history);
+      // Ronda 14 F3: replicar el progreso en Firebase (con debounce) para
+      // retomarlo en otro dispositivo. Nunca rompe el guardado local.
+      queueWatchProgressSync(historyItem);
+    }
+
+    // ── Ronda 14 F3: progreso sincronizado entre dispositivos ─────────────
+    // El historial local (atenis_history) sigue siendo la única fuente de
+    // verdad en el dispositivo; además se replica en Firebase bajo
+    // users/{uid}/watchProgress/{seriesId}/{episodeId} para retomarlo en
+    // otro dispositivo. Si Firebase no está disponible o no hay sesión,
+    // todo sigue funcionando solo en local, sin errores visibles.
+    const WATCH_SYNC_DEBOUNCE_MS = 10000; // como mucho 1 escritura cada 10 s
+    const WATCH_SYNC_RESTORE_MIN_MS = 5 * 60 * 1000; // relectura cada 5 min
+    let _watchSyncPending = null;   // último item local pendiente de subir
+    let _watchSyncTimer = null;     // temporizador del debounce
+    let _watchSyncLastWriteAt = 0;  // última escritura real a Firebase
+    let _watchSyncRestoredAt = 0;   // última lectura de Firebase
+
+    // Id de episodio válido como clave de Firebase (sin . # $ [ ] /).
+    // Usa el id estable del episodio; si no lo tiene, 'ep-<índice>'.
+    function _watchSyncEpisodeId(seriesId, episodeIdx) {
+      try {
+        const series = (typeof seriesDatabase !== 'undefined' && seriesDatabase)
+          ? seriesDatabase[seriesId] : null;
+        const eps = series && Array.isArray(series.episodes) ? series.episodes : [];
+        const idx = Number.isInteger(episodeIdx) ? episodeIdx : 0;
+        const ep = eps[idx];
+        const raw = (ep && ep.id !== undefined && ep.id !== null && ep.id !== '')
+          ? String(ep.id) : ('ep-' + idx);
+        return raw.replace(/[.#$\[\]\/]/g, '_');
+      } catch (e) {
+        return 'ep-' + (Number.isInteger(episodeIdx) ? episodeIdx : 0);
+      }
+    }
+
+    // Solo hay sincronización con SDK de Firebase cargado y sesión activa.
+    // Con el stub offline (createOfflineDatabase) o sin usuario, el .set()
+    // rechazaría: aquí ni se intenta, el progreso queda solo en local.
+    function _watchSyncAvailable() {
+      try {
+        return !!(typeof firebaseReady !== 'undefined' && firebaseReady
+          && typeof database !== 'undefined' && database
+          && _atenisCurrentUid());
+      } catch (e) { return false; }
+    }
+
+    // Encola el progreso para subirlo: escribe ya si pasaron 10 s desde la
+    // última escritura; si no, programa un único envío al cumplirse el plazo.
+    // Llamadas repetidas solo mueven el contenido pendiente, nunca crean
+    // más de un temporizador ni escriben a cada segundo.
+    function queueWatchProgressSync(historyItem) {
+      if (!historyItem || !historyItem.seriesId) return;
+      _watchSyncPending = {
+        seriesId: historyItem.seriesId,
+        type: historyItem.type || 'series',
+        progress: historyItem.progress,
+        currentTimeSec: historyItem.currentTimeSec,
+        durationSec: historyItem.durationSec,
+        episodeIdx: historyItem.episodeIdx,
+        watchedAt: historyItem.watchedAt
+      };
+      if (!_watchSyncAvailable()) return;
+      const sinceLast = Date.now() - _watchSyncLastWriteAt;
+      if (sinceLast >= WATCH_SYNC_DEBOUNCE_MS) {
+        flushWatchProgressSync();
+      } else if (!_watchSyncTimer) {
+        _watchSyncTimer = setTimeout(() => {
+          _watchSyncTimer = null;
+          flushWatchProgressSync();
+        }, WATCH_SYNC_DEBOUNCE_MS - sinceLast);
+      }
+    }
+
+    // Sube YA el progreso pendiente (pausa, cierre del reproductor).
+    // Nunca lanza: cualquier fallo de Firebase solo queda en consola.
+    function flushWatchProgressSync() {
+      if (_watchSyncTimer) { clearTimeout(_watchSyncTimer); _watchSyncTimer = null; }
+      const item = _watchSyncPending;
+      _watchSyncPending = null;
+      if (!item) return;
+      if (!_watchSyncAvailable()) return;
+      const payload = {
+        progress: Math.round(Number(item.progress) || 0),
+        currentTimeSec: Number(item.currentTimeSec) || 0,
+        durationSec: Number(item.durationSec) || 0,
+        episodeIdx: Number.isInteger(item.episodeIdx) ? item.episodeIdx : 0,
+        type: item.type || 'series',
+        updatedAt: Date.now()
+      };
+      _watchSyncLastWriteAt = Date.now();
+      try {
+        const ref = database.ref('users/' + _atenisCurrentUid()
+          + '/watchProgress/' + item.seriesId + '/'
+          + _watchSyncEpisodeId(item.seriesId, item.episodeIdx));
+        const p = ref.set(payload);
+        if (p && typeof p.catch === 'function') {
+          p.catch(err => console.warn('Watch sync: no se pudo guardar el progreso remoto:', err));
+        }
+      } catch (err) {
+        console.warn('Watch sync: no se pudo guardar el progreso remoto:', err);
+      }
+    }
+
+    // Lee el progreso remoto y lo fusiona con el local. Gana el más nuevo
+    // (updatedAt remoto frente a watchedAt local); el local más nuevo no
+    // se pisa y se vuelve a subir para que el otro dispositivo lo vea.
+    // Devuelve true si el historial local cambió. Nunca lanza ni bloquea
+    // la UI: la lectura tiene tope de 8 s y cualquier error se traga.
+    async function restoreWatchProgressFromFirebase(force) {
+      if (!_watchSyncAvailable()) return false;
+      if (!force && _watchSyncRestoredAt
+          && Date.now() - _watchSyncRestoredAt < WATCH_SYNC_RESTORE_MIN_MS) return false;
+      _watchSyncRestoredAt = Date.now();
+      try {
+        const snap = await withFirebaseTimeout(
+          database.ref('users/' + _atenisCurrentUid() + '/watchProgress').once('value'),
+          'watchProgress', 8000);
+        if (!snap) return false;
+        const remote = snap.val();
+        if (!remote || typeof remote !== 'object') return false;
+        const history = readAtenisHistory();
+        let changed = false;
+        Object.keys(remote).forEach(seriesId => {
+          const eps = remote[seriesId];
+          if (!eps || typeof eps !== 'object') return;
+          // Episodio remoto más nuevo de la serie.
+          let newest = null;
+          Object.keys(eps).forEach(epId => {
+            const r = eps[epId];
+            if (!r || typeof r !== 'object') return;
+            const t = Number(r.updatedAt) || 0;
+            if (!newest || t > newest.t) newest = { r, t };
+          });
+          if (!newest) return;
+          const r = newest.r;
+          const localIdx = history.findIndex(h => h.seriesId === seriesId);
+          const local = localIdx !== -1 ? history[localIdx] : null;
+          const localAt = local ? (Date.parse(local.watchedAt || '') || 0) : 0;
+          if (!local || (Number(r.updatedAt) || 0) > localAt) {
+            const item = {
+              seriesId: seriesId,
+              type: r.type || (local && local.type) || 'series',
+              progress: Number(r.progress) || 0,
+              currentTimeSec: Number(r.currentTimeSec) || 0,
+              durationSec: Number(r.durationSec) || 0,
+              episodeIdx: Number.isInteger(r.episodeIdx) ? r.episodeIdx : 0,
+              watchedAt: new Date(Number(r.updatedAt) || Date.now()).toISOString()
+            };
+            if (localIdx !== -1) history[localIdx] = item;
+            else history.push(item);
+            changed = true;
+          } else if (local) {
+            // El local es más nuevo: subirlo para el otro dispositivo.
+            queueWatchProgressSync(local);
+          }
+        });
+        if (changed) {
+          if (history.length > 50) history.splice(0, history.length - 50);
+          writeAtenisHistory(history);
+        }
+        return changed;
+      } catch (err) {
+        console.warn('Watch sync: no se pudo restaurar el progreso remoto:', err);
+        return false;
+      }
     }
 
     // ===== CONTINUAR VIENDO =====
@@ -8582,6 +9104,12 @@
     }
 
     function buildContinueWatchingSection() {
+      // Ronda 14 F3: al abrir "Continuar Viendo", traer el progreso remoto
+      // más nuevo (como mucho una lectura cada 5 min) y, si cambia algo,
+      // repintar la sección con los datos fusionados.
+      restoreWatchProgressFromFirebase(false).then(changed => {
+        if (changed) buildContinueWatchingSection();
+      }).catch(() => {});
       const section = document.getElementById('continueWatchingSection');
       const carousel = document.getElementById('continueCarousel');
       if (!section || !carousel) return;
@@ -8678,6 +9206,7 @@
       setValue('interfaceLanguage', storedLang);
       setValue('preferredAudio', settings.preferredAudio || 'original');
       setChecked('defaultSubtitles', settings.defaultSubtitles || false);
+      setValue('subtitleSize', settings.subtitleSize || 'medium');
       setChecked('releaseNotifications', settings.releaseNotifications !== false);
       setChecked('reminderNotifications', settings.reminderNotifications !== false);
       setValue('parentalControl', settings.parentalControl || 'all');
@@ -8692,6 +9221,7 @@
       // Aplicar configuraciones actuales
       applyTheme(settings.theme || 'default');
       applyTextSize(settings.textSize || 'medium');
+      applyMiniSubtitleSize(settings.subtitleSize || 'medium');
       
       // Aplicar idioma actual
       if (settings.language) {
@@ -8719,6 +9249,7 @@
         language: readValue('interfaceLanguage', 'es'),
         preferredAudio: readValue('preferredAudio', 'original'),
         defaultSubtitles: readChecked('defaultSubtitles', false),
+        subtitleSize: readValue('subtitleSize', 'medium'),
         releaseNotifications: readChecked('releaseNotifications', true),
         reminderNotifications: readChecked('reminderNotifications', true),
         parentalControl: readValue('parentalControl', 'all'),
@@ -8815,6 +9346,9 @@
       
       // Aplicar tamaño de texto
       applyTextSize(settings.textSize);
+
+      // Aplicar tamaño de subtítulos (Ronda 14, F5)
+      applyMiniSubtitleSize(settings.subtitleSize);
     }
 
     // Aplicar tema
@@ -8829,6 +9363,28 @@
       } else {
         body.classList.add('theme-default');
       }
+    }
+
+    // Ronda 14 (F5): tamaño del overlay manual de subtítulos del
+    // mini-player (Ronda 11). Sin argumento lee el ajuste guardado
+    // (settings.subtitleSize, por usuario, como el idioma); por defecto
+    // Mediano. Con guarda de error: si algo falla, el overlay queda como
+    // estaba y la UI no se rompe.
+    function applyMiniSubtitleSize(size) {
+      try {
+        const valid = ['small', 'medium', 'large'];
+        let s = size;
+        if (!valid.includes(s)) {
+          try {
+            const stored = (readAtenisSettings() || {}).subtitleSize;
+            s = valid.includes(stored) ? stored : 'medium';
+          } catch (e) { s = 'medium'; }
+        }
+        const overlay = document.getElementById('miniSubtitleOverlay');
+        if (!overlay) return;
+        overlay.classList.remove('sub-size-small', 'sub-size-medium', 'sub-size-large');
+        overlay.classList.add('sub-size-' + s);
+      } catch (e) {}
     }
 
     // Aplicar tamaño de texto
@@ -8929,6 +9485,17 @@
         writeAtenisSettings(settings);
         applyTextSize(this.value);
         showSettingsMessage(`Tamaño de texto: ${this.value}`);
+      });
+
+      // Tamaño de subtítulos (Ronda 14, F5): se guarda por usuario y se
+      // aplica en caliente si el reproductor está abierto.
+      document.getElementById('subtitleSize')?.addEventListener('change', function() {
+        const settings = readAtenisSettings();
+        settings.subtitleSize = this.value;
+        writeAtenisSettings(settings);
+        applyMiniSubtitleSize(this.value);
+        const names = { small: 'Pequeño', medium: 'Mediano', large: 'Grande' };
+        showSettingsMessage('Tamaño de subtítulos: ' + (names[this.value] || this.value));
       });
 
       // WiFi only
@@ -9249,6 +9816,11 @@
         initializePremiereSystem();
         initializeLiveProgramming();
         setupRealtimeSettings(); // Configurar ajustes en tiempo real
+        // Ronda 14 F3: restaurar el progreso remoto antes de pintar
+        // "Continuar Viendo" (sin bloquear: si cambia algo, se repinta).
+        restoreWatchProgressFromFirebase(true).then(changed => {
+          if (changed) buildContinueWatchingSection();
+        }).catch(() => {});
         buildContinueWatchingSection();
         // Ronda 6: re-verificar la suscripción cada 5 minutos mientras la
         // app está abierta (caducidad o desactivación expulsan a suscripción/login).
@@ -9837,7 +10409,15 @@
     // Abrir el contenido desde cualquier sección del catálogo.
     // Películas y series abren la vista de detalle estilo Netflix;
     // las miniseries van directo al reproductor vertical.
+    // Ronda 14 (F2): el contenido para adultos pide el PIN antes de abrir
+    // el detalle; el cuerpo original vive en _showSeriesDetailInner.
     function showSeriesDetail(seriesId) {
+      const series = seriesDatabase[seriesId];
+      if (!series) return;
+      requirePinForSeries(series, () => _showSeriesDetailInner(seriesId));
+    }
+
+    function _showSeriesDetailInner(seriesId) {
       const series = seriesDatabase[seriesId];
       if (!series) return;
       currentSeries = series;
@@ -9847,7 +10427,7 @@
       }
       hideAllSections();
       setTopBarMode(true);
-      showMiniPlayer(seriesId, 0);
+      _showMiniPlayerInner(seriesId, 0);
     }
 
     // ── Vista de Detalle (Películas y Series) ──────────────────────────────
@@ -10298,6 +10878,13 @@
     // Funciones del reproductor de video
     function closeVideoPlayer() {
       closeTracksModal();
+      // Ronda 14 F3: guardar la posición final y subirla ya (sin esperar
+      // al debounce) antes de soltar el vídeo.
+      if (videoElement && currentSeries && videoElement.duration) {
+        const _closePct = (videoElement.currentTime / videoElement.duration) * 100;
+        if (_closePct >= 1) saveToHistory(currentSeries.id, _closePct, videoElement.currentTime, videoElement.duration);
+      }
+      flushWatchProgressSync();
       videoPlayer.classList.remove('active');
       document.body.classList.remove('video-playing');
 
@@ -10959,6 +11546,8 @@
       videoElement.addEventListener('playing', hideBufferingSpinner);
       videoElement.addEventListener('canplay', hideBufferingSpinner);
       videoElement.addEventListener('pause', hideBufferingSpinner);
+      // Ronda 14 F3: al pausar, subir el progreso pendiente sin esperar al debounce.
+      videoElement.addEventListener('pause', () => { try { flushWatchProgressSync(); } catch (e) {} });
       videoElement.addEventListener('ended', hideBufferingSpinner);
       videoElement.addEventListener('error', hideBufferingSpinner);
     }
@@ -11344,6 +11933,7 @@
         upload_covers_hint:'Sube las portadas de tu serie por idioma',
         cover_original:'Portada Original', cover_es:'Portada en Español', cover_en:'Portada en Inglés',
         optional:'(opcional)', tap_upload:'Toca para subir',
+        backdrop_label:'Imagen apaisada (16:9)', remove_backdrop:'Quitar imagen apaisada',
         next_btn:'Siguiente →', back_btn:'← Atrás',
         titles_section:'Títulos', title_original:'Título Original *',
         title_es:'Título en Español', title_en:'Título en Inglés',
@@ -11352,7 +11942,7 @@
         desc_es:'Descripción en Español', desc_en:'Descripción en Inglés',
         original_lang:'Idioma original', available_subs:'Subtítulos disponibles',
         episodes:'Episodios', synopsis:'Sinopsis', info:'Info',
-        next_episode:'Siguiente episodio', watch_now:'Ver ahora',
+        next_episode:'Siguiente episodio', watch_now:'Reproducir ahora',
         starting_in:'Iniciando en',
         no_desc:'Sin descripción disponible.', no_episodes:'No hay episodios disponibles.',
         no_video:'Este episodio aún no tiene video disponible.',
@@ -11390,6 +11980,7 @@
         upload_covers_hint:'Upload your series posters by language',
         cover_original:'Original Poster', cover_es:'Spanish Poster', cover_en:'English Poster',
         optional:'(optional)', tap_upload:'Tap to upload',
+        backdrop_label:'Landscape image (16:9)', remove_backdrop:'Remove landscape image',
         next_btn:'Next →', back_btn:'← Back',
         titles_section:'Titles', title_original:'Original Title *',
         title_es:'Spanish Title', title_en:'English Title',
@@ -11398,7 +11989,7 @@
         desc_es:'Spanish Description', desc_en:'English Description',
         original_lang:'Original language', available_subs:'Available subtitles',
         episodes:'Episodes', synopsis:'Synopsis', info:'Info',
-        next_episode:'Next episode', watch_now:'Watch now',
+        next_episode:'Next episode', watch_now:'Play now',
         starting_in:'Starting in',
         no_desc:'No description available.', no_episodes:'No episodes available.',
         no_video:'This episode has no video available yet.',
@@ -11511,7 +12102,8 @@
 
     let _miniEditId = null;
     let _miniEditNode = 'catalog'; // 'catalog' o 'miniDramas' (contenido legado)
-    let _miniEditPosters = { orig: null, es: null, en: null };
+    let _miniEditPosters = { orig: null, es: null, en: null, backdrop: null };
+    let _miniEditBackdropRemoved = false; // Ronda 14 F4: true si el admin quita el backdrop guardado
     let _miniEditEpisodes = []; // mutable working copy
 
     // ── Episode list render ──────────────────────────────────────────────────
@@ -11712,7 +12304,8 @@
       if (!isSeriesAdmin()) return;
       _miniEditId = miniId;
       _miniEditNode = 'catalog';
-      _miniEditPosters = { orig: null, es: null, en: null };
+      _miniEditPosters = { orig: null, es: null, en: null, backdrop: null };
+      _miniEditBackdropRemoved = false;
 
       let snap = await database.ref('catalog/' + miniId).once('value');
       let m = snap.val();
@@ -11770,6 +12363,22 @@
         }
       });
 
+      // Ronda 14 F4: vista previa del backdrop guardado (si lo tiene).
+      const _bdImg = document.getElementById('meditPreviewBackdrop');
+      const _bdEmpty = document.getElementById('meditEmptyBackdrop');
+      const _bdRemove = document.getElementById('meditBackdropRemoveBtn');
+      if (_bdImg) {
+        if (m.backdrop) {
+          _bdImg.src = m.backdrop; _bdImg.style.display = 'block';
+          if (_bdEmpty) _bdEmpty.style.display = 'none';
+          if (_bdRemove) _bdRemove.classList.remove('hidden');
+        } else {
+          _bdImg.style.display = 'none';
+          if (_bdEmpty) _bdEmpty.style.display = '';
+          if (_bdRemove) _bdRemove.classList.add('hidden');
+        }
+      }
+
       // Load episodes working copy
       _miniEditEpisodes = (m.episodes || []).map(ep => ({ ...ep }));
       renderMiniEditEpisodes();
@@ -11814,10 +12423,30 @@
       try {
         const url = await uploadToCloudinary(file, () => {});
         _miniEditPosters[type] = url;
+        if (type === 'backdrop') {
+          _miniEditBackdropRemoved = false;
+          const _bdRm = document.getElementById('meditBackdropRemoveBtn');
+          if (_bdRm) _bdRm.classList.remove('hidden');
+        }
         if (msg) msg.textContent = t('upload_done');
       } catch (err) {
         if (msg) msg.textContent = t('upload_error') + ': ' + err.message;
       }
+    }
+
+    // Ronda 14 F4: quitar el backdrop en el formulario de edición. No
+    // borra nada en Firebase hasta que se pulse "Guardar cambios".
+    function removeMeditBackdrop() {
+      _miniEditBackdropRemoved = true;
+      _miniEditPosters.backdrop = null;
+      const input = document.getElementById('meditCoverBackdrop');
+      if (input) input.value = '';
+      const img = document.getElementById('meditPreviewBackdrop');
+      if (img) { img.src = ''; img.style.display = 'none'; }
+      const emptyEl = document.getElementById('meditEmptyBackdrop');
+      if (emptyEl) emptyEl.style.display = '';
+      const btn = document.getElementById('meditBackdropRemoveBtn');
+      if (btn) btn.classList.add('hidden');
     }
 
     async function saveSeriesEdit() {
@@ -11855,6 +12484,9 @@
         const posterOrig = _miniEditPosters.orig || old.posterOriginal || old.poster || '';
         const posterEs   = _miniEditPosters.es   || old.posterEs   || posterOrig;
         const posterEn   = _miniEditPosters.en   || old.posterEn   || posterOrig;
+        // Ronda 14 F4: el backdrop se conserva si no se sube uno nuevo;
+        // null lo borra de Firebase (update con null elimina la clave).
+        const backdrop = _miniEditBackdropRemoved ? null : (_miniEditPosters.backdrop || old.backdrop || '');
 
         const availSubs = [];
         if (document.getElementById('meditSubEs').checked)   availSubs.push('es');
@@ -11910,6 +12542,7 @@
           posterOriginal: posterOrig,
           posterEs,
           posterEn,
+          backdrop,
           isFeatured:     document.getElementById('meditFeatured').checked,
           isTrending:     document.getElementById('meditTrending').checked,
           isLocked:       document.getElementById('meditLocked').checked,
@@ -12110,7 +12743,7 @@
 
     function openSeriesUpload() {
       if (!isSeriesAdmin()) return;
-      miniUploadData = { coverUrl: null, coverUrlOrig: null, coverUrlEs: null, coverUrlEn: null, episodes: [] };
+      miniUploadData = { coverUrl: null, coverUrlOrig: null, coverUrlEs: null, coverUrlEn: null, backdropUrl: null, episodes: [] };
       miniEpisodeCounter = 0;
       document.getElementById('miniUploadModal').classList.add('active');
       document.getElementById('miniEpisodesList').innerHTML = '';
@@ -12127,7 +12760,7 @@
       document.getElementById('miniSubEn').checked = false;
       document.getElementById('miniSubOrig').checked = false;
       // Reset all 3 cover pickers
-      ['orig', 'es', 'en'].forEach(type => {
+      ['orig', 'es', 'en', 'backdrop'].forEach(type => {
         const prev = document.getElementById('miniCoverPreview_' + type);
         const ph   = document.getElementById('miniCoverPlaceholder_' + type);
         const pg   = document.getElementById('coverUploadProg_' + type);
@@ -12139,6 +12772,8 @@
         if (pt)   { pt.classList.add('hidden'); pt.textContent = ''; }
         if (pf)   pf.style.width = '0%';
       });
+      const _bdRmNew = document.getElementById('miniBackdropRemoveBtn');
+      if (_bdRmNew) _bdRmNew.classList.add('hidden');
       // Update modal text for current language
       const modalH2 = document.querySelector('#miniUploadModal h2');
       if (modalH2) modalH2.textContent = t('new_mini');
@@ -12207,12 +12842,31 @@
         if (coverType === 'orig') { miniUploadData.coverUrlOrig = url; miniUploadData.coverUrl = url; }
         else if (coverType === 'es') miniUploadData.coverUrlEs = url;
         else if (coverType === 'en') miniUploadData.coverUrlEn = url;
+        else if (coverType === 'backdrop') {
+          miniUploadData.backdropUrl = url;
+          const _bdRm = document.getElementById('miniBackdropRemoveBtn');
+          if (_bdRm) _bdRm.classList.remove('hidden');
+        }
         if (progText) progText.textContent = t('upload_done');
         if (progFill) progFill.style.width = '100%';
       } catch (err) {
         if (progText) progText.textContent = t('upload_error') + ': ' + err.message;
         console.error('Cover upload error:', err);
       }
+    }
+
+    // Ronda 14 F4: quitar la imagen apaisada del formulario de creación
+    // (no toca la portada ni lo ya publicado).
+    function removeMiniBackdrop() {
+      miniUploadData.backdropUrl = null;
+      const input = document.getElementById('miniCoverInputBackdrop');
+      if (input) input.value = '';
+      const img = document.getElementById('miniCoverPreview_backdrop');
+      if (img) { img.src = ''; img.style.display = 'none'; }
+      const ph = document.getElementById('miniCoverPlaceholder_backdrop');
+      if (ph) ph.style.display = '';
+      const btn = document.getElementById('miniBackdropRemoveBtn');
+      if (btn) btn.classList.add('hidden');
     }
 
     // Legacy wrapper (backwards compat)
@@ -12529,6 +13183,8 @@
         const posterOrig = miniUploadData.coverUrlOrig || miniUploadData.coverUrl || '';
         const posterEs   = miniUploadData.coverUrlEs   || posterOrig;
         const posterEn   = miniUploadData.coverUrlEn   || posterOrig;
+        // Ronda 14 F4: imagen apaisada opcional ('' si no se subió).
+        const backdrop   = miniUploadData.backdropUrl || '';
 
         // Build episodes array from DOM + upload data
         const contentType = (document.getElementById('miniTypeInput') || {}).value || 'mini';
@@ -12583,6 +13239,7 @@
           posterOriginal: posterOrig,
           posterEs,
           posterEn,
+          backdrop,
           seasons:        seasons,
           trailer:        '',
           description:    descEs,
@@ -12694,7 +13351,15 @@
       }
     }
 
+    // Ronda 14 (F2): el contenido para adultos pide el PIN antes de
+    // reproducir; el cuerpo original vive en _showMiniPlayerInner.
     function showMiniPlayer(miniId, epIdx, startTime) {
+      const mini = seriesDatabase[miniId];
+      if (!mini) return;
+      requirePinForSeries(mini, () => _showMiniPlayerInner(miniId, epIdx, startTime));
+    }
+
+    function _showMiniPlayerInner(miniId, epIdx, startTime) {
       const mini = seriesDatabase[miniId];
       if (!mini) return;
 
@@ -12735,6 +13400,13 @@
 
       _playMiniEp(_miniPlayerEpIdx, _miniPlayerResumeTime);
       _miniPlayerResumeTime = 0;
+      // Ronda 14 F3: al pausar, subir el progreso pendiente sin esperar
+      // al debounce (el listener se registra una sola vez).
+      const _miniSyncVid = document.getElementById('miniPlayerVideo');
+      if (_miniSyncVid && !_miniSyncVid.dataset.watchSyncPause) {
+        _miniSyncVid.dataset.watchSyncPause = 'true';
+        _miniSyncVid.addEventListener('pause', () => { try { flushWatchProgressSync(); } catch (e) {} });
+      }
       // Ronda 12: PiP solo si el navegador lo soporta; refrescar el temporizador.
       updateMiniPipBtn();
       updateMiniSleepUI();
@@ -12752,12 +13424,15 @@
           saveToHistory(_miniPlayerMini.id, pct, vid.currentTime, vid.duration, (_miniPlayerMini.type || 'series'), _miniPlayerEpIdx);
         }
       }
+      // Ronda 14 F3: subir el progreso final ya (el saveToHistory de
+      // arriba lo dejó encolado; el flush lo escribe sin esperar).
+      flushWatchProgressSync();
       if (vid) { vid.pause(); vid.src = ''; }
       _miniSubtitleCuesByLang = {};
       _clearMiniSubtitleOverlay();
 
       clearInterval(_miniProgressInterval);
-      if (window._miniNextCountdown) { clearInterval(window._miniNextCountdown); window._miniNextCountdown = null; }
+      _cancelMiniAutoplay(); // Ronda 14 (F1): sin temporizador colgado al cerrar
       // Ronda 12: salir de PiP, cancelar el temporizador y el tap pendiente.
       _exitMiniPip();
       _miniSleepEndAt = 0; _miniSleepMinutes = 0; _clearMiniSleepTimers(); updateMiniSleepUI(); closeMiniSleepMenu();
@@ -12836,20 +13511,24 @@
       if (nextOvl) nextOvl.classList.remove('visible');
       const _nextBtn = document.querySelector('#miniNextOverlay .mini-next-btn');
       if (_nextBtn) {
-        _nextBtn.innerHTML = '<i class="fas fa-play"></i> <span data-i18n="watch_now">Ver ahora</span>';
+        _nextBtn.innerHTML = '<i class="fas fa-play"></i> <span data-i18n="watch_now">Reproducir ahora</span>';
         _nextBtn.onclick = () => _skipToNextMiniEp();
       }
       const _nextCount = document.getElementById('miniNextCountdown');
       if (_nextCount) _nextCount.textContent = '';
-      if (window._miniNextCountdown) {
-        clearInterval(window._miniNextCountdown);
-        window._miniNextCountdown = null;
-      }
+      // Ronda 14 (F1): al cambiar de episodio a mano no queda temporizador
+      // colgado del episodio anterior.
+      _cancelMiniAutoplay();
+      // Ronda 14 (F5): aplicar el tamaño de subtítulos guardado.
+      applyMiniSubtitleSize();
 
       vid.onplay  = updateMiniPlayBtn;
       vid.onpause = updateMiniPlayBtn;
       applyMiniSpeed(getMiniSpeed());
       vid.onended = function() {
+        // Ronda 14 (F1): con el temporizador de apagado activo no hay
+        // autoplay (el temporizador manda: el vídeo se queda parado).
+        if (_miniSleepEndAt) return;
         if (_miniPlayerEpIdx < eps.length - 1) {
           const nextIdx = _miniPlayerEpIdx + 1;
           if (isMiniEpisodeLocked(_miniPlayerMini, nextIdx, eps[nextIdx])) {
@@ -12864,7 +13543,7 @@
           const overlay = document.getElementById('miniNextOverlay');
           const countEl = document.getElementById('miniNextCountdown');
           if (overlay) overlay.classList.add('visible');
-          let secs = 5;
+          let secs = MINI_AUTOPLAY_COUNTDOWN_SECONDS; // Ronda 14 (F1): 10 s
           if (countEl) countEl.textContent = t('starting_in') + ' ' + secs + '...';
           window._miniNextCountdown = setInterval(function() {
             secs--;
@@ -12877,25 +13556,7 @@
             }
           }, 1000);
         } else {
-          // Último episodio o película: overlay final con "Volver a ver" y cerrar.
-          vid.classList.add('mini-ending');
-          const titleEl = document.getElementById('miniNextTitle');
-          if (titleEl) titleEl.textContent = getLocalizedMiniTitle(_miniPlayerMini);
-          const overlay = document.getElementById('miniNextOverlay');
-          const countEl = document.getElementById('miniNextCountdown');
-          if (countEl) countEl.textContent = '';
-          const replayBtn = document.querySelector('#miniNextOverlay .mini-next-btn');
-          if (replayBtn) {
-            replayBtn.innerHTML = '<i class="fas fa-rotate-left"></i> Volver a ver';
-            replayBtn.onclick = () => {
-              if (overlay) overlay.classList.remove('visible');
-              vid.classList.remove('mini-ending');
-              try { vid.currentTime = 0; } catch (e) {}
-              vid.play().catch(() => {});
-              updateMiniPlayBtn();
-            };
-          }
-          if (overlay) overlay.classList.add('visible');
+          // Ronda 14 (F1): sin siguiente episodio no aparece nada.
           updateMiniPlayBtn();
         }
       };
@@ -13426,6 +14087,7 @@
       _miniSleepEndAt = 0;
       _miniSleepMinutes = 0;
       _clearMiniSleepTimers();
+      _cancelMiniAutoplay(); // Ronda 14 (F1): el apagado cancela el autoplay
       const vid = document.getElementById('miniPlayerVideo');
       if (vid) vid.pause();
       updateMiniPlayBtn();
@@ -13527,15 +14189,29 @@
       document.addEventListener('fullscreenchange', updateMiniFsBtn);
     })();
 
+    // ════════════════════════════════════════════════════════════════════════
+    //  RONDA 14 (F1) — autoplay del siguiente episodio
+    // ════════════════════════════════════════════════════════════════════════
+    const MINI_AUTOPLAY_COUNTDOWN_SECONDS = 10; // cuenta atrás del autoplay
+
+    // Cancela el autoplay pendiente y oculta su overlay sin reproducir nada.
+    // Se usa desde el botón Cancelar, al cambiar de episodio a mano, al
+    // cerrar el reproductor y cuando dispara el temporizador de apagado.
+    function _cancelMiniAutoplay() {
+      try {
+        if (window._miniNextCountdown) {
+          clearInterval(window._miniNextCountdown);
+          window._miniNextCountdown = null;
+        }
+        const overlay = document.getElementById('miniNextOverlay');
+        if (overlay) overlay.classList.remove('visible');
+        const vid = document.getElementById('miniPlayerVideo');
+        if (vid) vid.classList.remove('mini-ending');
+      } catch (e) {}
+    }
+
     function _skipToNextMiniEp() {
-      if (window._miniNextCountdown) {
-        clearInterval(window._miniNextCountdown);
-        window._miniNextCountdown = null;
-      }
-      const overlay = document.getElementById('miniNextOverlay');
-      if (overlay) overlay.classList.remove('visible');
-      const vid = document.getElementById('miniPlayerVideo');
-      if (vid) vid.classList.remove('mini-ending');
+      _cancelMiniAutoplay();
       const eps = (_miniPlayerMini && _miniPlayerMini.episodes) || [];
       if (_miniPlayerEpIdx < eps.length - 1) {
         _playMiniEp(_miniPlayerEpIdx + 1);
@@ -14434,6 +15110,7 @@
       const el = document.getElementById(id);
       if (el) el.classList.add('open');
       if (name === 'subtitulos') loadAdminSubtitles();
+      if (name === 'parental') refreshParentalPinUI(); // Ronda 14 (F2)
       if (name === 'series') loadAdminSeries();
     }
 

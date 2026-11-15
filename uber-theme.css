@@ -3038,3 +3038,193 @@ body { font-family: var(--am-font) !important; }
 /* El tercer botón estrecha la fila: que "Mi Lista" no se parta en dos líneas. */
 .detail-list-btn { white-space: nowrap !important; }
 
+/* ── Ronda 14 (F2/F6): PIN parental + gestión del historial ──────────── */
+/* Modal de PIN: overlay oscuro, tarjeta blanca Amazon, radio 8px. */
+.pin-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 6000 !important;
+  display: none;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+  background: rgba(15, 17, 17, 0.6) !important;
+}
+.pin-modal-card {
+  width: 100% !important;
+  max-width: 340px !important;
+  padding: 24px 20px !important;
+  background: var(--am-page) !important;
+  border: 1px solid var(--am-line) !important;
+  border-radius: var(--am-radius) !important;
+  box-shadow: 0 12px 32px rgba(15, 17, 17, 0.25) !important;
+  text-align: center !important;
+}
+.pin-modal-icon {
+  width: 48px !important;
+  height: 48px !important;
+  margin: 0 auto 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: var(--am-navy) !important;
+  color: var(--am-yellow) !important;
+  border-radius: 50% !important;
+  font-size: 20px !important;
+}
+.pin-modal-title {
+  margin: 0 0 6px !important;
+  color: var(--am-ink) !important;
+  font-family: var(--am-font) !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+}
+.pin-modal-text {
+  margin: 0 0 16px !important;
+  color: var(--am-secondary) !important;
+  font-family: var(--am-font) !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+.pin-modal-input {
+  width: 100% !important;
+  max-width: 180px !important;
+  padding: 11px 12px !important;
+  margin-bottom: 10px !important;
+  background: var(--am-page) !important;
+  color: var(--am-ink) !important;
+  border: 1px solid var(--am-line) !important;
+  border-radius: var(--am-radius) !important;
+  font-family: var(--am-font) !important;
+  font-size: 20px !important;
+  letter-spacing: 0.5em !important;
+  text-align: center !important;
+  outline: none !important;
+}
+.pin-modal-input:focus {
+  border-color: var(--am-orange) !important;
+  box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.25) !important;
+}
+.pin-modal-error {
+  margin: 0 0 10px !important;
+  color: var(--am-error) !important;
+  font-family: var(--am-font) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+.pin-modal-actions {
+  display: flex !important;
+  gap: 10px !important;
+  justify-content: center !important;
+  margin-top: 6px !important;
+}
+.pin-modal-actions .settings-btn {
+  flex: 1 !important;
+  max-width: 150px !important;
+}
+
+/* Ajustes > Control Parental: campos del PIN. */
+.parental-pin-group .parental-pin-hint {
+  margin: 0 0 12px !important;
+  color: var(--am-secondary) !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+.parental-pin-badge {
+  width: 36px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  background: var(--am-surface) !important;
+  color: var(--am-navy) !important;
+  border-radius: 50% !important;
+  font-size: 15px !important;
+}
+.parental-pin-field .parental-pin-input {
+  width: 110px !important;
+  flex-shrink: 0 !important;
+  padding: 9px 10px !important;
+  background: var(--am-page) !important;
+  color: var(--am-ink) !important;
+  border: 1px solid var(--am-line) !important;
+  border-radius: var(--am-radius) !important;
+  font-family: var(--am-font) !important;
+  font-size: 17px !important;
+  letter-spacing: 0.4em !important;
+  text-align: center !important;
+  outline: none !important;
+}
+.parental-pin-field .parental-pin-input:focus {
+  border-color: var(--am-orange) !important;
+  box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.25) !important;
+}
+.parental-pin-msg {
+  margin: 0 0 12px !important;
+  color: var(--am-link) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+.parental-pin-msg--error {
+  color: var(--am-error) !important;
+}
+.parental-pin-save {
+  width: 100% !important;
+}
+
+/* Historial (F6): botón borrar por título. */
+.history-item {
+  position: relative !important;
+}
+.history-item-remove {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  z-index: 2 !important;
+  width: 34px !important;
+  height: 34px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: var(--am-secondary) !important;
+  border: 1px solid var(--am-line) !important;
+  border-radius: 50% !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+}
+.history-item-remove:hover {
+  color: var(--am-error) !important;
+  border-color: var(--am-error) !important;
+}
+
+/* Ronda 14 F4 — imagen apaisada (backdrop 16:9) para películas y cortos.
+   El picker de creación y la miniatura de edición son anchos (16:9) en
+   vez de verticales; el botón Quitar es texto/enlace Amazon (#007185). */
+.mini-cover-picker--backdrop {
+  aspect-ratio: 16 / 9 !important;
+  max-height: 220px !important;
+}
+.mini-edit-backdrop-block {
+  margin: 0 0 12px !important;
+}
+.mini-edit-poster-thumb--backdrop {
+  aspect-ratio: 16 / 9 !important;
+}
+.mini-backdrop-remove {
+  display: inline-block !important;
+  margin-top: 8px !important;
+  padding: 6px 10px !important;
+  background: transparent !important;
+  border: 1px solid #D5D9D9 !important;
+  border-radius: 8px !important;
+  color: #007185 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+.mini-backdrop-remove.hidden {
+  display: none !important;
+}
