@@ -1835,67 +1835,64 @@
     /* Navegación inferior — cuatro destinos claramente identificados */
     .bottom-nav {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(16, 18, 34, 0.68) !important;
-      border-top: 1px solid rgba(255, 255, 255, 0.16);
-      display: flex;
-      justify-content: space-around;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      width: min(92%, 420px);
+      background: #FFFFFF;
+      border: 1px solid #E7E7E7;
+      border-radius: 999px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       align-items: stretch;
-      padding: 8px 0;
-      padding-bottom: max(8px, env(safe-area-inset-bottom));
+      padding: 8px 6px;
       z-index: 3000;
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      box-shadow: 0 10px 30px rgba(25, 25, 25, 0.14);
+    }
+
+    .bottom-nav.bottom-nav--hidden {
+      transform: translateX(-50%) translateY(calc(100% + 24px));
+      opacity: 0;
+      pointer-events: none;
     }
 
     .bottom-nav button {
       background: transparent;
       border: none;
-      color: #3d4260;
+      color: #6B6B6B;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0;
+      gap: 3px;
       cursor: pointer;
-      padding: 8px 0;
+      padding: 6px 0;
       flex: 1;
       min-width: 0;
       transition: color 0.15s;
     }
     .bottom-nav button span {
       display: block;
-      margin-top: 4px;
       font-size: 10px;
       line-height: 1;
       font-weight: 600;
       letter-spacing: 0.01em;
+      color: inherit;
     }
 
-    .bottom-nav button.active {
-      color: #ffffff;
-    }
-
-    .bottom-nav button.active i {
-      color: #EB1700;
-    }
-.bottom-nav button i {
-      font-size: 22px;
+    .bottom-nav button .nav-ic {
+      width: 24px;
+      height: 24px;
       display: block;
-      transition: color 0.15s;
     }
+    .bottom-nav button .nav-ic-filled { display: none; }
+    .bottom-nav button.active { color: #191919; background: transparent; }
+    .bottom-nav button.active .nav-ic-outline { display: none; }
+    .bottom-nav button.active .nav-ic-filled { display: block; }
+    .bottom-nav button.active::after { display: none; content: none; }
 
     .bottom-nav button:active {
       transform: scale(0.94);
-    }
-
-    @supports not ((backdrop-filter: blur(1px))) {
-      .bottom-nav {
-        background: rgba(13, 14, 26, 0.96) !important;
-      }
     }
 
 
@@ -2452,16 +2449,12 @@
 
       /* Navegación móvil */
       .bottom-nav {
-        padding: 6px 0;
+        padding: 6px;
       }
 
       .bottom-nav button {
-        padding: 8px 0;
+        padding: 6px 0;
         min-width: 0;
-      }
-
-      .bottom-nav button i {
-        font-size: 22px;
       }
 
       /* Carruseles móvil */
@@ -5557,7 +5550,7 @@
     }
 
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=7">
+  <link rel="stylesheet" href="uber-theme.css?v=8">
 </head>
 <body>
   <div id="google_translate_element" style="display: none;"></div>
@@ -5794,7 +5787,7 @@
   </div>
 
   <!-- Sección de búsqueda - Pantalla completa DeepSeek -->
-  <div id="searchSection" class="search-section" aria-hidden="true">
+  <div id="searchSection" class="search-section search-section--dark" aria-hidden="true">
 
     <!-- Barra de búsqueda pill -->
     <div class="search-input-shell">
@@ -5809,38 +5802,6 @@
       </div>
     </div>
 
-    <div class="search-category-chips" id="searchCategoryChips" aria-label="Filtrar catálogo">
-      <button class="search-chip active" type="button" data-browse-status="all" onclick="setBrowseStatus(this,'all')">Todo</button>
-      <button class="search-chip" type="button" data-browse-status="new" onclick="setBrowseStatus(this,'new')">Nuevos</button>
-      <button class="search-chip" type="button" data-browse-status="popular" onclick="setBrowseStatus(this,'popular')">Populares</button>
-      <button class="search-chip" type="button" data-browse-status="completed" onclick="setBrowseStatus(this,'completed')">Completos</button>
-      <button class="search-chip" type="button" data-browse-status="free" onclick="setBrowseStatus(this,'free')">Gratis</button>
-    </div>
-
-    <div class="search-browse-toolbar">
-      <div class="search-genre-chips" id="searchGenreChips" aria-label="Filtrar por género">
-        <button class="search-genre-chip active" type="button" data-browse-genre="" onclick="setBrowseGenre(this,'')">Todos los géneros</button>
-        <button class="search-genre-chip" type="button" data-browse-genre="Drama" onclick="setBrowseGenre(this,'Drama')">Drama</button>
-        <button class="search-genre-chip" type="button" data-browse-genre="Romance" onclick="setBrowseGenre(this,'Romance')">Romance</button>
-        <button class="search-genre-chip" type="button" data-browse-genre="Acción" onclick="setBrowseGenre(this,'Acción')">Acción</button>
-        <button class="search-genre-chip" type="button" data-browse-genre="Comedia" onclick="setBrowseGenre(this,'Comedia')">Comedia</button>
-        <button class="search-genre-chip" type="button" data-browse-genre="Terror" onclick="setBrowseGenre(this,'Terror')">Terror</button>
-        <button class="search-genre-chip" type="button" data-browse-genre="Suspenso" onclick="setBrowseGenre(this,'Suspenso')">Suspenso</button>
-        <button class="search-genre-chip" type="button" data-browse-genre="Anime" onclick="setBrowseGenre(this,'Anime')">Anime</button>
-      </div>
-      <label class="search-sort-control">
-        <span>Ordenar</span>
-        <select id="searchSortSelect" onchange="setBrowseSort(this.value)" aria-label="Ordenar resultados">
-          <option value="recent">Más recientes</option>
-          <option value="popular">Más populares</option>
-          <option value="az">A — Z</option>
-        </select>
-      </label>
-    </div>
-
-    <!-- Área de resultados con scroll -->
-    <div class="search-content-area">
-      <div id="searchResultsMeta" class="search-results-meta" aria-live="polite"></div>
       <div id="searchLoading" class="search-loading hidden">
         <div class="search-loading-spinner"></div>
         <div class="search-loading-text">Buscando...</div>
@@ -7024,19 +6985,23 @@
   <!-- Navegación inferior — 4 ítems -->
   <nav class="bottom-nav">
     <button id="navHome" class="active" aria-label="Inicio">
-      <i class="fas fa-home"></i>
+      <svg class="nav-ic nav-ic-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 11 12 3.5 20.5 11"/><path d="M5.5 9.8V20a.8.8 0 0 0 .8.8h12.4a.8.8 0 0 0 .8-.8V9.8"/><path d="M9.8 20.8v-5.4h4.4v5.4"/></svg>
+      <svg class="nav-ic nav-ic-filled" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 0 0 1.061 1.06l8.69-8.69Z"/><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V20.25a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.43Z"/></svg>
       <span>Inicio</span>
     </button>
     <button id="navSearch" aria-label="Buscar">
-      <i class="fas fa-search"></i>
+      <svg class="nav-ic nav-ic-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+      <svg class="nav-ic nav-ic-filled" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M11 4.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm0 2.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" clip-rule="evenodd"/><path d="m15.8 15.8 4.7 4.7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
       <span>Buscar</span>
     </button>
     <button id="navMyList" aria-label="Mi Lista">
-      <i class="fas fa-bookmark"></i>
+      <svg class="nav-ic nav-ic-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 3.8h10.4a.8.8 0 0 1 .8.8v15.8a.6.6 0 0 1-.92.51L12 17.3l-5.08 3.61a.6.6 0 0 1-.92-.51V4.6a.8.8 0 0 1 .8-.8Z"/></svg>
+      <svg class="nav-ic nav-ic-filled" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z"/></svg>
       <span>Mi Lista</span>
     </button>
     <button id="navProfile" aria-label="Perfil">
-      <i class="fas fa-user-circle"></i>
+      <svg class="nav-ic nav-ic-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7.8" r="3.8"/><path d="M4.8 20.3c.8-3.4 3.7-5.3 7.2-5.3s6.4 1.9 7.2 5.3"/></svg>
+      <svg class="nav-ic nav-ic-filled" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="7.5" r="4"/><path d="M4.2 20.2c.7-3.4 3.8-5.2 7.8-5.2s7.1 1.8 7.8 5.2c.1.5-.3 1-.8 1H5c-.5 0-.9-.5-.8-1Z"/></svg>
       <span>Perfil</span>
     </button>
   </nav>
@@ -7569,6 +7534,8 @@
       const searchSection = document.getElementById('searchSection');
       searchSection.classList.add('active');
       searchSection.setAttribute('aria-hidden', 'false');
+      const _bottomNav = document.querySelector('.bottom-nav');
+      if (_bottomNav) _bottomNav.classList.add('nav--dark');
 
       document.getElementById('searchLoading').classList.add('hidden');
       document.getElementById('searchNoResults').classList.add('hidden');
@@ -7596,6 +7563,8 @@
     // Ocultar todas las secciones
     function hideAllSections() {
       document.body.classList.remove('settings-open');
+      const _bottomNavHide = document.querySelector('.bottom-nav');
+      if (_bottomNavHide) _bottomNavHide.classList.remove('nav--dark');
       document.getElementById('homeSection').style.display = 'none';
       const searchSection = document.getElementById('searchSection');
       searchSection.classList.remove('active');
@@ -7686,12 +7655,10 @@
             } else {
               showSearchSuggestions();
               document.getElementById('searchNoResults').classList.add('hidden');
-              document.getElementById('searchResultsMeta').textContent = '';
             }
           } else if (this.value.trim().length < 2) {
             showSearchSuggestions();
             document.getElementById('searchNoResults').classList.add('hidden');
-            document.getElementById('searchResultsMeta').textContent = 'Escribe al menos 2 letras';
           } else {
             searchDebounceTimer = setTimeout(() => performSearchFromSection(), 320);
           }
@@ -7776,46 +7743,83 @@
       // Mostrar grid y ocultar sugerencias
       hideSearchSuggestions();
 
+      if (!resultsGrid) return;
       resultsGrid.innerHTML = '';
 
-      if (results.length === 0) {
-        noResults.classList.remove('hidden');
-        const meta = document.getElementById('searchResultsMeta');
-        if (meta) meta.textContent = '0 resultados';
+      if (!results || results.length === 0) {
+        if (noResults) noResults.classList.remove('hidden');
         return;
       }
 
-      noResults.classList.add('hidden');
-      const meta = document.getElementById('searchResultsMeta');
-      if (meta) meta.textContent = `${results.length} resultado${results.length === 1 ? '' : 's'}`;
+      if (noResults) noResults.classList.add('hidden');
+      resultsGrid.appendChild(browseRow('Resultados', results));
+    }
 
-      results.forEach(series => {
-        const resultItem = document.createElement('div');
-        resultItem.className = 'search-result-item';
+    // Fila horizontal de solo-póster (Disney+): título de sección + carril
+    // con scroll horizontal; el tap en el póster abre el detalle.
+    function browsePosterCard(series) {
+      const card = document.createElement('div');
+      card.className = 'browse-poster-card';
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', series.spanishTitle || series.title || '');
+      card.onclick = () => showSeriesDetail(series.id);
+      card.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showSeriesDetail(series.id); } };
+      const img = document.createElement('img');
+      img.src = series.poster || '';
+      img.alt = '';
+      img.loading = 'lazy';
+      img.onerror = () => handlePosterError(img);
+      card.appendChild(img);
+      return card;
+    }
 
-        resultItem.onclick = () => showSeriesDetail(series.id);
-
-        const typeLabel = getContentTypeLabel(series);
-        const epCount = series.episodes ? series.episodes.length + ' episodios' : '';
-
-        resultItem.innerHTML = `
-          <div class="search-result-poster" style="position:relative;">
-            <img src="${series.poster}" alt="${series.title}" loading="lazy" onerror="handlePosterError(this)">
-          </div>
-          <div class="search-result-content">
-            <h3 class="search-result-title">${series.spanishTitle || series.title}</h3>
-            <div class="search-result-meta">
-              <span>${series.year || ''}</span>
-              <span>${typeLabel}</span>
-              ${epCount ? `<span>${epCount}</span>` : ''}
-              ${series.rating ? `<span>Clasificación: ${series.rating}</span>` : ''}
-            </div>
-            <p class="search-result-description">${series.description || ''}</p>
-          </div>
-        `;
-
-        resultsGrid.appendChild(resultItem);
+    function browseRow(title, items) {
+      const section = document.createElement('section');
+      section.className = 'browse-row';
+      const heading = document.createElement('h2');
+      heading.className = 'browse-row-title';
+      heading.textContent = title;
+      const track = document.createElement('div');
+      track.className = 'browse-row-track';
+      const seen = new Set();
+      (items || []).forEach(item => {
+        if (!item || !item.id || seen.has(item.id)) return;
+        seen.add(item.id);
+        track.appendChild(browsePosterCard(item));
       });
+      section.appendChild(heading);
+      section.appendChild(track);
+      return section;
+    }
+
+    // Filas de Explorar: solo con datos reales y solo las no vacías.
+    // "Todo el catálogo" siempre; por género solo con 2+ títulos (cada título
+    // va a la fila de su primer género); "Miniseries" solo con 2+ minis.
+    function renderBrowseRows(items) {
+      const resultsGrid = document.getElementById('searchResultsGrid');
+      const noResults = document.getElementById('searchNoResults');
+      hideSearchSuggestions();
+      if (!resultsGrid) return;
+      resultsGrid.innerHTML = '';
+      const list = (items || []).filter(item => item && item.id);
+      if (list.length === 0) {
+        if (noResults) noResults.classList.remove('hidden');
+        return;
+      }
+      if (noResults) noResults.classList.add('hidden');
+      resultsGrid.appendChild(browseRow('Todo el catálogo', list));
+      const byGenre = {};
+      list.forEach(item => {
+        const firstGenre = String(item.genre || item.genres || '').split(',').map(g => g.trim()).filter(Boolean)[0];
+        if (!firstGenre) return;
+        (byGenre[firstGenre] = byGenre[firstGenre] || []).push(item);
+      });
+      Object.keys(byGenre).sort((a, b) => a.localeCompare(b, 'es')).forEach(genre => {
+        if (byGenre[genre].length >= 2) resultsGrid.appendChild(browseRow(genre, byGenre[genre]));
+      });
+      const minis = list.filter(item => !['movie', 'tv', 'shortfilm'].includes(item.type));
+      if (minis.length >= 2) resultsGrid.appendChild(browseRow('Miniseries', minis));
     }
 
     // Funciones para tabs de información
@@ -10929,11 +10933,8 @@
         }
         displaySearchResults(results, query);
       } else {
-        displaySearchResults(getBrowseResults(), 'Explorar');
+        renderBrowseRows(getBrowseResults());
       }
-      const _browseCount = document.querySelectorAll('#searchResultsGrid .search-result-item').length;
-      document.getElementById('searchResultsMeta').textContent =
-        `${_browseCount} resultado${_browseCount === 1 ? '' : 's'}`;
     }
 
     function setBrowseStatus(btn, status) {
@@ -10982,21 +10983,11 @@
       performSearchFromSection();
     }
 
-    // Mostrar/ocultar sugerencias vs resultados
-    // Las sugerencias ya no existen: mostrar el catálogo completo (Explorar).
-    // renderBrowseCatalog no llama a showSearchSuggestions, así que no hay ciclo.
+    // Mostrar/ocultar sugerencias vs resultados — Ronda 8: sin sugerencias;
+    // siempre el catálogo en filas (Explorar) o la fila de resultados.
     function showSearchSuggestions() {
       const suggestions = document.getElementById('searchSuggestions');
       if (suggestions) suggestions.style.display = 'none';
-      const q = document.getElementById('searchSectionInput')?.value.trim() || '';
-      if (q.length === 1) {
-        // 1 letra: sin resultados obsoletos visibles; quien llama muestra
-        // el aviso "Escribe al menos 2 letras".
-        const grid = document.getElementById('searchResultsGrid');
-        if (grid) grid.style.display = 'none';
-        document.getElementById('searchNoResults').classList.add('hidden');
-        return;
-      }
       renderBrowseCatalog();
     }
 
@@ -11004,7 +10995,7 @@
       const suggestions = document.getElementById('searchSuggestions');
       const grid = document.getElementById('searchResultsGrid');
       if (suggestions) suggestions.style.display = 'none';
-      if (grid) grid.style.display = 'flex';
+      if (grid) grid.style.display = 'block';
     }
 
     document.addEventListener('keydown', (event) => {

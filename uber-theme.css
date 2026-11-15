@@ -2765,3 +2765,215 @@ h1, h2, h3, .section-title, .series-detail-title, .plan-name, .hero-title {
   letter-spacing: -0.02em !important;
 }
 body { font-family: var(--dd-font) !important; }
+
+/* ════════════════════════════════════════════════════════════════════
+   RONDA 8 — Buscar estilo Disney+ (solo esta pantalla) + barra
+   inferior flotante ovalada (toda la app). Va al final de la hoja
+   para ganar a todos los bloques anteriores.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* --- Barra inferior flotante ovalada (toda la app) --- */
+.bottom-nav {
+  left: 50% !important;
+  right: auto !important;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+  width: min(92%, 420px) !important;
+  transform: translateX(-50%) !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 0 !important;
+  padding: 8px 6px !important;
+  background: #FFFFFF !important;
+  border: 1px solid #E7E7E7 !important;
+  border-radius: 999px !important;
+  box-shadow: 0 10px 30px rgba(25, 25, 25, 0.14) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+.bottom-nav.bottom-nav--hidden {
+  transform: translateX(-50%) translateY(calc(100% + 24px)) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.bottom-nav button,
+.bottom-nav button.active,
+.bottom-nav button:hover {
+  min-width: 0 !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  padding: 6px 2px !important;
+  gap: 3px !important;
+  border-radius: 0 !important;
+  color: #6B6B6B !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.bottom-nav button span,
+.bottom-nav button.active span,
+.bottom-nav button:hover span {
+  display: block !important;
+  color: inherit !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+}
+.bottom-nav button .nav-ic,
+.bottom-nav button.active .nav-ic,
+.bottom-nav button:hover .nav-ic {
+  width: 24px !important;
+  height: 24px !important;
+  display: block !important;
+  color: currentColor !important;
+}
+.bottom-nav button .nav-ic-filled { display: none !important; }
+.bottom-nav button.active {
+  color: #191919 !important;
+  background: transparent !important;
+}
+.bottom-nav button.active .nav-ic-outline { display: none !important; }
+.bottom-nav button.active .nav-ic-filled { display: block !important; }
+.bottom-nav button.active::after {
+  display: none !important;
+  content: none !important;
+}
+/* En ningún caso rojo en la barra. */
+.bottom-nav button.active,
+.bottom-nav button.active i,
+.bottom-nav button.active .nav-ic { color: #191919 !important; }
+
+/* --- Variante oscura SOLO en Buscar --- */
+.bottom-nav.nav--dark {
+  background: rgba(28, 28, 34, 0.92) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+  backdrop-filter: blur(20px) saturate(160%) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+}
+.bottom-nav.nav--dark button,
+.bottom-nav.nav--dark button.active,
+.bottom-nav.nav--dark button:hover {
+  color: #9CA3AF !important;
+  background: transparent !important;
+}
+.bottom-nav.nav--dark button.active,
+.bottom-nav.nav--dark button.active .nav-ic { color: #FFFFFF !important; }
+
+/* --- No tapar contenido con la píldora flotante --- */
+.app-container,
+.history-section,
+.my-list-section {
+  padding-bottom: calc(124px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+/* --- Buscar estilo Disney+ (oscuro, solo-póster) --- */
+.search-section.search-section--dark {
+  background: #0B0B0F !important;
+  color: #FFFFFF !important;
+  border-top: 0 !important;
+}
+.search-section--dark .search-page-header { background: transparent !important; }
+.search-section--dark .search-page-title { color: #FFFFFF !important; }
+.search-section--dark .search-page-subtitle { color: #9CA3AF !important; }
+.search-section--dark .search-input-shell {
+  background: transparent !important;
+  width: min(100%, 1120px) !important;
+  margin-inline: auto !important;
+}
+.search-section--dark .search-section-wrapper {
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  background: #1C1C22 !important;
+  border: 1px solid #2A2A32 !important;
+  border-radius: 999px !important;
+}
+.search-section--dark .search-section-wrapper:focus-within {
+  border-color: #4A4A55 !important;
+  background: #1C1C22 !important;
+  box-shadow: none !important;
+}
+.search-section--dark .search-section-wrapper .search-icon { color: #8E8E96 !important; }
+.search-section--dark .search-section-wrapper #searchSectionInput {
+  background: transparent !important;
+  color: #FFFFFF !important;
+  border: 0 !important;
+  outline: 0 !important;
+}
+.search-section--dark .search-section-wrapper #searchSectionInput::placeholder { color: #8E8E96 !important; }
+.search-section--dark .search-section-wrapper #searchSectionInput:focus {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+.search-section--dark .search-btn { display: none !important; }
+/* Cromo viejo eliminado del HTML: por si llega una copia en caché, que no se vea. */
+.search-section--dark .search-category-chips,
+.search-section--dark .search-browse-toolbar,
+.search-section--dark .search-results-meta { display: none !important; }
+.search-section--dark .search-content-area {
+  background: transparent !important;
+  padding-bottom: calc(124px + env(safe-area-inset-bottom, 0px)) !important;
+}
+.search-section--dark .search-results-grid {
+  display: block !important;
+  grid-template-columns: none !important;
+}
+.search-section--dark .search-loading-text { color: #9CA3AF !important; }
+.search-section--dark .search-no-results { color: #9CA3AF !important; }
+.search-section--dark .search-no-results i { color: #5A5A64 !important; }
+.search-section--dark .search-no-results h3 { color: #FFFFFF !important; }
+.search-section--dark .search-no-results p { color: #9CA3AF !important; }
+
+/* Filas de solo-póster */
+.browse-row { margin-bottom: 8px; }
+.browse-row-title {
+  margin: 0 !important;
+  padding: 18px 16px 10px !important;
+  color: #FFFFFF !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.2 !important;
+}
+.browse-row-track {
+  display: flex !important;
+  gap: 12px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 0 16px 6px !important;
+  scroll-snap-type: x mandatory !important;
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+.browse-row-track::-webkit-scrollbar { display: none !important; }
+.browse-poster-card {
+  flex: 0 0 46% !important;
+  aspect-ratio: 2 / 3 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  background: #1C1C22 !important;
+  cursor: pointer !important;
+  scroll-snap-align: start !important;
+  position: relative !important;
+}
+.browse-poster-card img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+.browse-poster-card:active { transform: scale(0.97) !important; }
+@media (min-width: 768px) {
+  .browse-poster-card { flex-basis: 200px !important; }
+  .browse-row-title { font-size: 22px !important; padding: 22px 24px 12px !important; }
+  .browse-row-track { padding: 0 24px 8px !important; }
+}
+/* Compat: si llega HTML viejo en caché, sus tarjetas también quedan solo-póster. */
+.search-section--dark .search-result-content { display: none !important; }
+.search-section--dark .search-result-item {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+}
+.search-section--dark .search-result-poster { background: #1C1C22 !important; }
