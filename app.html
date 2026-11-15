@@ -4372,6 +4372,46 @@
       position: absolute; font-size: 8px; font-weight: 800; line-height: 1;
       top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
     }
+
+    /* ── Ronda 12: doble toque ±10 s, PiP y temporizador ── */
+    .mini-seek-flash {
+      position: absolute; top: 50%;
+      transform: translate(-50%, -50%) scale(0.92);
+      width: 84px; height: 84px; border-radius: 50%;
+      background: rgba(0,0,0,0.55); color: #fff;
+      border: 1px solid rgba(255,255,255,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums;
+      z-index: 14; pointer-events: none; opacity: 0;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    }
+    .mini-seek-flash.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    .mini-seek-flash.side-left { left: 25%; }
+    .mini-seek-flash.side-right { left: 75%; }
+    .mini-player-back-btn.pip-active { color: #FFD814; border-color: rgba(255,216,20,0.55); }
+    .mini-seek-btn.sleep-active { color: #FFD814; border-color: rgba(255,216,20,0.55); }
+    .mini-sleep-badge {
+      position: absolute; bottom: -5px; right: -7px;
+      background: #FFD814; color: #0F1111;
+      font-size: 9px; font-weight: 800; line-height: 1;
+      padding: 3px 5px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+    /* Título propio (NO .mini-sub-menu-title: applyMiniTranslations lo
+       sobrescribe con el texto de subtítulos). */
+    .mini-sleep-menu-title {
+      font-size: 10px; font-weight: 700; color: #666;
+      padding: 4px 14px 8px; letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    #miniSleepMenu .mini-sub-option.active { color: #FF9900; }
+    #miniSleepMenu .mini-sub-option.active::before { color: #FF9900; }
+    /* Un poco más a la izquierda que el menú de subtítulos para no tapar
+       las etiquetas de los botones laterales (Episodios/Info). */
+    #miniSleepMenu { right: 76px; }
     .mini-player-eps-btn {
       background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.18);
@@ -5550,7 +5590,7 @@
     }
 
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=11">
+  <link rel="stylesheet" href="uber-theme.css?v=12">
 </head>
 <body>
   <div id="google_translate_element" style="display: none;"></div>
@@ -5800,6 +5840,8 @@
         </button>
       </div>
     </div>
+
+      <div id="searchRecents" class="search-recents" style="display:none;"></div>
 
       <div id="searchLoading" class="search-loading hidden">
         <div class="search-loading-spinner"></div>
@@ -6593,6 +6635,8 @@
            playsinline webkit-playsinline x5-playsinline
            preload="metadata">
     </video>
+    <!-- Ronda 12: indicador breve del salto por doble toque ("+10 s" / "−10 s") -->
+    <div class="mini-seek-flash" id="miniSeekFlash" aria-hidden="true"></div>
     <div class="mini-subtitle-overlay" id="miniSubtitleOverlay" aria-live="polite"></div>
 
     <!-- Top bar -->
@@ -6607,6 +6651,10 @@
         </button>
         <button class="mini-player-back-btn" id="miniFsBtn" onclick="toggleMiniFullscreen()" aria-label="Pantalla completa">
           <i class="fas fa-expand"></i>
+        </button>
+        <!-- Ronda 12: PiP; oculto hasta que updateMiniPipBtn confirme soporte -->
+        <button class="mini-player-back-btn" id="miniPipBtn" onclick="toggleMiniPip()" aria-label="Picture in Picture" style="display:none;">
+          <i class="fas fa-window-restore"></i>
         </button>
       </div>
     </div>
@@ -6690,6 +6738,10 @@
           <i class="fas fa-rotate-right"></i><span class="seek-label">10</span>
         </button>
         <button class="mini-seek-btn" id="miniSpeedBtn" onclick="cycleMiniSpeed()" aria-label="Velocidad de reproducción">1x</button>
+        <!-- Ronda 12: temporizador de apagado (la insignia muestra lo que falta) -->
+        <button class="mini-seek-btn" id="miniSleepBtn" onclick="toggleMiniSleepMenu()" aria-label="Temporizador de apagado">
+          <i class="fas fa-moon"></i><span class="mini-sleep-badge" id="miniSleepBadge" style="display:none;"></span>
+        </button>
         <button class="mini-player-eps-btn" onclick="toggleMiniEpsSheet()">
           <i class="fas fa-th-list"></i>
           <span id="miniPlayerEpsBtnLabel">Ver episodios</span>
@@ -6702,6 +6754,16 @@
         <span id="miniPlayerCurrentTime">0:00</span>
         <span id="miniPlayerDuration">0:00</span>
       </div>
+    </div>
+
+    <!-- Ronda 12: menú del temporizador de apagado (patrón .mini-sub-menu) -->
+    <div class="mini-sub-menu" id="miniSleepMenu">
+      <div class="mini-sleep-menu-title" id="miniSleepMenuTitle">Temporizador</div>
+      <button class="mini-sub-option" data-minutes="15" onclick="setMiniSleepTimer(15)">15 minutos</button>
+      <button class="mini-sub-option" data-minutes="30" onclick="setMiniSleepTimer(30)">30 minutos</button>
+      <button class="mini-sub-option" data-minutes="45" onclick="setMiniSleepTimer(45)">45 minutos</button>
+      <button class="mini-sub-option" data-minutes="60" onclick="setMiniSleepTimer(60)">60 minutos</button>
+      <button class="mini-sub-option" data-minutes="0" onclick="setMiniSleepTimer(0)">Apagado</button>
     </div>
 
     <!-- Info sheet (½ pantalla) -->
@@ -6781,6 +6843,10 @@
         <div class="detail-type-badge" id="detailTypeBadge">Película</div>
         <h1 class="detail-title" id="detailTitle">Título</h1>
         <div class="detail-meta" id="detailMeta"></div>
+        <div class="detail-rating" id="detailRating">
+          <div class="detail-stars" id="detailStars" role="radiogroup" aria-label="Calificación"></div>
+          <div class="detail-rating-label" id="detailRatingLabel"></div>
+        </div>
       </div>
     </div>
     <div class="detail-body">
@@ -6790,6 +6856,9 @@
         </button>
         <button class="detail-list-btn" id="detailListBtn" onclick="toggleDetailMyList()" aria-label="Mi Lista">
           <i class="fas fa-plus"></i><span data-i18n="detail_mylist">Mi Lista</span>
+        </button>
+        <button class="detail-share-btn" id="detailShareBtn" onclick="shareCurrentSeries()" aria-label="Compartir">
+          <i class="fas fa-share-alt"></i><span>Compartir</span>
         </button>
       </div>
       <p class="detail-synopsis" id="detailSynopsis"></p>
@@ -7573,7 +7642,7 @@
       resetBrowseFilters();
       const _savedQuery = (document.getElementById('searchSectionInput').value || '').trim();
       if (_savedQuery.length >= 2) performSearchFromSection();
-      else renderBrowseCatalog();
+      else { renderBrowseCatalog(); renderSearchRecents(); }
       if (window.matchMedia('(pointer:fine)').matches || window.innerWidth > 768) {
         document.getElementById('searchSectionInput').focus();
       }
@@ -7686,9 +7755,11 @@
               showSearchSuggestions();
               document.getElementById('searchNoResults').classList.add('hidden');
             }
+            renderSearchRecents();
           } else if (this.value.trim().length < 2) {
             showSearchSuggestions();
             document.getElementById('searchNoResults').classList.add('hidden');
+            renderSearchRecents();
           } else {
             searchDebounceTimer = setTimeout(() => performSearchFromSection(), 320);
           }
@@ -7701,6 +7772,9 @@
       if (_searchResultTimer) { clearTimeout(_searchResultTimer); _searchResultTimer = null; }
       const query = document.getElementById('searchSectionInput').value.trim();
       const genre = activeChipGenre || '';
+      // Ronda 12 (F1): guardar la consulta real (≥2 caracteres).
+      if (query.length >= 2) saveRecentSearch(query);
+      renderSearchRecents();
 
       // Sin texto y sin chip → mostrar sugerencias
       if (!query && !genre) {
@@ -7783,6 +7857,76 @@
 
       if (noResults) noResults.classList.add('hidden');
       resultsGrid.appendChild(browseRow('Resultados', results));
+    }
+
+    // ── Ronda 12 (F1): Búsquedas recientes ───────────────────────────────
+    // Últimas 5 consultas reales (≥2 caracteres, sin duplicados, la más
+    // reciente primero), guardadas POR USUARIO con atenisUserKey() (misma
+    // clave con sufijo UID que Mi Lista / historial / ajustes, Ronda 6).
+    function readRecentSearches() {
+      try {
+        const raw = localStorage.getItem(atenisUserKey('atenis_recent_searches'));
+        const list = JSON.parse(raw || '[]');
+        return Array.isArray(list) ? list.filter(function(q) { return typeof q === 'string'; }) : [];
+      } catch (e) { return []; }
+    }
+    function saveRecentSearch(query) {
+      const q = String(query || '').trim();
+      if (q.length < 2) return;
+      try {
+        const list = readRecentSearches().filter(function(item) { return item.toLowerCase() !== q.toLowerCase(); });
+        list.unshift(q);
+        localStorage.setItem(atenisUserKey('atenis_recent_searches'), JSON.stringify(list.slice(0, 5)));
+      } catch (e) {}
+    }
+    function clearRecentSearches() {
+      try { localStorage.removeItem(atenisUserKey('atenis_recent_searches')); } catch (e) {}
+      renderSearchRecents();
+    }
+    function applyRecentSearch(term) {
+      const input = document.getElementById('searchSectionInput');
+      if (!input) return;
+      input.value = term;
+      performSearchFromSection();
+    }
+    // Muestra la lista solo con el input vacío y si hay recientes; en
+    // cualquier otro caso la oculta (al teclear manda la búsqueda normal).
+    // Todo con guardas null: si falta un elemento, no se rompe nada.
+    function renderSearchRecents() {
+      const box = document.getElementById('searchRecents');
+      if (!box) return;
+      const input = document.getElementById('searchSectionInput');
+      const query = input ? input.value.trim() : '';
+      const recents = readRecentSearches();
+      if (query || recents.length === 0) { box.style.display = 'none'; box.innerHTML = ''; return; }
+      box.innerHTML = '';
+      const head = document.createElement('div');
+      head.className = 'search-recents-head';
+      const label = document.createElement('span');
+      label.className = 'search-recents-label';
+      label.textContent = 'Búsquedas recientes';
+      const clearBtn = document.createElement('button');
+      clearBtn.type = 'button';
+      clearBtn.className = 'search-recents-clear';
+      clearBtn.textContent = 'Borrar';
+      clearBtn.onclick = clearRecentSearches;
+      head.appendChild(label);
+      head.appendChild(clearBtn);
+      box.appendChild(head);
+      recents.forEach(function(term) {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'search-recent-item';
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-history';
+        const txt = document.createElement('span');
+        txt.textContent = term;
+        item.appendChild(icon);
+        item.appendChild(txt);
+        item.onclick = function() { applyRecentSearch(term); };
+        box.appendChild(item);
+      });
+      box.style.display = 'block';
     }
 
     // Fila horizontal de solo-póster (Disney+): título de sección + carril
@@ -9121,6 +9265,8 @@
         
         // Verificar si viene de la página de inicio
         checkIfFromLanding();
+        // Ronda 12 (F2): abrir el detalle si el enlace trae ?series=<id>.
+        openSharedSeriesFromUrl();
         
         // Inicializar Google Translate
         setTimeout(() => {
@@ -9790,12 +9936,131 @@
 
       renderDetailInfo(series);
       renderDetailSimilar(series);
+      loadDetailRating(seriesId);
 
       const view = document.getElementById('detailView');
       if (view) {
         view.classList.add('active');
         view.setAttribute('aria-hidden', 'false');
         view.scrollTop = 0;
+      }
+    }
+
+    // ── Ronda 12 · Función 6: calificación con estrellas ─────────────────────
+    // Una calificación por usuario en users/{uid}/ratings/{seriesId} y un
+    // agregado real (suma/conteo) en el nodo de la serie, actualizado con
+    // transacción para que dos usuarios calificando a la vez no se pisen.
+    // La transacción es viable: el monedero ya la usa igual
+    // (getCoinWalletRef(...).transaction(...) + result.committed).
+    // El agregado vive en el nodo de la serie porque el único .set() de
+    // nodo completo (saveSeries) siempre crea un id nuevo y nunca borra
+    // una serie existente; las ediciones usan .update() y conservan hijos.
+    // El nodo se deduce de _catalogSeriesIds/_legacySeriesIds, que se
+    // rellenan en el mismo applySnapshot que mete la serie en
+    // seriesDatabase, así que al abrir el detalle el nodo siempre es
+    // correcto; si el id no está en ningún conjunto, se asume 'catalog'.
+    let _detailUserRating = 0;    // 0 = este usuario aún no calificó
+    let _detailRatingAgg = null;  // {sum, count} o null si no hay votos
+    let _detailRatingSeriesId = '';
+
+    function _atenisSeriesNode(seriesId) {
+      if (_legacySeriesIds && _legacySeriesIds.has(seriesId)) return 'miniDramas';
+      return 'catalog';
+    }
+
+    function renderDetailRating() {
+      const starsEl = document.getElementById('detailStars');
+      const labelEl = document.getElementById('detailRatingLabel');
+      if (!starsEl) return;
+      starsEl.innerHTML = '';
+      for (let v = 1; v <= 5; v++) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'detail-star' + (v <= _detailUserRating ? ' on' : '');
+        b.textContent = '★';
+        b.setAttribute('aria-label', v + ' de 5');
+        b.onclick = () => rateDetailSeries(v);
+        starsEl.appendChild(b);
+      }
+      if (!labelEl) return;
+      const parts = [];
+      if (_detailRatingAgg && (_detailRatingAgg.count || 0) > 0) {
+        const avg = (_detailRatingAgg.sum || 0) / _detailRatingAgg.count;
+        const votes = _detailRatingAgg.count === 1 ? t('detail_vote_one') : t('detail_votes');
+        parts.push('★ ' + avg.toFixed(1).replace('.', ',') + ' (' + _detailRatingAgg.count + ' ' + votes + ')');
+      }
+      if (_detailUserRating > 0) parts.push(t('detail_your_rating') + ': ' + _detailUserRating + '/5');
+      if (!parts.length) parts.push(t('detail_rate_prompt'));
+      labelEl.textContent = parts.join(' · ');
+    }
+
+    async function loadDetailRating(seriesId) {
+      _detailRatingSeriesId = seriesId;
+      _detailUserRating = 0;
+      _detailRatingAgg = null;
+      renderDetailRating();
+      if (!firebaseReady || !database) return;
+      try {
+        const uid = _atenisCurrentUid();
+        const node = _atenisSeriesNode(seriesId);
+        const results = await Promise.all([
+          uid ? database.ref('users/' + uid + '/ratings/' + seriesId).once('value') : Promise.resolve(null),
+          database.ref(node + '/' + seriesId + '/ratings').once('value')
+        ]);
+        if (_detailSeriesId !== seriesId) return; // ya se abrió otro detalle
+        const userSnap = results[0];
+        const aggSnap = results[1];
+        if (userSnap && userSnap.val()) {
+          const v = Math.round(Number(userSnap.val().value) || 0);
+          if (v >= 1 && v <= 5) _detailUserRating = v;
+        }
+        if (aggSnap && aggSnap.val()) {
+          const a = aggSnap.val();
+          const count = Math.floor(Number(a.count) || 0);
+          if (count > 0) _detailRatingAgg = { sum: Number(a.sum) || 0, count: count };
+        }
+        renderDetailRating();
+      } catch (e) {
+        // Sin conexión o sin permiso: las estrellas quedan en estado local.
+      }
+    }
+
+    async function rateDetailSeries(value) {
+      const seriesId = _detailSeriesId;
+      if (!seriesId) return;
+      value = Math.max(1, Math.min(5, Math.round(Number(value) || 0)));
+      if (!value) return;
+      const prev = _detailUserRating;
+      _detailUserRating = value;
+      renderDetailRating();
+      const uid = _atenisCurrentUid();
+      if (!uid || !firebaseReady || !database) return; // sin sesión: solo estado local
+      try {
+        await database.ref('users/' + uid + '/ratings/' + seriesId).set({
+          value: value,
+          updatedAt: firebase.database.ServerValue.TIMESTAMP
+        });
+        const aggRef = database.ref(_atenisSeriesNode(seriesId) + '/' + seriesId + '/ratings');
+        if (typeof aggRef.transaction !== 'function') return;
+        const result = await aggRef.transaction(function (current) {
+          const cur = (current && typeof current === 'object') ? current : {};
+          const sum = Number(cur.sum) || 0;
+          const count = Math.floor(Number(cur.count) || 0);
+          if (prev > 0) {
+            return { sum: sum + (value - prev), count: count, updatedAt: firebase.database.ServerValue.TIMESTAMP };
+          }
+          return { sum: sum + value, count: count + 1, updatedAt: firebase.database.ServerValue.TIMESTAMP };
+        });
+        if (result && result.committed && result.snapshot && result.snapshot.val() && _detailSeriesId === seriesId) {
+          const a = result.snapshot.val();
+          const count = Math.floor(Number(a.count) || 0);
+          if (count > 0) {
+            _detailRatingAgg = { sum: Number(a.sum) || 0, count: count };
+            renderDetailRating();
+          }
+        }
+      } catch (e) {
+        // El guardado falló: la estrella queda pintada en local, sin error visible.
       }
     }
 
@@ -11098,6 +11363,8 @@
         content_shortfilm:'Cortometraje',
         detail_play:'Reproducir', detail_continue:'Continuar',
         detail_mylist:'Mi Lista', detail_inlist:'En mi lista',
+        detail_rate_prompt:'Toca una estrella para calificar', detail_your_rating:'Tu calificación',
+        detail_vote_one:'voto', detail_votes:'votos',
         detail_season:'Temporada', detail_episodes:'Episodios',
         type_label:'Tipo de contenido', type_mini:'Miniserie',
         type_tv:'Serie', type_movie:'Película', type_shortfilm:'Cortometraje',
@@ -11142,6 +11409,8 @@
         content_shortfilm:'Short Film',
         detail_play:'Play', detail_continue:'Continue',
         detail_mylist:'My List', detail_inlist:'In my list',
+        detail_rate_prompt:'Tap a star to rate', detail_your_rating:'Your rating',
+        detail_vote_one:'vote', detail_votes:'votes',
         detail_season:'Season', detail_episodes:'Episodes',
         type_label:'Content type', type_mini:'Miniseries',
         type_tv:'TV Series', type_movie:'Movie', type_shortfilm:'Short Film',
@@ -12355,6 +12624,12 @@
     let _miniSwipeStartY = 0;
     let _miniSwipeIgnore = false;
     let _miniSwipeJustFired = false; // Ronda 11: evita que un swipe dispare el tap-pausa
+    let _miniTapTimer = null;        // Ronda 12: espera del 2.º toque (doble toque ±10 s)
+    let _miniSeekFlashTimer = null;  // Ronda 12: oculta el indicador "+10 s" / "−10 s"
+    let _miniSleepEndAt = 0;         // Ronda 12: timestamp (ms) en que se apaga el vídeo; 0 = apagado
+    let _miniSleepMinutes = 0;       // Ronda 12: duración elegida (15/30/45/60), para marcarla en el menú
+    let _miniSleepTimerId = null;    // Ronda 12: setTimeout del disparo del temporizador
+    let _miniSleepTickId = null;     // Ronda 12: setInterval que refresca la etiqueta de lo que falta
 
     function setupMiniSwipeGestures() {
       const player = document.getElementById('miniPlayer');
@@ -12382,10 +12657,28 @@
       }, { passive: true });
       player.addEventListener('pointercancel', () => { _miniSwipeIgnore = false; }, { passive: true });
       // Ronda 11: tocar el vídeo pausa/reanuda (gesto estándar).
+      // Ronda 12: doble toque ±10 s — el 1.er toque espera 300 ms por si
+      // llega un 2.º toque; si llega, el salto sustituye a la pausa.
+      // La guarda anti-swipe (_miniSwipeJustFired) se respeta igual que antes.
       const _tapVid = document.getElementById('miniPlayerVideo');
       if (_tapVid && !_tapVid.dataset.tapReady) {
         _tapVid.dataset.tapReady = 'true';
-        _tapVid.addEventListener('click', () => { if (!_miniSwipeJustFired) toggleMiniPlay(); });
+        _tapVid.addEventListener('click', (ev) => {
+          if (_miniSwipeJustFired || !_miniPlayerMini) return;
+          if (_miniTapTimer) {
+            clearTimeout(_miniTapTimer);
+            _miniTapTimer = null;
+            const rect = _tapVid.getBoundingClientRect();
+            const dir = (ev.clientX - rect.left) >= rect.width / 2 ? 10 : -10;
+            seekMiniRelative(dir);
+            _showMiniSeekFlash(dir);
+          } else {
+            _miniTapTimer = setTimeout(() => {
+              _miniTapTimer = null;
+              if (!_miniSwipeJustFired) toggleMiniPlay();
+            }, 300);
+          }
+        });
       }
     }
 
@@ -12430,6 +12723,9 @@
 
       _playMiniEp(_miniPlayerEpIdx, _miniPlayerResumeTime);
       _miniPlayerResumeTime = 0;
+      // Ronda 12: PiP solo si el navegador lo soporta; refrescar el temporizador.
+      updateMiniPipBtn();
+      updateMiniSleepUI();
     }
 
     function closeMiniPlayer() {
@@ -12450,6 +12746,10 @@
 
       clearInterval(_miniProgressInterval);
       if (window._miniNextCountdown) { clearInterval(window._miniNextCountdown); window._miniNextCountdown = null; }
+      // Ronda 12: salir de PiP, cancelar el temporizador y el tap pendiente.
+      _exitMiniPip();
+      _miniSleepEndAt = 0; _miniSleepMinutes = 0; _clearMiniSleepTimers(); updateMiniSleepUI(); closeMiniSleepMenu();
+      if (_miniTapTimer) { clearTimeout(_miniTapTimer); _miniTapTimer = null; }
       _closeMiniEpsSheet();
       closeMiniInfoSheet();
       showBottomNav();
@@ -12593,6 +12893,9 @@
       clearInterval(_miniProgressInterval);
       _miniProgressInterval = setInterval(_updateMiniProgress, 500);
       updateMiniPlayBtn();
+      // Ronda 12: el temporizador sobrevive al cambio de episodio (rearma lo que falte).
+      _armMiniSleepTimer();
+      updateMiniSleepUI();
     }
 
     function _updateMiniProgress() {
@@ -13015,6 +13318,136 @@
       applyMiniSpeed(next);
     }
 
+    // ════════════════════════════════════════════════════════════════════════
+    //  RONDA 12 — doble toque ±10 s, Picture-in-Picture y temporizador
+    // ════════════════════════════════════════════════════════════════════════
+
+    // ── F3: indicador breve del salto por doble toque ──
+    function _showMiniSeekFlash(seconds) {
+      const flash = document.getElementById('miniSeekFlash');
+      if (!flash) return;
+      flash.textContent = (seconds > 0 ? '+' : '−') + Math.abs(seconds) + ' s';
+      flash.classList.toggle('side-left', seconds < 0);
+      flash.classList.toggle('side-right', seconds > 0);
+      flash.classList.add('show');
+      if (_miniSeekFlashTimer) clearTimeout(_miniSeekFlashTimer);
+      _miniSeekFlashTimer = setTimeout(() => flash.classList.remove('show'), 700);
+    }
+
+    // ── F4: Picture-in-Picture ──
+    // Estándar (Chrome/Edge/Firefox escritorio, Safari macOS/iPad) y, como
+    // alternativa, webkitSetPresentationMode (Safari en iPhone).
+    function _miniPipMode() {
+      const vid = document.getElementById('miniPlayerVideo');
+      if (!vid) return null;
+      if (document.pictureInPictureEnabled && typeof vid.requestPictureInPicture === 'function') return 'standard';
+      try {
+        if (typeof vid.webkitSetPresentationMode === 'function' && vid.webkitSupportsPresentationMode &&
+            vid.webkitSupportsPresentationMode('picture-in-picture')) return 'webkit';
+      } catch (e) {}
+      return null;
+    }
+    function _miniIsInPip() {
+      const vid = document.getElementById('miniPlayerVideo');
+      if (document.pictureInPictureElement) return true;
+      return !!(vid && vid.webkitPresentationMode === 'picture-in-picture');
+    }
+    function _exitMiniPip() {
+      try {
+        if (document.pictureInPictureElement) { document.exitPictureInPicture().catch(() => {}); return; }
+        const vid = document.getElementById('miniPlayerVideo');
+        if (vid && vid.webkitPresentationMode === 'picture-in-picture') vid.webkitSetPresentationMode('inline');
+      } catch (e) {}
+    }
+    function updateMiniPipBtn() {
+      const btn = document.getElementById('miniPipBtn');
+      if (!btn) return;
+      const supported = !!_miniPipMode();
+      btn.style.display = supported ? 'flex' : 'none';
+      btn.classList.toggle('pip-active', supported && _miniIsInPip());
+      btn.setAttribute('aria-label', _miniIsInPip() ? 'Salir de Picture in Picture' : 'Picture in Picture');
+    }
+    async function toggleMiniPip() {
+      const vid = document.getElementById('miniPlayerVideo');
+      if (!vid || !_miniPipMode()) return;
+      try {
+        if (_miniIsInPip()) _exitMiniPip();
+        else if (_miniPipMode() === 'standard') await vid.requestPictureInPicture();
+        else vid.webkitSetPresentationMode('picture-in-picture');
+      } catch (e) {}
+      setTimeout(updateMiniPipBtn, 150);
+    }
+
+    // ── F5: temporizador de apagado ──
+    // Se guarda la hora de fin (timestamp), no un timeout atado al episodio:
+    // al cambiar de episodio _playMiniEp rearma lo que falte.
+    function _miniSleepRemainingMs() {
+      return _miniSleepEndAt ? Math.max(0, _miniSleepEndAt - Date.now()) : 0;
+    }
+    function _clearMiniSleepTimers() {
+      if (_miniSleepTimerId) { clearTimeout(_miniSleepTimerId); _miniSleepTimerId = null; }
+      if (_miniSleepTickId) { clearInterval(_miniSleepTickId); _miniSleepTickId = null; }
+    }
+    function _armMiniSleepTimer() {
+      _clearMiniSleepTimers();
+      if (!_miniSleepEndAt) return;
+      const ms = _miniSleepEndAt - Date.now();
+      if (ms <= 0) { _fireMiniSleepTimer(); return; }
+      _miniSleepTimerId = setTimeout(_fireMiniSleepTimer, ms);
+      _miniSleepTickId = setInterval(updateMiniSleepUI, 20000);
+    }
+    function setMiniSleepTimer(minutes) {
+      minutes = Number(minutes) || 0;
+      if (!minutes) {
+        _miniSleepEndAt = 0;
+        _miniSleepMinutes = 0;
+        _clearMiniSleepTimers();
+      } else {
+        _miniSleepMinutes = minutes;
+        _miniSleepEndAt = Date.now() + minutes * 60000;
+        _armMiniSleepTimer();
+      }
+      updateMiniSleepUI();
+      closeMiniSleepMenu();
+    }
+    function _fireMiniSleepTimer() {
+      _miniSleepEndAt = 0;
+      _miniSleepMinutes = 0;
+      _clearMiniSleepTimers();
+      const vid = document.getElementById('miniPlayerVideo');
+      if (vid) vid.pause();
+      updateMiniPlayBtn();
+      updateMiniSleepUI();
+      showSettingsMessage('Temporizador: reproducción pausada');
+    }
+    function updateMiniSleepUI() {
+      const ms = _miniSleepRemainingMs();
+      const active = ms > 0;
+      const btn = document.getElementById('miniSleepBtn');
+      if (btn) btn.classList.toggle('sleep-active', active);
+      const badge = document.getElementById('miniSleepBadge');
+      if (badge) {
+        if (active) { badge.style.display = 'flex'; badge.textContent = Math.ceil(ms / 60000) + 'm'; }
+        else badge.style.display = 'none';
+      }
+      const title = document.getElementById('miniSleepMenuTitle');
+      if (title) title.textContent = active ? ('Temporizador · quedan ' + Math.ceil(ms / 60000) + ' min') : 'Temporizador';
+      document.querySelectorAll('#miniSleepMenu .mini-sub-option').forEach(opt => {
+        opt.classList.toggle('active', Number(opt.dataset.minutes || 0) === _miniSleepMinutes);
+      });
+    }
+    function toggleMiniSleepMenu() {
+      const menu = document.getElementById('miniSleepMenu');
+      if (!menu) return;
+      const willOpen = !menu.classList.contains('open');
+      if (willOpen) updateMiniSleepUI();
+      menu.classList.toggle('open', willOpen);
+    }
+    function closeMiniSleepMenu() {
+      const menu = document.getElementById('miniSleepMenu');
+      if (menu) menu.classList.remove('open');
+    }
+
     // Atajos de teclado del mini-player (solo cuando está activo).
     document.addEventListener('keydown', (e) => {
       const player = document.getElementById('miniPlayer');
@@ -13051,6 +13484,13 @@
       if (_vid && !_vid.dataset.subTimeInit) {
         _vid.dataset.subTimeInit = 'true';
         _vid.addEventListener('timeupdate', _updateMiniSubtitleOverlay);
+      }
+      // Ronda 12: reflejar el estado PiP aunque cambie fuera del botón.
+      if (_vid && !_vid.dataset.pipInit) {
+        _vid.dataset.pipInit = 'true';
+        _vid.addEventListener('enterpictureinpicture', updateMiniPipBtn);
+        _vid.addEventListener('leavepictureinpicture', updateMiniPipBtn);
+        _vid.addEventListener('webkitpresentationmodechanged', updateMiniPipBtn);
       }
       // Arrastrar el dedo por la barra de progreso (antes, solo clic).
       const _bar = document.getElementById('miniProgressBar');
@@ -14156,6 +14596,50 @@
       } else {
         wrap.classList.remove('has-poster');
       }
+    }
+
+    // ── Ronda 12 (F2): Compartir serie ────────────────────────────────────
+    function getSeriesShareUrl(seriesId) {
+      return window.location.origin + window.location.pathname + '?series=' + encodeURIComponent(seriesId);
+    }
+    function shareCurrentSeries() {
+      const series = currentSeries || (_detailSeriesId && seriesDatabase[_detailSeriesId]);
+      if (!series || !series.id) return;
+      const url = getSeriesShareUrl(series.id);
+      const title = series.spanishTitle || series.title || 'Atenis';
+      const desc = series.descriptionEs || series.description || '';
+      const text = desc ? desc.slice(0, 120) : title;
+      if (navigator.share) {
+        navigator.share({ title: title, text: text, url: url }).catch(function() {});
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function() {
+          showMiniToast('Enlace copiado');
+        }).catch(function() {
+          window.prompt('Copia el enlace:', url);
+        });
+        return;
+      }
+      window.prompt('Copia el enlace:', url);
+    }
+    // Abrir el detalle si la app se abrió con ?series=<id> (enlace
+    // compartido). Reintenta ~10 s por si el catálogo remoto aún carga.
+    function openSharedSeriesFromUrl() {
+      let params = null;
+      try { params = new URLSearchParams(window.location.search); } catch (e) { return; }
+      const id = params && params.get('series');
+      if (!id) return;
+      let tries = 0;
+      const timer = setInterval(function() {
+        tries++;
+        if (seriesDatabase && seriesDatabase[id]) {
+          clearInterval(timer);
+          showSeriesDetail(id);
+        } else if (tries >= 12) {
+          clearInterval(timer);
+        }
+      }, 800);
     }
 
     // ── Toast notification ────────────────────────────────────────────────────
