@@ -2844,22 +2844,6 @@ body { font-family: var(--dd-font) !important; }
 .bottom-nav button.active i,
 .bottom-nav button.active .nav-ic { color: #191919 !important; }
 
-/* --- Variante oscura SOLO en Buscar --- */
-.bottom-nav.nav--dark {
-  background: rgba(28, 28, 34, 0.92) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
-  backdrop-filter: blur(20px) saturate(160%) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
-}
-.bottom-nav.nav--dark button,
-.bottom-nav.nav--dark button.active,
-.bottom-nav.nav--dark button:hover {
-  color: #9CA3AF !important;
-  background: transparent !important;
-}
-.bottom-nav.nav--dark button.active,
-.bottom-nav.nav--dark button.active .nav-ic { color: #FFFFFF !important; }
 
 /* --- No tapar contenido con la píldora flotante --- */
 .app-container,
@@ -2868,69 +2852,69 @@ body { font-family: var(--dd-font) !important; }
   padding-bottom: calc(124px + env(safe-area-inset-bottom, 0px)) !important;
 }
 
-/* --- Buscar estilo Disney+ (oscuro, solo-póster) --- */
-.search-section.search-section--dark {
-  background: #0B0B0F !important;
-  color: #FFFFFF !important;
+/* --- Buscar (claro, solo-póster; estructura Disney+, colores DoorDash) --- */
+.search-section {
+  background: #FFFFFF !important;
+  color: #191919 !important;
   border-top: 0 !important;
 }
-.search-section--dark .search-page-header { background: transparent !important; }
-.search-section--dark .search-page-title { color: #FFFFFF !important; }
-.search-section--dark .search-page-subtitle { color: #9CA3AF !important; }
-.search-section--dark .search-input-shell {
+.search-section .search-page-header { background: transparent !important; }
+.search-section .search-page-title { color: #191919 !important; }
+.search-section .search-page-subtitle { color: #6B6B6B !important; }
+.search-section .search-input-shell {
   background: transparent !important;
   width: min(100%, 1120px) !important;
   margin-inline: auto !important;
 }
-.search-section--dark .search-section-wrapper {
+.search-section .search-section-wrapper {
   grid-template-columns: auto minmax(0, 1fr) !important;
-  background: #1C1C22 !important;
-  border: 1px solid #2A2A32 !important;
+  background: #F1F1F1 !important;
+  border: 1px solid #E7E7E7 !important;
   border-radius: 999px !important;
 }
-.search-section--dark .search-section-wrapper:focus-within {
-  border-color: #4A4A55 !important;
-  background: #1C1C22 !important;
+.search-section .search-section-wrapper:focus-within {
+  border-color: #191919 !important;
+  background: #FFFFFF !important;
   box-shadow: none !important;
 }
-.search-section--dark .search-section-wrapper .search-icon { color: #8E8E96 !important; }
-.search-section--dark .search-section-wrapper #searchSectionInput {
+.search-section .search-section-wrapper .search-icon { color: #6B6B6B !important; }
+.search-section .search-section-wrapper #searchSectionInput {
   background: transparent !important;
-  color: #FFFFFF !important;
+  color: #191919 !important;
   border: 0 !important;
   outline: 0 !important;
 }
-.search-section--dark .search-section-wrapper #searchSectionInput::placeholder { color: #8E8E96 !important; }
-.search-section--dark .search-section-wrapper #searchSectionInput:focus {
+.search-section .search-section-wrapper #searchSectionInput::placeholder { color: #6B6B6B !important; }
+.search-section .search-section-wrapper #searchSectionInput:focus {
   border: 0 !important;
   outline: 0 !important;
   box-shadow: none !important;
 }
-.search-section--dark .search-btn { display: none !important; }
+.search-section .search-btn { display: none !important; }
 /* Cromo viejo eliminado del HTML: por si llega una copia en caché, que no se vea. */
-.search-section--dark .search-category-chips,
-.search-section--dark .search-browse-toolbar,
-.search-section--dark .search-results-meta { display: none !important; }
-.search-section--dark .search-content-area {
+.search-section .search-category-chips,
+.search-section .search-browse-toolbar,
+.search-section .search-results-meta { display: none !important; }
+.search-section .search-content-area {
   background: transparent !important;
   padding-bottom: calc(124px + env(safe-area-inset-bottom, 0px)) !important;
 }
-.search-section--dark .search-results-grid {
+.search-section .search-results-grid {
   display: block !important;
   grid-template-columns: none !important;
 }
-.search-section--dark .search-loading-text { color: #9CA3AF !important; }
-.search-section--dark .search-no-results { color: #9CA3AF !important; }
-.search-section--dark .search-no-results i { color: #5A5A64 !important; }
-.search-section--dark .search-no-results h3 { color: #FFFFFF !important; }
-.search-section--dark .search-no-results p { color: #9CA3AF !important; }
+.search-section .search-loading-text { color: #6B6B6B !important; }
+.search-section .search-no-results { color: #6B6B6B !important; }
+.search-section .search-no-results i { color: #B0B0B0 !important; }
+.search-section .search-no-results h3 { color: #191919 !important; }
+.search-section .search-no-results p { color: #6B6B6B !important; }
 
 /* Filas de solo-póster */
 .browse-row { margin-bottom: 8px; }
 .browse-row-title {
   margin: 0 !important;
   padding: 18px 16px 10px !important;
-  color: #FFFFFF !important;
+  color: #191919 !important;
   font-size: 20px !important;
   font-weight: 700 !important;
   letter-spacing: -0.02em !important;
@@ -2952,7 +2936,7 @@ body { font-family: var(--dd-font) !important; }
   aspect-ratio: 2 / 3 !important;
   border-radius: 12px !important;
   overflow: hidden !important;
-  background: #1C1C22 !important;
+  background: #F1F1F1 !important;
   cursor: pointer !important;
   scroll-snap-align: start !important;
   position: relative !important;
@@ -2970,10 +2954,13 @@ body { font-family: var(--dd-font) !important; }
   .browse-row-track { padding: 0 24px 8px !important; }
 }
 /* Compat: si llega HTML viejo en caché, sus tarjetas también quedan solo-póster. */
-.search-section--dark .search-result-content { display: none !important; }
-.search-section--dark .search-result-item {
+.search-section .search-result-content { display: none !important; }
+.search-section .search-result-item {
   background: transparent !important;
   border: 0 !important;
   border-radius: 12px !important;
 }
-.search-section--dark .search-result-poster { background: #1C1C22 !important; }
+.search-section .search-result-poster { background: #F1F1F1 !important; }
+
+/* --- Ronda 9: sin barra superior (sin nombre "Atenis", sin difuminado) --- */
+.top-bar { display: none !important; }

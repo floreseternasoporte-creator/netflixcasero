@@ -5550,13 +5550,12 @@
     }
 
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=8">
+  <link rel="stylesheet" href="uber-theme.css?v=9">
 </head>
 <body>
   <div id="google_translate_element" style="display: none;"></div>
   <!-- Top Bar fijo -->
   <div class="top-bar" id="topBar">
-    <span class="top-bar-logo">Atenis</span>
   </div>
 
   <!-- Sección principal -->
@@ -5787,7 +5786,7 @@
   </div>
 
   <!-- Sección de búsqueda - Pantalla completa DeepSeek -->
-  <div id="searchSection" class="search-section search-section--dark" aria-hidden="true">
+  <div id="searchSection" class="search-section" aria-hidden="true">
 
     <!-- Barra de búsqueda pill -->
     <div class="search-input-shell">
@@ -7534,8 +7533,6 @@
       const searchSection = document.getElementById('searchSection');
       searchSection.classList.add('active');
       searchSection.setAttribute('aria-hidden', 'false');
-      const _bottomNav = document.querySelector('.bottom-nav');
-      if (_bottomNav) _bottomNav.classList.add('nav--dark');
 
       document.getElementById('searchLoading').classList.add('hidden');
       document.getElementById('searchNoResults').classList.add('hidden');
@@ -7563,8 +7560,6 @@
     // Ocultar todas las secciones
     function hideAllSections() {
       document.body.classList.remove('settings-open');
-      const _bottomNavHide = document.querySelector('.bottom-nav');
-      if (_bottomNavHide) _bottomNavHide.classList.remove('nav--dark');
       document.getElementById('homeSection').style.display = 'none';
       const searchSection = document.getElementById('searchSection');
       searchSection.classList.remove('active');
