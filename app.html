@@ -486,12 +486,12 @@
     }
     .tn-badge.original {
       background: rgba(255,153,0,0.18);
-      color: #F3A847;
+      color: #7A4A00;
       border: 1px solid rgba(255,153,0,0.4);
     }
     .tn-badge.new-ep {
       background: rgba(233,30,140,0.18);
-      color: #f48fb1;
+      color: #C2185B;
       border: 1px solid rgba(233,30,140,0.3);
     }
 
@@ -726,10 +726,10 @@
       min-width: 280px;
       width: min(520px, calc(100vw - 32px));
       padding: 24px;
-      border: 1px dashed #3a3a3a;
+      border: 1px dashed #D5D9D9;
       border-radius: 8px;
-      background: #111111;
-      color: #a6a6a6;
+      background: #FFFFFF;
+      color: #565959;
       font-size: 15px;
       line-height: 1.4;
     }
@@ -862,7 +862,7 @@
       letter-spacing: 1.5px;
       margin-bottom: 10px;
       text-align: center;
-      color: #FF9900;
+      color: #C7511F;
     }
 
     .countdown-timer {
@@ -3568,14 +3568,14 @@
     .history-item-title {
       font-size: 15px;
       font-weight: 600;
-      color: #ffffff;
+      color: #0F1111;
       margin-bottom: 6px;
       line-height: 1.3;
     }
 
     .history-item-meta {
       font-size: 13px;
-      color: #8b9ab0;
+      color: #565959;
       margin-bottom: 6px;
     }
 
@@ -3588,7 +3588,7 @@
     .history-empty {
       text-align: center;
       padding: 60px 16px;
-      color: #8b9ab0;
+      color: #565959;
     }
 
     .history-empty.hidden {
@@ -3605,7 +3605,7 @@
     .history-empty h3 {
       font-size: 18px;
       margin-bottom: 8px;
-      color: #ffffff;
+      color: #0F1111;
       font-weight: 600;
     }
 
@@ -3665,7 +3665,7 @@
     }
 
     .upcoming-title {
-      color: #ffffff;
+      color: #0F1111;
       font-size: 23px;
       font-weight: 800;
       letter-spacing: -0.5px;
@@ -4276,7 +4276,7 @@
       display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
       font-size: 13px; color: rgba(255,255,255,0.75);
     }
-    .detail-meta .match { color: #FF9900; font-weight: 700; }
+    .detail-meta .match { color: #C7511F; font-weight: 700; }
     .detail-meta .rating-badge {
       border: 1px solid rgba(255,255,255,0.4); padding: 1px 7px; border-radius: 3px;
       font-size: 11px; color: rgba(255,255,255,0.85);
@@ -4297,7 +4297,7 @@
       display: flex; align-items: center; gap: 8px;
     }
     .detail-list-btn.in-list { color: #46d369; border-color: rgba(70,211,105,0.5); }
-    .detail-synopsis { font-size: 14px; line-height: 1.55; color: #d2d2d2; margin: 0 0 22px; }
+    .detail-synopsis { font-size: 14px; line-height: 1.55; color: #565959; margin: 0 0 22px; }
     .detail-seasons-label {
       font-size: 17px; font-weight: 700; margin-bottom: 12px;
     }
@@ -4334,13 +4334,13 @@
     .detail-ep-progress > div { height: 100%; background: #FF9900; border-radius: 2px; }
     .detail-info { margin-top: 6px; }
     .detail-info-row { display: flex; justify-content: space-between; gap: 16px; padding: 9px 2px; border-bottom: 1px solid #D5D9D9; font-size: 13px; color: #0F1111; }
-    .detail-info-row span:first-child { color: #8e8e93; flex-shrink: 0; }
+    .detail-info-row span:first-child { color: #565959; flex-shrink: 0; }
     .detail-info-row span:last-child { text-align: right; }
     .detail-similar { margin-top: 24px; }
     .detail-similar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .detail-similar-card { cursor: pointer; }
     .detail-similar-card img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 8px; background: #1d2233; display: block; }
-    .detail-similar-card-title { font-size: 12px; font-weight: 600; color: #fff; margin-top: 6px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .detail-similar-card-title { font-size: 12px; font-weight: 600; color: #0F1111; margin-top: 6px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* ── Modo cine: películas en el reproductor ─────────────────────────── */
     #miniPlayer.cinema-mode .mini-side-btn.eps-btn,
@@ -5550,7 +5550,7 @@
     }
 
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=10">
+  <link rel="stylesheet" href="uber-theme.css?v=11">
 </head>
 <body>
   <div id="google_translate_element" style="display: none;"></div>
@@ -6601,7 +6601,14 @@
         <i class="fas fa-chevron-left"></i>
       </button>
       <div class="mini-player-ep-label" id="miniPlayerEpLabel">EP 1</div>
-      <div style="width:40px;"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="mini-player-back-btn" id="miniMuteBtn" onclick="toggleMiniMute()" aria-label="Silenciar">
+          <i class="fas fa-volume-up"></i>
+        </button>
+        <button class="mini-player-back-btn" id="miniFsBtn" onclick="toggleMiniFullscreen()" aria-label="Pantalla completa">
+          <i class="fas fa-expand"></i>
+        </button>
+      </div>
     </div>
 
     <!-- Next episode overlay (blur+zoom freeze frame) -->
@@ -6632,6 +6639,14 @@
       <button class="mini-side-btn" id="miniAudioSubBtn" onclick="openMiniTracksModal()" style="display:none;">
         <i class="fas fa-language"></i>
         <span>Audio</span>
+      </button>
+      <button class="mini-side-btn" onclick="prevMiniEpisode()" aria-label="Episodio anterior">
+        <i class="fas fa-step-backward"></i>
+        <span>Anterior</span>
+      </button>
+      <button class="mini-side-btn" onclick="nextMiniEpisode()" aria-label="Siguiente episodio">
+        <i class="fas fa-step-forward"></i>
+        <span>Siguiente</span>
       </button>
     </div>
 
@@ -7314,10 +7329,28 @@
              updateUserInterface();
              initializeCoinWallet(user.uid);
              loadRemoteUnlockedEpisodes(user.uid);
+            // Ronda 11: aviso no bloqueante si el correo no está verificado.
+            if (user.emailVerified === false && !sessionStorage.getItem('atenis_unverified_notice')) {
+              try { sessionStorage.setItem('atenis_unverified_notice', '1'); } catch (e) {}
+              showSettingsMessage('Tu correo no está verificado. Reenvíalo desde el inicio de sesión.');
+            }
+            checkAuthentication._gateRetried = false; // Ronda 11: el reintento vale por episodio de fallo, no por sesión.
             resolve(true);
 
           } catch (error) {
             console.error('Error verificando usuario:', error);
+            // Ronda 11: un fallo transitorio de red no es "sin sesión".
+            // Reintentar una vez antes de expulsar al usuario a login.
+            if (!checkAuthentication._gateRetried) {
+              checkAuthentication._gateRetried = true;
+              clearTimeout(authTimeout);
+              _authGateDone = false;
+              _authGateUid = '';
+              setTimeout(() => { checkAuthentication().then(resolve); }, 1500);
+              return;
+            }
+            checkAuthentication._gateRetried = false;
+            showSettingsMessage('No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.');
             window.location.href = 'login.html';
             resolve(false);
           }
@@ -7538,7 +7571,9 @@
       document.getElementById('searchNoResults').classList.add('hidden');
       // No borrar la consulta anterior: el usuario vuelve a Buscar con su texto.
       resetBrowseFilters();
-      renderBrowseCatalog();
+      const _savedQuery = (document.getElementById('searchSectionInput').value || '').trim();
+      if (_savedQuery.length >= 2) performSearchFromSection();
+      else renderBrowseCatalog();
       if (window.matchMedia('(pointer:fine)').matches || window.innerWidth > 768) {
         document.getElementById('searchSectionInput').focus();
       }
@@ -8406,9 +8441,9 @@
       const prunedHistory = history.filter(item => seriesDatabase[item.seriesId]);
       if (prunedHistory.length !== history.length) writeAtenisHistory(prunedHistory);
 
-      // Solo mostrar items entre 3% y 94% de progreso (en curso, no terminados)
+      // Solo mostrar items entre 3% y 99% de progreso (en curso, no terminados)
       const inProgress = prunedHistory
-        .filter(item => item.progress >= 3 && item.progress <= 94)
+        .filter(item => item.progress >= 3 && item.progress <= 99)
         .sort((a, b) => new Date(b.watchedAt) - new Date(a.watchedAt))
         .slice(0, 10);
 
@@ -9611,12 +9646,13 @@
 
     // Función para verificar si una película ha sido vista
     function hasMovieBeenWatched(movieId) {
-      return localStorage.getItem(`watched_${movieId}`) === 'true';
+      // Ronda 11: por usuario (antes, B "había visto" lo que vio A).
+      return localStorage.getItem(atenisUserKey(`watched_${movieId}`)) === 'true';
     }
 
     // Función para marcar película como vista
     function markMovieAsWatched(movieId) {
-      localStorage.setItem(`watched_${movieId}`, 'true');
+      localStorage.setItem(atenisUserKey(`watched_${movieId}`), 'true');
     }
 
     function isMovieAvailable(series) {
@@ -9714,7 +9750,7 @@
 
       const hero = document.getElementById('detailHero');
       const poster = String(series.poster || '').replace(/"/g, '');
-      if (hero) hero.style.backgroundImage = poster ? `url("${poster}")` : 'none';
+      if (hero) hero.style.backgroundImage = poster ? `url("${poster}")` : 'linear-gradient(135deg, #232F3E 0%, #131921 100%)';
 
       const badge = document.getElementById('detailTypeBadge');
       if (badge) badge.textContent = getDetailTypeLabel(series);
@@ -9885,6 +9921,15 @@
       const series = seriesDatabase[id];
       if (!series) return;
       if (series.isLocked && !isMovieAvailable(series)) { showLockedMessage(series); return; }
+      // Ronda 11: si el episodio está bloqueado, abrir el modal de monedas SIN
+      // cerrar el detalle (antes se cerraba y al cancelar se aterrizaba en Inicio).
+      const _detailEps = series.episodes || [];
+      const _detailEp = _detailEps[flatIdx] || null;
+      if (_detailEp && isMiniEpisodeLocked(series, flatIdx, _detailEp)) {
+        _coinUnlockFromDetail = true;
+        openCoinUnlockModal(id, flatIdx);
+        return;
+      }
       closeDetailView();
       showMiniPlayer(id, flatIdx);
     }
@@ -9951,8 +9996,7 @@
         const thumb = String(series.poster || '').replace(/"/g, '');
         btn.innerHTML =
           `<div class="detail-ep-thumb" style="background-image:url(&quot;${thumb}&quot;)">` +
-            `<div class="ep-play"><i class="fas fa-play"></i></div>` +
-            (locked ? `<div class="ep-lock"><i class="fas fa-lock"></i></div>` : '') +
+            (locked ? `<div class="ep-lock"><i class="fas fa-lock"></i></div>` : `<div class="ep-play"><i class="fas fa-play"></i></div>`) +
           `</div>` +
           `<div class="detail-ep-info">` +
             `<div class="detail-ep-num">${t('ep_label').toUpperCase()} ${epNum}</div>` +
@@ -10501,7 +10545,7 @@
 
         countdownEl.innerHTML = `
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
-            <span style="font-size: 10px; font-weight: 700; color: #FF9900; text-transform: uppercase; letter-spacing: 1.5px;">Estreno</span>
+            <span style="font-size: 10px; font-weight: 700; color: #C7511F; text-transform: uppercase; letter-spacing: 1.5px;">Estreno</span>
             <span style="font-size: 10px; color: #333333;">·</span>
             <span style="font-size: 10px; color: #555555;">${formatReleaseDate(series.releaseDate)}</span>
           </div>
@@ -10955,8 +10999,7 @@
       browseState.genre = '';
       browseState.sort = 'recent';
       activeChipGenre = '';
-      const input = document.getElementById('searchSectionInput');
-      if (input) input.value = '';
+      // Ronda 11: NO vaciar el campo: el usuario vuelve a Buscar con su texto.
       const select = document.getElementById('searchSortSelect');
       if (select) select.value = 'recent';
       document.querySelectorAll('[data-browse-status]').forEach(item => item.classList.toggle('active', item.dataset.browseStatus === 'all'));
@@ -10995,7 +11038,14 @@
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') {
+        // Ronda 11: Escape también cierra el reproductor y el detalle.
+        const _miniTracks = document.getElementById('miniTracksModal');
+        if (_miniTracks && _miniTracks.classList.contains('active')) { closeMiniTracksModal(); return; }
         closeTracksModal();
+        const _mp = document.getElementById('miniPlayer');
+        if (_mp && _mp.classList.contains('active')) { closeMiniPlayer(); return; }
+        const _dv = document.getElementById('detailView');
+        if (_dv && _dv.classList.contains('active')) { closeDetailView(); }
       }
     });
 
@@ -11166,7 +11216,6 @@
     // ════════════════════════════════════════════════════════════════════════
 
     const SERIES_ADMIN_EMAIL = 'zam.contact@yahoo.com';
-    let miniDatabase = {};
     let miniCurrentFilter = '';
     let miniCurrentStep = 1;
     let miniUploadData = {
@@ -11323,13 +11372,25 @@
 
     function removeMiniEditEpisode(idx) {
       _miniEditEpisodes.splice(idx, 1);
-      _miniEditEpisodes.forEach((ep, i) => { ep.id = i + 1; });
+      // Ronda 11: no renumerar ids (los desbloqueos pagados usan el id).
       renderMiniEditEpisodes();
     }
 
     async function handleMiniEditEpVideo(input, idx) {
       const file = input.files[0];
       if (!file) return;
+      // Ronda 11: validar tipo y tamaño antes de subir (como las portadas).
+      const _editLabel0 = document.getElementById('meditEpLabel_' + idx);
+      if (file.type && !file.type.startsWith('video/')) {
+        if (_editLabel0) _editLabel0.textContent = 'El archivo debe ser un video';
+        input.value = '';
+        return;
+      }
+      if (file.size > 500 * 1024 * 1024) {
+        if (_editLabel0) _editLabel0.textContent = 'Video demasiado grande (máx 500 MB)';
+        input.value = '';
+        return;
+      }
       const label  = document.getElementById('meditEpLabel_' + idx);
       const prog   = document.getElementById('meditEpProg_' + idx);
       const fill   = document.getElementById('meditEpProgFill_' + idx);
@@ -11343,11 +11404,13 @@
           if (fill) fill.style.width = pct + '%';
         }, true);
         _miniEditEpisodes[idx].videoUrl = url;
+        if (_miniEditEpisodes[idx]) _miniEditEpisodes[idx].uploadError = false;
         if (label) label.textContent = '✓ ' + t('upload_done');
         if (area)  area.classList.add('ok');
         if (fill)  fill.style.width = '100%';
       } catch (err) {
         if (label) label.textContent = t('upload_error') + ': ' + err.message;
+        if (_miniEditEpisodes[idx]) _miniEditEpisodes[idx].uploadError = true;
         console.error('Episode video upload error:', err);
       }
     }
@@ -11489,6 +11552,12 @@
           alert('Agrega al menos un episodio con video.');
           return;
         }
+        // Ronda 11: una subida fallida en edición bloquea guardar (como al publicar).
+        const failedEditEps = _miniEditEpisodes.filter(ep => ep && ep.uploadError);
+        if (failedEditEps.length) {
+          alert('No se puede guardar: ' + failedEditEps.length + ' episodio(s) fallaron al subir. Vuelve a subirlos e inténtalo de nuevo.');
+          return;
+        }
         const snap = await database.ref(_miniEditNode + '/' + seriesId).once('value');
         const old = snap.val() || {};
 
@@ -11517,7 +11586,9 @@
           if (titleEl) ep.title = titleEl.value.trim() || (t('ep_label') + ' ' + (i + 1));
           const seasonEl = document.getElementById('meditEpSeason_' + i);
           ep.season = Math.max(1, parseInt(seasonEl ? seasonEl.value : '1', 10) || 1);
-          ep.id = i + 1;
+          // Ronda 11: ids estables; antes se renumeraba (ep.id = i + 1) y los
+          // desbloqueos pagados apuntaban al episodio equivocado.
+          if (ep.id === undefined || ep.id === null || ep.id === '') ep.id = 'ep-' + Date.now().toString(36) + '-' + i + '-' + Math.random().toString(36).slice(2, 6);
           ep.subtitles = collectMiniEditSubtitles(i);
           // Keep thumbnail as poster if not set
           if (!ep.thumbnail) ep.thumbnail = posterOrig;
@@ -11599,6 +11670,9 @@
 
       try {
         await database.ref(_miniEditNode + '/' + seriesId).remove();
+        // Ronda 11: borrar también del otro nodo por si el id existe en ambos.
+        const _otherNode = _miniEditNode === 'miniDramas' ? 'catalog' : 'miniDramas';
+        try { await database.ref(_otherNode + '/' + seriesId).remove(); } catch (e) {}
         delete seriesDatabase[seriesId];
         closeSeriesEdit();
         renderCatalogSections();
@@ -12024,12 +12098,20 @@
       const status   = document.getElementById('miniEpStatus' + idx);
 
       const MAX_MB = 500;
+      // Ronda 11: validar tipo antes de subir.
+      if (file.type && !file.type.startsWith('video/')) {
+        area.classList.add('error');
+        area.innerHTML = '<i class="fas fa-exclamation-circle"></i> El archivo debe ser un video';
+        return;
+      }
       if (file.size > MAX_MB * 1024 * 1024) {
         area.classList.add('error');
         area.innerHTML = '<i class="fas fa-exclamation-circle"></i> Video demasiado grande (máx ' + MAX_MB + ' MB)';
         return;
       }
 
+      const _epRef = miniUploadData.episodes.find(e => e.id === idx);
+      if (_epRef) _epRef.uploading = true;
       area.classList.remove('done', 'error');
       area.classList.add('uploading');
       area.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo... 0%';
@@ -12044,7 +12126,7 @@
         }, true);
 
         const ep = miniUploadData.episodes.find(e => e.id === idx);
-        if (ep) { ep.videoUrl = url; ep.uploadError = false; }
+        if (ep) { ep.videoUrl = url; ep.uploadError = false; ep.uploading = false; }
         const probe = document.createElement('video');
         probe.preload = 'metadata';
         probe.onloadedmetadata = () => updateManualSubtitleDurations(idx, probe.duration);
@@ -12061,7 +12143,7 @@
         area.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error al subir';
         if (status) { status.style.display = 'block'; status.style.color = '#ff4444'; status.textContent = err.message; }
         const epErr = miniUploadData.episodes.find(e => e.id === idx);
-        if (epErr) epErr.uploadError = true;
+        if (epErr) { epErr.uploadError = true; epErr.uploading = false; }
         input.value = ''; // Permite re-elegir el MISMO archivo y reintentar.
         console.error('Video upload error:', err);
       }
@@ -12132,6 +12214,12 @@
         alert('No se puede publicar: los episodios ' + failedEps.map(e => e.id).join(', ') + ' fallaron al subir. Vuelve a subirlos e inténtalo de nuevo.');
         return;
       }
+      // Ronda 11: no publicar mientras un episodio se está subiendo (se perdería).
+      const uploadingEps = miniUploadData.episodes.filter(e => e.uploading);
+      if (uploadingEps.length) {
+        alert('Espera a que terminen de subir los episodios antes de publicar.');
+        return;
+      }
 
       // Evitar doble publicación si se pulsan los dos botones a la vez.
       if (saveSeries._saving) return;
@@ -12172,7 +12260,8 @@
             const seasonEl = document.getElementById('miniEpSeason' + e.id);
             const seasonNum = Math.max(1, parseInt(seasonEl ? seasonEl.value : '1', 10) || 1);
             return {
-              id:        i + 1,
+              // Ronda 11: id estable, no posicional (ver saveSeriesEdit).
+              id:        'ep-' + Date.now().toString(36) + '-' + i + '-' + Math.random().toString(36).slice(2, 6),
               title:     (titleEl ? titleEl.value.trim() : '') || `${t('ep_label')} ${i + 1}`,
               videoUrl:  e.videoUrl,
               thumbnail: posterOrig,
@@ -12265,6 +12354,7 @@
     let _miniSwipeStartX = 0;
     let _miniSwipeStartY = 0;
     let _miniSwipeIgnore = false;
+    let _miniSwipeJustFired = false; // Ronda 11: evita que un swipe dispare el tap-pausa
 
     function setupMiniSwipeGestures() {
       const player = document.getElementById('miniPlayer');
@@ -12285,10 +12375,18 @@
         const deltaX = event.clientX - _miniSwipeStartX;
         const deltaY = event.clientY - _miniSwipeStartY;
         if (Math.abs(deltaY) < 64 || Math.abs(deltaY) < Math.abs(deltaX) * 1.25) return;
+        _miniSwipeJustFired = true;
+        setTimeout(() => { _miniSwipeJustFired = false; }, 350);
         if (deltaY < 0) nextMiniEpisode();
         else prevMiniEpisode();
       }, { passive: true });
       player.addEventListener('pointercancel', () => { _miniSwipeIgnore = false; }, { passive: true });
+      // Ronda 11: tocar el vídeo pausa/reanuda (gesto estándar).
+      const _tapVid = document.getElementById('miniPlayerVideo');
+      if (_tapVid && !_tapVid.dataset.tapReady) {
+        _tapVid.dataset.tapReady = 'true';
+        _tapVid.addEventListener('click', () => { if (!_miniSwipeJustFired) toggleMiniPlay(); });
+      }
     }
 
     function showMiniPlayer(miniId, epIdx, startTime) {
@@ -12412,7 +12510,9 @@
         vid.removeAttribute('src');
         vid.load();
         showSettingsMessage(t('no_video') || 'Este episodio aún no tiene video disponible.');
-        closeMiniPlayer();
+        // Ronda 11: quedarse en el reproductor con la lista de episodios
+        // abierta para elegir otro (antes se cerraba el reproductor entero).
+        if (!_miniEpsSheetOpen) toggleMiniEpsSheet();
       }
 
       // Load subtitle tracks for this episode
@@ -12520,6 +12620,7 @@
     }
 
     let _miniCurrentSubLang = 'off';
+    let _miniSubLangChosen = false; // Ronda 11: true cuando el usuario elige idioma a mano
     let _miniSubtitleCuesByLang = {};
 
     function _normalizeManualSubtitleCues(data) {
@@ -12617,6 +12718,7 @@
       if (dubAudio) { dubAudio.pause(); dubAudio.src = ''; }
       const vid2 = document.getElementById('miniPlayerVideo');
       if (vid2) vid2.muted = false;
+      updateMiniMuteBtn();
 
       const hasDubs = Object.keys(_miniDubbedAudioUrls).some(k => _miniDubbedAudioUrls[k]);
       const audioSubBtn = document.getElementById('miniAudioSubBtn');
@@ -12632,11 +12734,11 @@
 
       await Promise.all(Object.entries(subs).map(async ([lang, data]) => {
         if (!data) return;
+        // Ronda 11: los cues manuales se muestran SOLO en el overlay propio.
+        // Crear además una pista nativa duplicaba cada línea en pantalla.
+        if (Array.isArray(data)) return;
         let trackUrl = null;
-        if (Array.isArray(data)) {
-          trackUrl = URL.createObjectURL(new Blob([manualCuesToTextTrack(data)], { type: 'text/' + 'vtt' }));
-          _miniSubtitleBlobUrls.push(trackUrl);
-        } else if (typeof data === 'string') {
+        if (typeof data === 'string') {
           trackUrl = data;
         }
         if (!trackUrl) return;
@@ -12673,6 +12775,18 @@
       const prefSub = _miniCurrentSubLang;
       if (prefSub && prefSub !== 'off' && _miniAvailableSubs[prefSub]) {
         setMiniSubtitle(prefSub);
+      } else if (!_miniSubLangChosen) {
+        // Ronda 11: respetar "Subtítulos por defecto" de Ajustes en el reproductor real.
+        let _defSub = false;
+        try { _defSub = !!(readAtenisSettings() || {}).defaultSubtitles; } catch (e) {}
+        if (_defSub) {
+          const _subOrder = [currentLanguage, 'es', 'en', 'original'];
+          const _pick = _subOrder.find(l => l && _miniAvailableSubs[l]);
+          if (_pick) setMiniSubtitle(_pick);
+          else setMiniSubtitle('off');
+        } else {
+          setMiniSubtitle('off');
+        }
       } else {
         setMiniSubtitle('off');
       }
@@ -12731,7 +12845,7 @@
       offBtn.type = 'button';
       offBtn.className = 'mini-track-option' + (_miniCurrentSubLang === 'off' ? ' active' : '');
       offBtn.innerHTML = '<span>Apagado</span><i class="fas fa-check mto-check"></i>';
-      offBtn.onclick = () => { setMiniSubtitle('off'); _renderMiniTracksModal(); };
+      offBtn.onclick = () => { setMiniSubtitle('off', true); _renderMiniTracksModal(); };
       subContainer.appendChild(offBtn);
 
       if (availSubLangs.length === 0) {
@@ -12746,7 +12860,7 @@
           btn.className = 'mini-track-option' + (_miniCurrentSubLang === lang ? ' active' : '');
           const label = _miniAvailableSubs[lang] || lang;
           btn.innerHTML = `<span>${label}</span><i class="fas fa-check mto-check"></i>`;
-          btn.onclick = () => { setMiniSubtitle(lang); _renderMiniTracksModal(); };
+          btn.onclick = () => { setMiniSubtitle(lang, true); _renderMiniTracksModal(); };
           subContainer.appendChild(btn);
         });
       }
@@ -12784,7 +12898,8 @@
       // Kept for compatibility — shows/hides the Audio button instead
     }
 
-    function setMiniSubtitle(lang) {
+    function setMiniSubtitle(lang, fromUser) {
+      if (fromUser) _miniSubLangChosen = true;
       _miniCurrentSubLang = lang;
       const vid = document.getElementById('miniPlayerVideo');
       if (!vid) return;
@@ -12835,6 +12950,35 @@
       updateMiniPlayBtn();
     }
 
+    // Ronda 11: silencio y pantalla completa en la UI del mini-player.
+    function updateMiniMuteBtn() {
+      const vid = document.getElementById('miniPlayerVideo');
+      const btn = document.getElementById('miniMuteBtn');
+      if (!btn || !vid) return;
+      btn.innerHTML = vid.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+      btn.setAttribute('aria-label', vid.muted ? 'Activar sonido' : 'Silenciar');
+    }
+    function toggleMiniMute() {
+      const vid = document.getElementById('miniPlayerVideo');
+      if (!vid) return;
+      vid.muted = !vid.muted;
+      updateMiniMuteBtn();
+    }
+    function updateMiniFsBtn() {
+      const btn = document.getElementById('miniFsBtn');
+      if (!btn) return;
+      const fs = !!document.fullscreenElement;
+      btn.innerHTML = fs ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+      btn.setAttribute('aria-label', fs ? 'Salir de pantalla completa' : 'Pantalla completa');
+    }
+    function toggleMiniFullscreen() {
+      const player = document.getElementById('miniPlayer');
+      if (!player) return;
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      else player.requestFullscreen().catch(() => {});
+      setTimeout(updateMiniFsBtn, 120);
+    }
+
     function nextMiniEpisode() {
       const eps = (_miniPlayerMini && _miniPlayerMini.episodes) || [];
       if (_miniPlayerEpIdx < eps.length - 1) _playMiniEp(_miniPlayerEpIdx + 1);
@@ -12844,7 +12988,7 @@
       if (_miniPlayerEpIdx > 0) _playMiniEp(_miniPlayerEpIdx - 1);
     }
 
-    const MINI_SPEEDS = [1, 1.25, 1.5, 2, 0.5];
+    const MINI_SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
     function getMiniSpeed() {
       try {
         const settings = readAtenisSettings() || {};
@@ -12889,7 +13033,7 @@
         if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
         else player.requestFullscreen().catch(() => {});
       }
-      else if (e.key === 'm' || e.key === 'M') { vid.muted = !vid.muted; }
+      else if (e.key === 'm' || e.key === 'M') { vid.muted = !vid.muted; updateMiniMuteBtn(); }
       else if (e.key === 'n' || e.key === 'N') { nextMiniEpisode(); }
     });
 
@@ -12899,6 +13043,37 @@
       const pct = Math.max(0, Math.min(1, e.offsetX / bar.offsetWidth));
       if (vid && vid.duration) vid.currentTime = pct * vid.duration;
     }
+
+    // Ronda 11: extras del mini-player (se ejecutan una sola vez).
+    (function initMiniPlayerExtras() {
+      // Subtítulos del overlay también por timeupdate (antes, solo cada 500 ms).
+      const _vid = document.getElementById('miniPlayerVideo');
+      if (_vid && !_vid.dataset.subTimeInit) {
+        _vid.dataset.subTimeInit = 'true';
+        _vid.addEventListener('timeupdate', _updateMiniSubtitleOverlay);
+      }
+      // Arrastrar el dedo por la barra de progreso (antes, solo clic).
+      const _bar = document.getElementById('miniProgressBar');
+      if (_bar && !_bar.dataset.scrubInit) {
+        _bar.dataset.scrubInit = 'true';
+        let _scrubbing = false;
+        const _seekFromClientX = (clientX) => {
+          const r = _bar.getBoundingClientRect();
+          const pct = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
+          const v = document.getElementById('miniPlayerVideo');
+          if (v && v.duration) { v.currentTime = pct * v.duration; _updateMiniProgress(); }
+        };
+        _bar.addEventListener('pointerdown', (e) => {
+          _scrubbing = true;
+          try { _bar.setPointerCapture(e.pointerId); } catch (err) {}
+          _seekFromClientX(e.clientX);
+        });
+        _bar.addEventListener('pointermove', (e) => { if (_scrubbing) _seekFromClientX(e.clientX); });
+        _bar.addEventListener('pointerup', () => { _scrubbing = false; });
+        _bar.addEventListener('pointercancel', () => { _scrubbing = false; });
+      }
+      document.addEventListener('fullscreenchange', updateMiniFsBtn);
+    })();
 
     function _skipToNextMiniEp() {
       if (window._miniNextCountdown) {
@@ -12997,6 +13172,7 @@
     // ════════════════════════════════════════════════════════════════════════
 
     let _pendingCoinUnlock = null;
+    let _coinUnlockFromDetail = false; // Ronda 11: el modal se abrió desde el detalle
     let _coinWallet = {
       ownerId: null,
       balance: null,
@@ -13546,10 +13722,10 @@
           _coinWallet = { ...normalizeCoinWallet(result.snapshot.val(), ownerId), ready: true, syncing: false };
         } catch (error) {
           console.error('No se pudo gastar monedas sincronizadas:', error);
-          if (getCoins() < cost) return { ok: false, reason: 'insufficient' };
-          _coinWallet.balance -= cost;
-          addCoinMovement(_coinWallet, -cost, 'unlock', label);
-          _coinWallet.syncError = true;
+          // Ronda 11: si la transacción falla, NO conceder el desbloqueo.
+          // Antes se descontaba solo en local y se devolvía ok:true, con lo
+          // que el episodio salía gratis y las monedas "volvían" al resincronizar.
+          return { ok: false, reason: 'sync-error' };
         }
       } else {
         if (getCoins() < cost) return { ok: false, reason: 'insufficient' };
@@ -13563,7 +13739,11 @@
     }
 
     function getEpisodeUnlockKey(miniId, episodeId) {
-      return 'atenis_unlocked_episode_' + String(miniId) + '_' + String(episodeId);
+      // Ronda 11: clave por usuario; sin sufijo UID, el usuario B veía gratis
+      // lo que pagó el usuario A en el mismo dispositivo. Los desbloqueos ya
+      // pagados se restauran desde Firebase (loadRemoteUnlockedEpisodes).
+      const uid = _atenisCurrentUid();
+      return 'atenis_unlocked_episode_' + (uid ? uid + '_' : '') + String(miniId) + '_' + String(episodeId);
     }
 
     function isEpisodeUnlocked(miniId, episodeId) {
@@ -13606,9 +13786,13 @@
         modal.classList.remove('active');
         modal.setAttribute('aria-hidden', 'true');
       }
+      const _wasFromDetail = _coinUnlockFromDetail;
+      _coinUnlockFromDetail = false;
       _pendingCoinUnlock = null;
       // Cancelación manual: si no hay video reproduciéndose, cerrar también el mini-player.
-      if (fromCancel) {
+      // Ronda 11: si el modal se abrió desde el detalle, el detalle sigue
+      // abierto detrás: no cerrar el reproductor (no hay nada que cerrar).
+      if (fromCancel && !_wasFromDetail) {
         const vid = document.getElementById('miniPlayerVideo');
         const isPlaying = vid && !vid.paused && vid.currentTime > 0 && !vid.ended;
         if (!isPlaying) closeMiniPlayer();
@@ -13620,7 +13804,7 @@
       unlockPendingEpisode._busy = true;
       try {
         const pending = _pendingCoinUnlock;
-        const mini = miniDatabase[pending.miniId] || seriesDatabase[pending.miniId];
+        const mini = seriesDatabase[pending.miniId];
         const ep = mini && mini.episodes ? mini.episodes[pending.episodeIdx] : null;
         if (!mini || !ep) {
           closeCoinUnlockModal();
@@ -13783,6 +13967,11 @@
       };
       const id = idMap[name];
       if (!id) return;
+      // Ronda 11: el panel admin no se abre sin ser admin (antes bastaba la fila oculta).
+      if ((name === 'series' || name === 'subtitulos') && !isSeriesAdmin()) {
+        showSettingsMessage('No tienes permiso para administrar las series.');
+        return;
+      }
       closeAllSettingsSubs();
       // Sync email to sub-section
       if (name === 'cuenta') {

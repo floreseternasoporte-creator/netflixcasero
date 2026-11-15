@@ -1187,8 +1187,7 @@ button:focus-visible,
 }
 
 .carousel-item,
-.nr-card,
-.flavor-card {
+.nr-card {
   width: 138px !important;
   border: 1px solid var(--am-line) !important;
   border-radius: 8px !important;
@@ -1462,7 +1461,7 @@ button:focus-visible,
 
 .settings-premium-kicker,
 .settings-credit-kicker {
-  color: var(--am-orange);
+  color: #C7511F;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: .18em;
@@ -1478,7 +1477,7 @@ button:focus-visible,
 }
 
 .settings-premium-card h3 span {
-  color: var(--am-orange);
+  color: #C7511F;
 }
 
 .settings-premium-benefit {
@@ -1534,7 +1533,7 @@ button:focus-visible,
 }
 
 .settings-credit-balance small {
-  color: var(--am-orange);
+  color: #C7511F;
   font-family: var(--am-font);
   font-size: 11px;
   font-weight: 600;
@@ -1611,7 +1610,7 @@ button:focus-visible,
 
 .settings-nav-row--coins .settings-nav-icon i,
 .settings-nav-row--coins .settings-nav-value {
-  color: var(--am-orange) !important;
+  color: #C7511F !important;
 }
 
 .settings-sub {
@@ -1708,7 +1707,7 @@ button:focus-visible,
 }
 
 .coin-wallet-unit {
-  color: var(--am-orange) !important;
+  color: #C7511F !important;
 }
 
 .coin-reward-btn {
@@ -2540,7 +2539,7 @@ textarea:focus,
 }
 .page-layout .hero-title span,
 .plans-section .hero-tag {
-  color: #FF9900 !important;
+  color: #C7511F !important;
 }
 .auth-link:hover,
 .auth-switch button:hover {
@@ -2983,3 +2982,8 @@ body { font-family: var(--am-font) !important; }
 
 /* --- Ronda 9: sin barra superior (sin nombre "Atenis", sin difuminado) --- */
 .top-bar { display: none !important; }
+
+/* --- Ronda 11: botones circulares (la regla global button 8px los aplastaba) --- */
+.upcoming-back-btn, .detail-back-btn, .settings-close-btn { border-radius: 50% !important; }
+/* --- Ronda 11: la barra flotante tapaba la última fila de Buscar --- */
+#searchResultsGrid { padding-bottom: calc(124px + env(safe-area-inset-bottom, 0px)) !important; }

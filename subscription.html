@@ -22,7 +22,6 @@
     }
 
     html, body {
-      height: 100%;
       width: 100%;
       margin: 0;
       padding: 0;
@@ -94,7 +93,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     /* Header de suscripción */
@@ -715,7 +714,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=10">
+  <link rel="stylesheet" href="uber-theme.css?v=11">
 </head>
 <body>
   <!-- Header -->
@@ -954,14 +953,6 @@
       const _prevName = _nameEl ? _nameEl.textContent : '';
       if (_nameEl) _nameEl.textContent = 'Cargando…';
       try {
-        // Verificar si es un cambio de plan
-        const isChangingPlan = localStorage.getItem('atenis_changing_plan');
-        if (isChangingPlan === 'true') {
-          // Limpiar flag y permitir cambio de plan
-          localStorage.removeItem('atenis_changing_plan');
-          return;
-        }
-
         const userRef = database.ref('users/' + user.uid);
         // Ronda 6 (A22): timeout de 8 s, no quedarse en silencio.
         const snapshot = await Promise.race([
@@ -973,6 +964,15 @@
         if (userData && userData.accountStatus && userData.accountStatus.status === 'deactivated') {
           try { await auth.signOut(); } catch (e) {}
           window.location.href = 'login.html';
+          return;
+        }
+
+        // Ronda 11: el control de desactivado va ANTES del flag de cambio
+        // de plan (antes el flag salía sin leer accountStatus).
+        const isChangingPlan = localStorage.getItem('atenis_changing_plan');
+        if (isChangingPlan === 'true') {
+          // Limpiar flag y permitir cambio de plan
+          localStorage.removeItem('atenis_changing_plan');
           return;
         }
 
@@ -1033,6 +1033,16 @@
         try {
           const _snap = await database.ref('users/' + currentUser.uid + '/subscription').once('value');
           _existingSub = _snap.val() || null;
+        } catch (e) {}
+        // Ronda 11: una cuenta desactivada no puede activar un plan.
+        try {
+          const _aSnap = await database.ref('users/' + currentUser.uid + '/accountStatus').once('value');
+          const _aStatus = _aSnap.val() || null;
+          if (_aStatus && _aStatus.status === 'deactivated') {
+            alert('Tu cuenta está desactivada. Contacta con soporte.');
+            setButtonLoading(button, false);
+            return;
+          }
         } catch (e) {}
         // Crear objeto de suscripción
         const subscription = {

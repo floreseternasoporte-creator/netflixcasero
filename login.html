@@ -338,7 +338,7 @@
       .auth-title { font-size: 22px; }
     }
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=10">
+  <link rel="stylesheet" href="uber-theme.css?v=11">
 </head>
 <body>
   <div class="auth-bg"></div>
@@ -395,6 +395,8 @@
 
           <div class="forgot-row">
             <button type="button" class="auth-link" onclick="showView('viewForgot')">¿Olvidaste tu contraseña?</button>
+            <span style="color:#D5D9D9;"> · </span>
+            <button type="button" class="auth-link" onclick="resendVerificationEmail()">Reenviar verificación</button>
           </div>
 
           <button type="submit" class="auth-btn" id="loginBtn">
@@ -654,8 +656,9 @@
       setBtnLoading(btn, true);
       hideMessage();
       try {
-        localStorage.setItem('atenis_forgot_cooldown', String(Date.now()));
         await auth.sendPasswordResetEmail(email);
+        // Ronda 11: el cooldown solo se marca si el envío tuvo éxito.
+        localStorage.setItem('atenis_forgot_cooldown', String(Date.now()));
       } catch (err) {
         console.error('Error enviando enlace de recuperación:', err);
       }
@@ -668,6 +671,18 @@
         if (_forgotMsg) _forgotMsg.textContent = 'Si existe una cuenta con ese correo, te enviamos el enlace.';
       }
       setBtnLoading(btn, false);
+    }
+
+    // Ronda 11: reenviar el correo de verificación (antes no había forma).
+    async function resendVerificationEmail() {
+      try {
+        const user = auth && auth.currentUser;
+        if (!user) { showMessage('Inicia sesión con tu correo y contraseña para reenviar la verificación.'); return; }
+        await user.sendEmailVerification();
+        showMessage('Correo de verificación enviado. Revisa tu bandeja de entrada.', 'success');
+      } catch (err) {
+        showMessage(getErrMsg(err.code));
+      }
     }
 
     function setBtnLoading(btn, loading) {
@@ -767,8 +782,8 @@
 
     function getErrMsg(code) {
       const msgs = {
-        'auth/user-not-found':            'No existe una cuenta con este correo',
-        'auth/wrong-password':            'Contraseña incorrecta',
+        'auth/user-not-found':            'Correo o contraseña incorrectos',
+        'auth/wrong-password':            'Correo o contraseña incorrectos',
         'auth/invalid-login-credentials': 'Correo o contraseña incorrectos',
         'auth/invalid-credential':        'Credenciales inválidas',
         'auth/email-already-in-use':      'Ya existe una cuenta con este correo',
