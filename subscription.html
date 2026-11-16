@@ -714,7 +714,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=14">
+  <link rel="stylesheet" href="uber-theme.css?v=15">
 </head>
 <body>
   <!-- Header -->
@@ -722,7 +722,7 @@
     <div class="logo">Atenis</div>
     <div class="user-info">
       <span id="userName">Cargando...</span>
-      <button class="logout-btn" onclick="logout()">
+      <button class="logout-btn" onclick="logout()" aria-label="Cerrar sesión">
         <i class="fas fa-sign-out-alt"></i>
       </button>
     </div>
@@ -739,7 +739,7 @@
       <div class="special-offer-banner" onclick="window.location.href='trial-offer.html'">
         <div class="offer-content">
           <div class="offer-title">OFERTA ESPECIAL</div>
-          <div class="offer-text">Prueba Premium GRATIS por 4 meses - Solo verifica tu tarjeta</div>
+          <div class="offer-text">Prueba Premium GRATIS por 4 meses — Sin tarjeta, sin compromiso</div>
         </div>
         <div class="offer-arrow">→</div>
       </div>
@@ -820,11 +820,6 @@
       </div>
     </div>
   </main>
-
-  <!-- Cancelar suscripción (solo con plan activo) -->
-  <div style="text-align:center;padding:0 20px 32px;">
-    <button id="cancelSubscriptionBtn" type="button" onclick="cancelSubscription()" style="display:none;background:none;border:none;color:#B12704;font-size:14px;font-weight:600;cursor:pointer;text-decoration:underline;">Cancelar mi suscripción</button>
-  </div>
 
   <!-- Mensaje de éxito -->
   <div id="successMessage" class="success-message">
@@ -937,11 +932,22 @@
     });
 
     // Ronda 6 (A5): lista de permiso de suscripción (misma regla que app.html).
+    // Ronda 15 (B10): el fin del trial se calcula desde startDate (timestamp
+    // del servidor) + 120 días; trialEndDate (reloj del cliente) solo es
+    // fallback cuando no hay startDate.
+    function trialEndMs(sub) {
+      const TRIAL_MS = 120 * 24 * 60 * 60 * 1000;
+      const start = Number(sub && sub.startDate);
+      if (Number.isFinite(start) && start > 0) return start + TRIAL_MS;
+      const end = Number(sub && sub.trialEndDate);
+      return Number.isFinite(end) ? end : 0;
+    }
+
     function isSubscriptionValid(sub) {
       if (!sub || typeof sub !== 'object') return false;
       if (sub.status === 'active') return true;
       if (sub.status === 'trial') {
-        const end = Number(sub.trialEndDate);
+        const end = trialEndMs(sub);
         return Number.isFinite(end) && end > 0 && Date.now() < end;
       }
       return false;
@@ -977,9 +983,6 @@
         }
 
         if (userData && userData.subscription) {
-          // Mostrar el botón de cancelar cuando hay plan activo.
-          const _cancelBtn = document.getElementById('cancelSubscriptionBtn');
-          if (_cancelBtn && isSubscriptionValid(userData.subscription)) _cancelBtn.style.display = 'inline-block';
           if (!isSubscriptionValid(userData.subscription)) {
             return; // quedarse aquí para elegir un plan
           }
@@ -998,24 +1001,6 @@
       }
     }
 
-    // Ronda 6 (A18): cancelación (solo marcador en cliente, sin pasarela).
-    async function cancelSubscription() {
-      if (!currentUser) { alert('Error: Usuario no autenticado'); return; }
-      if (!confirm('¿Cancelar tu suscripción? Podrás elegir un plan nuevo cuando quieras.')) return;
-      try {
-        const ref = database.ref('users/' + currentUser.uid + '/subscription');
-        const snap = await ref.once('value');
-        const current = snap.val() || {};
-        if (!current || !current.plan) { alert('No tienes una suscripción activa.'); return; }
-        await ref.update({ ...current, status: 'cancelled' });
-        alert('Suscripción cancelada.');
-        window.location.href = 'subscription.html';
-      } catch (e) {
-        console.error('Error cancelando suscripción:', e);
-        alert('No se pudo cancelar la suscripción. Inténtalo de nuevo.');
-      }
-    }
-
     // Seleccionar plan
     async function selectPlan(planType, planName, planPrice, buttonEl) {
       if (!currentUser) {
@@ -1029,11 +1014,29 @@
 
       try {
         // Ronda 6 (A6): conservar trialUsed y ageVerified del plan anterior.
+        // Ronda 15 (B9): si la lectura falla, reintentarla una vez; si sigue
+        // fallando, NO escribir el plan a ciegas (se perdería trialUsed).
         let _existingSub = null;
-        try {
-          const _snap = await database.ref('users/' + currentUser.uid + '/subscription').once('value');
-          _existingSub = _snap.val() || null;
-        } catch (e) {}
+        let _subReadOk = false;
+        for (let _attempt = 0; _attempt < 2 && !_subReadOk; _attempt++) {
+          try {
+            const _snap = await database.ref('users/' + currentUser.uid + '/subscription').once('value');
+            _existingSub = _snap.val() || null;
+            _subReadOk = true;
+          } catch (e) { /* reintento (B9) */ }
+        }
+        // Red adicional (B9): marcador local guardado al activar un trial.
+        let _localTrialUsed = false;
+        try { _localTrialUsed = localStorage.getItem('atenis_trial_used_' + currentUser.uid) === '1'; } catch (e) {}
+        if (!_subReadOk && !_localTrialUsed) {
+          alert('No se pudo verificar tu suscripción anterior. Revisa tu conexión e inténtalo de nuevo.');
+          setButtonLoading(button, false);
+          return;
+        }
+        // Si la lectura remota falló pero el marcador local prueba que ya
+        // hubo trial, se sigue con trialUsed: true (no se escribe a ciegas:
+        // el marcador es la prueba local de que el trial ya se usó).
+        if (!_subReadOk && _localTrialUsed) _existingSub = { trialUsed: true };
         // Ronda 11: una cuenta desactivada no puede activar un plan.
         try {
           const _aSnap = await database.ref('users/' + currentUser.uid + '/accountStatus').once('value');
@@ -1053,7 +1056,7 @@
           status: 'active',
           features: getPlanFeatures(planType)
         };
-        if (_existingSub && _existingSub.trialUsed === true) subscription.trialUsed = true;
+        if ((_existingSub && _existingSub.trialUsed === true) || _localTrialUsed) subscription.trialUsed = true;
         if (_existingSub && _existingSub.ageVerified) subscription.ageVerified = _existingSub.ageVerified;
 
         // Guardar suscripción en Firebase

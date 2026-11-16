@@ -335,54 +335,6 @@
     canvas { display: none; }
 
     /* Estilos para verificación facial */
-    .face-verification-container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .video-container {
-      position: relative;
-      width: 100%;
-      max-width: 500px;
-      margin: 0 auto 30px;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 3px solid #FF9900;
-      box-shadow: 0 6px 16px rgba(25,25,25,0.08);
-    }
-
-    #faceVideo {
-      width: 100%;
-      display: block;
-      background: #000;
-    }
-
-    .face-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
-
-    .face-circle {
-      width: 250px;
-      height: 250px;
-      border: 4px dashed #FF9900;
-      border-radius: 50%;
-      animation: rotateDash 3s linear infinite;
-      box-shadow: 0 0 30px rgba(255,153,0,0.2);
-    }
-
-    @keyframes rotateDash {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
     .age-result {
       text-align: center;
       padding: 30px;
@@ -413,7 +365,7 @@
       .container { padding: 100px 20px 40px; }
     }
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=14">
+  <link rel="stylesheet" href="uber-theme.css?v=15">
 </head>
 <body>
   <header class="header">
@@ -425,7 +377,7 @@
   <div class="container">
     <h1>4 Meses GRATIS</h1>
     <div class="offer-badge">OFERTA ESPECIAL - TIEMPO LIMITADO</div>
-    <p class="subtitle">Prueba Premium sin costo - Solo verifica tu edad con reconocimiento facial</p>
+    <p class="subtitle">Prueba Premium sin costo — Confirma tu fecha de nacimiento</p>
 
     <div class="benefits">
       <h3>Lo que obtienes:</h3>
@@ -480,36 +432,29 @@
     </form>
     -->
 
-    <!-- NUEVO: VERIFICACIÓN DE ROSTRO -->
+    <!-- Ronda 15 (B3): verificación de edad por fecha de nacimiento declarada.
+         El escaneo facial se eliminó: estimaba la edad por el tamaño de la
+         cara y un menor podía pasar acercando el teléfono. Sin cámara. -->
     <div class="form-section">
-      <h3>Verifica tu Edad con Reconocimiento Facial</h3>
-      
-      <div class="face-verification-container">
-        <div class="video-container" id="videoContainer">
-          <video id="faceVideo" autoplay playsinline></video>
-          <canvas id="faceCanvas" style="display:none;"></canvas>
-          <div class="face-overlay" id="faceOverlay">
-            <div class="face-circle"></div>
-          </div>
-        </div>
+      <h3>Confirma tu fecha de nacimiento</h3>
 
-        <div class="age-result" id="ageResult" style="display:none;">
-          <div class="age-badge" id="ageBadge"></div>
-          <div class="age-text" id="ageText"></div>
-        </div>
-
-        <button type="button" class="submit-btn" id="startFaceBtn" onclick="startFaceVerification()">
-          <i class="fas fa-camera"></i> Iniciar Verificación Facial
-        </button>
-
-        <button type="button" class="submit-btn" id="activateBtn" style="display:none;" onclick="activateTrial()">
-          <i class="fas fa-check"></i> Activar Prueba Gratuita
-        </button>
+      <div class="form-group">
+        <label for="birthdate">Fecha de nacimiento</label>
+        <input type="date" id="birthdate" onchange="onBirthdateChange()" required>
+        <div id="birthdateValidation" class="validation-message"></div>
       </div>
+
+      <div class="age-result" id="ageResult" style="display:none;">
+        <div class="age-text" id="ageText"></div>
+      </div>
+
+      <button type="button" class="submit-btn" id="activateBtn" style="display:none;" onclick="activateTrial()">
+        <i class="fas fa-check"></i> Activar Prueba Gratuita
+      </button>
 
       <div class="security-note">
         <i class="fas fa-shield-alt"></i>
-        Tu imagen no se almacena, solo se usa para verificación de edad
+        Tu fecha de nacimiento solo se usa para verificar tu edad; no se guarda.
       </div>
     </div>
 
@@ -544,8 +489,6 @@
 
   <canvas id="canvas"></canvas>
 
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCFQ_geG0HIv2EZ-bfKc97TJNtf2sdqPzc",
@@ -570,11 +513,22 @@
     let currentUser = null;
 
     // Ronda 6 (A20/A5): lista de permiso de suscripción (misma regla que app.html).
+    // Ronda 15 (B10): el fin del trial se calcula desde startDate (timestamp
+    // del servidor) + 120 días; trialEndDate (reloj del cliente) solo es
+    // fallback cuando no hay startDate.
+    function trialEndMs(sub) {
+      const TRIAL_MS = 120 * 24 * 60 * 60 * 1000;
+      const start = Number(sub && sub.startDate);
+      if (Number.isFinite(start) && start > 0) return start + TRIAL_MS;
+      const end = Number(sub && sub.trialEndDate);
+      return Number.isFinite(end) ? end : 0;
+    }
+
     function isSubscriptionValid(sub) {
       if (!sub || typeof sub !== 'object') return false;
       if (sub.status === 'active') return true;
       if (sub.status === 'trial') {
-        const end = Number(sub.trialEndDate);
+        const end = trialEndMs(sub);
         return Number.isFinite(end) && end > 0 && Date.now() < end;
       }
       return false;
@@ -608,30 +562,48 @@
       } else window.location.href = 'login.html';
     });
 
-    // Variables para verificación facial
-    let faceStream = null;
-    let detectedAge = null;
+    // Ronda 15 (B3): edad por fecha de nacimiento declarada (sin cámara).
+    // La fecha NO se guarda: solo se calcula la edad para el gate 13+.
+    let declaredAge = null;
     let ageCategory = null;
-    let detectionInterval = null;
-    let model = null;
-    let _faceDetecting = false;   // evita llamadas solapadas a estimateFaces
-    let _activateShown = false;   // evita programar múltiples timeouts del botón
 
-    // Detiene la detección y libera la cámara (se usa al activar, al salir, etc.)
-    function stopFaceStream() {
-      if (detectionInterval) {
-        clearInterval(detectionInterval);
-        detectionInterval = null;
-      }
-      if (faceStream) {
-        faceStream.getTracks().forEach(track => track.stop());
-        faceStream = null;
-      }
+    function calcAgeFromBirthdate(value) {
+      if (!value) return null;
+      const birth = new Date(value + 'T00:00:00');
+      if (isNaN(birth.getTime()) || birth.getTime() > Date.now()) return null;
+      let age = new Date().getFullYear() - birth.getFullYear();
+      const m = new Date().getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && new Date().getDate() < birth.getDate())) age--;
+      return age;
     }
 
-    // Si el usuario sale de la página, liberar la cámara para que no quede encendida
-    window.addEventListener('pagehide', stopFaceStream);
-    window.addEventListener('beforeunload', stopFaceStream);
+    function onBirthdateChange() {
+      const input = document.getElementById('birthdate');
+      const validation = document.getElementById('birthdateValidation');
+      const ageResult = document.getElementById('ageResult');
+      const ageText = document.getElementById('ageText');
+      const activateBtn = document.getElementById('activateBtn');
+      declaredAge = calcAgeFromBirthdate(input ? input.value : '');
+      ageCategory = null;
+      if (declaredAge === null) {
+        if (validation) validation.textContent = 'Ingresa una fecha de nacimiento válida.';
+        if (ageResult) ageResult.style.display = 'none';
+        if (activateBtn) activateBtn.style.display = 'none';
+        return;
+      }
+      if (validation) validation.textContent = '';
+      if (declaredAge < 13) {
+        ageCategory = 'Menor de 13';
+        if (ageText) { ageText.textContent = 'Debes tener al menos 13 años para activar la prueba.'; ageText.style.color = '#ef4444'; }
+        if (ageResult) ageResult.style.display = 'block';
+        if (activateBtn) activateBtn.style.display = 'none';
+        return;
+      }
+      ageCategory = declaredAge < 18 ? '13+' : '18+';
+      if (ageText) { ageText.textContent = 'Edad: ' + declaredAge + ' años'; ageText.style.color = '#0F1111'; }
+      if (ageResult) ageResult.style.display = 'block';
+      if (activateBtn) activateBtn.style.display = 'block';
+    }
 
     // Escáner de tarjeta desactivado (el formulario está comentado): stubs para
     // que los onclick del modal huérfano no lancen ReferenceError
@@ -640,122 +612,6 @@
     function stopCardScan() {
       const m = document.getElementById('scannerModal');
       if (m) m.classList.remove('active');
-    }
-
-    // Función para iniciar verificación facial EN TIEMPO REAL
-    async function startFaceVerification() {
-      const video = document.getElementById('faceVideo');
-      const startBtn = document.getElementById('startFaceBtn');
-      const ageResult = document.getElementById('ageResult');
-      const ageBadge = document.getElementById('ageBadge');
-      const ageText = document.getElementById('ageText');
-      
-      startBtn.disabled = true;
-      startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando cámara...';
-
-      try {
-        faceStream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: 'user', width: 640, height: 480 } 
-        });
-        
-        video.srcObject = faceStream;
-        await video.play();
-        
-        startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cargando modelo IA...';
-        
-        // Cargar modelo de detección facial
-        model = await blazeface.load();
-        
-        startBtn.innerHTML = '<i class="fas fa-eye"></i> Detectando en tiempo real...';
-        ageResult.style.display = 'block';
-        
-        // DETECCIÓN EN TIEMPO REAL - actualiza cada 500ms
-        detectionInterval = setInterval(async () => {
-          await detectAgeRealTime(video, ageBadge, ageText);
-        }, 500);
-        
-      } catch (error) {
-        console.error('Error:', error);
-        const msg = error && error.name === 'NotAllowedError'
-          ? 'Permiso de cámara denegado. Actívalo en los ajustes del navegador y reintenta.'
-          : (error && error.name === 'NotFoundError'
-            ? 'No se encontró ninguna cámara en este dispositivo.'
-            : 'No se pudo acceder a la cámara. Verifica los permisos.');
-        alert(msg);
-        startBtn.disabled = false;
-        startBtn.innerHTML = '<i class="fas fa-camera"></i> Iniciar Verificación Facial';
-      }
-    }
-
-    // Detectar edad EN TIEMPO REAL
-    async function detectAgeRealTime(video, ageBadge, ageText) {
-      if (_faceDetecting) return; // una detección a la vez
-      _faceDetecting = true;
-      try {
-        const predictions = await model.estimateFaces(video, false);
-        
-        if (predictions.length > 0) {
-          // Rostro detectado - estimar edad basado en características faciales
-          const face = predictions[0];
-          const faceSize = Math.sqrt(
-            Math.pow(face.bottomRight[0] - face.topLeft[0], 2) +
-            Math.pow(face.bottomRight[1] - face.topLeft[1], 2)
-          );
-
-          // Heurística de demostración basada en la proporción del rostro en el
-          // encuadre: a mayor proporción, mayor edad estimada.
-          // En producción, usar un modelo ML entrenado para edad.
-          const frameDiag = Math.sqrt(
-            Math.pow(video.videoWidth || 640, 2) + Math.pow(video.videoHeight || 480, 2)
-          ) || 800;
-          const sizeRatio = Math.min(Math.max(faceSize / frameDiag, 0), 1);
-          const baseAge = Math.round(6 + sizeRatio * 70);
-          detectedAge = Math.min(Math.max(baseAge, 8), 65);
-          
-          // Actualizar UI en tiempo real
-          if (detectedAge < 13) {
-            ageCategory = 'Menor de 13';
-            ageBadge.textContent = '<13';
-            ageBadge.style.color = '#ef4444';
-            ageText.textContent = '❌ Edad no permitida';
-            ageText.style.color = '#ef4444';
-          } else if (detectedAge < 18) {
-            ageCategory = '13+';
-            ageBadge.textContent = '13+';
-            ageBadge.style.color = '#0F1111';
-            ageText.textContent = '⚠️ Edad: ~' + detectedAge + ' años (Supervisión requerida)';
-            ageText.style.color = '#0F1111';
-          } else {
-            ageCategory = '18+';
-            ageBadge.textContent = '18+';
-            ageBadge.style.color = '#FF9900';
-            ageText.textContent = '✅ Edad: ~' + detectedAge + ' años (Verificado)';
-            ageText.style.color = '#FF9900';
-          }
-          
-          // Mostrar botón de activación después de 3 segundos de detección estable
-          if (detectedAge >= 13 && !_activateShown) {
-            _activateShown = true;
-            setTimeout(() => {
-              const activateBtn = document.getElementById('activateBtn');
-              if (activateBtn && activateBtn.style.display === 'none') {
-                activateBtn.style.display = 'block';
-                clearInterval(detectionInterval);
-              }
-            }, 3000);
-          }
-        } else {
-          // No se detecta rostro
-          ageBadge.textContent = '👤';
-          ageBadge.style.color = '#565959';
-          ageText.textContent = 'Posiciona tu rostro en el círculo';
-          ageText.style.color = '#565959';
-        }
-      } catch (error) {
-        console.error('Error en detección:', error);
-      } finally {
-        _faceDetecting = false;
-      }
     }
 
     // Activar prueba gratuita
@@ -768,17 +624,19 @@
         return;
       }
 
-      // Ronda 6 (A20): la edad se valida DENTRO de la función, no solo en el botón.
-      if (typeof detectedAge === 'number' && detectedAge < 13) {
+      // Ronda 6 (A20) + Ronda 15 (B3): la edad se valida DENTRO de la
+      // función, no solo en el botón, desde la fecha de nacimiento declarada.
+      if (typeof declaredAge !== 'number') {
+        alert('Ingresa tu fecha de nacimiento para activar la prueba.');
+        return;
+      }
+      if (declaredAge < 13) {
         alert('Debes tener al menos 13 años para activar la prueba.');
         return;
       }
 
       activateBtn.disabled = true;
       activateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Activando...';
-
-      // Detener detección en tiempo real y liberar la cámara
-      stopFaceStream();
 
       try {
         const existingSnap = await database.ref('users/' + currentUser.uid + '/subscription').once('value');
@@ -789,7 +647,10 @@
           activateBtn.innerHTML = '<i class="fas fa-check"></i> Activar Prueba Gratuita';
           return;
         }
-        if (existingSub && (existingSub.trialUsed === true || existingSub.plan === 'trial')) {
+        // Ronda 15 (B11): el trial es solo para nuevos usuarios: bloquea si
+        // ya hubo CUALQUIER suscripción previa (activa, cancelada, expirada
+        // o trial usado), no solo plan activo o trialUsed.
+        if (existingSub && (existingSub.trialUsed === true || existingSub.plan || existingSub.status)) {
           alert('Ya usaste tu prueba gratuita.');
           activateBtn.disabled = false;
           activateBtn.innerHTML = '<i class="fas fa-check"></i> Activar Prueba Gratuita';
@@ -806,7 +667,8 @@
           trialUsed: true,
           ageVerified: true,
           ageCategory: ageCategory,
-          estimatedAge: detectedAge,
+          declaredAge: declaredAge,
+          estimatedAge: declaredAge,
           verifiedAt: new Date().toISOString(),
           features: {
             quality: '4K Ultra HD',
@@ -818,6 +680,9 @@
         };
 
         await database.ref('users/' + currentUser.uid + '/subscription').set(trialData);
+        // Ronda 15 (B9): marcador local por UID; si la lectura remota falla
+        // al elegir plan, este marcador conserva trialUsed: true.
+        try { localStorage.setItem('atenis_trial_used_' + currentUser.uid, '1'); } catch (e) {}
 
         activateBtn.innerHTML = '<i class="fas fa-check-circle"></i> ¡Activado!';
         activateBtn.style.background = '#FFD814';

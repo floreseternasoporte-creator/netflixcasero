@@ -338,7 +338,7 @@
       .auth-title { font-size: 22px; }
     }
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=14">
+  <link rel="stylesheet" href="uber-theme.css?v=15">
 </head>
 <body>
   <div class="auth-bg"></div>
@@ -632,7 +632,9 @@
         showMessage('¡Cuenta creada! Te enviamos un correo de verificación. Redirigiendo...', 'success');
         setTimeout(() => window.location.href = 'subscription.html', 1200);
       } catch(err) {
-        showMessage(getErrMsg(err.code));
+        // Ronda 15 (B1): mensaje genérico, igual para cualquier error de
+        // registro: no revela si la cuenta ya existe.
+        showMessage('No se pudo crear la cuenta. Inténtalo de nuevo.');
       } finally {
         _registering = false;
         setBtnLoading(btn, false);
@@ -674,11 +676,18 @@
     }
 
     // Ronda 11: reenviar el correo de verificación (antes no había forma).
+    // Ronda 15 (B2): cooldown local de 60 s entre envíos.
     async function resendVerificationEmail() {
+      const _lastResend = Number(localStorage.getItem('atenis_resend_verif_cooldown') || 0);
+      if (Date.now() - _lastResend < 60000) {
+        showMessage('Espera un momento antes de pedir otro correo de verificación.');
+        return;
+      }
       try {
         const user = auth && auth.currentUser;
         if (!user) { showMessage('Inicia sesión con tu correo y contraseña para reenviar la verificación.'); return; }
         await user.sendEmailVerification();
+        localStorage.setItem('atenis_resend_verif_cooldown', String(Date.now()));
         showMessage('Correo de verificación enviado. Revisa tu bandeja de entrada.', 'success');
       } catch (err) {
         showMessage(getErrMsg(err.code));
@@ -729,11 +738,22 @@
     }
 
     // Ronda 6 (A5): lista de permiso de suscripción (misma regla que app.html).
+    // Ronda 15 (B10): el fin del trial se calcula desde startDate (timestamp
+    // del servidor) + 120 días; trialEndDate (reloj del cliente) solo es
+    // fallback cuando no hay startDate.
+    function trialEndMs(sub) {
+      const TRIAL_MS = 120 * 24 * 60 * 60 * 1000;
+      const start = Number(sub && sub.startDate);
+      if (Number.isFinite(start) && start > 0) return start + TRIAL_MS;
+      const end = Number(sub && sub.trialEndDate);
+      return Number.isFinite(end) ? end : 0;
+    }
+
     function isSubscriptionValid(sub) {
       if (!sub || typeof sub !== 'object') return false;
       if (sub.status === 'active') return true;
       if (sub.status === 'trial') {
-        const end = Number(sub.trialEndDate);
+        const end = trialEndMs(sub);
         return Number.isFinite(end) && end > 0 && Date.now() < end;
       }
       return false;
@@ -773,7 +793,6 @@
             access_key: '6520a5c5-d52d-4eb4-be3e-f31b35c9a1e6',
             subject: `¡Bienvenido a Atenis, ${userName}!`,
             from_name: 'Atenis',
-            to: userEmail,
             message: `¡Hola ${userName}!\n\nBienvenido a Atenis. ¡Disfruta el contenido!\n\nEquipo Atenis`
           })
         });
@@ -786,7 +805,7 @@
         'auth/wrong-password':            'Correo o contraseña incorrectos',
         'auth/invalid-login-credentials': 'Correo o contraseña incorrectos',
         'auth/invalid-credential':        'Credenciales inválidas',
-        'auth/email-already-in-use':      'Ya existe una cuenta con este correo',
+        'auth/email-already-in-use':      'No se pudo crear la cuenta. Inténtalo de nuevo.',
         'auth/weak-password':             'La contraseña debe tener al menos 6 caracteres',
         'auth/invalid-email':             'Correo electrónico inválido',
         'auth/missing-email':             'Ingresa tu correo electrónico',
@@ -796,6 +815,11 @@
       };
       return msgs[code] || 'Ha ocurrido un error. Intenta nuevamente';
     }
+
+    // Ronda 15 (B12): ?tab=register abre directamente la pestaña de registro.
+    try {
+      if (new URLSearchParams(window.location.search).get('tab') === 'register') switchTab('register');
+    } catch (e) { /* sin parámetro: pestaña por defecto (login) */ }
   </script>
 </body>
 </html>

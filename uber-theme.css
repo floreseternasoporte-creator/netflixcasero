@@ -114,7 +114,7 @@ body {
 }.auth-link a, .plan-features li i, .step-number, .settings-group-title i, .history-item-time i, .feature-icon, .payment-method i{
   color: var(--am-link) !important;
 }/* Botones estilo Uber: sobrios, legibles y sin brillo. */
-button, .plan-button, .hero-btn, .series-btn, .settings-btn, .history-btn, .logout-btn, .search-btn, .search-close-btn, .settings-close-btn, .history-close-btn, .carousel-nav, .back-button, .back-btn, .submit-btn, .scan-btn, .scanner-btn, .btn, .btn-primary, .btn-secondary{
+button, .plan-button, .hero-btn, .series-btn, .settings-btn, .history-btn, .logout-btn, .search-btn, .search-close-btn, .settings-close-btn, .history-close-btn, .back-button, .back-btn, .submit-btn, .scan-btn, .scanner-btn, .btn, .btn-primary, .btn-secondary{
   border-radius: var(--am-radius) !important;
   border: 1px solid transparent !important;
   font-family: var(--am-font) !important;
@@ -2667,7 +2667,7 @@ textarea:focus,
 }
 .mini-info-rating,
 .mini-sheet-rating {
-  color: #FF9900 !important;
+  color: #C7511F !important; /* Ronda 15 C11: 4.54:1 sobre blanco (antes #FF9900, 2.14:1) */
 }
 .mini-info-ep-count,
 .mini-sheet-stats,
@@ -2690,7 +2690,7 @@ textarea:focus,
   color: #0F1111 !important;
 }
 .mini-ep-box.ep-playing .mini-ep-box-icon {
-  color: #FF9900 !important;
+  color: #C7511F !important; /* Ronda 15 C13: ~3.99:1 sobre el fondo naranja pálido (antes #FF9900, 1.92:1) */
 }
 .mini-ep-box.ep-locked .mini-ep-box-icon {
   color: #565959 !important;
@@ -3227,4 +3227,13 @@ body { font-family: var(--am-font) !important; }
 }
 .mini-backdrop-remove.hidden {
   display: none !important;
+}
+
+/* Ronda 15 (B6): la tarjeta «Más popular» recupera su distinción. El
+   override genérico de .plan-card (~línea 50) le imponía fondo blanco y
+   borde fino; esta regla, más específica y al final de la hoja, restaura
+   fondo #F0F2F2 y borde #FF9900 de 2px. */
+.plan-card.plan-card.popular {
+  background: #F0F2F2 !important;
+  border: 2px solid #FF9900 !important;
 }

@@ -264,7 +264,7 @@
       background-size: cover;
       background-position: center top;
       background-repeat: no-repeat;
-      background-color: #080808;
+      background-color: #131921; /* Ronda 15 C4: fondo marino si el póster está roto */
     }
 
     .featured-hero-overlay {
@@ -623,7 +623,7 @@
       align-items: center;
       gap: 3px;
     }
-    .section-see-all:hover { color: #F3A847; }
+    .section-see-all:hover { color: #C7511F !important; } /* Ronda 15 C14: la regla base de uber-theme usa !important; sin él el hover no aplica */
 
     .carousel-container {
       position: relative;
@@ -2212,6 +2212,13 @@
       border-radius: 2px;
     }
 
+    /* Ronda 15 (A6): pistas nativas VTT por tamaño — mismos px que el
+       overlay (17/22/28). applyMiniSubtitleSize pone data-sub-size en
+       #miniPlayerVideo y estas reglas ganan al ::cue base por especificidad. */
+    video[data-sub-size="small"]::cue { font-size: 17px; }
+    video[data-sub-size="medium"]::cue { font-size: 22px; }
+    video[data-sub-size="large"]::cue { font-size: 28px; }
+
     ::cue(.speaker) {
       color: #ffd700;
       font-style: italic;
@@ -3198,10 +3205,11 @@
       background: #0a0a0a;
       z-index: 10;
       transform: translateX(100%);
-      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      visibility: hidden;
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), visibility 0s linear 0.28s;
       overflow-y: auto;
     }
-    .settings-sub.open { transform: translateX(0); }
+    .settings-sub.open { transform: translateX(0); visibility: visible; transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), visibility 0s; }
 
     .settings-sub-topbar {
       display: flex; align-items: center; gap: 14px;
@@ -4131,6 +4139,27 @@
       transform: scale(1.08);
     }
 
+    /* Ronda 15 C3: spinner de carga del mini-player (mismo patrón que .video-buffering-spinner) */
+    .mini-player-spinner {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56px; height: 56px;
+      z-index: 22;
+      display: none;
+      pointer-events: none;
+    }
+    .mini-player-spinner.visible { display: block; }
+    .mini-player-spinner::before {
+      content: '';
+      display: block;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.15);
+      border-top-color: #ffffff;
+      animation: videoSpinnerAnim 0.75s linear infinite;
+    }
+
     /* ── Next-episode overlay — centrado en la parte baja del video ── */
     .mini-next-overlay {
       position: absolute;
@@ -4324,7 +4353,7 @@
     .detail-episode:active { transform: scale(0.99); }
     .detail-ep-thumb {
       position: relative; width: 112px; height: 64px; border-radius: 8px; flex-shrink: 0;
-      background: #000 center/cover; overflow: hidden;
+      background: #131921 center/cover; overflow: hidden; /* Ronda 15 C4: fondo marino si la miniatura está rota */
     }
     .detail-ep-thumb .ep-play {
       position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
@@ -5603,7 +5632,7 @@
     }
 
   </style>
-  <link rel="stylesheet" href="uber-theme.css?v=14">
+  <link rel="stylesheet" href="uber-theme.css?v=15">
 </head>
 <body>
   <div id="google_translate_element" style="display: none;"></div>
@@ -5730,7 +5759,7 @@
   <div id="videoPlayer" class="video-player">
     <div class="video-player-container">
       <div class="video-player-header">
-        <button class="video-player-close" onclick="closeVideoPlayer()" style="order:-1;">
+        <button class="video-player-close" onclick="closeVideoPlayer()" style="order:-1;" aria-label="Cerrar reproductor">
           <i class="fas fa-chevron-left"></i>
         </button>
         <div style="flex:1; min-width:0; margin: 0 12px;">
@@ -5811,7 +5840,7 @@
               <i class="fas fa-rotate-left" style="font-size:17px;"></i>
               <span style="position:absolute;font-size:8px;font-weight:700;margin-top:2px;">10</span>
             </button>
-            <button class="video-control-btn play-pause" id="playPauseBtn" onclick="togglePlayPause()">
+            <button class="video-control-btn play-pause" id="playPauseBtn" onclick="togglePlayPause()" aria-label="Reproducir/Pausar">
               <i class="fas fa-play"></i>
             </button>
             <button class="video-control-btn" onclick="forward()" title="Adelantar 10s">
@@ -5823,13 +5852,13 @@
             </div>
           </div>
           <div class="video-controls-right">
-            <button class="video-control-btn" id="volumeBtn" onclick="toggleMute()">
+            <button class="video-control-btn" id="volumeBtn" onclick="toggleMute()" aria-label="Volumen">
               <i class="fas fa-volume-up"></i>
             </button>
-            <button class="video-control-btn" id="subtitlesBtn" onclick="openTracksModal()" title="Audio y subtítulos">
+            <button class="video-control-btn" id="subtitlesBtn" onclick="openTracksModal()" title="Audio y subtítulos" aria-label="Subtítulos">
               <i class="fas fa-closed-captioning"></i>
             </button>
-            <button class="video-control-btn" id="audioLanguageBtn" onclick="openTracksModal()" title="Audio y subtítulos">
+            <button class="video-control-btn" id="audioLanguageBtn" onclick="openTracksModal()" title="Audio y subtítulos" aria-label="Idioma de audio">
               <i class="fas fa-language"></i>
             </button>
           </div>
@@ -5877,7 +5906,7 @@
 
   <!-- Sección de Ajustes -->
   <div id="settingsSection" class="settings-section">
-    <button class="settings-close-btn" onclick="closeSettingsSection()">
+    <button class="settings-close-btn" onclick="closeSettingsSection()" aria-label="Cerrar">
       <i class="fas fa-chevron-left"></i>
     </button>
 
@@ -5979,7 +6008,7 @@
     <!-- ── Sub: Monedas y recompensas ── -->
     <div class="settings-sub" id="settingsSubMonedas">
       <div class="settings-sub-topbar">
-        <button class="settings-sub-back" onclick="closeSettingsSub('monedas')"><i class="fas fa-chevron-left"></i></button>
+        <button class="settings-sub-back" aria-label="Volver" onclick="closeSettingsSub('monedas')"><i class="fas fa-chevron-left"></i></button>
         <span class="settings-sub-topbar-title">Monedas y recompensas</span>
       </div>
       <div class="settings-sub-body">
@@ -6037,7 +6066,7 @@
     <!-- ── Sub: Cuenta ── -->
     <div class="settings-sub" id="settingsSubCuenta">
       <div class="settings-sub-topbar">
-        <button class="settings-sub-back" onclick="closeSettingsSub('cuenta')"><i class="fas fa-chevron-left"></i></button>
+        <button class="settings-sub-back" aria-label="Volver" onclick="closeSettingsSub('cuenta')"><i class="fas fa-chevron-left"></i></button>
         <span class="settings-sub-topbar-title">Cuenta</span>
       </div>
       <div class="settings-sub-body">
@@ -6053,6 +6082,15 @@
               <div class="setting-name">Correo</div>
               <div class="setting-description" id="userEmailSub">Cargando...</div>
             </div>
+          </div>
+          <div class="setting-item" id="resendVerificationRow" style="display:none;">
+            <div class="setting-info">
+              <div class="setting-name">Correo no verificado</div>
+              <div class="setting-description">Te enviamos un enlace de verificación al registrarte</div>
+            </div>
+            <button class="settings-btn secondary" id="resendVerificationBtn" onclick="resendVerificationFromSettings()" style="width:auto;padding:7px 14px;font-size:12px;">
+              Reenviar correo de verificación
+            </button>
           </div>
           <div class="setting-item">
             <div class="setting-info">
@@ -6088,7 +6126,7 @@
     <!-- ── Sub: Reproducción ── -->
     <div class="settings-sub" id="settingsSubReproduccion">
       <div class="settings-sub-topbar">
-        <button class="settings-sub-back" onclick="closeSettingsSub('reproduccion')"><i class="fas fa-chevron-left"></i></button>
+        <button class="settings-sub-back" aria-label="Volver" onclick="closeSettingsSub('reproduccion')"><i class="fas fa-chevron-left"></i></button>
         <span class="settings-sub-topbar-title">Reproducción</span>
       </div>
       <div class="settings-sub-body">
@@ -6144,7 +6182,7 @@
     <!-- ── Sub: Idioma ── -->
     <div class="settings-sub" id="settingsSubIdioma">
       <div class="settings-sub-topbar">
-        <button class="settings-sub-back" onclick="closeSettingsSub('idioma')"><i class="fas fa-chevron-left"></i></button>
+        <button class="settings-sub-back" aria-label="Volver" onclick="closeSettingsSub('idioma')"><i class="fas fa-chevron-left"></i></button>
         <span class="settings-sub-topbar-title">Idioma y Subtítulos</span>
       </div>
       <div class="settings-sub-body">
@@ -6198,7 +6236,7 @@
     <!-- ── Sub: Control Parental ── -->
     <div class="settings-sub" id="settingsSubParental">
       <div class="settings-sub-topbar">
-        <button class="settings-sub-back" onclick="closeSettingsSub('parental')"><i class="fas fa-chevron-left"></i></button>
+        <button class="settings-sub-back" aria-label="Volver" onclick="closeSettingsSub('parental')"><i class="fas fa-chevron-left"></i></button>
         <span class="settings-sub-topbar-title">Control Parental</span>
       </div>
       <div class="settings-sub-body">
@@ -6258,7 +6296,7 @@
     <!-- ── Sub: Notificaciones ── -->
     <div class="settings-sub" id="settingsSubNotificaciones">
       <div class="settings-sub-topbar">
-        <button class="settings-sub-back" onclick="closeSettingsSub('notificaciones')"><i class="fas fa-chevron-left"></i></button>
+        <button class="settings-sub-back" aria-label="Volver" onclick="closeSettingsSub('notificaciones')"><i class="fas fa-chevron-left"></i></button>
         <span class="settings-sub-topbar-title">Notificaciones</span>
       </div>
       <div class="settings-sub-body">
@@ -6300,7 +6338,7 @@
     <!-- ── Sub: Ayuda ── -->
     <div class="settings-sub" id="settingsSubAyuda">
       <div class="settings-sub-topbar">
-        <button class="settings-sub-back" onclick="closeSettingsSub('ayuda')"><i class="fas fa-chevron-left"></i></button>
+        <button class="settings-sub-back" aria-label="Volver" onclick="closeSettingsSub('ayuda')"><i class="fas fa-chevron-left"></i></button>
         <span class="settings-sub-topbar-title">Ayuda y Soporte</span>
       </div>
       <div class="settings-sub-body">
@@ -6333,7 +6371,7 @@
     <!-- ── Sub: Administración de Series ── -->
     <div class="settings-sub" id="settingsSubSeries">
       <div class="settings-sub-topbar">
-        <button class="settings-sub-back" onclick="closeSettingsSub('series')"><i class="fas fa-chevron-left"></i></button>
+        <button class="settings-sub-back" aria-label="Volver" onclick="closeSettingsSub('series')"><i class="fas fa-chevron-left"></i></button>
         <span class="settings-sub-topbar-title">Administrar Series</span>
       </div>
       <div class="settings-sub-body">
@@ -6350,7 +6388,7 @@
     <!-- ── Sub: Admin Subtítulos ── -->
     <div class="settings-sub" id="settingsSubSubtitulos">
       <div class="settings-sub-topbar">
-        <button class="settings-sub-back" onclick="closeSettingsSub('subtitulos')"><i class="fas fa-chevron-left"></i></button>
+        <button class="settings-sub-back" aria-label="Volver" onclick="closeSettingsSub('subtitulos')"><i class="fas fa-chevron-left"></i></button>
         <span class="settings-sub-topbar-title">Subtítulos</span>
       </div>
       <div class="settings-sub-body">
@@ -6389,7 +6427,7 @@
 
   <!-- Sección de Historial -->
   <div id="historySection" class="history-section">
-    <button class="history-close-btn" onclick="closeHistorySection()">
+    <button class="history-close-btn" onclick="closeHistorySection()" aria-label="Cerrar">
       <i class="fas fa-times"></i>
     </button>
 
@@ -6448,7 +6486,7 @@
   <div id="miniUploadModal" class="mini-upload-modal">
     <div class="mini-upload-container">
       <div class="mini-upload-header">
-        <button class="mini-upload-close-btn" onclick="closeSeriesUpload()">
+        <button class="mini-upload-close-btn" onclick="closeSeriesUpload()" aria-label="Cerrar">
           <i class="fas fa-times"></i>
         </button>
         <h2>Nueva Serie</h2>
@@ -6736,13 +6774,15 @@
            playsinline webkit-playsinline x5-playsinline
            preload="metadata">
     </video>
+    <!-- Ronda 15 C3: spinner de carga del mini-player -->
+    <div class="mini-player-spinner" id="miniPlayerSpinner" aria-hidden="true"></div>
     <!-- Ronda 12: indicador breve del salto por doble toque ("+10 s" / "−10 s") -->
     <div class="mini-seek-flash" id="miniSeekFlash" aria-hidden="true"></div>
     <div class="mini-subtitle-overlay" id="miniSubtitleOverlay" aria-live="polite"></div>
 
     <!-- Top bar -->
     <div class="mini-player-top">
-      <button class="mini-player-back-btn" onclick="closeMiniPlayer()">
+      <button class="mini-player-back-btn" onclick="closeMiniPlayer()" aria-label="Volver">
         <i class="fas fa-chevron-left"></i>
       </button>
       <div class="mini-player-ep-label" id="miniPlayerEpLabel">EP 1</div>
@@ -6804,7 +6844,7 @@
       <div class="mini-tracks-panel">
         <div class="mini-tracks-header">
           <h2 class="mini-tracks-title">Audio y subtítulos</h2>
-          <button class="mini-tracks-close" onclick="closeMiniTracksModal()">
+          <button class="mini-tracks-close" onclick="closeMiniTracksModal()" aria-label="Cerrar">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -6832,7 +6872,7 @@
         <button class="mini-seek-btn" onclick="seekMiniRelative(-10)" aria-label="Retroceder 10 segundos">
           <i class="fas fa-rotate-left"></i><span class="seek-label">10</span>
         </button>
-        <button class="mini-player-play-btn" id="miniPlayerPlayBtn" onclick="toggleMiniPlay()">
+        <button class="mini-player-play-btn" id="miniPlayerPlayBtn" onclick="toggleMiniPlay()" aria-label="Reproducir/Pausar">
           <i class="fas fa-pause"></i>
         </button>
         <button class="mini-seek-btn" onclick="seekMiniRelative(10)" aria-label="Avanzar 10 segundos">
@@ -6870,7 +6910,7 @@
     <!-- Info sheet (½ pantalla) -->
     <div class="mini-info-sheet" id="miniInfoSheet">
       <div class="mini-eps-sheet-handle"></div>
-      <button class="mini-sheet-close-btn" style="position:absolute;top:14px;right:16px;" onclick="closeMiniInfoSheet()">
+      <button class="mini-sheet-close-btn" style="position:absolute;top:14px;right:16px;" onclick="closeMiniInfoSheet()" aria-label="Cerrar">
         <i class="fas fa-times"></i>
       </button>
       <div class="mini-info-sheet-inner" id="miniInfoSheetInner"></div>
@@ -6888,7 +6928,7 @@
           <div class="mini-sheet-stats" id="miniSheetStats"></div>
           <div class="mini-sheet-rating" id="miniSheetRating"></div>
         </div>
-        <button class="mini-sheet-close-btn" onclick="closeMiniEpsSheet()">
+        <button class="mini-sheet-close-btn" onclick="closeMiniEpsSheet()" aria-label="Cerrar">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -6986,7 +7026,7 @@
     <div class="mini-edit-container">
       <div class="mini-edit-header">
         <div class="mini-edit-title" data-i18n="edit_mini">Editar Serie</div>
-        <button class="mini-edit-close" onclick="closeSeriesEdit()"><i class="fas fa-times"></i></button>
+        <button class="mini-edit-close" onclick="closeSeriesEdit()" aria-label="Cerrar"><i class="fas fa-times"></i></button>
       </div>
 
       <!-- Posters row -->
@@ -7382,14 +7422,25 @@
     let _authGateUid = null;
 
     // Ronda 6: lista de permiso de suscripción. Solo pasa 'active' o un
-    // trial con trialEndDate numérico y futuro. Cualquier otro estado
-    // ({}, sin status, 'paused', trial sin fecha o con fecha en texto)
-    // se trata como suscripción no válida.
+    // trial vigente (fin calculado desde startDate + 120 días, Ronda 15 B10).
+    // Cualquier otro estado ({}, sin status, 'paused', trial sin fecha o con
+    // fecha en texto) se trata como suscripción no válida.
+    // Ronda 15 (B10): el fin del trial se calcula desde startDate (timestamp
+    // del servidor) + 120 días; trialEndDate (reloj del cliente) solo es
+    // fallback cuando no hay startDate.
+    function trialEndMs(sub) {
+      const TRIAL_MS = 120 * 24 * 60 * 60 * 1000;
+      const start = Number(sub && sub.startDate);
+      if (Number.isFinite(start) && start > 0) return start + TRIAL_MS;
+      const end = Number(sub && sub.trialEndDate);
+      return Number.isFinite(end) ? end : 0;
+    }
+
     function isSubscriptionValid(sub) {
       if (!sub || typeof sub !== 'object') return false;
       if (sub.status === 'active') return true;
       if (sub.status === 'trial') {
-        const end = Number(sub.trialEndDate);
+        const end = trialEndMs(sub);
         return Number.isFinite(end) && end > 0 && Date.now() < end;
       }
       return false;
@@ -7411,7 +7462,54 @@
       } catch (e) { console.error('No se pudieron cargar los desbloqueos:', e); }
     }
 
+    // Ronda 15 (A9): deep link tras login. Si la app se abrió con
+    // ?series=<id> y no hay sesión, el gate manda a login y la URL se
+    // pierde: guardar el id pendiente en sessionStorage ANTES de redirigir;
+    // tras el login, _openPendingSeriesAfterLogin() lo abre con
+    // showSeriesDetail (que ya aplica el PIN parental).
+    function _savePendingSeriesFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const id = params && params.get('series');
+        if (id) sessionStorage.setItem('atenis_pending_series', id);
+      } catch (e) {}
+    }
+    function _openPendingSeriesAfterLogin() {
+      let pending = null;
+      try { pending = sessionStorage.getItem('atenis_pending_series'); } catch (e) {}
+      if (!pending) return;
+      try { sessionStorage.removeItem('atenis_pending_series'); } catch (e) {}
+      // Enlace directo en la URL manda: ese camino ya lo cubre
+      // openSharedSeriesFromUrl(); no abrir el detalle dos veces.
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (params && params.get('series')) return;
+      } catch (e) {}
+      let tries = 0;
+      const timer = setInterval(function() {
+        tries++;
+        if (seriesDatabase && seriesDatabase[pending]) {
+          clearInterval(timer);
+          showSeriesDetail(pending);
+        } else if (tries >= 12) {
+          clearInterval(timer); // id inexistente: se ignora (ya limpiado)
+        }
+      }, 800);
+    }
+
+    // Ronda 15 C6: caducidad de sesión/suscripción a mitad de uso: guardar el
+    // progreso, cerrar el reproductor si está abierto, avisar y luego redirigir.
+    function _redirectAfterSessionEnd(url, message) {
+      try { flushWatchProgressSync(); } catch (e) {}
+      if (typeof _miniPlayerMini !== 'undefined' && _miniPlayerMini) { try { closeMiniPlayer(); } catch (e) {} }
+      if (message) showSettingsMessage(message);
+      setTimeout(() => { window.location.href = url; }, 1500);
+    }
+
+    let _authUnsubscribe = null; // Ronda 15 C9: desuscripción del listener del gate
+
     function checkAuthentication() {
+      _savePendingSeriesFromUrl();
       return new Promise((resolve) => {
         if (!auth) {
           console.error('Firebase Auth no está disponible. Redirigiendo a login para evitar una pantalla bloqueada.');
@@ -7430,11 +7528,13 @@
         // Gracia breve antes de expulsar a login.
         let nullGraceTimer = null;
 
-        auth.onAuthStateChanged(async (user) => {
+        // Ronda 15 C9: no acumular listeners en cada reintento del gate.
+        if (_authUnsubscribe) { try { _authUnsubscribe(); } catch (e) {} _authUnsubscribe = null; }
+        _authUnsubscribe = auth.onAuthStateChanged(async (user) => {
           if (!user) {
             if (_authGateDone) {
               // La sesión se cerró después del gate inicial: ir a login.
-              window.location.href = 'login.html';
+              _redirectAfterSessionEnd('login.html', 'Tu sesión terminó. Vuelve a iniciar sesión.');
               resolve(false);
               return;
             }
@@ -7475,7 +7575,16 @@
           // Verificar que tenga suscripción y perfil
           try {
             const userRef = database.ref('users/' + user.uid);
-            const snapshot = await withFirebaseTimeout(userRef.once('value'), 'users/' + user.uid);
+            // Ronda 15 (B16): withFirebaseTimeout resuelve null al timeout, y
+            // null NO es "sin suscripción": es "sin respuesta". Reintentar una
+            // vez con timeout mayor antes de decidir; solo si el segundo
+            // intento también expira se va al paywall, con aviso "sin conexión".
+            let snapshot = await withFirebaseTimeout(userRef.once('value'), 'users/' + user.uid);
+            let _gateTimedOut = false;
+            if (!snapshot) {
+              snapshot = await withFirebaseTimeout(userRef.once('value'), 'users/' + user.uid, 15000);
+              if (!snapshot) _gateTimedOut = true;
+            }
             const userData = snapshot && snapshot.val();
 
             if (userData && userData.accountStatus && userData.accountStatus.status === 'deactivated') {
@@ -7489,9 +7598,11 @@
             if (!userData || !isSubscriptionValid(userData.subscription)) {
               try {
                 const _s = userData && userData.subscription;
-                const _msg = _s && _s.status === 'cancelled'
-                  ? 'Tu suscripción fue cancelada. Elige un plan para seguir viendo Atenis.'
-                  : 'Tu prueba terminó o tu suscripción no está activa. Elige un plan para seguir viendo Atenis.';
+                const _msg = _gateTimedOut
+                  ? 'Sin conexión: no se pudo verificar tu suscripción. Revisa tu conexión e inténtalo de nuevo.'
+                  : (_s && _s.status === 'cancelled'
+                    ? 'Tu suscripción fue cancelada. Elige un plan para seguir viendo Atenis.'
+                    : 'Tu prueba terminó o tu suscripción no está activa. Elige un plan para seguir viendo Atenis.');
                 localStorage.setItem('atenis_auth_notice', _msg);
               } catch (e) {}
               window.location.href = 'subscription.html';
@@ -7514,7 +7625,7 @@
             // Ronda 11: aviso no bloqueante si el correo no está verificado.
             if (user.emailVerified === false && !sessionStorage.getItem('atenis_unverified_notice')) {
               try { sessionStorage.setItem('atenis_unverified_notice', '1'); } catch (e) {}
-              showSettingsMessage('Tu correo no está verificado. Reenvíalo desde el inicio de sesión.');
+              showSettingsMessage('Tu correo no está verificado. Reenvíalo desde Ajustes › Cuenta.');
             }
             checkAuthentication._gateRetried = false; // Ronda 11: el reintento vale por episodio de fallo, no por sesión.
             resolve(true);
@@ -7541,7 +7652,27 @@
     }
 
     // Actualizar interfaz con datos del usuario
+    // Ronda 15 (B2): reenvío de verificación desde Ajustes > Cuenta, con
+    // cooldown local de 60 s (mismo patrón que el olvido de contraseña).
+    async function resendVerificationFromSettings() {
+      const user = (typeof auth !== 'undefined' && auth && auth.currentUser) || currentFirebaseUser;
+      if (!user) { showSettingsMessage('Inicia sesión para reenviar la verificación.'); return; }
+      const _last = Number(localStorage.getItem('atenis_resend_verif_cooldown') || 0);
+      if (Date.now() - _last < 60000) { showSettingsMessage('Espera un momento antes de pedir otro correo.'); return; }
+      try {
+        await user.sendEmailVerification();
+        localStorage.setItem('atenis_resend_verif_cooldown', String(Date.now()));
+        showSettingsMessage('Correo de verificación enviado. Revisa tu bandeja de entrada.');
+      } catch (err) {
+        console.error('Error reenviando verificación:', err);
+        showSettingsMessage('No se pudo enviar el correo. Inténtalo de nuevo.');
+      }
+    }
+
     function updateUserInterface() {
+      // Ronda 15 (B2): el reenvío solo se muestra si el correo no está verificado.
+      const _rvRow = document.getElementById('resendVerificationRow');
+      if (_rvRow) _rvRow.style.display = (currentFirebaseUser && currentFirebaseUser.emailVerified === false) ? '' : 'none';
       if (userProfile) {
         // Actualizar avatar del usuario en ajustes si existe
         const userAvatar = document.getElementById('userAvatar');
@@ -7979,7 +8110,12 @@
     // Últimas 5 consultas reales (≥2 caracteres, sin duplicados, la más
     // reciente primero), guardadas POR USUARIO con atenisUserKey() (misma
     // clave con sufijo UID que Mi Lista / historial / ajustes, Ronda 6).
+    // Ronda 15 (A8): sin sesión las recientes viven solo en memoria —
+    // la clave localStorage sin sufijo UID la compartirían dos usuarios del
+    // mismo dispositivo. Con sesión, por UID como antes.
+    let _recentSearchesMemory = [];
     function readRecentSearches() {
+      if (!_atenisCurrentUid()) return _recentSearchesMemory.slice();
       try {
         const raw = localStorage.getItem(atenisUserKey('atenis_recent_searches'));
         const list = JSON.parse(raw || '[]');
@@ -7989,6 +8125,12 @@
     function saveRecentSearch(query) {
       const q = String(query || '').trim();
       if (q.length < 2) return;
+      if (!_atenisCurrentUid()) {
+        _recentSearchesMemory = _recentSearchesMemory.filter(function(item) { return item.toLowerCase() !== q.toLowerCase(); });
+        _recentSearchesMemory.unshift(q);
+        _recentSearchesMemory = _recentSearchesMemory.slice(0, 5);
+        return;
+      }
       try {
         const list = readRecentSearches().filter(function(item) { return item.toLowerCase() !== q.toLowerCase(); });
         list.unshift(q);
@@ -7996,7 +8138,8 @@
       } catch (e) {}
     }
     function clearRecentSearches() {
-      try { localStorage.removeItem(atenisUserKey('atenis_recent_searches')); } catch (e) {}
+      if (!_atenisCurrentUid()) { _recentSearchesMemory = []; }
+      else { try { localStorage.removeItem(atenisUserKey('atenis_recent_searches')); } catch (e) {} }
       renderSearchRecents();
     }
     function applyRecentSearch(term) {
@@ -8803,7 +8946,7 @@
       
       item.innerHTML = `
         <div class="history-item-poster">
-          <img src="${series.poster}" alt="${series.title}">
+          <img src="${series.poster}" alt="${series.title}" loading="lazy" onerror="handlePosterError(this)">
           <div class="history-progress-overlay">
             <div class="history-progress-bar" style="width: ${progress}%"></div>
           </div>
@@ -8843,6 +8986,11 @@
     // limpio y la UI no se rompe.
     async function clearHistory() {
       if (!confirm('¿Estás seguro de que quieres eliminar todo el historial?')) return;
+      // Ronda 15 (A3): cancelar la subida pendiente ANTES de borrar, para
+      // que el debounce no resucite el historial a los 10 s.
+      _cancelWatchProgressSync();
+      const _deletedAt = Date.now();
+      _watchSyncDeletedAt = _deletedAt;
       const history = readAtenisHistory();
       try { localStorage.removeItem(_atenisMigrateKey('atenis_history')); } catch (e) {}
       history.forEach(item => {
@@ -8853,6 +9001,9 @@
       if (uid && firebaseReady && database) {
         try { await database.ref('users/' + uid + '/watchProgress').remove(); } catch (e) { console.warn('No se pudo borrar el progreso en Firebase:', e); }
       }
+      // Ronda 15 (A3): marcador de borrado (también si el remove() falló:
+      // el marcador local ya impide la resurrección en esta sesión).
+      await _writeWatchDeletedMarker(uid, _deletedAt);
       loadHistoryContent();
       showSettingsMessage('Historial eliminado');
     }
@@ -8862,6 +9013,11 @@
     // La lista se actualiza sin recargar la página.
     async function removeHistoryItem(seriesId) {
       if (!seriesId) return;
+      // Ronda 15 (A3): cancelar la subida pendiente de ESTA serie y marcar
+      // el borrado en sesión antes de tocar nada remoto.
+      _cancelWatchProgressSync(seriesId);
+      const _deletedAt = Date.now();
+      _watchSyncDeletedSeriesAt[seriesId] = _deletedAt;
       const history = readAtenisHistory().filter(item => item && item.seriesId !== seriesId);
       writeAtenisHistory(history);
       try { localStorage.removeItem(atenisUserKey('watched_' + seriesId)); } catch (e) {}
@@ -8869,6 +9025,9 @@
       if (uid && firebaseReady && database) {
         try { await database.ref('users/' + uid + '/watchProgress/' + seriesId).remove(); } catch (e) { console.warn('No se pudo borrar el progreso en Firebase:', e); }
       }
+      // Ronda 15 (A3): marcador de borrado por serie (el mapa local ya
+      // impide la resurrección en esta sesión aunque el remove() fallara).
+      await _writeWatchDeletedMarker(uid, _deletedAt, seriesId);
       loadHistoryContent();
       showSettingsMessage('Título eliminado del historial');
     }
@@ -8930,6 +9089,30 @@
     let _watchSyncTimer = null;     // temporizador del debounce
     let _watchSyncLastWriteAt = 0;  // última escritura real a Firebase
     let _watchSyncRestoredAt = 0;   // última lectura de Firebase
+    // Ronda 15 (A3): marcador de borrado de historial. _watchSyncDeletedAt
+    // (global, clearHistory) y _watchSyncDeletedSeriesAt (por serie,
+    // removeHistoryItem) guardan en sesión el instante del borrado: aunque
+    // el remove() remoto falle, el restore de esta sesión no reimporta el
+    // progreso borrado. El mismo instante se escribe en Firebase bajo
+    // users/{uid}/watchProgressDeletedAt para otros dispositivos/sesiones.
+    let _watchSyncDeletedAt = 0;
+    let _watchSyncDeletedSeriesAt = {};
+    function _cancelWatchProgressSync(seriesId) {
+      if (seriesId && _watchSyncPending && _watchSyncPending.seriesId !== seriesId) return;
+      if (_watchSyncTimer) { clearTimeout(_watchSyncTimer); _watchSyncTimer = null; }
+      _watchSyncPending = null;
+    }
+    async function _writeWatchDeletedMarker(uid, ts, seriesId) {
+      if (!uid || !firebaseReady || !database) return;
+      try {
+        if (seriesId) {
+          const safe = String(seriesId).replace(/[.#$\[\]\/]/g, '_');
+          await database.ref('users/' + uid + '/watchProgressDeletedAt/' + safe).set(ts);
+        } else {
+          await database.ref('users/' + uid + '/watchProgressDeletedAt').set(ts);
+        }
+      } catch (e) { console.warn('No se pudo guardar el marcador de borrado:', e); }
+    }
 
     // Id de episodio válido como clave de Firebase (sin . # $ [ ] /).
     // Usa el id estable del episodio; si no lo tiene, 'ep-<índice>'.
@@ -9026,6 +9209,17 @@
       if (!force && _watchSyncRestoredAt
           && Date.now() - _watchSyncRestoredAt < WATCH_SYNC_RESTORE_MIN_MS) return false;
       _watchSyncRestoredAt = Date.now();
+      // Ronda 15 (A3): marcador de borrado remoto (número = borrado total,
+      // objeto = borrado por serie). El progreso anterior al marcador no se
+      // reimporta. El marcador local de sesión cubre el caso en que el
+      // remove() remoto falló y el marcador no llegó a escribirse.
+      let _deletedAtRemote = null;
+      try {
+        const _delSnap = await withFirebaseTimeout(
+          database.ref('users/' + _atenisCurrentUid() + '/watchProgressDeletedAt').once('value'),
+          'watchProgressDeletedAt', 8000);
+        if (_delSnap) _deletedAtRemote = _delSnap.val();
+      } catch (e) { _deletedAtRemote = null; }
       try {
         const snap = await withFirebaseTimeout(
           database.ref('users/' + _atenisCurrentUid() + '/watchProgress').once('value'),
@@ -9047,6 +9241,14 @@
             if (!newest || t > newest.t) newest = { r, t };
           });
           if (!newest) return;
+          // Ronda 15 (A3): progreso borrado no resucita.
+          const _delGlobal = (typeof _deletedAtRemote === 'number') ? _deletedAtRemote : 0;
+          const _delSeries = (_deletedAtRemote && typeof _deletedAtRemote === 'object')
+            ? (Number(_deletedAtRemote[seriesId]) || Number(_deletedAtRemote[seriesId.replace(/[.#$\[\]\/]/g, '_')]) || 0) : 0;
+          if ((_watchSyncDeletedAt && newest.t <= _watchSyncDeletedAt)
+            || (_watchSyncDeletedSeriesAt[seriesId] && newest.t <= _watchSyncDeletedSeriesAt[seriesId])
+            || (_delGlobal && newest.t <= _delGlobal)
+            || (_delSeries && newest.t <= _delSeries)) return;
           const r = newest.r;
           const localIdx = history.findIndex(h => h.seriesId === seriesId);
           const local = localIdx !== -1 ? history[localIdx] : null;
@@ -9155,7 +9357,7 @@
         const contTitle = series.spanishTitle || series.title || '';
         const isMiniItem = (series.type || 'series') === 'series';
         card.innerHTML = `
-          <img src="${series.poster || ''}" alt="${contTitle}" loading="lazy">
+          <img src="${series.poster || ''}" alt="${contTitle}" loading="lazy" onerror="handlePosterError(this)">
           <div class="continue-play-btn"><i class="fas fa-play" style="margin-left:2px;"></i></div>
           <div class="continue-overlay">
             ${isMiniItem ? '<div style="position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#E91E8C,#FF6B35);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:3px;letter-spacing:0.05em;">MINI</div>' : ''}
@@ -9384,6 +9586,10 @@
         if (!overlay) return;
         overlay.classList.remove('sub-size-small', 'sub-size-medium', 'sub-size-large');
         overlay.classList.add('sub-size-' + s);
+        // Ronda 15 (A6): las pistas nativas VTT usan ::cue, no el overlay:
+        // el tamaño viaja en data-sub-size del vídeo (reglas ::cue en CSS).
+        const _subVid = document.getElementById('miniPlayerVideo');
+        if (_subVid) _subVid.dataset.subSize = s;
       } catch (e) {}
     }
 
@@ -9586,7 +9792,9 @@
         z-index: 5000;
         border: 1px solid #2a2a2a;
         box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-        white-space: nowrap;
+        white-space: normal;
+        max-width: calc(100vw - 32px);
+        text-align: center;
       `;
       messageEl.textContent = message;
 
@@ -9673,6 +9881,7 @@
 
         const doApply = () => {
           bg.style.backgroundImage = item.poster ? `url('${item.poster}')` : 'none';
+          bg.style.backgroundColor = '#131921'; // Ronda 15 C4: fondo marino si el póster está roto
           document.getElementById('featuredHeroTitle').textContent = getLocalizedMiniTitle(item);
           document.getElementById('featuredHeroDesc').textContent  = getLocalizedMiniDesc(item);
           document.getElementById('featuredHeroBadges').innerHTML  = `
@@ -9831,15 +10040,18 @@
             const _reData = _reSnap.val();
             if (_reData && _reData.accountStatus && _reData.accountStatus.status === 'deactivated') {
               try { await auth.signOut(); } catch (e) {}
-              window.location.href = 'login.html';
+              _redirectAfterSessionEnd('login.html', 'Tu sesión terminó. Vuelve a iniciar sesión.');
               return;
             }
             if (!isSubscriptionValid(_reData && _reData.subscription)) {
               try { localStorage.setItem('atenis_auth_notice', 'Tu suscripción terminó o dejó de estar activa. Elige un plan para seguir viendo Atenis.'); } catch (e) {}
-              window.location.href = 'subscription.html';
+              _redirectAfterSessionEnd('subscription.html', 'Tu suscripción terminó o dejó de estar activa. Elige un plan para seguir viendo Atenis.');
             }
           } catch (e) { console.error('Error re-verificando suscripción:', e); }
         }, 300000);
+        // Ronda 15 C8: avisar si se pierde o se recupera la conexión (sin bloquear nada).
+        window.addEventListener('offline', () => showSettingsMessage('Sin conexión. Revisa tu conexión.'));
+        window.addEventListener('online', () => showSettingsMessage('Conexión recuperada.'));
         // Apply language on startup
         setTimeout(() => applyMiniTranslations(), 300);
         
@@ -9847,6 +10059,8 @@
         checkIfFromLanding();
         // Ronda 12 (F2): abrir el detalle si el enlace trae ?series=<id>.
         openSharedSeriesFromUrl();
+        // Ronda 15 (A9): deep link guardado antes del login (sin sesión).
+        _openPendingSeriesAfterLogin();
         
         // Inicializar Google Translate
         setTimeout(() => {
@@ -10425,6 +10639,9 @@
         openDetailView(seriesId);
         return;
       }
+      // Ronda 15 C2: miniserie sin episodios: toast y no abrir el reproductor en negro.
+      const _detailEps = series.episodes || [];
+      if (!_detailEps.length) { showSettingsMessage(t('no_episodes')); return; }
       hideAllSections();
       setTopBarMode(true);
       _showMiniPlayerInner(seriesId, 0);
@@ -10489,6 +10706,7 @@
       const hero = document.getElementById('detailHero');
       const poster = String(series.poster || '').replace(/"/g, '');
       if (hero) hero.style.backgroundImage = poster ? `url("${poster}")` : 'linear-gradient(135deg, #232F3E 0%, #131921 100%)';
+      if (hero) hero.style.backgroundColor = '#131921'; // Ronda 15 C4: fondo marino si el póster está roto
 
       const badge = document.getElementById('detailTypeBadge');
       if (badge) badge.textContent = getDetailTypeLabel(series);
@@ -10502,8 +10720,13 @@
       if (series.type === 'tv') {
         const seasons = getDetailSeasons(series);
         const totalEps = seasons.reduce((a, s) => a + s.episodes.length, 0);
-        const seasonWord = t('detail_season') + (seasons.length === 1 ? '' : 's');
-        metaParts.push(`<span>${seasons.length} ${seasonWord} · ${totalEps} ${t('detail_episodes').toLowerCase()}</span>`);
+        // Ronda 15 C7: sin episodios, no mostrar "0 Temporadas · 0 episodios".
+        if (totalEps === 0) {
+          metaParts.push(`<span>Sin episodios</span>`);
+        } else {
+          const seasonWord = t('detail_season') + (seasons.length === 1 ? '' : 's');
+          metaParts.push(`<span>${seasons.length} ${seasonWord} · ${totalEps} ${t('detail_episodes').toLowerCase()}</span>`);
+        }
       }
       if (series.genre) metaParts.push(`<span>${series.genre}</span>`);
       const metaEl = document.getElementById('detailMeta');
@@ -10623,15 +10846,30 @@
       value = Math.max(1, Math.min(5, Math.round(Number(value) || 0)));
       if (!value) return;
       const prev = _detailUserRating;
+      const prevAgg = _detailRatingAgg ? { sum: _detailRatingAgg.sum, count: _detailRatingAgg.count } : null;
       _detailUserRating = value;
       renderDetailRating();
       const uid = _atenisCurrentUid();
       if (!uid || !firebaseReady || !database) return; // sin sesión: solo estado local
+      // Ronda 15 (A5): voto y agregado ya no son dos escrituras sueltas.
+      // Si el voto no se guarda, se revierte la UI; si la transacción del
+      // agregado falla, se compensa borrando el voto y se revierte la UI.
+      const _revertRating = () => {
+        _detailUserRating = prev;
+        _detailRatingAgg = prevAgg;
+        renderDetailRating();
+        showSettingsMessage('No se pudo guardar tu calificación');
+      };
       try {
         await database.ref('users/' + uid + '/ratings/' + seriesId).set({
           value: value,
           updatedAt: firebase.database.ServerValue.TIMESTAMP
         });
+      } catch (e) {
+        _revertRating();
+        return;
+      }
+      try {
         const aggRef = database.ref(_atenisSeriesNode(seriesId) + '/' + seriesId + '/ratings');
         if (typeof aggRef.transaction !== 'function') return;
         const result = await aggRef.transaction(function (current) {
@@ -10643,6 +10881,7 @@
           }
           return { sum: sum + value, count: count + 1, updatedAt: firebase.database.ServerValue.TIMESTAMP };
         });
+        if (!result || result.committed === false) throw new Error('rating transaction not committed');
         if (result && result.committed && result.snapshot && result.snapshot.val() && _detailSeriesId === seriesId) {
           const a = result.snapshot.val();
           const count = Math.floor(Number(a.count) || 0);
@@ -10652,7 +10891,9 @@
           }
         }
       } catch (e) {
-        // El guardado falló: la estrella queda pintada en local, sin error visible.
+        // Compensar: borrar el voto que se acaba de escribir y revertir.
+        try { await database.ref('users/' + uid + '/ratings/' + seriesId).remove(); } catch (e2) {}
+        _revertRating();
       }
     }
 
@@ -12105,6 +12346,8 @@
     let _miniEditPosters = { orig: null, es: null, en: null, backdrop: null };
     let _miniEditBackdropRemoved = false; // Ronda 14 F4: true si el admin quita el backdrop guardado
     let _miniEditEpisodes = []; // mutable working copy
+    let _miniEditCoverUploading = {}; // Ronda 15 C5: subida de portada/backdrop en curso en edición, por tipo
+    let _miniCoverUploading = {}; // Ronda 15 C5: subida de portada/backdrop en curso en creación, por tipo
 
     // ── Episode list render ──────────────────────────────────────────────────
 
@@ -12271,19 +12514,20 @@
 
       if (prog)  prog.classList.remove('hidden');
       if (label) label.textContent = t('uploading');
+      if (_miniEditEpisodes[idx]) _miniEditEpisodes[idx].uploading = true; // Ronda 15 C1
 
       try {
         const url = await uploadToCloudinary(file, pct => {
           if (fill) fill.style.width = pct + '%';
         }, true);
         _miniEditEpisodes[idx].videoUrl = url;
-        if (_miniEditEpisodes[idx]) _miniEditEpisodes[idx].uploadError = false;
+        if (_miniEditEpisodes[idx]) { _miniEditEpisodes[idx].uploadError = false; _miniEditEpisodes[idx].uploading = false; } // Ronda 15 C1
         if (label) label.textContent = '✓ ' + t('upload_done');
         if (area)  area.classList.add('ok');
         if (fill)  fill.style.width = '100%';
       } catch (err) {
         if (label) label.textContent = t('upload_error') + ': ' + err.message;
-        if (_miniEditEpisodes[idx]) _miniEditEpisodes[idx].uploadError = true;
+        if (_miniEditEpisodes[idx]) { _miniEditEpisodes[idx].uploadError = true; _miniEditEpisodes[idx].uploading = false; } // Ronda 15 C1
         console.error('Episode video upload error:', err);
       }
     }
@@ -12408,6 +12652,7 @@
       }
       const msg = document.getElementById('meditCoverMsg');
       if (msg) msg.textContent = t('uploading');
+      _miniEditCoverUploading[type] = true; // Ronda 15 C5
 
       // Preview
       const reader = new FileReader();
@@ -12422,6 +12667,7 @@
 
       try {
         const url = await uploadToCloudinary(file, () => {});
+        _miniEditCoverUploading[type] = false; // Ronda 15 C5
         _miniEditPosters[type] = url;
         if (type === 'backdrop') {
           _miniEditBackdropRemoved = false;
@@ -12430,6 +12676,7 @@
         }
         if (msg) msg.textContent = t('upload_done');
       } catch (err) {
+        _miniEditCoverUploading[type] = false; // Ronda 15 C5
         if (msg) msg.textContent = t('upload_error') + ': ' + err.message;
       }
     }
@@ -12466,6 +12713,18 @@
         const failedEditEps = _miniEditEpisodes.filter(ep => ep && ep.uploadError);
         if (failedEditEps.length) {
           alert('No se puede guardar: ' + failedEditEps.length + ' episodio(s) fallaron al subir. Vuelve a subirlos e inténtalo de nuevo.');
+          return;
+        }
+        // Ronda 15 C1: no guardar mientras un episodio se está subiendo (se perdería).
+        const uploadingEditEps = _miniEditEpisodes.filter(ep => ep && ep.uploading);
+        if (uploadingEditEps.length) {
+          alert('Espera a que terminen de subir los episodios antes de publicar.');
+          return;
+        }
+        // Ronda 15 C5: no guardar mientras la portada o el backdrop se están subiendo.
+        const uploadingEditCovers = Object.keys(_miniEditCoverUploading).filter(k => _miniEditCoverUploading[k]);
+        if (uploadingEditCovers.length) {
+          alert('Espera a que terminen de subir las imágenes antes de guardar.');
           return;
         }
         const snap = await database.ref(_miniEditNode + '/' + seriesId).once('value');
@@ -12834,6 +13093,7 @@
       const progText = document.getElementById('coverProgText_' + coverType);
       if (progWrap) progWrap.classList.remove('hidden');
       if (progText) { progText.classList.remove('hidden'); progText.textContent = t('uploading'); }
+      _miniCoverUploading[coverType] = true; // Ronda 15 C5
 
       try {
         const url = await uploadToCloudinary(file, pct => {
@@ -12847,9 +13107,11 @@
           const _bdRm = document.getElementById('miniBackdropRemoveBtn');
           if (_bdRm) _bdRm.classList.remove('hidden');
         }
+        _miniCoverUploading[coverType] = false; // Ronda 15 C5
         if (progText) progText.textContent = t('upload_done');
         if (progFill) progFill.style.width = '100%';
       } catch (err) {
+        _miniCoverUploading[coverType] = false; // Ronda 15 C5
         if (progText) progText.textContent = t('upload_error') + ': ' + err.message;
         console.error('Cover upload error:', err);
       }
@@ -13155,6 +13417,12 @@
         alert('Espera a que terminen de subir los episodios antes de publicar.');
         return;
       }
+      // Ronda 15 C5: no publicar mientras la portada o el backdrop se están subiendo.
+      const uploadingCovers = Object.keys(_miniCoverUploading).filter(k => _miniCoverUploading[k]);
+      if (uploadingCovers.length) {
+        alert('Espera a que terminen de subir las imágenes antes de publicar.');
+        return;
+      }
 
       // Evitar doble publicación si se pulsan los dos botones a la vez.
       if (saveSeries._saving) return;
@@ -13359,6 +13627,12 @@
       requirePinForSeries(mini, () => _showMiniPlayerInner(miniId, epIdx, startTime));
     }
 
+    // Ronda 15 C3: muestra/oculta el spinner de carga del mini-player.
+    function _setMiniSpinner(show) {
+      const sp = document.getElementById('miniPlayerSpinner');
+      if (sp) sp.classList.toggle('visible', !!show);
+    }
+
     function _showMiniPlayerInner(miniId, epIdx, startTime) {
       const mini = seriesDatabase[miniId];
       if (!mini) return;
@@ -13398,6 +13672,18 @@
         document.getElementById('miniPlayerEpsBtnLabel').textContent = t('see_info');
       }
 
+      // Ronda 15 C3: spinner de carga y aviso si el vídeo no carga (una sola vez).
+      const _miniVid = document.getElementById('miniPlayerVideo');
+      if (_miniVid && !_miniVid.dataset.r15VideoBound) {
+        _miniVid.dataset.r15VideoBound = 'true';
+        _miniVid.addEventListener('waiting', () => _setMiniSpinner(true));
+        _miniVid.addEventListener('playing', () => _setMiniSpinner(false));
+        _miniVid.addEventListener('canplay', () => _setMiniSpinner(false));
+        _miniVid.addEventListener('error', () => {
+          _setMiniSpinner(false);
+          showSettingsMessage('No se pudo cargar el video. Comprueba tu conexión.');
+        });
+      }
       _playMiniEp(_miniPlayerEpIdx, _miniPlayerResumeTime);
       _miniPlayerResumeTime = 0;
       // Ronda 14 F3: al pausar, subir el progreso pendiente sin esperar
@@ -13446,6 +13732,9 @@
     }
 
     function _playMiniEp(idx, startTime) {
+      // Ronda 15 (A4): limpiar el toque pendiente al cambiar de episodio:
+      // un toque del episodio anterior no debe pausar el nuevo a los 300 ms.
+      if (_miniTapTimer) { clearTimeout(_miniTapTimer); _miniTapTimer = null; }
       if (!_miniPlayerMini) return;
       const eps = _miniPlayerMini.episodes || [];
       if (idx < 0 || idx >= eps.length) return;
@@ -13471,6 +13760,7 @@
       if (rawUrl) {
         vid.src = (typeof normalizeMediaUrl === 'function') ? normalizeMediaUrl(rawUrl) : rawUrl;
         vid.load();
+        _setMiniSpinner(true); // Ronda 15 C3: mostrar hasta que empiece a reproducir
         // Reanudar desde el punto guardado (Continuar Viendo): solo al abrir, no al cambiar de episodio
         if (_miniResumeSeekHandler) {
           vid.removeEventListener('loadedmetadata', _miniResumeSeekHandler);
@@ -13490,12 +13780,13 @@
           vid.addEventListener('loadedmetadata', _miniResumeSeekHandler);
         }
         const p = vid.play();
-        if (p) p.catch(() => {});
+        if (p) p.catch(() => { _setMiniSpinner(false); }); // Ronda 15 C3: sin spinner infinito si play() falla
       } else {
         // Episodio sin video: detener el anterior para no seguir mostrando otro capítulo
         vid.pause();
         vid.removeAttribute('src');
         vid.load();
+        _setMiniSpinner(false); // Ronda 15 C3
         showSettingsMessage(t('no_video') || 'Este episodio aún no tiene video disponible.');
         // Ronda 11: quedarse en el reproductor con la lista de episodios
         // abierta para elegir otro (antes se cerraba el reproductor entero).
@@ -13529,6 +13820,9 @@
         // Ronda 14 (F1): con el temporizador de apagado activo no hay
         // autoplay (el temporizador manda: el vídeo se queda parado).
         if (_miniSleepEndAt) return;
+        // Ronda 15 (A1): con «Reproducción automática» apagada no hay
+        // overlay ni cuenta atrás (el ajuste por defecto es activado).
+        try { if ((readAtenisSettings() || {}).autoplay === false) return; } catch (e) {}
         if (_miniPlayerEpIdx < eps.length - 1) {
           const nextIdx = _miniPlayerEpIdx + 1;
           if (isMiniEpisodeLocked(_miniPlayerMini, nextIdx, eps[nextIdx])) {
@@ -13540,12 +13834,18 @@
           const nextEp = eps[nextIdx];
           const titleEl = document.getElementById('miniNextTitle');
           if (titleEl) titleEl.textContent = nextEp.title || ('Episodio ' + (_miniPlayerEpIdx + 2));
+          // Ronda 15 (A7): en PiP la cuenta atrás correría invisible y sin
+          // forma de cancelarla: salir de PiP para que se vea el overlay.
+          try { if (typeof _miniIsInPip === 'function' && _miniIsInPip()) _exitMiniPip(); } catch (e) {}
           const overlay = document.getElementById('miniNextOverlay');
           const countEl = document.getElementById('miniNextCountdown');
           if (overlay) overlay.classList.add('visible');
           let secs = MINI_AUTOPLAY_COUNTDOWN_SECONDS; // Ronda 14 (F1): 10 s
           if (countEl) countEl.textContent = t('starting_in') + ' ' + secs + '...';
           window._miniNextCountdown = setInterval(function() {
+            // Ronda 15 (A2): si se armó el temporizador durante la cuenta
+            // atrás, abortarla (el temporizador manda).
+            if (_miniSleepEndAt) { clearInterval(window._miniNextCountdown); window._miniNextCountdown = null; _cancelMiniAutoplay(); return; }
             secs--;
             if (secs <= 0) {
               clearInterval(window._miniNextCountdown);
@@ -14076,6 +14376,9 @@
         _miniSleepMinutes = 0;
         _clearMiniSleepTimers();
       } else {
+        // Ronda 15 (A2): poner el temporizador cancela la cuenta atrás del
+        // autoplay si está corriendo (el tick también aborta, por si acaso).
+        _cancelMiniAutoplay();
         _miniSleepMinutes = minutes;
         _miniSleepEndAt = Date.now() + minutes * 60000;
         _armMiniSleepTimer();
@@ -14088,6 +14391,9 @@
       _miniSleepMinutes = 0;
       _clearMiniSleepTimers();
       _cancelMiniAutoplay(); // Ronda 14 (F1): el apagado cancela el autoplay
+      // Ronda 15 (A7): salir de PiP antes de pausar (si no, el vídeo queda
+      // pausado dentro de la ventana flotante sin forma de reanudarlo).
+      try { _exitMiniPip(); } catch (e) {}
       const vid = document.getElementById('miniPlayerVideo');
       if (vid) vid.pause();
       updateMiniPlayBtn();
@@ -14257,7 +14563,7 @@
 
       inner.innerHTML = `
         <div class="mini-info-poster-row">
-          <img class="mini-info-poster" src="${poster}" alt="">
+          <img class="mini-info-poster" src="${poster}" alt="" onerror="handlePosterError(this)">
           <div class="mini-info-meta">
             <div class="mini-info-title">${title}</div>
             ${rating ? `<div class="mini-info-rating">${rating}</div>` : ''}
@@ -14982,7 +15288,7 @@
       const statsEl  = document.getElementById('miniSheetStats');
       const ratingEl = document.getElementById('miniSheetRating');
 
-      if (posterEl) posterEl.src = getLocalizedMiniPoster(m);
+      if (posterEl) { posterEl.onerror = () => handlePosterError(posterEl); posterEl.src = getLocalizedMiniPoster(m); } // Ronda 15 C4
       if (titleEl)  titleEl.textContent = getLocalizedMiniTitle(m);
       if (statsEl) {
         const parts = [];
